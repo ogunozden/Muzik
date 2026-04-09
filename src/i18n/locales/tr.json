@@ -1,0 +1,111 @@
+{
+  "common": {
+    "appName": "Muzik",
+    "loading": "Yükleniyor...",
+    "error": "Hata oluştu",
+    "save": "Kaydet",
+    "cancel": "İptal",
+    "play": "Çal",
+    "stop": "Dur",
+    "search": "Ara",
+    "clear": "Temizle"
+  },
+  "nav": {
+    "home": "Ana Sayfa",
+    "makam": "Makamlar",
+    "usul": "Usüller",
+    "nota": "Nota",
+    "archive": "Arşiv",
+    "tutorial": "Öğretici",
+    "ensemble": "Ensemble"
+  },
+  "home": {
+    "title": "Türk Müziği Platformu",
+    "subtitle": "Nota, usül ve makam çalma platformu",
+    "makamCard": "Makam Keşfet",
+    "makamDesc": "50+ makam ile Türk müziğinin zenginliğini keşfet",
+    "usulCard": "Usül Öğren",
+    "usulDesc": "100+ usul ile ritim dünyasını keşfet",
+    "notaCard": "Nota Yaz",
+    "notaDesc": "Sanal klavye ve MIDI ile nota girişi"
+  },
+  "makam": {
+    "title": "Makamlar",
+    "selectMakam": "Makam Seç",
+    "selectInstrument": "Enstrüman Seç",
+    "instrument": "Enstrüman",
+    "makamPlaceholder": "Makam seçin",
+    "instrumentPlaceholder": "Enstrüman seçin",
+    "tonic": "Tonik",
+    "dominant": "Dominant",
+    "characteristic": "Karakteristik",
+    "playScale": "Gamı Çal",
+    "scaleDisplay": "Gam Görünümü",
+    "bpm": "BPM",
+    "clear": "Temizle"
+  },
+  "usul": {
+    "title": "Usüller",
+    "selectUsul": "Usul Seç",
+    "beats": "Vuruş",
+    "unit": "Birim",
+    "playRhythm": "Ritmi Çal",
+    "symbolGrid": "Vuruş Dizisi",
+    "bpm": "BPM"
+  },
+  "nota": {
+    "title": "Nota",
+    "parse": "Ayrıştır"
+  },
+  "notaEditor": {
+    "title": "Nota Editörü",
+    "makam": "Makam",
+    "usul": "Usul",
+    "recording": "Kayıt",
+    "play": "Çal",
+    "stop": "Dur",
+    "stopRecording": "Kaydı Durdur",
+    "recordingStatus": "Kayıtta",
+    "emptyState": "Kaydedilen nota yok",
+    "notesRecorded": "nota kaydedildi"
+  },
+  "recording": {
+    "title": "Ses Kayıt",
+    "start": "Kayıt Başlat",
+    "stop": "Kaydı Durdur",
+    "processing": "İşleniyor...",
+    "processingStatus": "İşleniyor",
+    "status": "Kayıt durumu",
+    "duration": "Kayıt süresi",
+    "durationLabel": "Süre"
+  },
+  "archive": {
+    "title": "Nota Arşivi",
+    "description": "Kayıtlı notalarınızı görüntüleyin ve yönetin",
+    "emptyState": "Henüz kayıtlı nota yok",
+    "searchPlaceholder": "Nota ara..."
+  },
+  "tutorial": {
+    "title": "Öğretici",
+    "description": "Müzik egzersizleri ile kendinizi geliştirin",
+    "noteExercises": "Nota Egzersizleri",
+    "usulExercises": "Usül Egzersizleri",
+    "makamExercises": "Makam Egzersizleri",
+    "startExercise": "Egzersize Başla",
+    "comingSoon": "Yakında"
+  },
+  "ensemble": {
+    "title": "Ensemble",
+    "description": "Diğer müzisyenlerle birlikte çalın",
+    "joinRoom": "Odaya Katıl",
+    "createRoom": "Oda Oluştur",
+    "roomCode": "Oda Kodu",
+    "instrument": "Enstrüman",
+    "connect": "Bağlan",
+    "disconnect": "Bağlantıyı Kes",
+    "connected": "Bağlı",
+    "disconnected": "Bağlı Değil",
+    "waiting": "Katılımcı bekleniyor...",
+    "enterCode": "Kodu girin"
+  }
+}

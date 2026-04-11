@@ -35,3 +35,7 @@ dist/
 
 # PDF (reference materials)
 *.pdf
+*_by_PaddleOCR-VL.*
+
+# Local sample source archives
+all-samples/

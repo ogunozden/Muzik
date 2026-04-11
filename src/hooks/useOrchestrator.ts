@@ -6,24 +6,28 @@ import {MAKAM_DATA, getMakamScale} from "@/engines/makam/data";
 import {Usul, UsulSymbol} from "@/types";
 import {USUL_DATA} from "@/engines/usul/data";
 import {noteNameToMidi} from "@/engines/nota/data";
-import {playScale, playRhythm, initAudio, InstrumentType} from "@/engines/ses/engine";
+import {playScale, playRhythm, initAudio, stopAll} from "@/engines/ses/engine";
+import type {InstrumentType} from "@/engines/ses/engine";
 
 export interface AppState {
   selectedMakam: Makam | null;
   selectedUsul: Usul | null;
   selectedInstrument: InstrumentType;
+  selectedPercussionInstrument: InstrumentType;
   currentScale: string[];
   isPlaying: boolean;
   bpm: number;
 }
 
 const DEFAULT_INSTRUMENT: InstrumentType = "ney";
+const DEFAULT_PERCUSSION_INSTRUMENT: InstrumentType = "kudum";
 
 export function useOrchestrator() {
   const [state, setState] = useState<AppState>({
     selectedMakam: null,
     selectedUsul: null,
     selectedInstrument: DEFAULT_INSTRUMENT,
+    selectedPercussionInstrument: DEFAULT_PERCUSSION_INSTRUMENT,
     currentScale: [],
     isPlaying: false,
     bpm: 120,
@@ -73,12 +77,13 @@ export function useOrchestrator() {
       return;
     }
 
+    stopAll();
     setState((prev) => ({...prev, isPlaying: true}));
     await initAudio();
     const symbols: UsulSymbol[] = state.selectedUsul.symbols;
-    await playRhythm(state.selectedUsul.beats, symbols, state.bpm);
+    await playRhythm(state.selectedUsul.beats, symbols, state.bpm, state.selectedPercussionInstrument);
     setState((prev) => ({...prev, isPlaying: false}));
-  }, [state.selectedUsul, state.bpm]);
+  }, [state.selectedUsul, state.bpm, state.selectedPercussionInstrument]);
 
   const setBpm = useCallback((bpm: number) => {
     setState((prev) => ({...prev, bpm}));
@@ -86,6 +91,10 @@ export function useOrchestrator() {
 
   const setInstrument = useCallback((instrument: InstrumentType) => {
     setState((prev) => ({...prev, selectedInstrument: instrument}));
+  }, []);
+
+  const setPercussionInstrument = useCallback((instrument: InstrumentType) => {
+    setState((prev) => ({...prev, selectedPercussionInstrument: instrument}));
   }, []);
 
   return {
@@ -96,5 +105,6 @@ export function useOrchestrator() {
     playUsulRhythm,
     setBpm,
     setInstrument,
+    setPercussionInstrument,
   };
 }

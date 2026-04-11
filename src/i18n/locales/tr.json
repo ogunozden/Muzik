@@ -17,7 +17,8 @@
     "nota": "Nota",
     "archive": "Arşiv",
     "tutorial": "Öğretici",
-    "ensemble": "Ensemble"
+    "ensemble": "Ensemble",
+    "sounds": "Sesler"
   },
   "home": {
     "title": "Türk Müziği Platformu",
@@ -47,6 +48,8 @@
   "usul": {
     "title": "Usüller",
     "selectUsul": "Usul Seç",
+    "usul": "Usul",
+    "usulPlaceholder": "Usul seçin",
     "beats": "Vuruş",
     "unit": "Birim",
     "playRhythm": "Ritmi Çal",
@@ -77,7 +80,11 @@
     "processingStatus": "İşleniyor",
     "status": "Kayıt durumu",
     "duration": "Kayıt süresi",
-    "durationLabel": "Süre"
+    "durationLabel": "Süre",
+    "microphoneNotSupported": "Mikrofon desteği bulunamadı. Lütfen tarayıcınızın mikrofon erişimine izin verdiğinden emin olun.",
+    "recordingActive": "Kayıtta",
+    "notesExtracted": "nota çıkarıldı",
+    "seconds": "sn"
   },
   "archive": {
     "title": "Nota Arşivi",

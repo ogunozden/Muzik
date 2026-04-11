@@ -1,15 +1,17 @@
 "use client";
 
-import {useCallback, useRef, memo} from "react";
+import {useCallback, useRef, memo, useMemo} from "react";
 import {PIANO_KEYS, midiToNoteName} from "@/engines/nota/data";
 import {PIANO_CONFIG} from "@/lib/constants";
 import {playNote} from "@/engines/ses/engine";
+import type {InstrumentType} from "@/engines/ses/engine";
 import {tokens} from "@/lib/tokens";
 
 interface VirtualPianoProps {
   onNoteOn?: (midiNumber: number) => void;
   onNoteOff?: (midiNumber: number) => void;
   activeNotes?: number[];
+  instrument?: InstrumentType;
   whiteKeyAriaLabel?: (noteName: string, octave: number) => string;
   blackKeyAriaLabel?: (noteName: string, octave: number) => string;
 }
@@ -18,6 +20,7 @@ function VirtualPianoComponent({
   onNoteOn,
   onNoteOff,
   activeNotes = [],
+  instrument = "ud",
   whiteKeyAriaLabel = (noteName, octave) => `${noteName} ${octave} white key`,
   blackKeyAriaLabel = (noteName, octave) => `${noteName} ${octave} black key`,
 }: VirtualPianoProps) {
@@ -27,15 +30,15 @@ function VirtualPianoComponent({
     if (activeRef.current.has(midiNumber)) return;
     activeRef.current.add(midiNumber);
     onNoteOn?.(midiNumber);
-    await playNote(midiNumber, 0.5);
-  }, [onNoteOn]);
+    await playNote(midiNumber, 0.5, instrument);
+  }, [instrument, onNoteOn]);
 
   const handleNoteOff = useCallback((midiNumber: number) => {
     activeRef.current.delete(midiNumber);
     onNoteOff?.(midiNumber);
   }, [onNoteOff]);
 
-  const touchHandler = (
+  const touchHandler = useCallback((
     e: React.TouchEvent | React.MouseEvent,
     midiNumber: number,
     action: "on" | "off"
@@ -43,7 +46,7 @@ function VirtualPianoComponent({
     e.preventDefault();
     if (action === "on") handleNoteOn(midiNumber);
     else handleNoteOff(midiNumber);
-  };
+  }, [handleNoteOn, handleNoteOff]);
 
   const blackKeyRelativePositions: Record<string, number> = {
     "C#": -0.5,
@@ -53,19 +56,29 @@ function VirtualPianoComponent({
     "A#": 0.5,
   };
 
+  const whiteKeyPositions = useMemo(() => {
+    const whiteIndexMap = new Map<number, number>();
+    let currentIndex = 0;
+    PIANO_KEYS.white.forEach((key) => {
+      whiteIndexMap.set(key.midiNumber, currentIndex);
+      currentIndex++;
+    });
+    return whiteIndexMap;
+  }, []);
+
   const pianoWidth = PIANO_CONFIG.totalOctaves * 7 * PIANO_CONFIG.whiteKeyWidth;
 
   return (
-    <div className={`inline-block ${tokens.colors.primary.base} ${tokens.spacing.sm} ${tokens.radius.lg}`}>
+    <div className={`inline-block ${tokens.colors.primary.base} ${tokens.spacing.sm} ${tokens.radius.lg} overflow-x-auto`}>
       <div
         className="relative"
-        style={{width: pianoWidth, height: PIANO_CONFIG.whiteKeyHeight}}
+        style={{width: pianoWidth, height: PIANO_CONFIG.whiteKeyHeight, minWidth: "100%"}}
       >
         {PIANO_KEYS.white.map((key) => {
           const octaveOffset = key.octave - PIANO_CONFIG.startOctave;
-          const prevWhiteInOctave = PIANO_KEYS.white.filter(
-            (wk) => wk.octave === key.octave && PIANO_KEYS.white.indexOf(wk) < PIANO_KEYS.white.indexOf(key)
-          ).length;
+          const keyIndex = whiteKeyPositions.get(key.midiNumber) ?? 0;
+          const octaveStartIndex = PIANO_KEYS.white.findIndex((wk) => wk.octave === key.octave);
+          const prevWhiteInOctave = keyIndex - octaveStartIndex;
           const left = octaveOffset * 7 * PIANO_CONFIG.whiteKeyWidth + prevWhiteInOctave * PIANO_CONFIG.whiteKeyWidth;
 
           return (
@@ -97,9 +110,9 @@ function VirtualPianoComponent({
 
         {PIANO_KEYS.black.map((key) => {
           const octaveOffset = key.octave - PIANO_CONFIG.startOctave;
-          const prevWhiteInOctave = PIANO_KEYS.white.filter(
-            (wk) => wk.octave === key.octave && PIANO_KEYS.white.indexOf(wk) < PIANO_KEYS.white.indexOf(key)
-          ).length;
+          const keyIndex = whiteKeyPositions.get(key.midiNumber - 1) ?? 0;
+          const octaveStartIndex = PIANO_KEYS.white.findIndex((wk) => wk.octave === key.octave);
+          const prevWhiteInOctave = keyIndex - octaveStartIndex;
           const basePos = octaveOffset * 7 * PIANO_CONFIG.whiteKeyWidth + prevWhiteInOctave * PIANO_CONFIG.whiteKeyWidth;
           const relOffset = blackKeyRelativePositions[key.noteName] ?? 0;
           const left = basePos + relOffset * PIANO_CONFIG.whiteKeyWidth;

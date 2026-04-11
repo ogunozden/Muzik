@@ -17,7 +17,8 @@
     "nota": "Notes",
     "archive": "Archive",
     "tutorial": "Tutorial",
-    "ensemble": "Ensemble"
+    "ensemble": "Ensemble",
+    "sounds": "Sounds"
   },
   "home": {
     "title": "Turkish Music Platform",
@@ -46,6 +47,8 @@
   "usul": {
     "title": "Usuls",
     "selectUsul": "Select Usul",
+    "usul": "Usul",
+    "usulPlaceholder": "Select a usul",
     "beats": "Beats",
     "unit": "Unit",
     "playRhythm": "Play Rhythm",
@@ -76,7 +79,11 @@
     "processingStatus": "Processing",
     "status": "Recording status",
     "duration": "Recording duration",
-    "durationLabel": "Duration"
+    "durationLabel": "Duration",
+    "microphoneNotSupported": "Microphone support not found. Please ensure your browser allows microphone access.",
+    "recordingActive": "Recording",
+    "notesExtracted": "notes extracted",
+    "seconds": "sec"
   },
   "archive": {
     "title": "Note Archive",

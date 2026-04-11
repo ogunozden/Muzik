@@ -1,23 +1,24 @@
 "use client";
 
 import {
-  InstrumentType,
-  PercussionSymbol,
   playInstrumentNote,
   playScaleWithInstrument,
   playRhythmWithPercussion,
   playInstrumentNoteScheduled,
+  preloadInstrumentSamples,
+  clearSampleCache as clearSampleCacheBase,
   initAudio as initAudioBase,
   stopAll as stopAllBase,
   getAudioContext,
 } from "./instruments";
+import type {InstrumentType, PercussionSymbol} from "./instruments";
 
 export type ScheduledNote = {
   midiNumber: number;
   startTime: number;
   duration: number;
   gain?: number;
-  type?: string;
+  instrument?: InstrumentType;
 };
 
 export async function initAudio(): Promise<boolean> {
@@ -43,30 +44,43 @@ export async function playScale(
 export async function playRhythm(
   beats: number,
   symbols: Array<{beat: number; symbol: string; isAccent: boolean}>,
-  bpm: number = 120
+  bpm: number = 120,
+  percussionInstrument?: InstrumentType,
 ): Promise<void> {
-  const percussionSymbols: Array<{beat: number; symbol: PercussionSymbol; isAccent: boolean}> = symbols.map(
+  const percussionSymbols: Array<{beat: number; symbol: string; isAccent: boolean}> = symbols.map(
     (s) => ({
       beat: s.beat,
-      symbol: s.symbol as PercussionSymbol,
+      symbol: s.symbol,
       isAccent: s.isAccent,
     })
   );
-  await playRhythmWithPercussion(beats, percussionSymbols, bpm);
+  await playRhythmWithPercussion(beats, percussionSymbols, bpm, percussionInstrument);
 }
 
-export async function playSequence(notes: ScheduledNote[]): Promise<number> {
+export async function playSequence(
+  notes: ScheduledNote[],
+  instrument: InstrumentType = "ud",
+): Promise<number> {
   const ok = await initAudio();
   if (!ok) return 0;
 
   const context = getAudioContext();
   if (!context) return 0;
 
+  const instruments = Array.from(new Set(notes.map((note) => note.instrument ?? instrument)));
+  await Promise.all(instruments.map((noteInstrument) => preloadInstrumentSamples(noteInstrument)));
+
   const baseTime = context.currentTime + 0.02;
 
   for (const note of notes) {
     const noteStartTime = baseTime + note.startTime;
-    playInstrumentNoteAtTime(note.midiNumber, "ud", note.duration, note.gain ?? 0.2, noteStartTime);
+    playInstrumentNoteAtTime(
+      note.midiNumber,
+      note.instrument ?? instrument,
+      note.duration,
+      note.gain ?? 0.2,
+      noteStartTime
+    );
   }
 
   return notes.reduce((maxDuration, note) => Math.max(maxDuration, note.startTime + note.duration), 0);
@@ -87,6 +101,10 @@ function playInstrumentNoteAtTime(
 
 export function stopAll(): void {
   stopAllBase();
+}
+
+export function clearSampleCache(): void {
+  clearSampleCacheBase();
 }
 
 export type {InstrumentType, PercussionSymbol};

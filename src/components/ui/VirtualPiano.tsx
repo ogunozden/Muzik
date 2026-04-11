@@ -4,22 +4,24 @@ import {useCallback, useRef} from "react";
 import {PIANO_KEYS, midiToNoteName} from "@/engines/nota/data";
 import {PIANO_CONFIG} from "@/lib/constants";
 import {playNote} from "@/engines/ses/engine";
+import type {InstrumentType} from "@/engines/ses/engine";
 
 interface VirtualPianoProps {
   onNoteOn?: (midiNumber: number) => void;
   onNoteOff?: (midiNumber: number) => void;
   activeNotes?: number[];
+  instrument?: InstrumentType;
 }
 
-export function VirtualPiano({onNoteOn, onNoteOff, activeNotes = []}: VirtualPianoProps) {
+export function VirtualPiano({onNoteOn, onNoteOff, activeNotes = [], instrument = "ud"}: VirtualPianoProps) {
   const activeRef = useRef<Set<number>>(new Set());
 
   const handleNoteOn = useCallback(async (midiNumber: number) => {
     if (activeRef.current.has(midiNumber)) return;
     activeRef.current.add(midiNumber);
     onNoteOn?.(midiNumber);
-    await playNote(midiNumber, 0.5);
-  }, [onNoteOn]);
+    await playNote(midiNumber, 0.5, instrument);
+  }, [instrument, onNoteOn]);
 
   const handleNoteOff = useCallback((midiNumber: number) => {
     activeRef.current.delete(midiNumber);

@@ -2,24 +2,30 @@
 
 import {useTranslation} from "react-i18next";
 import {UsulPanel} from "@/components/organisms/UsulPanel";
+import {LabeledSelect} from "@/components/molecules/LabeledSelect";
 import {LabeledSlider} from "@/components/molecules/LabeledSlider";
 import {UnifiedLayout} from "@/components/layout/UnifiedLayout";
 import {USUL_DATA} from "@/engines/usul/data";
+import type {InstrumentType} from "@/engines/ses/engine";
 import {useOrchestrator} from "@/hooks/useOrchestrator";
+import {ENSTRUMAN_LIST, PERCUSSION_INSTRUMENTS} from "@/lib/centralized";
 import {tokens} from "@/lib/tokens";
 
 export default function UsulPage() {
-  const {t} = useTranslation();
-  const {state, selectUsul, playUsulRhythm, setBpm} = useOrchestrator();
+  const {t, i18n} = useTranslation();
+  const {state, selectUsul, playUsulRhythm, setBpm, setPercussionInstrument} = useOrchestrator();
 
   const usulItems = USUL_DATA.map((usul) => ({
     key: usul.id,
     label: usul.name,
   }));
 
-  const symbols = state.selectedUsul?.symbols.map((s) => ({
-    symbol: s.symbol === "dum" ? "●" : s.symbol === "tek" ? "○" : s.symbol === "ke" ? "◐" : "",
-    count: s.isAccent ? 2 : 1,
+  const symbols = state.selectedUsul?.symbols;
+  const percussionItems = ENSTRUMAN_LIST.filter((instrument) =>
+    PERCUSSION_INSTRUMENTS.includes(instrument.id)
+  ).map((instrument) => ({
+    key: instrument.id,
+    label: i18n.language === "tr" ? instrument.nameTr : instrument.nameEn,
   }));
 
   return (
@@ -42,6 +48,16 @@ export default function UsulPage() {
         />
 
         <div className={`p-4 ${tokens.colors.background.surface} ${tokens.radius.lg} ${tokens.colors.border.base} border mb-6`}>
+          <div className="mb-4">
+            <LabeledSelect
+              label={t("makam.instrument")}
+              ariaLabel={t("makam.selectInstrument")}
+              items={percussionItems}
+              value={state.selectedPercussionInstrument}
+              onChange={(key) => setPercussionInstrument(key as InstrumentType)}
+              placeholder={t("makam.instrumentPlaceholder")}
+            />
+          </div>
           <LabeledSlider
             label={`BPM: ${state.bpm}`}
             ariaLabel={t("usul.bpm")}

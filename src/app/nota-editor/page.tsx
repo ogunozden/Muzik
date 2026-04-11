@@ -13,7 +13,9 @@ import {useMidiInput} from "@/hooks/useMidiInput";
 import {MAKAM_DATA} from "@/engines/makam/data";
 import {USUL_DATA} from "@/engines/usul/data";
 import {midiToNoteName, noteNameToMidi} from "@/engines/nota/data";
-import {playSequence} from "@/engines/ses/engine";
+import {playSequence, stopAll} from "@/engines/ses/engine";
+import type {InstrumentType} from "@/engines/ses/engine";
+import {ENSTRUMAN_LIST, MELODIC_INSTRUMENTS} from "@/lib/centralized";
 import {NotaEvent} from "@/types";
 import {tokens} from "@/lib/tokens";
 
@@ -23,6 +25,7 @@ export default function NotaEditorPage() {
   const [isRecording, setIsRecording] = useState(false);
   const [selectedMakam, setSelectedMakam] = useState<string>("");
   const [selectedUsul, setSelectedUsul] = useState<string>("");
+  const [selectedInstrument, setSelectedInstrument] = useState<InstrumentType>("ud");
   const [activeNotes, setActiveNotes] = useState<number[]>([]);
   const [isPlaying, setIsPlaying] = useState(false);
   const [playbackPosition, setPlaybackPosition] = useState(-1);
@@ -132,7 +135,7 @@ export default function NotaEditorPage() {
     };
     playbackRef.current = requestAnimationFrame(animate);
 
-    const totalDuration = await playSequence(scheduledNotes);
+    const totalDuration = await playSequence(scheduledNotes, selectedInstrument);
     if (totalDuration <= 0) {
       if (playbackRef.current) cancelAnimationFrame(playbackRef.current);
       setIsPlaying(false);
@@ -145,10 +148,11 @@ export default function NotaEditorPage() {
       setIsPlaying(false);
       setPlaybackPosition(-1);
     }, (totalDuration + 0.5) * 1000);
-  }, [recordedNotes, isPlaying]);
+  }, [recordedNotes, isPlaying, selectedInstrument]);
 
   const stopPlayback = useCallback(() => {
     if (playbackRef.current) cancelAnimationFrame(playbackRef.current);
+    stopAll(); // Stop audio playback
     setIsPlaying(false);
     setPlaybackPosition(-1);
   }, []);
@@ -174,6 +178,13 @@ export default function NotaEditorPage() {
     label: usul.name,
   }));
 
+  const instrumentItems = ENSTRUMAN_LIST.filter((instrument) =>
+    MELODIC_INSTRUMENTS.includes(instrument.id)
+  ).map((instrument) => ({
+    key: instrument.id,
+    label: instrument.nameTr,
+  }));
+
   return (
     <UnifiedLayout>
       <div className={`max-w-5xl mx-auto px-4 py-8 ${tokens.colors.background.base}`}>
@@ -181,7 +192,7 @@ export default function NotaEditorPage() {
           {t("notaEditor.title")}
         </h1>
 
-        <div className={`grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8`}>
+        <div className={`grid grid-cols-1 lg:grid-cols-4 gap-6 mb-8`}>
           <Card className={`${tokens.colors.background.surface} ${tokens.colors.border.base} border`}>
             <CardBody className="p-4">
               <p className={`text-xs ${tokens.colors.text.secondary} mb-2`}>{t("makam.title")}</p>
@@ -210,6 +221,19 @@ export default function NotaEditorPage() {
 
           <Card className={`${tokens.colors.background.surface} ${tokens.colors.border.base} border`}>
             <CardBody className="p-4">
+              <p className={`text-xs ${tokens.colors.text.secondary} mb-2`}>{t("makam.instrument")}</p>
+              <Select
+                ariaLabel={t("makam.selectInstrument")}
+                items={instrumentItems}
+                selectedKeys={new Set([selectedInstrument])}
+                onSelectionChange={(keys) => setSelectedInstrument(Array.from(keys)[0] as InstrumentType)}
+                placeholder={t("makam.selectInstrument")}
+              />
+            </CardBody>
+          </Card>
+
+          <Card className={`${tokens.colors.background.surface} ${tokens.colors.border.base} border`}>
+            <CardBody className="p-4">
               <p className={`text-xs ${tokens.colors.text.secondary} mb-2`}>{t("recording.status")}</p>
               <Button
                 ariaLabel={isRecording ? t("notaEditor.stopRecording") : t("recording.start")}
@@ -230,6 +254,7 @@ export default function NotaEditorPage() {
                 onNoteOn={handleNoteOn}
                 onNoteOff={handleNoteOff}
                 activeNotes={activeNotes}
+                instrument={selectedInstrument}
               />
             </div>
           </CardBody>
@@ -239,7 +264,7 @@ export default function NotaEditorPage() {
           <PianoRollViewer
             notes={recordedNotes}
             playbackPosition={playbackPosition}
-            width={Math.max(700, recordedNotes.length * 80)}
+            width={Math.max(350, Math.min(700, recordedNotes.length * 80))}
             height={280}
             playAriaLabel={t("common.play")}
             stopAriaLabel={t("common.stop")}

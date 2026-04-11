@@ -1,4 +1,10 @@
 import {midiToFrequency} from "@/engines/nota/data";
+import {
+  MELODIC_SAMPLE_LIBRARY,
+  PERCUSSION_SAMPLE_LIBRARY,
+  PERCUSSION_SAMPLE_LIBRARY_BY_INSTRUMENT,
+} from "@/engines/ses/sample-library";
+import type {MelodicSampleRef, PercussionSampleSet} from "@/engines/ses/sample-library";
 
 export type PercussionSymbol = "dum" | "tek" | "ke";
 
@@ -144,6 +150,17 @@ const INSTRUMENT_PROFILES: Record<InstrumentType, InstrumentProfile> = {
   },
 };
 
+const MAX_SAMPLE_TRANSPOSITION_SEMITONES = 7;
+const SYNTHETIC_FALLBACK_ENABLED = process.env.NEXT_PUBLIC_ENABLE_SYNTH_FALLBACK === "true";
+const sampleBufferPromises = new Map<string, Promise<AudioBuffer | null>>();
+const decodedSampleBuffers = new Map<string, AudioBuffer | null>();
+let availableSampleUrls: Set<string> | null = null;
+let availableSampleUrlsPromise: Promise<Set<string>> | null = null;
+
+function isPercussionSymbol(symbol: string): symbol is PercussionSymbol {
+  return symbol === "dum" || symbol === "tek" || symbol === "ke";
+}
+
 type BrowserAudioContext = AudioContext & {
   close?: () => Promise<void>;
 };
@@ -189,17 +206,23 @@ function getOrCreateAudioContext(): BrowserAudioContext | null {
   masterGain.gain.value = 0.8;
   masterGain.connect(audioContext.destination);
 
-  noiseBuffer = audioContext.createBuffer(
+  return audioContext;
+}
+
+function getOrCreateNoiseBuffer(context: BrowserAudioContext): AudioBuffer {
+  if (noiseBuffer) return noiseBuffer;
+
+  noiseBuffer = context.createBuffer(
     1,
-    audioContext.sampleRate * 2,
-    audioContext.sampleRate
+    Math.ceil(context.sampleRate * 0.5),
+    context.sampleRate
   );
   const noiseData = noiseBuffer.getChannelData(0);
   for (let i = 0; i < noiseData.length; i++) {
     noiseData[i] = Math.random() * 2 - 1;
   }
 
-  return audioContext;
+  return noiseBuffer;
 }
 
 function disposeAudioContext(): void {
@@ -293,10 +316,11 @@ function scheduleNoiseBurst(
   gainValue: number,
   brightness: number,
 ): void {
-  if (!masterGain || !noiseBuffer) return;
+  if (!masterGain) return;
 
+  const buffer = getOrCreateNoiseBuffer(context);
   const noiseSource = context.createBufferSource();
-  noiseSource.buffer = noiseBuffer;
+  noiseSource.buffer = buffer;
 
   const filter = context.createBiquadFilter();
   filter.type = "lowpass";
@@ -314,6 +338,235 @@ function scheduleNoiseBurst(
 
   noiseSource.start(startAt);
   noiseSource.stop(startAt + duration + 0.05);
+}
+
+async function loadSampleBuffer(context: BrowserAudioContext, url: string): Promise<AudioBuffer | null> {
+  if (!sampleBufferPromises.has(url)) {
+    const promise = fetch(url, {cache: "reload"})
+      .then(async (response) => {
+        if (!response.ok) {
+          return null;
+        }
+
+        const arrayBuffer = await response.arrayBuffer();
+        return context.decodeAudioData(arrayBuffer);
+      })
+      .catch(() => null)
+      .then((buffer) => {
+        decodedSampleBuffers.set(url, buffer);
+        if (!buffer) {
+          sampleBufferPromises.delete(url);
+          decodedSampleBuffers.delete(url);
+        }
+        return buffer;
+      });
+
+    sampleBufferPromises.set(url, promise);
+  }
+
+  return sampleBufferPromises.get(url)!;
+}
+
+export function clearSampleCache(): void {
+  sampleBufferPromises.clear();
+  decodedSampleBuffers.clear();
+  availableSampleUrls = null;
+  availableSampleUrlsPromise = null;
+}
+
+async function preloadSampleUrls(context: BrowserAudioContext, urls: string[]): Promise<boolean> {
+  const availableUrls = await getAvailableSampleUrls();
+  const loadableUrls = urls.filter((url) => availableUrls.has(url));
+  if (loadableUrls.length === 0) return false;
+
+  const buffers = await Promise.all(loadableUrls.map((url) => loadSampleBuffer(context, url)));
+  return buffers.some((buffer) => buffer !== null);
+}
+
+async function getAvailableSampleUrls(): Promise<Set<string>> {
+  if (availableSampleUrls) return availableSampleUrls;
+
+  if (!availableSampleUrlsPromise) {
+    availableSampleUrlsPromise = fetch("/api/samples", {cache: "no-store"})
+      .then(async (response) => {
+        if (!response.ok) return new Set<string>();
+
+        const data = await response.json() as {
+          slots?: Array<{url: string; installed: boolean}>;
+        };
+
+        return new Set(
+          (data.slots ?? [])
+            .filter((slot) => slot.installed)
+            .map((slot) => slot.url)
+        );
+      })
+      .catch(() => new Set<string>())
+      .then((urls) => {
+        availableSampleUrls = urls;
+        return urls;
+      });
+  }
+
+  return availableSampleUrlsPromise;
+}
+
+function getLoadedBuffer(url: string): AudioBuffer | null {
+  return decodedSampleBuffers.get(url) ?? null;
+}
+
+function getNearestLoadedMelodicSample(
+  samples: MelodicSampleRef[] | undefined,
+  midiNumber: number,
+): {sample: MelodicSampleRef; buffer: AudioBuffer} | null {
+  if (!samples) return null;
+
+  let best: {sample: MelodicSampleRef; buffer: AudioBuffer; distance: number} | null = null;
+
+  for (const sample of samples) {
+    const buffer = getLoadedBuffer(sample.url);
+    if (!buffer) continue;
+
+    const distance = Math.abs(sample.midiNumber - midiNumber);
+    if (distance > MAX_SAMPLE_TRANSPOSITION_SEMITONES) continue;
+
+    if (!best || distance < best.distance) {
+      best = {sample, buffer, distance};
+    }
+  }
+
+  return best ? {sample: best.sample, buffer: best.buffer} : null;
+}
+
+function getFirstLoadedPercussionSample(
+  symbol: PercussionSymbol,
+  isAccent: boolean,
+  percussionInstrument?: InstrumentType,
+): AudioBuffer | null {
+  const sampleSet = getPercussionSampleSet(symbol, percussionInstrument);
+  const urls = isAccent ? [...(sampleSet.accentUrls ?? []), ...sampleSet.urls] : sampleSet.urls;
+
+  for (const url of urls) {
+    const buffer = getLoadedBuffer(url);
+    if (buffer) return buffer;
+  }
+
+  return null;
+}
+
+function getPercussionSampleSet(symbol: PercussionSymbol, percussionInstrument?: InstrumentType): PercussionSampleSet {
+  if (percussionInstrument) {
+    const instrumentSet = PERCUSSION_SAMPLE_LIBRARY_BY_INSTRUMENT[percussionInstrument]?.[symbol];
+    if (instrumentSet) return instrumentSet;
+  }
+
+  return PERCUSSION_SAMPLE_LIBRARY[symbol];
+}
+
+function scheduleSampleBuffer(
+  context: BrowserAudioContext,
+  buffer: AudioBuffer,
+  playbackRate: number,
+  startAt: number,
+  duration: number,
+  gainValue: number,
+  releaseTime: number,
+): void {
+  if (!masterGain) return;
+
+  const source = context.createBufferSource();
+  const gainNode = context.createGain();
+  const releaseStart = startAt + duration;
+  const stopAt = releaseStart + releaseTime + 0.05;
+
+  source.buffer = buffer;
+  source.playbackRate.setValueAtTime(playbackRate, startAt);
+
+  gainNode.gain.setValueAtTime(0.0001, startAt);
+  gainNode.gain.exponentialRampToValueAtTime(Math.max(gainValue, 0.0001), startAt + 0.005);
+  gainNode.gain.setValueAtTime(Math.max(gainValue, 0.0001), releaseStart);
+  gainNode.gain.exponentialRampToValueAtTime(0.0001, stopAt);
+
+  source.connect(gainNode);
+  gainNode.connect(masterGain);
+
+  source.start(startAt);
+  source.stop(stopAt);
+  trackSource(source);
+}
+
+function scheduleSampledMelodicNote(
+  context: BrowserAudioContext,
+  midiNumber: number,
+  instrument: InstrumentType,
+  startAt: number,
+  duration: number,
+  gain: number,
+): boolean {
+  const match = getNearestLoadedMelodicSample(MELODIC_SAMPLE_LIBRARY[instrument], midiNumber);
+  if (!match) return false;
+
+  const profile = INSTRUMENT_PROFILES[instrument];
+  const playbackRate = Math.pow(2, (midiNumber - match.sample.midiNumber) / 12);
+  scheduleSampleBuffer(context, match.buffer, playbackRate, startAt, duration, gain, profile.releaseTime);
+  return true;
+}
+
+function scheduleSampledPercussionHit(
+  context: BrowserAudioContext,
+  symbol: PercussionSymbol,
+  isAccent: boolean,
+  startAt: number,
+  beatDuration: number,
+  percussionInstrument?: InstrumentType,
+): boolean {
+  const buffer = getFirstLoadedPercussionSample(symbol, isAccent, percussionInstrument);
+  if (!buffer) return false;
+
+  const durationBySymbol: Record<PercussionSymbol, number> = {
+    dum: beatDuration * 0.8,
+    tek: beatDuration * 0.4,
+    ke: beatDuration * 0.3,
+  };
+  const gainBySymbol: Record<PercussionSymbol, number> = {
+    dum: isAccent ? 0.75 : 0.55,
+    tek: isAccent ? 0.62 : 0.46,
+    ke: isAccent ? 0.55 : 0.4,
+  };
+
+  scheduleSampleBuffer(context, buffer, 1, startAt, durationBySymbol[symbol], gainBySymbol[symbol], 0.05);
+  return true;
+}
+
+export async function preloadInstrumentSamples(instrument: InstrumentType): Promise<boolean> {
+  const ok = await initAudio();
+  const context = getOrCreateAudioContext();
+  if (!ok || !context) return false;
+
+  const melodicSamples = MELODIC_SAMPLE_LIBRARY[instrument];
+  if (melodicSamples) {
+    return preloadSampleUrls(context, melodicSamples.map((sample) => sample.url));
+  }
+
+  return false;
+}
+
+async function preloadPercussionSymbolSamples(
+  symbols: PercussionSymbol[],
+  percussionInstrument?: InstrumentType,
+): Promise<boolean> {
+  const ok = await initAudio();
+  const context = getOrCreateAudioContext();
+  if (!ok || !context) return false;
+
+  const urls = new Set<string>();
+  for (const symbol of symbols) {
+    const sampleSet = getPercussionSampleSet(symbol, percussionInstrument);
+    sampleSet.urls.forEach((url) => urls.add(url));
+    sampleSet.accentUrls?.forEach((url) => urls.add(url));
+  }
+
+  return preloadSampleUrls(context, Array.from(urls));
 }
 
 export async function initAudio(): Promise<boolean> {
@@ -351,6 +604,15 @@ export async function playInstrumentNote(
   const frequency = midiToFrequency(midiNumber);
   const startAt = context.currentTime + 0.01;
   const profile = INSTRUMENT_PROFILES[instrument];
+
+  if (profile.type === "melodic") {
+    await preloadInstrumentSamples(instrument);
+    if (scheduleSampledMelodicNote(context, midiNumber, instrument, startAt, duration, gain)) {
+      return;
+    }
+
+    if (!SYNTHETIC_FALLBACK_ENABLED) return;
+  }
 
   if (profile.type === "melodic" && profile.harmonics) {
     // Her harmonik için osilatör oluştur
@@ -427,9 +689,10 @@ export async function playInstrumentNote(
     }
 
     // Attack noise (hışırtı) ekle
-    if (profile.noiseAmount && profile.noiseAmount > 0 && noiseBuffer) {
+    if (profile.noiseAmount && profile.noiseAmount > 0) {
+      const buffer = getOrCreateNoiseBuffer(context);
       const noise = context.createBufferSource();
-      noise.buffer = noiseBuffer;
+      noise.buffer = buffer;
       const noiseGain = context.createGain();
       const noiseFilter = context.createBiquadFilter();
 
@@ -455,7 +718,11 @@ export async function playInstrumentNote(
     }
   } else if (profile.type === "percussion") {
     // Perküsyon için özel ses
-    schedulePercussionHit(context, "tek", false, startAt, duration);
+    await preloadPercussionSymbolSamples(["tek"]);
+    if (!scheduleSampledPercussionHit(context, "tek", false, startAt, duration)) {
+      if (!SYNTHETIC_FALLBACK_ENABLED) return;
+      schedulePercussionHit(context, "tek", false, startAt, duration);
+    }
   }
 }
 
@@ -463,6 +730,7 @@ export async function playPercussionSymbol(
   symbol: PercussionSymbol,
   isAccent: boolean = false,
   bpm: number = 120,
+  percussionInstrument?: InstrumentType,
 ): Promise<void> {
   const ok = await initAudio();
   const context = getOrCreateAudioContext();
@@ -498,6 +766,13 @@ export async function playPercussionSymbol(
   }
 
   const profile = INSTRUMENT_PROFILES[instrument];
+
+  await preloadPercussionSymbolSamples([symbol], percussionInstrument);
+  if (scheduleSampledPercussionHit(context, symbol, isAccent, startAt, beatDuration, percussionInstrument)) {
+    return;
+  }
+
+  if (!SYNTHETIC_FALLBACK_ENABLED) return;
 
   if (profile.type === "percussion" && profile.harmonics) {
     for (let i = 0; i < profile.harmonics.length; i++) {
@@ -549,18 +824,34 @@ export async function playScaleWithInstrument(
   const startAt = context.currentTime + 0.02;
   const profile = INSTRUMENT_PROFILES[instrument];
 
+  await preloadInstrumentSamples(instrument);
+
   notes.forEach((midiNumber, index) => {
     const frequency = midiToFrequency(midiNumber);
     const noteStartAt = startAt + index * spacing;
 
+    if (profile.type === "melodic") {
+      if (scheduleSampledMelodicNote(
+        context,
+        midiNumber,
+        instrument,
+        noteStartAt,
+        noteDuration,
+        0.28,
+      )) {
+        return;
+      }
+
+      if (!SYNTHETIC_FALLBACK_ENABLED) return;
+    }
+
     if (profile.type === "melodic" && profile.harmonics) {
       for (let i = 0; i < profile.harmonics.length; i++) {
-        // scheduleHarmonicOscillator gain'i tekrar çarpıyor, sadece 0.2 geç
         scheduleHarmonicOscillator(
           context,
           frequency,
           profile.harmonics[i],
-          0.2,
+          0.2 * (profile.harmonicGains?.[i] ?? 0.1),
           noteStartAt,
           noteDuration,
           profile
@@ -572,23 +863,33 @@ export async function playScaleWithInstrument(
 
 export async function playRhythmWithPercussion(
   beats: number,
-  symbols: Array<{beat: number; symbol: PercussionSymbol; isAccent: boolean}>,
+  symbols: Array<{beat: number; symbol: string; isAccent: boolean}>,
   bpm: number = 120,
+  percussionInstrument?: InstrumentType,
 ): Promise<void> {
   const ok = await initAudio();
   const context = getOrCreateAudioContext();
   if (!ok || !context) return;
 
   const beatDuration = 60 / bpm;
+  await preloadPercussionSymbolSamples(
+    symbols
+      .map((symbol) => symbol.symbol)
+      .filter(isPercussionSymbol),
+    percussionInstrument,
+  );
 
   for (let i = 0; i < beats; i++) {
     const symbol = symbols[i];
-    if (!symbol) continue;
+    if (!symbol || !isPercussionSymbol(symbol.symbol)) continue;
 
     const startAt = context.currentTime + 0.02 + i * beatDuration;
     const accent = symbol.isAccent;
 
-    schedulePercussionHit(context, symbol.symbol, accent, startAt, beatDuration);
+    if (!scheduleSampledPercussionHit(context, symbol.symbol, accent, startAt, beatDuration, percussionInstrument)) {
+      if (!SYNTHETIC_FALLBACK_ENABLED) continue;
+      schedulePercussionHit(context, symbol.symbol, accent, startAt, beatDuration);
+    }
   }
 }
 
@@ -603,7 +904,7 @@ function schedulePercussionHit(
 
   switch (symbol) {
     case "dum": {
-      const drumFreq = isAccent ? 70 : 65;
+      const drumFreq = isAccent ? 66 : 62;
       const drumDuration = beatDuration * 0.6;
 
       const osc = context.createOscillator();
@@ -621,9 +922,10 @@ function schedulePercussionHit(
       osc.start(startAt);
       osc.stop(startAt + drumDuration + 0.05);
 
-      if (noiseBuffer) {
+      {
+        const buffer = getOrCreateNoiseBuffer(context);
         const noise = context.createBufferSource();
-        noise.buffer = noiseBuffer;
+        noise.buffer = buffer;
         const noiseGain = context.createGain();
         const filter = context.createBiquadFilter();
         filter.type = "lowpass";
@@ -641,38 +943,42 @@ function schedulePercussionHit(
     }
 
     case "tek": {
+      const baseFreq = isAccent ? 110 : 100;
       const tekDuration = beatDuration * 0.25;
+      const gain = isAccent ? 0.35 : 0.25;
 
       const osc = context.createOscillator();
-      const gain = context.createGain();
-      osc.type = "triangle";
-      osc.frequency.setValueAtTime(isAccent ? 450 : 380, startAt);
-      osc.frequency.exponentialRampToValueAtTime(isAccent ? 300 : 250, startAt + tekDuration);
+      const gainNode = context.createGain();
+      osc.type = "sine";
+      osc.frequency.setValueAtTime(baseFreq, startAt);
+      osc.frequency.exponentialRampToValueAtTime(baseFreq * 0.7, startAt + tekDuration);
 
-      gain.gain.setValueAtTime(0.0001, startAt);
-      gain.gain.exponentialRampToValueAtTime(isAccent ? 0.28 : 0.18, startAt + 0.003);
-      gain.gain.exponentialRampToValueAtTime(0.0001, startAt + tekDuration);
+      gainNode.gain.setValueAtTime(0.0001, startAt);
+      gainNode.gain.exponentialRampToValueAtTime(gain, startAt + 0.002);
+      gainNode.gain.exponentialRampToValueAtTime(0.0001, startAt + tekDuration);
 
-      osc.connect(gain);
-      gain.connect(masterGain);
+      osc.connect(gainNode);
+      gainNode.connect(masterGain!);
       osc.start(startAt);
-      osc.stop(startAt + tekDuration + 0.03);
+      osc.stop(startAt + tekDuration + 0.05);
 
-      if (noiseBuffer) {
+      {
+        const buffer = getOrCreateNoiseBuffer(context);
         const noise = context.createBufferSource();
-        noise.buffer = noiseBuffer;
+        noise.buffer = buffer;
         const noiseGain = context.createGain();
         const filter = context.createBiquadFilter();
-        filter.type = "highpass";
-        filter.frequency.value = 2000;
+        filter.type = "bandpass";
+        filter.frequency.value = 3000;
+        filter.Q.value = 1;
         noiseGain.gain.setValueAtTime(0.0001, startAt);
-        noiseGain.gain.exponentialRampToValueAtTime(isAccent ? 0.12 : 0.06, startAt + 0.001);
-        noiseGain.gain.exponentialRampToValueAtTime(0.0001, startAt + 0.015);
+        noiseGain.gain.exponentialRampToValueAtTime(gain * 0.15, startAt + 0.001);
+        noiseGain.gain.exponentialRampToValueAtTime(0.0001, startAt + 0.02);
         noise.connect(filter);
         filter.connect(noiseGain);
-        noiseGain.connect(masterGain);
+        noiseGain.connect(masterGain!);
         noise.start(startAt);
-        noise.stop(startAt + 0.03);
+        noise.stop(startAt + 0.05);
       }
       break;
     }
@@ -680,9 +986,10 @@ function schedulePercussionHit(
     case "ke": {
       const keDuration = beatDuration * 0.15;
 
-      if (noiseBuffer) {
+      {
+        const buffer = getOrCreateNoiseBuffer(context);
         const noise = context.createBufferSource();
-        noise.buffer = noiseBuffer;
+        noise.buffer = buffer;
         const noiseGain = context.createGain();
         const filter = context.createBiquadFilter();
         filter.type = "highpass";
@@ -741,7 +1048,15 @@ export function playInstrumentNoteScheduled(
   const frequency = midiToFrequency(midiNumber);
   const profile = INSTRUMENT_PROFILES[instrument];
 
-  if (profile.type !== "melodic" || !profile.harmonics) return;
+  if (profile.type !== "melodic") return;
+
+  if (scheduleSampledMelodicNote(context, midiNumber, instrument, startTime, duration, gain)) {
+    return;
+  }
+
+  if (!SYNTHETIC_FALLBACK_ENABLED) return;
+
+  if (!profile.harmonics) return;
 
   // Her harmonik için osilatör oluştur
   const oscillators: OscillatorNode[] = [];
@@ -819,9 +1134,10 @@ export function playInstrumentNoteScheduled(
   }
 
   // Attack noise (hışırtı) ekle
-  if (profile.noiseAmount && profile.noiseAmount > 0 && noiseBuffer) {
+  if (profile.noiseAmount && profile.noiseAmount > 0) {
+    const buffer = getOrCreateNoiseBuffer(context);
     const noise = context.createBufferSource();
-    noise.buffer = noiseBuffer;
+    noise.buffer = buffer;
     const noiseGain = context.createGain();
     const noiseFilter = context.createBiquadFilter();
 

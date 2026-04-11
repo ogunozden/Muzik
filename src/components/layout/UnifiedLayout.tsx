@@ -1,9 +1,8 @@
 "use client";
 
-import {ReactNode, useEffect} from "react";
+import {ReactNode} from "react";
 import {useTranslation} from "react-i18next";
-import {Button} from "@heroui/react";
-import {initAudio} from "@/engines/ses/engine";
+import Link from "next/link";
 
 interface UnifiedLayoutProps {
   children: ReactNode;
@@ -11,84 +10,40 @@ interface UnifiedLayoutProps {
 
 export function UnifiedLayout({children}: UnifiedLayoutProps) {
   const {t} = useTranslation();
-
-  useEffect(() => {
-    const unlockAudio = async () => {
-      await initAudio();
-    };
-
-    window.addEventListener("pointerdown", unlockAudio, {once: true});
-    window.addEventListener("keydown", unlockAudio, {once: true});
-
-    return () => {
-      window.removeEventListener("pointerdown", unlockAudio);
-      window.removeEventListener("keydown", unlockAudio);
-    };
-  }, []);
+  const navItems = [
+    {href: "/", label: t("nav.home")},
+    {href: "/makam", label: t("nav.makam")},
+    {href: "/usul", label: t("nav.usul")},
+    {href: "/archive", label: t("nav.archive")},
+    {href: "/tutorial", label: t("nav.tutorial")},
+    {href: "/ensemble", label: t("nav.ensemble")},
+    {href: "/sesler", label: t("nav.sounds")},
+  ];
 
   return (
     <div className="min-h-screen flex flex-col">
-      <header className="bg-[#5C4033] text-white shadow-md">
+      <header className="bg-[var(--color-primary)] text-white shadow-md">
         <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
           <div className="text-xl font-bold">{t("common.appName")}</div>
           <nav className="flex gap-4">
-            <Button
-              variant="light"
-              size="sm"
-              className="text-white hover:bg-[#4A3428]"
-              onPress={() => window.location.href = "/"}
-            >
-              {t("nav.home")}
-            </Button>
-            <Button
-              variant="light"
-              size="sm"
-              className="text-white hover:bg-[#4A3428]"
-              onPress={() => window.location.href = "/makam"}
-            >
-              {t("nav.makam")}
-            </Button>
-            <Button
-              variant="light"
-              size="sm"
-              className="text-white hover:bg-[#4A3428]"
-              onPress={() => window.location.href = "/usul"}
-            >
-              {t("nav.usul")}
-            </Button>
-            <Button
-              variant="light"
-              size="sm"
-              className="text-white hover:bg-[#4A3428]"
-              onPress={() => window.location.href = "/archive"}
-            >
-              {t("nav.archive")}
-            </Button>
-            <Button
-              variant="light"
-              size="sm"
-              className="text-white hover:bg-[#4A3428]"
-              onPress={() => window.location.href = "/tutorial"}
-            >
-              {t("nav.tutorial")}
-            </Button>
-            <Button
-              variant="light"
-              size="sm"
-              className="text-white hover:bg-[#4A3428]"
-              onPress={() => window.location.href = "/ensemble"}
-            >
-              {t("nav.ensemble")}
-            </Button>
+            {navItems.map((item) => (
+              <Link
+                key={item.href}
+                href={item.href}
+                className="rounded-md px-3 py-1 text-sm text-white transition-colors hover:bg-white/10"
+              >
+                {item.label}
+              </Link>
+            ))}
           </nav>
         </div>
       </header>
 
-      <main className="flex-1 bg-[#FAF7F2]">
+      <main className="flex-1 bg-[var(--color-background)]">
         {children}
       </main>
 
-      <footer className="bg-[#5C4033] text-white py-4 text-center text-sm">
+      <footer className="bg-[var(--color-primary)] text-white py-4 text-center text-sm">
         <p>© 2026 Muzik - Türk Müziği Platformu</p>
       </footer>
     </div>

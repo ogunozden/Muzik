@@ -15,11 +15,14 @@ export function LabeledSlider({
   className = "",
   ...props
 }: LabeledSliderProps) {
+  const sliderId = `labeled-slider-${ariaLabel.toLowerCase().replace(/\s+/g, '-')}`;
+
   return (
     <div className={`flex flex-col gap-1 ${className}`}>
-      <label className={`text-sm ${tokens.colors.text.secondary}`}>{label}</label>
+      <label htmlFor={sliderId} className={`text-sm ${tokens.colors.text.secondary}`}>{label}</label>
       <Slider
         {...props}
+        id={sliderId}
         aria-label={ariaLabel}
         className={`max-w-md ${tokens.colors.primary.light}`}
       />

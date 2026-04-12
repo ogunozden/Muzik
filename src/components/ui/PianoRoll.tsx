@@ -78,7 +78,7 @@ export function PianoRoll({
   if (notes.length === 0) {
     return (
       <div
-        className="border border-[#E5E0D8] rounded-lg bg-neutral-50 flex items-center justify-center text-[#6B6B6B] text-sm"
+        className="border border-[var(--color-border)] rounded-lg bg-neutral-50 flex items-center justify-center text-[var(--color-text-secondary)] text-sm"
         style={{width, height}}
       >
         Kaydedilen nota yok
@@ -88,7 +88,7 @@ export function PianoRoll({
 
   return (
     <div
-      className="border border-[#E5E0D8] rounded-lg overflow-auto bg-white"
+      className="border border-[var(--color-border)] rounded-lg overflow-auto bg-white"
       style={{width, height}}
     >
       <div
@@ -97,7 +97,7 @@ export function PianoRoll({
       >
         {playbackPosition >= 0 && (
           <div
-            className="absolute top-0 w-0.5 bg-[#C4A77D] z-20"
+            className="absolute top-0 w-0.5 bg-[var(--color-accent)] z-20"
             style={{left: playbackPosition * PIXELS_PER_SECOND + LABEL_WIDTH, height: totalHeight}}
           />
         )}
@@ -111,7 +111,7 @@ export function PianoRoll({
               top: note.y,
               width: Math.max(note.w, 4),
               height: NOTE_HEIGHT - 2,
-              backgroundColor: "#5C4033",
+              backgroundColor: "var(--color-primary)",
               opacity: 0.8,
             }}
           />
@@ -128,7 +128,7 @@ export function PianoRoll({
         {noteLabels.map((item) => (
           <div
             key={`label-${item.key}`}
-            className="absolute left-0 flex items-center text-xs text-[#6B6B6B] bg-white border-r border-[#E5E0D8]"
+            className="absolute left-0 flex items-center text-xs text-[var(--color-text-secondary)] bg-white border-r border-[var(--color-border)]"
             style={{top: item.top, width: LABEL_WIDTH, height: NOTE_HEIGHT}}
           >
             <span className="pl-1 truncate">{item.label}</span>

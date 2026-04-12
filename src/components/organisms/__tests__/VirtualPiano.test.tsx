@@ -166,7 +166,7 @@ describe("VirtualPiano", () => {
   describe("Piano wrapper div has correct styling classes", () => {
     it("should have inline-block class on wrapper", () => {
       const { container } = render(React.createElement(VirtualPiano, defaultProps));
-      expect(container.firstChild?.className).toContain("inline-block");
+      expect((container.firstChild as HTMLElement)?.className).toContain("inline-block");
     });
   });
 });

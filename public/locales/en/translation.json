@@ -1,0 +1,117 @@
+{
+  "common": {
+    "appName": "Muzik",
+    "loading": "Loading...",
+    "error": "An error occurred",
+    "save": "Save",
+    "cancel": "Cancel",
+    "play": "Play",
+    "stop": "Stop",
+    "search": "Search",
+    "clear": "Clear"
+  },
+  "nav": {
+    "home": "Home",
+    "makam": "Makams",
+    "usul": "Usuls",
+    "nota": "Notes",
+    "archive": "Archive",
+    "tutorial": "Tutorial",
+    "ensemble": "Ensemble",
+    "sounds": "Sounds"
+  },
+  "home": {
+    "title": "Turkish Music Platform",
+    "subtitle": "Note, usul and makam practice platform",
+    "makamCard": "Explore Makam",
+    "makamDesc": "Discover the richness of Turkish music with 50+ makams",
+    "usulCard": "Learn Usul",
+    "usulDesc": "Discover the world of rhythm with 100+ usuls",
+    "notaCard": "Write Notes",
+    "notaDesc": "Note entry with virtual keyboard and MIDI"
+  },
+  "makam": {
+    "title": "Makams",
+    "selectMakam": "Select Makam",
+    "selectInstrument": "Select Instrument",
+    "instrument": "Instrument",
+    "makamPlaceholder": "Select a makam",
+    "instrumentPlaceholder": "Select an instrument",
+    "tonic": "Tonic",
+    "dominant": "Dominant",
+    "characteristic": "Characteristic",
+    "playScale": "Play Scale",
+    "scaleDisplay": "Scale display",
+    "bpm": "BPM"
+  },
+  "usul": {
+    "title": "Usuls",
+    "selectUsul": "Select Usul",
+    "usul": "Usul",
+    "usulPlaceholder": "Select a usul",
+    "beats": "Beats",
+    "unit": "Unit",
+    "playRhythm": "Play Rhythm",
+    "symbolGrid": "Beat Pattern",
+    "bpm": "BPM"
+  },
+  "nota": {
+    "title": "Notes",
+    "parse": "Parse"
+  },
+  "notaEditor": {
+    "title": "Note Editor",
+    "makam": "Makam",
+    "usul": "Usul",
+    "recording": "Recording",
+    "play": "Play",
+    "stop": "Stop",
+    "stopRecording": "Stop Recording",
+    "recordingStatus": "Recording",
+    "emptyState": "No notes recorded",
+    "notesRecorded": "notes recorded"
+  },
+  "recording": {
+    "title": "Voice Recording",
+    "start": "Start Recording",
+    "stop": "Stop Recording",
+    "processing": "Processing...",
+    "processingStatus": "Processing",
+    "status": "Recording status",
+    "duration": "Recording duration",
+    "durationLabel": "Duration",
+    "microphoneNotSupported": "Microphone support not found. Please ensure your browser allows microphone access.",
+    "recordingActive": "Recording",
+    "notesExtracted": "notes extracted",
+    "seconds": "sec"
+  },
+  "archive": {
+    "title": "Note Archive",
+    "description": "View and manage your saved notes",
+    "emptyState": "No saved notes yet",
+    "searchPlaceholder": "Search notes..."
+  },
+  "tutorial": {
+    "title": "Tutorial",
+    "description": "Improve yourself with music exercises",
+    "noteExercises": "Note Exercises",
+    "usulExercises": "Usul Exercises",
+    "makamExercises": "Makam Exercises",
+    "startExercise": "Start Exercise",
+    "comingSoon": "Coming Soon"
+  },
+  "ensemble": {
+    "title": "Ensemble",
+    "description": "Play together with other musicians",
+    "joinRoom": "Join Room",
+    "createRoom": "Create Room",
+    "roomCode": "Room Code",
+    "instrument": "Instrument",
+    "connect": "Connect",
+    "disconnect": "Disconnect",
+    "connected": "Connected",
+    "disconnected": "Disconnected",
+    "waiting": "Waiting for participants...",
+    "enterCode": "Enter code"
+  }
+}

@@ -25,11 +25,11 @@ export function Select({
       className={className}
       classNames={{
         base: "w-full",
-        trigger: "bg-white border border-[#E5E0D8] text-[#1A1A1A] data-[hover=true]:border-[#8B7355]",
-        value: "text-[#1A1A1A]",
-        label: "text-[#6B6B6B]",
+        trigger: "bg-white border border-[var(--color-border)] text-[var(--color-text-primary)] data-[hover=true]:border-[var(--color-secondary)]",
+        value: "text-[var(--color-text-primary)]",
+        label: "text-[var(--color-text-secondary)]",
         listbox: "bg-white p-0",
-        popoverContent: "bg-white border border-[#E5E0D8] shadow-lg",
+        popoverContent: "bg-white border border-[var(--color-border)] shadow-lg",
       }}
       items={items ?? []}
     >

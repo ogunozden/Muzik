@@ -107,4 +107,7 @@ export function clearSampleCache(): void {
   clearSampleCacheBase();
 }
 
+// Re-export for convenience
+export {getAudioContext};
+
 export type {InstrumentType, PercussionSymbol};

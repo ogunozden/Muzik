@@ -73,7 +73,7 @@ describe("Input", () => {
 
   it("8. Forwards value prop", () => {
     render(<Input ariaLabel="test" value="initial value" />);
-    const input = screen.getByTestId("mock-input");
+    const input = screen.getByTestId("mock-input") as HTMLInputElement;
     expect(input.value).toBe("initial value");
   });
 });

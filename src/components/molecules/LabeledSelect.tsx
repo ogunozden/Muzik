@@ -22,10 +22,13 @@ export function LabeledSelect({
   placeholder,
   className = "",
 }: LabeledSelectProps) {
+  const selectId = `labeled-select-${ariaLabel.toLowerCase().replace(/\s+/g, '-')}`;
+
   return (
     <div className={`flex flex-col gap-1 ${className}`}>
-      <label className={`text-sm ${tokens.colors.text.secondary}`}>{label}</label>
+      <label htmlFor={selectId} className={`text-sm ${tokens.colors.text.secondary}`}>{label}</label>
       <Select
+        id={selectId}
         ariaLabel={ariaLabel}
         items={items}
         selectedKeys={new Set(value ? [value] : [])}

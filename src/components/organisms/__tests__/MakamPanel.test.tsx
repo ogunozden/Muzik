@@ -173,7 +173,7 @@ describe("MakamPanel", () => {
   describe("Renders with custom className", () => {
     it("should apply custom className to root element", () => {
       const { container } = render(React.createElement(MakamPanel, { ...defaultProps, className: "custom-class" }));
-      expect(container.firstChild?.className).toContain("custom-class");
+      expect((container.firstChild as HTMLElement)?.className).toContain("custom-class");
     });
   });
 });

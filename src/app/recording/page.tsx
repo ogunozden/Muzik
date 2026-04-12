@@ -8,6 +8,7 @@ import {PianoRoll} from "@/components/ui/PianoRoll";
 import {useRecordingEngine} from "@/hooks/useRecordingEngine";
 import {PitchDetectionResult} from "@/engines/ses/recording";
 import {tokens} from "@/lib/tokens";
+import {RECORDING_DURATIONS} from "@/lib/centralized";
 
 export default function RecordingPage() {
   const {t} = useTranslation();
@@ -41,7 +42,7 @@ export default function RecordingPage() {
           <CardBody className="p-4">
             {!isSupported ? (
               <p className={`text-sm ${tokens.colors.feedback.error}`}>
-                Mikrofon desteği bulunamadı. Lütfen tarayıcınızın mikrofon erişimine izin verdiğinden emin olun.
+                {t("recording.microphoneNotSupported")}
               </p>
             ) : (
               <div className="flex flex-col gap-4">
@@ -50,11 +51,11 @@ export default function RecordingPage() {
                     {!isRecording ? (
                       <Button
                         aria-label={t("recording.start")}
-                        className="bg-[#C4A77D] text-white"
+                        className={`${tokens.colors.accent.base}`}
                         onPress={startRecording}
                         isDisabled={isProcessing}
                       >
-                        {isProcessing ? t("recording.processing") : "● Kayıt Başlat"}
+                        {isProcessing ? t("recording.processing") : t("recording.start")}
                       </Button>
                     ) : (
                       <Button
@@ -62,7 +63,7 @@ export default function RecordingPage() {
                         className="bg-red-500 text-white"
                         onPress={stopRecording}
                       >
-                        ■ Kayıt Durdur
+                        {t("recording.stop")}
                       </Button>
                     )}
                     <Button
@@ -70,7 +71,7 @@ export default function RecordingPage() {
                       onPress={clearRecording}
                       isDisabled={recordedEvents.length === 0}
                     >
-                      Temizle
+                      {t("common.clear")}
                     </Button>
                   </div>
 
@@ -84,18 +85,17 @@ export default function RecordingPage() {
                       onChange={(e) => setDuration(Number(e.target.value))}
                       disabled={isRecording}
                     >
-                      <option value={3}>3 sn</option>
-                      <option value={5}>5 sn</option>
-                      <option value={10}>10 sn</option>
-                      <option value={15}>15 sn</option>
+                      {RECORDING_DURATIONS.map((d) => (
+                        <option key={d} value={d}>{d} {t("recording.seconds")}</option>
+                      ))}
                     </select>
                   </div>
 
                   {isRecording && (
-                    <Badge aria-label={t("recording.status")} color="danger" variant="solid">● Kayıtta</Badge>
+                    <Badge aria-label={t("recording.status")} color="danger" variant="solid">{t("recording.recordingActive")}</Badge>
                   )}
                   {isProcessing && (
-                    <Badge aria-label={t("recording.processingStatus")} color="warning" variant="solid">İşleniyor</Badge>
+                    <Badge aria-label={t("recording.processingStatus")} color="warning" variant="solid">{t("recording.processingStatus")}</Badge>
                   )}
                 </div>
 
@@ -124,7 +124,7 @@ export default function RecordingPage() {
           <Card className={`${tokens.colors.background.surface} ${tokens.colors.border.base} border`}>
             <CardBody className="p-4">
               <p className={`text-xs ${tokens.colors.text.secondary} mb-2`}>
-                {recordedEvents.length} nota çıkarıldı
+                {recordedEvents.length} {t("recording.notesExtracted")}
               </p>
               <PianoRoll
                 notes={recordedEvents}

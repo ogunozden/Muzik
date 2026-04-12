@@ -25,6 +25,7 @@ export interface UsulSymbol {
   beat: number;
   symbol: "dum" | "tek" | "ke" | "";
   isAccent: boolean;
+  timeValue: number;
 }
 
 export interface Nota {
@@ -38,7 +39,7 @@ export interface Nota {
 export interface NotaEvent {
   pitch: string;
   duration: number;
-  velocity: number;
+  velocity?: number;
   startTime: number;
 }
 

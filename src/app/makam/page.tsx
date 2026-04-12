@@ -5,66 +5,80 @@ import {MakamPanel} from "@/components/organisms/MakamPanel";
 import {LabeledSlider} from "@/components/molecules/LabeledSlider";
 import {UnifiedLayout} from "@/components/layout/UnifiedLayout";
 import {MAKAM_DATA} from "@/engines/makam/data";
+import {ENSTRUMAN_LIST} from "@/lib/centralized";
 import {useOrchestrator} from "@/hooks/useOrchestrator";
 import {tokens} from "@/lib/tokens";
 import {InstrumentType} from "@/engines/ses/engine";
 
-const INSTRUMENTS: Array<{id: InstrumentType; name: string}> = [
-  {id: "ney", name: "Ney"},
-  {id: "ud", name: "Ud"},
-  {id: "kemençe", name: "Kemençe"},
-  {id: "tanpura", name: "Tanpura"},
-];
-
 export default function MakamPage() {
-  const {t} = useTranslation();
-  const {state, selectMakam, playMakamScale, setBpm, setInstrument} = useOrchestrator();
+  const {t, i18n} = useTranslation();
+  const {
+    selectedMakam,
+    selectedInstrument,
+    currentScale,
+    isPlaying,
+    bpm,
+    selectMakam,
+    playMakamScale,
+    setBpm,
+    setInstrument,
+  } = useOrchestrator();
 
   const makamItems = MAKAM_DATA.map((makam) => ({
     key: makam.id,
     label: makam.name,
   }));
 
-  const instrumentItems = INSTRUMENTS.map((inst) => ({
-    key: inst.id,
-    label: inst.name,
+  const instrumentItems = ENSTRUMAN_LIST.filter((inst) => 
+    ["ney", "ud", "kemençe", "tanpura"].includes(inst.id as string)
+  ).map((inst) => ({
+    key: inst.id as string,
+    label: i18n.language === "tr" ? inst.nameTr : inst.nameEn,
   }));
 
-  const scaleDisplay = state.selectedMakam
+  const scaleDisplay = selectedMakam
     ? {
-        name: state.selectedMakam.name,
-        notes: state.currentScale,
+        name: selectedMakam.name,
+        notes: currentScale,
       }
     : undefined;
 
   return (
     <UnifiedLayout>
-      <div className={`max-w-4xl mx-auto px-4 py-8 ${tokens.colors.background.base}`}>
-        <h1 className={`text-3xl font-bold ${tokens.colors.text.primary} mb-6`}>
-          {t("makam.title")}
-        </h1>
+      <div className={`max-w-4xl mx-auto px-6 py-12 ${tokens.colors.background.base}`}>
+        {/* Başlık */}
+        <div className="mb-10">
+          <h1 className={`text-3xl font-bold ${tokens.colors.text.primary} mb-2`}>
+            {t("makam.title")}
+          </h1>
+          <p className={`text-sm ${tokens.colors.text.secondary}`}>
+            {t("makam.subtitle")}
+          </p>
+        </div>
 
+        {/* Makam Seçimi ve Kontroller */}
         <MakamPanel
           makamSelectAriaLabel={t("makam.selectMakam")}
           instrumentSelectAriaLabel={t("makam.selectInstrument")}
           scaleDisplayAriaLabel={t("makam.scaleDisplay")}
-          playButtonAriaLabel={state.isPlaying ? t("common.loading") : t("makam.playScale")}
+          playButtonAriaLabel={isPlaying ? t("common.loading") : t("makam.playScale")}
           makamItems={makamItems}
           instrumentItems={instrumentItems}
-          selectedMakam={state.selectedMakam?.id}
-          selectedInstrument={state.selectedInstrument}
+          selectedMakam={selectedMakam?.id}
+          selectedInstrument={selectedInstrument}
           onMakamChange={selectMakam}
           onInstrumentChange={(key) => setInstrument(key as InstrumentType)}
           scaleDisplay={scaleDisplay}
           onPlay={playMakamScale}
-          className="mb-6"
+          className="mb-8"
         />
 
-        <div className={`p-4 ${tokens.colors.background.surface} ${tokens.radius.lg} ${tokens.colors.border.base} border mb-6`}>
+        {/* BPM Kontrolü */}
+        <div className={`p-5 ${tokens.colors.background.surface} ${tokens.radius.lg} ${tokens.colors.border.base} border mb-8`}>
           <LabeledSlider
-            label={`BPM: ${state.bpm}`}
+            label={`BPM: ${bpm}`}
             ariaLabel={t("makam.bpm")}
-            value={state.bpm}
+            value={bpm}
             onChange={(v) => setBpm(Number(v))}
             minValue={60}
             maxValue={200}
@@ -73,10 +87,11 @@ export default function MakamPage() {
           />
         </div>
 
-        {state.selectedMakam && (
-          <div className={`p-4 ${tokens.colors.background.surface} ${tokens.radius.lg} ${tokens.colors.border.base} border`}>
-            <p className={`text-sm ${tokens.colors.text.secondary}`}>
-              {state.selectedMakam.description}
+        {/* Açıklama */}
+        {selectedMakam && (
+          <div className={`p-5 ${tokens.colors.background.surface} ${tokens.radius.lg} ${tokens.colors.border.base} border`}>
+            <p className={`text-sm ${tokens.colors.text.secondary} leading-relaxed`}>
+              {selectedMakam.description}
             </p>
           </div>
         )}

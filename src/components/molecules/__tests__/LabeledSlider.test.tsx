@@ -108,7 +108,7 @@ describe("LabeledSlider", () => {
           className="custom-wrapper-class"
         />
       );
-      expect(container.firstChild?.classList.contains("custom-wrapper-class")).toBe(true);
+      expect((container.firstChild as HTMLElement)?.classList.contains("custom-wrapper-class")).toBe(true);
     });
   });
 

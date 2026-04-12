@@ -80,9 +80,9 @@ function MakamPanelComponent({
             {scaleDisplay.name}
           </span>
           <div className="flex gap-1 flex-wrap">
-            {scaleDisplay.notes.map((note) => (
+            {scaleDisplay.notes.map((note, idx) => (
               <span
-                key={`scale-note-${scaleDisplay.name}-${note}`}
+                key={`scale-note-${scaleDisplay.name}-${note}-${idx}`}
                 className={`px-2 py-1 ${tokens.colors.primary.light} ${tokens.radius.sm} text-xs text-white`}
               >
                 {note}

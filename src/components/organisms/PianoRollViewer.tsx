@@ -117,7 +117,7 @@ export function PianoRollViewer({
           <span>{emptyStateAriaLabel}</span>
         ) : (
           <div
-            className="border border-red-500 rounded-lg overflow-auto bg-white"
+            className="border border-[var(--color-border)] rounded-lg overflow-auto bg-white"
             style={{width, height}}
           >
             <div
@@ -130,7 +130,7 @@ export function PianoRollViewer({
                   style={{
                     left: playbackPosition * PIXELS_PER_SECOND + LABEL_WIDTH,
                     height: totalHeight,
-                    backgroundColor: "#C4A77D",
+                    backgroundColor: "var(--color-accent)",
                   }}
                 />
               )}
@@ -144,7 +144,7 @@ export function PianoRollViewer({
                     top: note.y,
                     width: Math.max(note.w, 4),
                     height: NOTE_HEIGHT - 2,
-                    backgroundColor: "#5C4033",
+                    backgroundColor: "var(--color-primary)",
                     opacity: 0.8,
                   }}
                 />

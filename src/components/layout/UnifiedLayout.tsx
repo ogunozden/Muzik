@@ -1,8 +1,16 @@
+/**
+ * UnifiedLayout - Ana Sayfa Layout
+ * 
+ * Header, footer ve main content içerir
+ */
+
 "use client";
 
 import {ReactNode} from "react";
 import {useTranslation} from "react-i18next";
 import Link from "next/link";
+import {usePathname} from "next/navigation";
+import {navigation, appConfig} from "@/lib";
 
 interface UnifiedLayoutProps {
   children: ReactNode;
@@ -10,41 +18,86 @@ interface UnifiedLayoutProps {
 
 export function UnifiedLayout({children}: UnifiedLayoutProps) {
   const {t} = useTranslation();
-  const navItems = [
-    {href: "/", label: t("nav.home")},
-    {href: "/makam", label: t("nav.makam")},
-    {href: "/usul", label: t("nav.usul")},
-    {href: "/archive", label: t("nav.archive")},
-    {href: "/tutorial", label: t("nav.tutorial")},
-    {href: "/ensemble", label: t("nav.ensemble")},
-    {href: "/sesler", label: t("nav.sounds")},
-  ];
+  const pathname = usePathname();
 
   return (
-    <div className="min-h-screen flex flex-col">
-      <header className="bg-[var(--color-primary)] text-white shadow-md">
-        <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
-          <div className="text-xl font-bold">{t("common.appName")}</div>
-          <nav className="flex gap-4">
-            {navItems.map((item) => (
-              <Link
-                key={item.href}
-                href={item.href}
-                className="rounded-md px-3 py-1 text-sm text-white transition-colors hover:bg-white/10"
-              >
-                {item.label}
-              </Link>
-            ))}
+    <div className="min-h-screen flex flex-col" style={{backgroundColor: "var(--color-bg-base)"}}>
+      {/* Header */}
+      <header 
+        className="sticky top-0 z-50"
+        style={{
+          backgroundColor: "var(--color-primary-500)",
+          boxShadow: "var(--shadow-sm)"
+        }}
+        role="banner"
+      >
+        <div 
+          className="max-w-7xl mx-auto px-6 py-3 flex items-center justify-between"
+        >
+          {/* Logo */}
+          <Link 
+            href="/" 
+            className="flex items-center gap-3 hover:opacity-90 transition-opacity"
+            aria-label={appConfig.fullName}
+          >
+            <span className="text-2xl" aria-hidden="true">🎵</span>
+            <span className="text-xl font-semibold text-white">{t("common.appName")}</span>
+          </Link>
+
+          {/* Navigation */}
+          <nav 
+            className="flex items-center gap-1" 
+            role="navigation" 
+            aria-label="Main navigation"
+          >
+            {navigation.map((item) => {
+              const isActive = pathname === item.href;
+              return (
+                <Link
+                  key={item.id}
+                  href={item.href ?? "/"}
+                  className={`
+                    px-3 py-1.5 text-sm rounded-md transition-all duration-150
+                    ${isActive
+                      ? "bg-white/20 font-medium text-white"
+                      : "text-white/80 hover:bg-white/10 hover:text-white"
+                    }
+                  `}
+                  aria-current={isActive ? "page" : undefined}
+                >
+                  <span className="flex items-center gap-2">
+                    {item.icon && <span aria-hidden="true">{item.icon}</span>}
+                    {t(item.label)}
+                  </span>
+                </Link>
+              );
+            })}
           </nav>
         </div>
       </header>
 
-      <main className="flex-1 bg-[var(--color-background)]">
+      {/* Main Content */}
+      <main className="flex-1" role="main">
         {children}
       </main>
 
-      <footer className="bg-[var(--color-primary)] text-white py-4 text-center text-sm">
-        <p>© 2026 Muzik - Türk Müziği Platformu</p>
+      {/* Footer */}
+      <footer 
+        className="py-6"
+        style={{
+          backgroundColor: "var(--color-bg-surface)",
+          borderTop: "1px solid var(--color-border-subtle)"
+        }}
+        role="contentinfo"
+      >
+        <div className="max-w-7xl mx-auto px-6">
+          <p 
+            className="text-sm text-center"
+            style={{color: "var(--color-text-secondary)"}}
+          >
+            © 2026 {appConfig.name} — Türk Müziği Platformu
+          </p>
+        </div>
       </footer>
     </div>
   );

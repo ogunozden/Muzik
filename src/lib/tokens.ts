@@ -1,45 +1,66 @@
+/**
+ * Legacy Tokens - Geriye Uyumluluk
+ * 
+ * Eski token kullanımları için geriye uyumlu export.
+ * Yeni kodlarda doğrudan '@/lib/design-system' veya '@/lib' kullanılmalıdır.
+ */
+
+import { 
+  colors as designColors,
+  spacing as designSpacing,
+  typography as designTypography,
+  radius as designRadius,
+  shadows as designShadows,
+} from "./design-system";
+
+/**
+ * Eski token formatı - geriye uyumlu
+ */
 export const tokens = {
   colors: {
     primary: {
-      base: "bg-[#5C4033] text-white",
-      hover: "hover:bg-[#4A3428]",
-      light: "bg-[#8B7355] text-white",
+      base: `bg-[${designColors.primary.DEFAULT}] text-white`,
+      hover: `hover:bg-[${designColors.primary.DEFAULT}]/90`,
+      light: `bg-[${designColors.secondary.DEFAULT}] text-white`,
     },
     secondary: {
-      base: "bg-[#8B7355] text-white",
-      hover: "hover:bg-[#725F46]",
+      base: `bg-[${designColors.secondary.DEFAULT}] text-white`,
+      hover: `hover:bg-[${designColors.secondary.DEFAULT}]/90`,
     },
     accent: {
-      base: "bg-[#C4A77D] text-white",
-      hover: "hover:bg-[#B8956A]",
+      base: `bg-[${designColors.accent.DEFAULT}] text-white`,
+      hover: `hover:bg-[${designColors.accent.DEFAULT}]/90`,
     },
     background: {
-      base: "bg-[#FAF7F2]",
-      surface: "bg-[#FFFFFF]",
+      base: designColors.background.base,
+      surface: designColors.background.surface,
     },
     text: {
-      primary: "text-[#1A1A1A]",
-      secondary: "text-[#6B6B6B]",
+      primary: designColors.text.primary,
+      secondary: designColors.text.secondary,
     },
     border: {
-      base: "border-[#E5E0D8]",
+      base: `border-[${designColors.border.DEFAULT}]`,
     },
     feedback: {
-      error: "text-[#D32F2F]",
-      success: "text-[#388E3C]",
+      error: designColors.feedback.error,
+      success: designColors.feedback.success,
     },
   },
   spacing: {
-    xs: "p-1",
-    sm: "p-2",
-    md: "p-4",
-    lg: "p-6",
-    xl: "p-8",
+    xs: designSpacing.padding.xs,
+    sm: designSpacing.padding.sm,
+    md: designSpacing.padding.md,
+    lg: designSpacing.padding.lg,
+    xl: designSpacing.padding.xl,
   },
   radius: {
-    sm: "rounded-sm",
-    md: "rounded-md",
-    lg: "rounded-lg",
-    full: "rounded-full",
+    sm: designRadius.DEFAULT.sm,
+    md: designRadius.DEFAULT.md,
+    lg: designRadius.DEFAULT.lg,
+    full: designRadius.DEFAULT.full,
   },
 } as const;
+
+// Design system export'ları
+export { designColors, designSpacing, designTypography, designRadius, designShadows };

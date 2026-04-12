@@ -1,4 +1,5 @@
 import {Makam} from "@/types";
+import {NOTE_NAMES} from "@/lib/centralized";
 
 export const MAKAM_DATA: Makam[] = [
   {
@@ -430,17 +431,6 @@ export const MAKAM_DATA: Makam[] = [
     characteristic: "Rehavi perdesi",
     description: "Yumuşak ve dinlendirici bir makam.",
   },
-  {
-    id: "rehavi",
-    name: "Rehavi",
-    nameTr: "Rehavi",
-    nameEn: "Rehavi",
-    tonic: "C",
-    intervals: [2, 1, 2, 2, 2, 1, 2],
-    dominant: "F",
-    characteristic: "Rehavi perdesi",
-    description: "Rahat ve huzurlu bir makam.",
-  },
 ];
 
 export function getMakamById(id: string): Makam | undefined {
@@ -448,14 +438,13 @@ export function getMakamById(id: string): Makam | undefined {
 }
 
 export function getMakamScale(makam: Makam): string[] {
-  const noteNames = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"];
-  const tonicIndex = noteNames.indexOf(makam.tonic);
+  const tonicIndex = NOTE_NAMES.indexOf(makam.tonic as typeof NOTE_NAMES[number]);
   const scale: string[] = [makam.tonic];
 
   let currentIndex = tonicIndex;
   for (const interval of makam.intervals.slice(0, 7)) {
     currentIndex = (currentIndex + interval) % 12;
-    scale.push(noteNames[currentIndex]);
+    scale.push(NOTE_NAMES[currentIndex]);
   }
 
   return scale;

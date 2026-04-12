@@ -1,19 +1,52 @@
-@import "tailwindcss";
+/**
+ * Global Styles
+ * 
+ * Design system CSS variables ve base styles
+ * Token reference: src/lib/design-system/theme.css
+ */
 
-:root {
-  --color-primary: #5C4033;
-  --color-secondary: #8B7355;
-  --color-accent: #C4A77D;
-  --color-background: #FAF7F2;
-  --color-surface: #FFFFFF;
-  --color-text-primary: #1A1A1A;
-  --color-text-secondary: #6B6B6B;
-  --color-border: #E5E0D8;
-  --color-error: #D32F2F;
-  --color-success: #388E3C;
-}
+@import "tailwindcss";
+@import "../lib/design-system/theme.css";
+
+/* ============================================
+   BASE STYLES
+   ============================================ */
 
 body {
-  background-color: var(--color-background);
+  font-family: var(--font-family);
+  background-color: var(--color-bg-base);
   color: var(--color-text-primary);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ============================================
+   SELECTION
+   ============================================ */
+
+::selection {
+  background-color: var(--color-primary-200);
+  color: var(--color-text-primary);
+}
+
+/* ============================================
+   SCROLLBAR
+   ============================================ */
+
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-bg-muted);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-border-default);
+  border-radius: var(--radius-full);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-border-strong);
 }

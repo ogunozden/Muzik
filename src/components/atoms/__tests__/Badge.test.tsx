@@ -10,7 +10,7 @@ vi.mock("@heroui/react", () => {
       className={props.className as string}
       data-color={props.color as string}
     >
-      {props.children}
+      {props.children as React.ReactNode}
     </span>
   );
   return { Badge: vi.fn(MockBadge) };

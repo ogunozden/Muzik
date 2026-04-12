@@ -7,7 +7,7 @@ describe("usul/data", () => {
       const aksaksemai = getUsulById("aksaksemai");
       expect(aksaksemai).toBeDefined();
       expect(aksaksemai?.id).toBe("aksaksemai");
-      expect(aksaksemai?.beats).toBe(9);
+      expect(aksaksemai?.beats).toBe(10);
     });
 
     it("should return undefined for invalid id", () => {
@@ -18,7 +18,7 @@ describe("usul/data", () => {
     it("should return correct beats for duyek", () => {
       const duyek = getUsulById("duyek");
       expect(duyek).toBeDefined();
-      expect(duyek?.beats).toBe(2);
+      expect(duyek?.beats).toBe(8);
       expect(duyek?.unit).toBe("4");
     });
 

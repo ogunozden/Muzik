@@ -2,6 +2,7 @@ export {Button} from "./atoms/Button";
 export {Input} from "./atoms/Input";
 export {Badge} from "./atoms/Badge";
 export {Select} from "./atoms/Select";
+export {Card, CardBody, CardHeader} from "./atoms/Card";
 
 export {LabeledSlider} from "./molecules/LabeledSlider";
 export {LabeledSelect} from "./molecules/LabeledSelect";

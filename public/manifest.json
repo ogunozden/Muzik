@@ -1,0 +1,16 @@
+{
+  "name": "Muzik - Türk Müziği Platformu",
+  "short_name": "Muzik",
+  "description": "Türk müziği için kapsamlı nota, usül ve makam çalma platformu.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#FAF5F0",
+  "theme_color": "#8B5A2B",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "192x192 512x512",
+      "type": "image/svg+xml"
+    }
+  ]
+}

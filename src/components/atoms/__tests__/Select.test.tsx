@@ -2,35 +2,6 @@ import { describe, it, expect, vi } from "vitest";
 import { render, screen } from "@testing-library/react";
 import { Select } from "../Select";
 
-vi.mock("@heroui/react", () => {
-  const MockSelect = (props: Record<string, unknown>) => {
-    const items = (props.items as Array<{ key: string; label: string }>) || [];
-    return (
-      <div
-        data-testid="mock-select"
-        aria-label={props["aria-label"] as string}
-        className={props.className as string}
-        {...props}
-      >
-        <span data-testid="mock-label">{props.label as string}</span>
-        <div data-testid="mock-items">
-          {items.map((item) => (
-            <div key={item.key} data-testid={`item-${item.key}`}>
-              {item.label}
-            </div>
-          ))}
-        </div>
-      </div>
-    );
-  };
-  return {
-    Select: vi.fn(MockSelect),
-    SelectItem: vi.fn(({ key, textValue, children }: { key: string; textValue?: string; children?: React.ReactNode }) => (
-      <div data-testid={`select-item-${key}`}>{children || textValue}</div>
-    )),
-  };
-});
-
 vi.mock("@/lib/tokens", () => ({
   tokens: {
     colors: {
@@ -81,7 +52,7 @@ describe("Select", () => {
     it("forwards placeholder prop", () => {
       render(<Select ariaLabel="test" placeholder="Select an option" />);
       const select = screen.getByTestId("mock-select");
-      expect(select.getAttribute("placeholder")).toBe("Select an option");
+      expect(select.getAttribute("data-placeholder")).toBe("Select an option");
     });
 
     it("forwards selectedKeys prop", () => {

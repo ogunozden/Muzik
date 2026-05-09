@@ -1,19 +1,6 @@
 import { describe, it, expect, vi } from "vitest";
 import { render, screen, fireEvent } from "@testing-library/react";
-import React from "react";
 import { Button } from "../Button";
-
-vi.mock("@heroui/react", () => ({
-  Button: vi.fn(({ children, onPress, isDisabled, className, ...props }) => 
-    React.createElement("button", { 
-      ...props, 
-      onClick: onPress, 
-      disabled: isDisabled,
-      className,
-      "data-testid": "mock-button" 
-    }, children)
-  ),
-}));
 
 vi.mock("@/lib/tokens", () => ({
   tokens: {
@@ -102,7 +89,7 @@ describe("Button", () => {
     expect(screen.getByText("Button Content")).toBeTruthy();
   });
 
-  it("12. Forwards onPress handler to HeroUIButton", () => {
+  it("12. Forwards onPress handler", () => {
     const handlePress = vi.fn();
     render(<Button ariaLabel="test" onPress={handlePress}>Click</Button>);
     const button = screen.getByRole("button");
@@ -110,7 +97,7 @@ describe("Button", () => {
     expect(handlePress).toHaveBeenCalledTimes(1);
   });
 
-  it("13. Forwards isDisabled prop to HeroUIButton", () => {
+  it("13. Forwards isDisabled prop", () => {
     render(<Button ariaLabel="test" isDisabled>Click</Button>);
     const button = screen.getByRole("button");
     expect(button.getAttribute("disabled")).toBe("");

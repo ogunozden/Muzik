@@ -2,102 +2,24 @@
  * Next.js Configuration - Kapsamlı Optimizasyon
  */
 
+import path from "node:path";
+import { fileURLToPath } from "node:url";
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const isProd = process.env.NODE_ENV === "production";
 
-/ @type {import('next').NextConfig} */
+/** @type {import('next').NextConfig} */
 const nextConfig = {
   // Core
   reactStrictMode: !isProd,
   generateEtags: true,
   cleanDistDir: true,
+  outputFileTracingRoot: __dirname,
 
   // SWC Compiler
   compiler: {
     removeConsole: isProd ? { exclude: ["error", "warn"] } : false,
     reactRemoveProperties: isProd ? { properties: ["^data-testid$"] } : false,
-  },
-
-  // Experimental
-  experimental: {
-    // Package imports optimization
-    optimizePackageImports: [
-      "@heroui/react",
-      "@heroui/system",
-      "@heroui/theme",
-      "framer-motion",
-      "react-i18next",
-      "i18next",
-    ],
-  },
-
-  // Webpack
-  webpack: (config, { dev, isServer }) => {
-    if (dev) {
-      config.optimization = {
-        ...config.optimization,
-        concatenateModules: false,
-        moduleIds: "named",
-        chunkIds: "named",
-      };
-      config.devtool = "eval-cheap-module-source-map";
-      config.watchOptions = {
-        ...config.watchOptions,
-        ignored: [
-          "**/node_modules/**",
-          "**/all-samples/**",
-          "**/public/samples/**",
-          "**/*.pdf",
-          "**/*_by_PaddleOCR-VL.*",
-        ],
-      };
-      config.stats = "errors-warnings";
-    }
-
-    if (isProd) {
-      config.optimization = {
-        ...config.optimization,
-        splitChunks: {
-          chunks: "all",
-          minSize: 20000,
-          maxSize: 244000,
-          cacheGroups: {
-            vendor: {
-              test: /[\\/]node_modules[\\/]/,
-              name: "vendor",
-              chunks: "all",
-              priority: 20,
-            },
-            heroui: {
-              test: /[\\/]node_modules[\\/](@heroui|react-jsx)[\\/]/,
-              name: "heroui",
-              chunks: "all",
-              priority: 30,
-            },
-            motion: {
-              test: /[\\/]node_modules[\\/](framer-motion)[\\/]/,
-              name: "motion",
-              chunks: "async",
-              priority: 25,
-            },
-            i18n: {
-              test: /[\\/]node_modules[\\/](i18next|react-i18next)[\\/]/,
-              name: "i18n",
-              chunks: "async",
-              priority: 25,
-            },
-          },
-        },
-        moduleIds: "deterministic",
-        chunkIds: "deterministic",
-      };
-      config.devtool = "hidden-source-map";
-    }
-
-    if (isServer) {
-      config.externals = [...(config.externals || []), "@heroui/react"];
-    }
-
-    return config;
   },
 
   // Images
@@ -113,7 +35,7 @@ const nextConfig = {
 
   // Headers
   async headers() {
-    return [
+    const headers = [
       {
         source: "/:path*",
         headers: [
@@ -121,12 +43,6 @@ const nextConfig = {
           { key: "X-Content-Type-Options", value: "nosniff" },
           { key: "X-Frame-Options", value: "DENY" },
           { key: "X-XSS-Protection", value: "1; mode=block" },
-          {
-            key: "Cache-Control",
-            value: isProd 
-              ? "public, max-age=31536000, immutable"
-              : "no-cache, no-store, must-revalidate",
-          },
           { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
           {
             key: "Permissions-Policy",
@@ -140,13 +56,18 @@ const nextConfig = {
           { key: "Cache-Control", value: "public, max-age=31536000, immutable" },
         ],
       },
-      {
+    ];
+
+    if (isProd) {
+      headers.push({
         source: "/_next/static/:path*",
         headers: [
           { key: "Cache-Control", value: "public, max-age=31536000, immutable" },
         ],
-      },
-    ];
+      });
+    }
+
+    return headers;
   },
 
   // Trailing slash

@@ -35,16 +35,23 @@ export const navigation: NavItem[] = [
     icon: "🏠",
   },
   {
-    id: "makam",
-    label: "nav.makam",
-    href: routes.makam,
+    id: "studio",
+    label: "nav.studio",
+    href: routes.studio,
     type: "link",
     icon: "🎼",
   },
   {
-    id: "usul",
-    label: "nav.usul",
-    href: routes.usul,
+    id: "studioFollow",
+    label: "nav.studioFollow",
+    href: routes.studioFollow,
+    type: "link",
+    icon: "🎧",
+  },
+  {
+    id: "rhythm",
+    label: "nav.rhythm",
+    href: routes.rhythm,
     type: "link",
     icon: "🥁",
   },
@@ -56,23 +63,9 @@ export const navigation: NavItem[] = [
     icon: "📚",
   },
   {
-    id: "tutorial",
-    label: "nav.tutorial",
-    href: routes.tutorial,
-    type: "link",
-    icon: "📖",
-  },
-  {
-    id: "ensemble",
-    label: "nav.ensemble",
-    href: routes.ensemble,
-    type: "link",
-    icon: "🎻",
-  },
-  {
-    id: "sounds",
+    id: "samples",
     label: "nav.sounds",
-    href: routes.sesler,
+    href: routes.samples,
     type: "link",
     icon: "🎹",
   },
@@ -83,9 +76,9 @@ export const navigation: NavItem[] = [
  */
 export const footerLinks = [
   { id: "archive", label: "Arşiv", href: routes.archive },
-  { id: "tutorial", label: "Eğitim", href: routes.tutorial },
-  { id: "ensemble", label: "Ensemble", href: routes.ensemble },
-  { id: "sounds", label: "Sesler", href: routes.sesler },
+  { id: "studio", label: "Studio", href: routes.studio },
+  { id: "rhythm", label: "Ritim", href: routes.rhythm },
+  { id: "samples", label: "Sesler", href: routes.samples },
 ];
 
 export type NavigationConfig = typeof navigation;

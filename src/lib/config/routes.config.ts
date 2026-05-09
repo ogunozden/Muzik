@@ -8,15 +8,11 @@
  */
 export type RoutePath = 
   | "home"
-  | "makam"
-  | "usul"
-  | "nota"
-  | "notaEditor"
+  | "studio"
+  | "studioFollow"
   | "archive"
-  | "recording"
-  | "tutorial"
-  | "ensemble"
-  | "sesler"
+  | "rhythm"
+  | "samples"
   | "apiSamples"
   | "notFound";
 
@@ -40,15 +36,11 @@ export interface Route {
  */
 export const routes = {
   home: "/",
-  makam: "/makam",
-  usul: "/usul",
-  nota: "/nota",
-  notaEditor: "/nota-editor",
+  studio: "/studio",
+  studioFollow: "/studio/follow",
   archive: "/archive",
-  recording: "/recording",
-  tutorial: "/tutorial",
-  ensemble: "/ensemble",
-  sesler: "/sesler",
+  rhythm: "/rhythm",
+  samples: "/samples",
   apiSamples: "/api/samples",
   notFound: "/404",
 } as const satisfies Record<RoutePath, string>;
@@ -62,28 +54,17 @@ export const routeMetadata: Record<RoutePath, Route> = {
     name: "home",
     titleKey: "nav.home",
   },
-  makam: {
-    path: routes.makam,
-    name: "makam",
-    titleKey: "nav.makam",
-    description: "Makam keşfi ve çalma",
+  studio: {
+    path: routes.studio,
+    name: "studio",
+    titleKey: "nav.studio",
+    description: "Nota çalışma, kayıt, playback ve arşive kaydetme",
   },
-  usul: {
-    path: routes.usul,
-    name: "usul",
-    titleKey: "nav.usul",
-    description: "Usül vuruş gösterimi ve çalma",
-  },
-  nota: {
-    path: routes.nota,
-    name: "nota",
-    titleKey: "nav.nota",
-  },
-  notaEditor: {
-    path: routes.notaEditor,
-    name: "notaEditor",
-    titleKey: "nav.notaEditor",
-    description: "Nota girişi ve düzenleme",
+  studioFollow: {
+    path: routes.studioFollow,
+    name: "studioFollow",
+    titleKey: "nav.studioFollow",
+    description: "Kaynak nota üzerinden eser takip ve orkestra çalışma",
   },
   archive: {
     path: routes.archive,
@@ -91,26 +72,15 @@ export const routeMetadata: Record<RoutePath, Route> = {
     titleKey: "nav.archive",
     description: "Nota arşivi",
   },
-  recording: {
-    path: routes.recording,
-    name: "recording",
-    titleKey: "nav.recording",
+  rhythm: {
+    path: routes.rhythm,
+    name: "rhythm",
+    titleKey: "nav.rhythm",
+    description: "Usül ve harici perküsyon çalışma",
   },
-  tutorial: {
-    path: routes.tutorial,
-    name: "tutorial",
-    titleKey: "nav.tutorial",
-    description: "Müzik eğitimi",
-  },
-  ensemble: {
-    path: routes.ensemble,
-    name: "ensemble",
-    titleKey: "nav.ensemble",
-    description: "Çoklu kullanıcı çalma",
-  },
-  sesler: {
-    path: routes.sesler,
-    name: "sesler",
+  samples: {
+    path: routes.samples,
+    name: "samples",
     titleKey: "nav.sounds",
     description: "Enstrüman ve ses seçimi",
   },

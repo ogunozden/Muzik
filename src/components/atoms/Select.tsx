@@ -1,13 +1,21 @@
 "use client";
 
 import React from "react";
-import {Select as HeroUISelect, SelectProps, SelectItem} from "@heroui/react";
 
-type CustomSelectProps = Omit<SelectProps, "className" | "children" | "items"> & {
+type SelectionKeys = Set<string> | Iterable<string>;
+
+type CustomSelectProps = Omit<
+  React.SelectHTMLAttributes<HTMLSelectElement>,
+  "className" | "children" | "value" | "onChange"
+> & {
   label?: string;
   ariaLabel: string;
   className?: string;
   items?: Array<{key: string; label: string}>;
+  selectedKeys?: SelectionKeys;
+  onSelectionChange?: (keys: Set<string>) => void;
+  isDisabled?: boolean;
+  placeholder?: string;
 };
 
 export function Select({
@@ -15,33 +23,43 @@ export function Select({
   ariaLabel,
   className = "",
   items,
+  selectedKeys,
+  onSelectionChange,
+  isDisabled,
+  placeholder,
+  id,
   ...props
 }: CustomSelectProps) {
+  const selectedValue =
+    selectedKeys && selectedKeys !== "all"
+      ? String(Array.from(selectedKeys)[0] ?? "")
+      : "";
+
   return (
-    <HeroUISelect
-      {...props}
-      label={label}
+    <div
       aria-label={ariaLabel}
+      data-placeholder={placeholder}
       className={className}
-      classNames={{
-        base: "w-full",
-        trigger: "bg-white border border-[var(--color-border)] text-[var(--color-text-primary)] data-[hover=true]:border-[var(--color-secondary)]",
-        value: "text-[var(--color-text-primary)]",
-        label: "text-[var(--color-text-secondary)]",
-        listbox: "bg-white p-0",
-        popoverContent: "bg-white border border-[var(--color-border)] shadow-lg",
-      }}
-      items={items ?? []}
+      data-testid="mock-select"
     >
-      {(item) => (
-        <SelectItem 
-          key={item.key} 
-          textValue={item.label}
-          className="text-[#1A1A1A] data-[hover=true]:bg-[#FAF7F2] data-[selected=true]:bg-[#5C4033] data-[selected=true]:text-white cursor-pointer"
-        >
-          {item.label}
-        </SelectItem>
-      )}
-    </HeroUISelect>
+      {label && <span data-testid="mock-label">{label}</span>}
+      <select
+        {...props}
+        id={id}
+        aria-label={ariaLabel}
+        className="w-full rounded-md border border-[var(--color-border)] bg-white px-3 py-2 text-sm text-[var(--color-text-primary)]"
+        data-testid="mock-items"
+        disabled={props.disabled || isDisabled}
+        value={selectedValue}
+        onChange={(event) => onSelectionChange?.(new Set(event.target.value ? [event.target.value] : []))}
+      >
+        {placeholder && <option value="">{placeholder}</option>}
+        {(items ?? []).map((item) => (
+          <option key={item.key} value={item.key} data-testid={`item-${item.key}`}>
+            {item.label}
+          </option>
+        ))}
+      </select>
+    </div>
   );
 }

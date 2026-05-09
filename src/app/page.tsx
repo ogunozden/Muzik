@@ -28,22 +28,22 @@ export default function HomePage() {
 
         {/* Module Cards - Asimetrik Grid */}
         <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
-          {/* Makam Card */}
+          {/* Studio Card */}
           <Link
-            href="/makam"
+            href="/studio"
             className="group md:col-span-5 block bg-[var(--color-surface)] rounded-xl border border-[var(--color-border)] p-6 hover:shadow-md transition-shadow"
           >
             <div className="flex items-start justify-between mb-4">
               <span className="text-3xl" aria-hidden="true">🎼</span>
               <span className={`text-xs ${tokens.colors.text.secondary} opacity-0 group-hover:opacity-100 transition-opacity`}>
-                Keşfet →
+                Çalış →
               </span>
             </div>
             <h2 className={`text-xl font-semibold ${tokens.colors.primary.base} mb-2`}>
-              {t("home.makamCard")}
+              {t("home.studioCard")}
             </h2>
             <p className={`text-sm ${tokens.colors.text.secondary} mb-5 leading-relaxed`}>
-              {t("home.makamDesc")}
+              {t("home.studioDesc")}
             </p>
             <div className="flex flex-wrap gap-2">
               {displayMakams.map((m) => (
@@ -60,9 +60,9 @@ export default function HomePage() {
             </div>
           </Link>
 
-          {/* Usul Card */}
+          {/* Rhythm Card */}
           <Link
-            href="/usul"
+            href="/rhythm"
             className="group md:col-span-5 block bg-[var(--color-surface)] rounded-xl border border-[var(--color-border)] p-6 hover:shadow-md transition-shadow"
           >
             <div className="flex items-start justify-between mb-4">
@@ -72,10 +72,10 @@ export default function HomePage() {
               </span>
             </div>
             <h2 className={`text-xl font-semibold ${tokens.colors.secondary.base} mb-2`}>
-              {t("home.usulCard")}
+              {t("home.rhythmCard")}
             </h2>
             <p className={`text-sm ${tokens.colors.text.secondary} mb-5 leading-relaxed`}>
-              {t("home.usulDesc")}
+              {t("home.rhythmDesc")}
             </p>
             <div className="flex flex-wrap gap-2">
               {displayUsuls.map((u) => (
@@ -92,19 +92,19 @@ export default function HomePage() {
             </div>
           </Link>
 
-          {/* Nota Editor Card - Dikey */}
+          {/* Score Follow Card - Dikey */}
           <Link
-            href="/nota-editor"
+            href="/studio/follow"
             className="group md:col-span-2 md:row-span-2 block bg-[var(--color-accent)] rounded-xl p-6 hover:shadow-md transition-shadow text-white"
           >
             <div className="flex flex-col h-full">
               <span className="text-3xl mb-auto" aria-hidden="true">✏️</span>
               <div>
                 <h2 className="text-lg font-semibold mb-2">
-                  {t("home.notaCard")}
+                  {t("home.followCard")}
                 </h2>
                 <p className="text-sm text-white/80 leading-relaxed">
-                  {t("home.notaDesc")}
+                  {t("home.followDesc")}
                 </p>
               </div>
             </div>
@@ -117,13 +117,10 @@ export default function HomePage() {
             <Link href="/archive" className={`${tokens.colors.text.secondary} hover:${tokens.colors.text.primary} transition-colors`}>
               📚 Arşiv
             </Link>
-            <Link href="/tutorial" className={`${tokens.colors.text.secondary} hover:${tokens.colors.text.primary} transition-colors`}>
-              📖 Eğitim
+            <Link href="/studio/follow" className={`${tokens.colors.text.secondary} hover:${tokens.colors.text.primary} transition-colors`}>
+              🎧 Eser Takip
             </Link>
-            <Link href="/ensemble" className={`${tokens.colors.text.secondary} hover:${tokens.colors.text.primary} transition-colors`}>
-              🎻 Ensemble
-            </Link>
-            <Link href="/sesler" className={`${tokens.colors.text.secondary} hover:${tokens.colors.text.primary} transition-colors`}>
+            <Link href="/samples" className={`${tokens.colors.text.secondary} hover:${tokens.colors.text.primary} transition-colors`}>
               🎹 Sesler
             </Link>
           </div>

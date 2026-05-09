@@ -168,7 +168,7 @@ function UsulPanelComponent({
       {/* Oynat Butonu */}
       <Button
         variant="accent"
-        size="md"
+        size="sm"
         ariaLabel={playButtonAriaLabel}
         onPress={onPlay}
         className="w-full"

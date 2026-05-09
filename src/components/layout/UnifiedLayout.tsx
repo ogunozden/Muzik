@@ -32,7 +32,7 @@ export function UnifiedLayout({children}: UnifiedLayoutProps) {
         role="banner"
       >
         <div 
-          className="max-w-7xl mx-auto px-6 py-3 flex items-center justify-between"
+          className="max-w-7xl mx-auto px-4 py-3 flex flex-col gap-3 sm:px-6 md:flex-row md:items-center md:justify-between"
         >
           {/* Logo */}
           <Link 
@@ -46,7 +46,7 @@ export function UnifiedLayout({children}: UnifiedLayoutProps) {
 
           {/* Navigation */}
           <nav 
-            className="flex items-center gap-1" 
+            className="flex w-full items-center gap-1 overflow-x-auto pb-1 md:w-auto md:overflow-visible md:pb-0"
             role="navigation" 
             aria-label="Main navigation"
           >
@@ -57,7 +57,7 @@ export function UnifiedLayout({children}: UnifiedLayoutProps) {
                   key={item.id}
                   href={item.href ?? "/"}
                   className={`
-                    px-3 py-1.5 text-sm rounded-md transition-all duration-150
+                    shrink-0 px-3 py-1.5 text-sm rounded-md transition-all duration-150
                     ${isActive
                       ? "bg-white/20 font-medium text-white"
                       : "text-white/80 hover:bg-white/10 hover:text-white"
@@ -95,7 +95,7 @@ export function UnifiedLayout({children}: UnifiedLayoutProps) {
             className="text-sm text-center"
             style={{color: "var(--color-text-secondary)"}}
           >
-            © 2026 {appConfig.name} — Türk Müziği Platformu
+            © 2026 {appConfig.name} - Türk Müziği Platformu
           </p>
         </div>
       </footer>

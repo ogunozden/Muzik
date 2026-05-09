@@ -3,18 +3,8 @@
  */
 
 import type { Metadata, Viewport } from "next";
-import { Inter } from "next/font/google";
 import "./globals.css";
 import { Providers } from "./providers";
-import { OrchestratorProvider } from "@/contexts/OrchestratorContext";
-
-// Inter font - next/font ile optimize
-const inter = Inter({
-  subsets: ["latin"],
-  display: "swap",
-  variable: "--font-inter",
-  weight: ["400", "500", "600", "700"],
-});
 
 export const metadata: Metadata = {
   title: {
@@ -58,12 +48,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="tr" suppressHydrationWarning className={inter.variable}>
+    <html lang="tr" suppressHydrationWarning>
       <body>
         <Providers>
-          <OrchestratorProvider>
-            {children}
-          </OrchestratorProvider>
+          {children}
         </Providers>
       </body>
     </html>

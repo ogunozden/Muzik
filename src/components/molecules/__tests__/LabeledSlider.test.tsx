@@ -2,48 +2,6 @@ import { describe, it, expect, vi } from "vitest";
 import { render, screen, fireEvent } from "@testing-library/react";
 import { LabeledSlider } from "../LabeledSlider";
 
-const MockSlider = (props: Record<string, unknown>) => {
-  const {
-    "aria-label": ariaLabel,
-    className,
-    minValue,
-    maxValue,
-    step,
-    value,
-    isDisabled,
-    onChange,
-    ...rest
-  } = props as Record<string, unknown> & {
-    "aria-label"?: string;
-    className?: string;
-    minValue?: number;
-    maxValue?: number;
-    step?: number;
-    value?: number;
-    isDisabled?: boolean;
-    onChange?: () => void;
-  };
-
-  return (
-    <input
-      data-testid="mock-slider"
-      aria-label={ariaLabel}
-      className={className}
-      min={minValue}
-      max={maxValue}
-      step={step}
-      defaultValue={value}
-      disabled={isDisabled}
-      onChange={onChange}
-      {...rest}
-    />
-  );
-};
-
-vi.mock("@heroui/react", () => ({
-  Slider: vi.fn((props: Record<string, unknown>) => MockSlider(props)),
-}));
-
 vi.mock("@/lib/tokens", () => ({
   tokens: {
     colors: {

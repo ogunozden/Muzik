@@ -3,8 +3,7 @@ Real instrument samples live here.
 Use the app page at `/sesler` to update them without editing code. The upload
 API writes only to known sample slots under this folder, and the audio engine
 uses those files as the source of instrument playback. Synthetic Web Audio
-fallback is disabled by default so missing samples stay silent instead of
-playing the wrong instrument.
+fallback is enabled unless `NEXT_PUBLIC_ENABLE_SYNTH_FALLBACK=false` is set.
 
 Melodic instruments:
 
@@ -12,6 +11,13 @@ Melodic instruments:
 - `ud`
 - `kemence`
 - `tanpura`
+- `kanun`
+- `baglama`
+- `tambur`
+- `santur`
+- `lavta`
+- `rebab`
+- `miskal`
 
 Each melodic instrument supports chromatic WAV slots from `C3.wav` through
 `B5.wav`. Sharp notes use `s` in the filename:
@@ -31,6 +37,11 @@ Percussion instruments:
 - `bendir`
 - `davul`
 - `def`
+- `darbuka`
+- `zilli-def`
+- `kasik`
+- `zil`
+- `nakkare`
 
 Each percussion folder supports:
 
@@ -43,6 +54,36 @@ ke.wav
 ke-accent.wav
 ```
 
-WAV is recommended. Other browser-decodable audio may also work, but the app
-stores uploads using the slot's fixed `.wav` filename so the engine has a stable
-URL.
+The generated WAV files for newly filled folders came from local real-acoustic
+source packs under `all-samples/`, primarily `TURKISH-ARAB3.sf2` from Musical
+Artifacts plus the Proteus pack for santur, tamburas, pan-flute and rebab
+presets. Where the exact instrument was not in the local archive, the closest
+available regional/acoustic source was rendered into the slot-compatible WAV
+file:
+
+```text
+ud        <- UD-3 / Oud soundfont presets
+kemence   <- Kabak-MU bowed string preset
+tanpura   <- Proteus Tamburas preset
+kanun     <- Kanun Original preset
+baglama   <- BAGLMACE preset
+tambur    <- Tanbur preset
+santur    <- Proteus Santur preset
+lavta     <- Oud Bright preset
+rebab     <- Proteus Yesir Rebab preset
+miskal    <- Proteus Pan Flute preset
+davul     <- Eastern percussion drum presets
+def       <- Deff / Req presets
+darbuka   <- Darbuka preset
+zilli-def <- Riq / Tef presets
+kasik     <- Eastern percussion clap preset
+zil       <- Open Sagat / gong presets
+nakkare   <- Tabla / Eastern percussion presets
+```
+
+Source reference:
+
+- Musical Artifacts artifact 947: `https://www.musical-artifacts.com/artifacts/947`
+- License linked by the artifact: `http://artlibre.org/licence/lal/en/`
+- Musical Artifacts artifact 764: `https://musical-artifacts.com/artifacts/764`
+- License linked by the artifact: `http://creativecommons.org/licenses/by/4.0/deed.en`

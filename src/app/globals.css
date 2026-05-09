@@ -12,6 +12,12 @@
    BASE STYLES
    ============================================ */
 
+html,
+body {
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
 body {
   font-family: var(--font-family);
   background-color: var(--color-bg-base);
@@ -49,4 +55,13 @@ body {
 
 ::-webkit-scrollbar-thumb:hover {
   background: var(--color-border-strong);
+}
+
+/* ============================================
+   UTILITIES
+   ============================================ */
+
+.mask-image-bottom {
+  mask-image: linear-gradient(to bottom, black 40%, transparent 100%);
+  -webkit-mask-image: linear-gradient(to bottom, black 40%, transparent 100%);
 }

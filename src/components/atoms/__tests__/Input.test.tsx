@@ -1,16 +1,6 @@
 import { describe, it, expect, vi } from "vitest";
 import { render, screen, fireEvent } from "@testing-library/react";
-import React from "react";
 import { Input } from "../Input";
-
-vi.mock("@heroui/react", () => ({
-  Input: vi.fn(({ label, className, isDisabled, ...props }) => 
-    React.createElement("div", { className, "data-testid": "mock-input-container" },
-      label && React.createElement("label", null, label),
-      React.createElement("input", { ...props, disabled: isDisabled, "data-testid": "mock-input" })
-    )
-  ),
-}));
 
 vi.mock("@/lib/tokens", () => ({
   tokens: {

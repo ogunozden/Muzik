@@ -2,20 +2,6 @@ import { describe, it, expect, vi } from "vitest";
 import { render, screen } from "@testing-library/react";
 import { Badge } from "../Badge";
 
-vi.mock("@heroui/react", () => {
-  const MockBadge = (props: Record<string, unknown>) => (
-    <span
-      data-testid="mock-badge"
-      aria-label={props["aria-label"] as string}
-      className={props.className as string}
-      data-color={props.color as string}
-    >
-      {props.children as React.ReactNode}
-    </span>
-  );
-  return { Badge: vi.fn(MockBadge) };
-});
-
 vi.mock("@/lib/tokens", () => ({
   tokens: {
     colors: {
@@ -48,7 +34,7 @@ describe("Badge", () => {
 
     it("renders with accent color", () => {
       render(<Badge ariaLabel="test" color="accent">Accent</Badge>);
-      expect(screen.getByTestId("mock-badge").getAttribute("data-color")).toBe("secondary");
+      expect(screen.getByTestId("mock-badge").getAttribute("data-color")).toBe("accent");
     });
 
     it("renders with success color", () => {
@@ -84,44 +70,44 @@ describe("Badge", () => {
     });
   });
 
-  describe("HeroUI Color Mapping", () => {
-    const heroColorMap: Record<string, string> = {
+  describe("Semantic color data", () => {
+    const semanticColorMap: Record<string, string> = {
       primary: "primary",
       secondary: "secondary",
-      accent: "secondary",
+      accent: "accent",
       success: "success",
       warning: "warning",
       danger: "danger",
     };
 
-    it("maps primary to HeroUI primary color", () => {
+    it("keeps primary semantic color", () => {
       render(<Badge ariaLabel="test" color="primary">Content</Badge>);
-      expect(screen.getByTestId("mock-badge").getAttribute("data-color")).toBe(heroColorMap.primary);
+      expect(screen.getByTestId("mock-badge").getAttribute("data-color")).toBe(semanticColorMap.primary);
     });
 
-    it("maps secondary to HeroUI secondary color", () => {
+    it("keeps secondary semantic color", () => {
       render(<Badge ariaLabel="test" color="secondary">Content</Badge>);
-      expect(screen.getByTestId("mock-badge").getAttribute("data-color")).toBe(heroColorMap.secondary);
+      expect(screen.getByTestId("mock-badge").getAttribute("data-color")).toBe(semanticColorMap.secondary);
     });
 
-    it("maps accent to HeroUI secondary color", () => {
+    it("keeps accent color semantic", () => {
       render(<Badge ariaLabel="test" color="accent">Content</Badge>);
-      expect(screen.getByTestId("mock-badge").getAttribute("data-color")).toBe(heroColorMap.accent);
+      expect(screen.getByTestId("mock-badge").getAttribute("data-color")).toBe(semanticColorMap.accent);
     });
 
-    it("maps success to HeroUI success color", () => {
+    it("keeps success semantic color", () => {
       render(<Badge ariaLabel="test" color="success">Content</Badge>);
-      expect(screen.getByTestId("mock-badge").getAttribute("data-color")).toBe(heroColorMap.success);
+      expect(screen.getByTestId("mock-badge").getAttribute("data-color")).toBe(semanticColorMap.success);
     });
 
-    it("maps warning to HeroUI warning color", () => {
+    it("keeps warning semantic color", () => {
       render(<Badge ariaLabel="test" color="warning">Content</Badge>);
-      expect(screen.getByTestId("mock-badge").getAttribute("data-color")).toBe(heroColorMap.warning);
+      expect(screen.getByTestId("mock-badge").getAttribute("data-color")).toBe(semanticColorMap.warning);
     });
 
-    it("maps danger to HeroUI danger color", () => {
+    it("keeps danger semantic color", () => {
       render(<Badge ariaLabel="test" color="danger">Content</Badge>);
-      expect(screen.getByTestId("mock-badge").getAttribute("data-color")).toBe(heroColorMap.danger);
+      expect(screen.getByTestId("mock-badge").getAttribute("data-color")).toBe(semanticColorMap.danger);
     });
   });
 });

@@ -5,17 +5,25 @@
     "error": "Hata oluştu",
     "save": "Kaydet",
     "cancel": "İptal",
+    "confirm": "Onayla",
+    "delete": "Sil",
+    "edit": "Düzenle",
     "play": "Çal",
     "stop": "Dur",
+    "saving": "Kaydediliyor...",
     "search": "Ara",
     "clear": "Temizle"
   },
   "nav": {
     "home": "Ana Sayfa",
+    "studio": "Studio",
+    "studioFollow": "Eser Takip",
+    "rhythm": "Ritim",
     "makam": "Makamlar",
     "usul": "Usüller",
     "nota": "Nota",
     "archive": "Arşiv",
+    "eserTakip": "Eser Takip",
     "tutorial": "Öğretici",
     "ensemble": "Ensemble",
     "sounds": "Sesler"
@@ -23,6 +31,12 @@
   "home": {
     "title": "Türk Müziği Platformu",
     "subtitle": "Nota, usül ve makam çalma platformu",
+    "studioCard": "Studio",
+    "studioDesc": "Nota kaydedin, çalın, makam ve enstrümanla çalışın",
+    "rhythmCard": "Ritim Çalış",
+    "rhythmDesc": "Usül ve harici perküsyonlarla tempo çalışın",
+    "followCard": "Eser Takip",
+    "followDesc": "Kaynak notayı orkestra eşliğiyle takip edin",
     "makamCard": "Makam Keşfet",
     "makamDesc": "50+ makam ile Türk müziğinin zenginliğini keşfet",
     "usulCard": "Usül Öğren",
@@ -32,6 +46,8 @@
   },
   "makam": {
     "title": "Makamlar",
+    "subtitle": "Türk müziği makamlarını seçilen enstrümanla dinleyin ve dizilerini inceleyin.",
+    "makam": "Makam",
     "selectMakam": "Makam Seç",
     "selectInstrument": "Enstrüman Seç",
     "instrument": "Enstrüman",
@@ -47,6 +63,7 @@
   },
   "usul": {
     "title": "Usüller",
+    "subtitle": "Türk müziği ritim ve usul kalıplarını dinleyerek öğrenin.",
     "selectUsul": "Usul Seç",
     "usul": "Usul",
     "usulPlaceholder": "Usul seçin",
@@ -62,6 +79,7 @@
   },
   "notaEditor": {
     "title": "Nota Editörü",
+    "subtitle": "Sanal piyano ve MIDI girişiyle makam, usul ve enstrüman seçerek nota kaydedin.",
     "makam": "Makam",
     "usul": "Usul",
     "recording": "Kayıt",
@@ -70,7 +88,11 @@
     "stopRecording": "Kaydı Durdur",
     "recordingStatus": "Kayıtta",
     "emptyState": "Kaydedilen nota yok",
-    "notesRecorded": "nota kaydedildi"
+    "notesRecorded": "nota kaydedildi",
+    "notation": "Nota Gösterimi",
+    "scoreTitle": "Eser Başlığı",
+    "scoreTitlePlaceholder": "Örn: Nihavend Peşrev",
+    "saveSuccess": "Eser başarıyla kaydedildi."
   },
   "recording": {
     "title": "Ses Kayıt",
@@ -90,7 +112,9 @@
     "title": "Nota Arşivi",
     "description": "Kayıtlı notalarınızı görüntüleyin ve yönetin",
     "emptyState": "Henüz kayıtlı nota yok",
-    "searchPlaceholder": "Nota ara..."
+    "searchPlaceholder": "Nota ara...",
+    "deleteConfirm": "Bu eseri silmek istediğinizden emin misiniz?",
+    "deleteSuccess": "Eser silindi."
   },
   "tutorial": {
     "title": "Öğretici",
@@ -113,6 +137,8 @@
     "connected": "Bağlı",
     "disconnected": "Bağlı Değil",
     "waiting": "Katılımcı bekleniyor...",
-    "enterCode": "Kodu girin"
+    "enterCode": "Kodu girin",
+    "connectedUsers": "Bağlı kullanıcılar ({{count}}):",
+    "remoteNotesReceived": "{{count}} uzaktan nota alındı"
   }
 }

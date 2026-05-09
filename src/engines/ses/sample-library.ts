@@ -31,6 +31,13 @@ const MELODIC_INSTRUMENTS = [
   {id: "ud", name: "Ud", folder: "ud"},
   {id: "kemençe", name: "Kemençe", folder: "kemence"},
   {id: "tanpura", name: "Tanpura", folder: "tanpura"},
+  {id: "kanun", name: "Kanun", folder: "kanun"},
+  {id: "bağlama", name: "Bağlama", folder: "baglama"},
+  {id: "tambur", name: "Tambur", folder: "tambur"},
+  {id: "santur", name: "Santur", folder: "santur"},
+  {id: "lavta", name: "Lavta", folder: "lavta"},
+  {id: "rebab", name: "Rebab", folder: "rebab"},
+  {id: "miskal", name: "Miskal", folder: "miskal"},
 ] as const;
 
 const PERCUSSION_INSTRUMENTS = [
@@ -38,6 +45,11 @@ const PERCUSSION_INSTRUMENTS = [
   {id: "bendir", name: "Bendir", folder: "bendir"},
   {id: "davul", name: "Davul", folder: "davul"},
   {id: "def", name: "Def", folder: "def"},
+  {id: "darbuka", name: "Darbuka", folder: "darbuka"},
+  {id: "zilli_def", name: "Zilli Def", folder: "zilli-def"},
+  {id: "kaşık", name: "Kaşık", folder: "kasik"},
+  {id: "zil", name: "Zil", folder: "zil"},
+  {id: "nakkare", name: "Nakkare", folder: "nakkare"},
 ] as const;
 
 const PERCUSSION_SYMBOLS = [

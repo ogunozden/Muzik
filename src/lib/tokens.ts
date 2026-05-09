@@ -19,17 +19,17 @@ import {
 export const tokens = {
   colors: {
     primary: {
-      base: `bg-[${designColors.primary.DEFAULT}] text-white`,
-      hover: `hover:bg-[${designColors.primary.DEFAULT}]/90`,
-      light: `bg-[${designColors.secondary.DEFAULT}] text-white`,
+      base: "bg-[var(--color-primary)] text-white",
+      hover: "hover:bg-[var(--color-primary)]/90 text-white",
+      light: "bg-[var(--color-secondary)] text-white",
     },
     secondary: {
-      base: `bg-[${designColors.secondary.DEFAULT}] text-white`,
-      hover: `hover:bg-[${designColors.secondary.DEFAULT}]/90`,
+      base: "bg-[var(--color-secondary)] text-white",
+      hover: "hover:bg-[var(--color-secondary)]/90 text-white",
     },
     accent: {
-      base: `bg-[${designColors.accent.DEFAULT}] text-white`,
-      hover: `hover:bg-[${designColors.accent.DEFAULT}]/90`,
+      base: "bg-[var(--color-accent)] text-white",
+      hover: "hover:bg-[var(--color-accent)]/90 text-white",
     },
     background: {
       base: designColors.background.base,
@@ -40,7 +40,7 @@ export const tokens = {
       secondary: designColors.text.secondary,
     },
     border: {
-      base: `border-[${designColors.border.DEFAULT}]`,
+      base: "border-[var(--color-border)]",
     },
     feedback: {
       error: designColors.feedback.error,

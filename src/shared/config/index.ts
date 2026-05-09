@@ -1,0 +1,15 @@
+export {
+  appConfig,
+  footerLinks,
+  getRouteByPath,
+  navigation,
+  routeMetadata,
+  routes,
+  type AppConfig,
+  type NavItem,
+  type NavItemType,
+  type NavigationConfig,
+  type Route,
+  type RouteName,
+  type RoutesConfig,
+} from "@/lib/config";

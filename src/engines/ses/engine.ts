@@ -5,7 +5,9 @@ import {
   playScaleWithInstrument,
   playRhythmWithPercussion,
   playInstrumentNoteScheduled,
+  playPercussionSymbolScheduled,
   preloadInstrumentSamples,
+  preloadPercussionSamples,
   clearSampleCache as clearSampleCacheBase,
   initAudio as initAudioBase,
   stopAll as stopAllBase,
@@ -15,10 +17,19 @@ import type {InstrumentType, PercussionSymbol} from "./instruments";
 
 export type ScheduledNote = {
   midiNumber: number;
+  targetFrequency?: number;
   startTime: number;
   duration: number;
   gain?: number;
   instrument?: InstrumentType;
+};
+
+export type ScheduledPercussionHit = {
+  startTime: number;
+  beatDuration: number;
+  symbol: PercussionSymbol;
+  isAccent?: boolean;
+  percussionInstrument?: InstrumentType;
 };
 
 export async function initAudio(): Promise<boolean> {
@@ -79,11 +90,75 @@ export async function playSequence(
       note.instrument ?? instrument,
       note.duration,
       note.gain ?? 0.2,
-      noteStartTime
+      noteStartTime,
+      note.targetFrequency,
     );
   }
 
   return notes.reduce((maxDuration, note) => Math.max(maxDuration, note.startTime + note.duration), 0);
+}
+
+export async function playArrangement(
+  notes: ScheduledNote[],
+  percussionHits: ScheduledPercussionHit[] = [],
+  fallbackInstrument: InstrumentType = "ud",
+): Promise<number> {
+  const ok = await initAudio();
+  if (!ok) return 0;
+
+  const context = getAudioContext();
+  if (!context) return 0;
+
+  const instruments = Array.from(new Set(notes.map((note) => note.instrument ?? fallbackInstrument)));
+  await Promise.all(instruments.map((noteInstrument) => preloadInstrumentSamples(noteInstrument)));
+
+  const percussionGroups = new Map<InstrumentType | "default", Set<PercussionSymbol>>();
+  for (const hit of percussionHits) {
+    const key = hit.percussionInstrument ?? "default";
+    const group = percussionGroups.get(key) ?? new Set<PercussionSymbol>();
+    group.add(hit.symbol);
+    percussionGroups.set(key, group);
+  }
+
+  await Promise.all(
+    Array.from(percussionGroups.entries()).map(([instrument, symbols]) =>
+      preloadPercussionSamples(
+        Array.from(symbols),
+        instrument === "default" ? undefined : instrument,
+      ),
+    ),
+  );
+
+  const baseTime = context.currentTime + 0.04;
+
+  for (const note of notes) {
+    playInstrumentNoteAtTime(
+      note.midiNumber,
+      note.instrument ?? fallbackInstrument,
+      note.duration,
+      note.gain ?? 0.2,
+      baseTime + note.startTime,
+      note.targetFrequency,
+    );
+  }
+
+  for (const hit of percussionHits) {
+    playPercussionSymbolScheduled(
+      hit.symbol,
+      hit.isAccent ?? false,
+      baseTime + hit.startTime,
+      hit.beatDuration,
+      hit.percussionInstrument,
+    );
+  }
+
+  const melodyDuration = notes.reduce((maxDuration, note) => Math.max(maxDuration, note.startTime + note.duration), 0);
+  const rhythmDuration = percussionHits.reduce(
+    (maxDuration, hit) => Math.max(maxDuration, hit.startTime + hit.beatDuration),
+    0,
+  );
+
+  return Math.max(melodyDuration, rhythmDuration);
 }
 
 function playInstrumentNoteAtTime(
@@ -91,12 +166,13 @@ function playInstrumentNoteAtTime(
   instrument: InstrumentType,
   duration: number,
   gain: number,
-  startTime: number
+  startTime: number,
+  targetFrequency?: number,
 ): void {
   const context = getAudioContext();
   if (!context) return;
 
-  playInstrumentNoteScheduled(midiNumber, instrument, duration, gain, startTime);
+  playInstrumentNoteScheduled(midiNumber, instrument, duration, gain, startTime, targetFrequency);
 }
 
 export function stopAll(): void {

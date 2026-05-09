@@ -1,13 +1,13 @@
 "use client";
 
-import {Button as HeroUIButton, ButtonProps as HeroUIButtonProps} from "@heroui/react";
+import React from "react";
 import {tokens} from "@/lib/tokens";
 
-interface CustomButtonProps extends Omit<HeroUIButtonProps, "className" | "variant" | "size"> {
-  variant?: "primary" | "secondary" | "accent" | "bordered" | "light";
+interface CustomButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+  variant?: "primary" | "secondary" | "accent" | "bordered" | "outline" | "light" | "danger";
   size?: "xs" | "sm" | "md" | "lg";
-  ariaLabel: string;
-  className?: string;
+  ariaLabel?: string;
+  isDisabled?: boolean;
 }
 
 const variantClasses: Record<string, string> = {
@@ -15,7 +15,9 @@ const variantClasses: Record<string, string> = {
   secondary: `${tokens.colors.secondary.base} ${tokens.colors.secondary.hover}`,
   accent: `${tokens.colors.accent.base} ${tokens.colors.accent.hover}`,
   bordered: `border ${tokens.colors.border.base} ${tokens.colors.text.primary}`,
+  outline: `border ${tokens.colors.border.base} ${tokens.colors.text.primary} bg-transparent hover:bg-[var(--color-bg-muted)]`,
   light: tokens.colors.primary.light,
+  danger: "bg-[var(--color-error)] text-white hover:bg-[var(--color-error)]/90",
 };
 
 const sizeClasses: Record<string, string> = {
@@ -29,14 +31,26 @@ export function Button({
   variant = "primary",
   size = "md",
   ariaLabel,
+  isDisabled,
   className = "",
+  children,
+  onPress,
   ...props
-}: CustomButtonProps) {
+}: CustomButtonProps & { onPress?: (e: React.MouseEvent<HTMLButtonElement>) => void }) {
+  const disabled = props.disabled || isDisabled;
+  const ariaLabelValue = ariaLabel ?? props["aria-label"];
+  const baseClasses = "inline-flex items-center justify-center font-medium transition-colors cursor-pointer border-0 disabled:cursor-not-allowed disabled:opacity-60";
+  const finalClassName = `${baseClasses} ${variantClasses[variant] || variantClasses.primary} ${sizeClasses[size] || sizeClasses.md} rounded-md ${className}`;
+
   return (
-    <HeroUIButton
+    <button
       {...props}
-      aria-label={ariaLabel}
-      className={`${variantClasses[variant]} ${sizeClasses[size]} ${tokens.radius.md} ${className}`}
-    />
+      disabled={disabled}
+      onClick={onPress || props.onClick}
+      aria-label={ariaLabelValue}
+      className={finalClassName}
+    >
+      {children}
+    </button>
   );
 }

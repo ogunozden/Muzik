@@ -1,6 +1,5 @@
 # Dependencies
 node_modules/
-package-lock.json
 
 # Next.js
 .next/
@@ -28,10 +27,16 @@ npm-debug.log*
 
 # Testing
 coverage/
+.playwright-mcp/
 
 # Build
 build/
 dist/
+
+# Local database files
+*.db
+*.sqlite
+*.sqlite3
 
 # PDF (reference materials)
 *.pdf

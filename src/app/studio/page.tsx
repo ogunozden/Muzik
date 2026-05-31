@@ -2,13 +2,8 @@
 
 import { useCallback, useRef, useEffect, memo, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Card, CardBody } from "@/components/atoms/Card";
 import { UnifiedLayout } from "@/components/layout/UnifiedLayout";
 import dynamic from "next/dynamic";
-import { Select } from "@/components/atoms/Select";
-import { Badge } from "@/components/atoms/Badge";
-import { Button } from "@/components/atoms/Button";
-import { Input } from "@/components/atoms/Input";
 import { useMidiInput } from "@/hooks/useMidiInput";
 import { MAKAM_DATA } from "@/engines/makam/data";
 import { USUL_DATA } from "@/engines/usul/data";
@@ -17,14 +12,15 @@ import { playSequence, stopAll } from "@/engines/ses/engine";
 import type { InstrumentType } from "@/engines/ses/engine";
 import { ENSTRUMAN_LIST, MELODIC_INSTRUMENTS } from "@/lib/centralized";
 import { NotaEvent } from "@/types";
-import { tokens } from "@/lib/tokens";
+import { Badge, Button, Card, CardBody, Input, Select } from "@/shared/ui";
+import { tokens } from "@/shared/tokens";
 import { useEditorStore } from "@/store/editorStore";
 
 // Dynamic imports for heavy components
-const VirtualPiano = dynamic(
-  () => import("@/components/ui/VirtualPiano").then((mod) => mod.VirtualPiano),
+const InstrumentSurface = dynamic(
+  () => import("@/components/organisms/InstrumentSurface").then((mod) => mod.InstrumentSurface),
   {
-    loading: () => <PianoSkeleton />,
+    loading: () => <InstrumentSurfaceSkeleton />,
     ssr: false,
   }
 );
@@ -45,15 +41,15 @@ const VexFlowViewer = dynamic(
   }
 );
 
-// Piano loading skeleton
-function PianoSkeleton() {
+// Instrument surface loading skeleton
+function InstrumentSurfaceSkeleton() {
   return (
-    <div className="flex items-end justify-center gap-1 p-4 bg-[var(--color-primary)] rounded-lg overflow-x-auto">
+    <div className="flex min-h-72 items-end justify-center gap-2 overflow-x-auto rounded-lg border border-[var(--color-border-default)] bg-[var(--color-bg-elevated)] p-5">
       {Array.from({ length: 21 }).map((_, i) => (
         <div
           key={i}
-          className="bg-white/50 rounded-b animate-pulse"
-          style={{ width: 46, height: `${80 + (i % 5) * 20}px` }}
+          className="animate-pulse rounded-md bg-[var(--color-primary-100)]"
+          style={{ width: 34, height: `${70 + (i % 5) * 18}px` }}
         />
       ))}
     </div>
@@ -61,7 +57,7 @@ function PianoSkeleton() {
 }
 
 function NotaEditorPage() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const [saveMessage, setSaveMessage] = useState<string | null>(null);
 
   // Zustand State
@@ -239,172 +235,311 @@ function NotaEditorPage() {
     (MELODIC_INSTRUMENTS as readonly string[]).includes(instrument.id as string)
   ).map((instrument) => ({
     key: instrument.id as string,
-    label: instrument.nameTr,
+    label: i18n.language === "tr" ? instrument.nameTr : instrument.nameEn,
   }));
+  const selectedInstrumentName = instrumentItems.find((instrument) => instrument.key === selectedInstrument)?.label ?? selectedInstrument;
+  const selectedMakamName = MAKAM_DATA.find((makam) => makam.id === selectedMakamId)?.name;
+  const selectedUsulName = USUL_DATA.find((usul) => usul.id === selectedUsulId)?.name;
+  const studioStatus = isRecording
+    ? t("notaEditor.statusRecording")
+    : isPlaying
+      ? t("notaEditor.statusPlaying")
+      : recordedNotes.length > 0
+        ? t("notaEditor.statusReview")
+        : t("notaEditor.statusReady");
+  const recordButtonLabel = isRecording
+    ? t("notaEditor.stopRecording")
+    : recordedNotes.length > 0
+      ? t("notaEditor.newTake")
+      : t("recording.start");
+  const currentStep = recordedNotes.length > 0 ? 3 : isRecording ? 2 : 1;
+  const workflowSteps = [
+    {
+      number: "01",
+      title: t("notaEditor.workflowSetupTitle"),
+      body: t("notaEditor.workflowSetupBody"),
+    },
+    {
+      number: "02",
+      title: t("notaEditor.workflowRecordTitle"),
+      body: t("notaEditor.workflowRecordBody"),
+    },
+    {
+      number: "03",
+      title: t("notaEditor.workflowReviewTitle"),
+      body: t("notaEditor.workflowReviewBody"),
+    },
+  ];
 
   return (
     <UnifiedLayout>
-      <div className={`max-w-5xl mx-auto px-6 py-12 ${tokens.colors.background.base}`}>
-        {/* Başlık */}
-        <div className="mb-10">
-          <h1 className={`text-3xl font-bold ${tokens.colors.accent.base} mb-2`}>
-            {t("notaEditor.title")}
-          </h1>
-          <p className={`text-sm ${tokens.colors.text.secondary}`}>
-            {t("notaEditor.subtitle")}
-          </p>
-        </div>
-
-        {/* Kontroller */}
-        <div className={`grid grid-cols-2 md:grid-cols-4 gap-4 mb-8`}>
-          <div className={`${tokens.colors.background.surface} ${tokens.radius.lg} ${tokens.colors.border.base} border ${tokens.spacing.sm}`}>
-            <p className={`text-xs ${tokens.colors.text.secondary} mb-2`}>{t("makam.title")}</p>
-            <Select
-              ariaLabel={t("makam.selectMakam")}
-              items={makamItems}
-              selectedKeys={new Set(selectedMakamId ? [selectedMakamId] : [])}
-              onSelectionChange={(keys) => setSelectedMakam(Array.from(keys)[0] as string)}
-              placeholder={t("makam.selectMakam")}
-            />
-          </div>
-
-          <div className={`${tokens.colors.background.surface} ${tokens.radius.lg} ${tokens.colors.border.base} border ${tokens.spacing.sm}`}>
-            <p className={`text-xs ${tokens.colors.text.secondary} mb-2`}>{t("usul.title")}</p>
-            <Select
-              ariaLabel={t("usul.selectUsul")}
-              items={usulItems}
-              selectedKeys={new Set(selectedUsulId ? [selectedUsulId] : [])}
-              onSelectionChange={(keys) => setSelectedUsul(Array.from(keys)[0] as string)}
-              placeholder={t("usul.selectUsul")}
-            />
-          </div>
-
-          <div className={`${tokens.colors.background.surface} ${tokens.radius.lg} ${tokens.colors.border.base} border ${tokens.spacing.sm}`}>
-            <p className={`text-xs ${tokens.colors.text.secondary} mb-2`}>{t("makam.instrument")}</p>
-            <Select
-              ariaLabel={t("makam.selectInstrument")}
-              items={instrumentItems}
-              selectedKeys={new Set([selectedInstrument])}
-              onSelectionChange={(keys) => setSelectedInstrument(Array.from(keys)[0] as InstrumentType)}
-              placeholder={t("makam.selectInstrument")}
-            />
-          </div>
-
-          <div className={`${tokens.colors.background.surface} ${tokens.radius.lg} ${tokens.colors.border.base} border ${tokens.spacing.sm} flex flex-col justify-center`}>
-            <p className={`text-xs ${tokens.colors.text.secondary} mb-2`}>{t("recording.status")}</p>
-            <Button
-              ariaLabel={isRecording ? t("notaEditor.stopRecording") : t("recording.start")}
-              variant={isRecording ? "accent" : "primary"}
-              size="sm"
-              onPress={toggleRecording}
-            >
-              {isRecording ? "■ " + t("common.stop") : "● " + t("recording.start")}
-            </Button>
-          </div>
-        </div>
-
-        {/* Piano - Dynamic Load */}
-        <Card className={`${tokens.colors.background.surface} ${tokens.colors.border.base} border mb-6`}>
-          <CardBody className="p-4">
-            <div className="flex justify-center overflow-x-auto">
-              <VirtualPiano
-                onNoteOn={handleNoteOn}
-                onNoteOff={handleNoteOff}
-                activeNotes={activeNotes}
-                instrument={selectedInstrument}
-              />
-            </div>
-          </CardBody>
-        </Card>
-
-        {/* Piano Roll - Dynamic Load */}
-        {recordedNotes.length > 0 && (
-          <PianoRollViewer
-            notes={recordedNotes}
-            playbackPosition={playbackPosition}
-            width={Math.max(350, Math.min(700, recordedNotes.length * 80))}
-            height={280}
-            playAriaLabel={t("common.play")}
-            stopAriaLabel={t("common.stop")}
-            clearAriaLabel={t("common.clear")}
-            emptyStateAriaLabel={t("notaEditor.emptyState")}
-            onPlay={playRecordedNotes}
-            onStop={stopPlayback}
-            onClear={clearNotes}
-            isPlaying={isPlaying}
-          />
-        )}
-
-        {/* Kayıt Durumu */}
-        {isRecording && (
-          <div className={`flex items-center gap-3 mt-4 ${tokens.colors.background.surface} ${tokens.radius.md} p-3`}>
-            <Badge color="danger" ariaLabel={t("recording.status")}>
-              ● {t("recording.status")}
-            </Badge>
-            <span className={`text-sm ${tokens.colors.text.secondary}`}>
-              {recordedNotes.length} {t("notaEditor.notesRecorded")}
-            </span>
-          </div>
-        )}
-
-        {recordedNotes.length > 0 && (
-          <Card className={`${tokens.colors.background.surface} ${tokens.colors.border.base} border mt-6`}>
-            <CardBody className="p-4">
-              <p className={`text-xs ${tokens.colors.text.secondary} mb-3 font-semibold`}>
-                🎼 {t("notaEditor.notation", "Nota Gösterimi")}
+      <div className={`min-h-[calc(100vh-125px)] ${tokens.colors.background.base}`}>
+        <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:py-10">
+          <section className="mb-8 grid gap-6 lg:grid-cols-[minmax(0,1fr)_420px] lg:items-end">
+            <div className="max-w-3xl">
+              <p className="mb-3 text-xs font-semibold uppercase text-[var(--color-primary-600)]">
+                {t("notaEditor.eyebrow")}
               </p>
-              <VexFlowViewer
-                notes={recordedNotes}
-                width={Math.max(400, Math.min(800, recordedNotes.length * 60 + 100))}
-                height={200}
-              />
-            </CardBody>
-          </Card>
-        )}
+              <h1 className="text-3xl font-bold leading-tight text-[var(--color-text-primary)]">
+                {t("notaEditor.title")}
+              </h1>
+              <p className={`mt-3 max-w-[68ch] text-base leading-relaxed ${tokens.colors.text.secondary}`}>
+                {t("notaEditor.subtitle")}
+              </p>
+            </div>
 
-        {/* Eseri Kaydet */}
-        {recordedNotes.length > 0 && (
-          <Card className={`${tokens.colors.background.surface} ${tokens.colors.border.base} border mt-6`}>
-            <CardBody className="p-4 flex flex-col md:flex-row gap-4 items-end">
-              <div className="flex-1 w-full">
-                <p className={`text-xs ${tokens.colors.text.secondary} mb-2`}>
-                  {t("notaEditor.scoreTitle", "Eser Başlığı")}
-                </p>
-                <Input
-                  ariaLabel={t("notaEditor.scoreTitle", "Eser Başlığı")}
-                  value={scoreTitle}
-                  onChange={(e) => setScoreTitle(e.target.value)}
-                  placeholder={t("notaEditor.scoreTitlePlaceholder", "Örn: Nihavend Peşrev")}
-                  disabled={isSaving}
-                />
-              </div>
-              <div className="w-full md:w-auto">
-                <Button
-                  variant="primary"
-                  onPress={async () => {
-                    const success = await saveScore();
-                    if (success) {
-                      setSaveMessage(t("notaEditor.saveSuccess"));
-                    }
-                  }}
-                  disabled={isSaving || !scoreTitle.trim()}
-                >
-                  {isSaving ? t("common.saving", "Kaydediliyor...") : t("common.save", "Kaydet")}
-                </Button>
-              </div>
-            </CardBody>
-            {saveError && (
-              <div className="px-4 pb-4 text-red-500 text-sm">
-                {saveError}
-              </div>
-            )}
-            {saveMessage && (
-              <div className="px-4 pb-4 text-[var(--color-success)] text-sm">
-                {saveMessage}
-              </div>
-            )}
-          </Card>
-        )}
+            <div className="grid gap-2 sm:grid-cols-3 lg:grid-cols-1" aria-label={t("notaEditor.workflowLabel")}>
+              {workflowSteps.map((step, index) => {
+                const isActive = currentStep === index + 1;
+                return (
+                  <div
+                    key={step.number}
+                    className={`rounded-lg border px-4 py-3 transition-colors ${
+                      isActive
+                        ? "border-[var(--color-primary-300)] bg-[var(--color-primary-50)]"
+                        : "border-[var(--color-border-default)] bg-[var(--color-bg-surface)]"
+                    }`}
+                  >
+                    <div className="flex items-baseline gap-3">
+                      <span className="text-xs font-semibold text-[var(--color-primary-600)]">{step.number}</span>
+                      <p className="text-sm font-semibold text-[var(--color-text-primary)]">{step.title}</p>
+                    </div>
+                    <p className={`mt-1 text-xs leading-relaxed ${tokens.colors.text.secondary}`}>{step.body}</p>
+                  </div>
+                );
+              })}
+            </div>
+          </section>
+
+          <div className="grid gap-6 lg:grid-cols-[340px_minmax(0,1fr)]">
+            <aside className="space-y-4">
+              <Card className={`${tokens.colors.border.base} border`}>
+                <CardBody className="p-5">
+                  <div className="flex items-start justify-between gap-4">
+                    <div>
+                      <h2 className="text-lg font-semibold text-[var(--color-text-primary)]">
+                        {t("notaEditor.setupTitle")}
+                      </h2>
+                      <p className={`mt-1 text-sm leading-relaxed ${tokens.colors.text.secondary}`}>
+                        {t("notaEditor.setupDescription")}
+                      </p>
+                    </div>
+                    <Badge color={isRecording ? "danger" : "primary"} ariaLabel={t("recording.status")}>
+                      {studioStatus}
+                    </Badge>
+                  </div>
+
+                  <div className="mt-5 grid gap-4">
+                    <label className="grid gap-2">
+                      <span className={`text-xs font-semibold ${tokens.colors.text.secondary}`}>{t("makam.makam")}</span>
+                      <Select
+                        ariaLabel={t("makam.selectMakam")}
+                        items={makamItems}
+                        selectedKeys={new Set(selectedMakamId ? [selectedMakamId] : [])}
+                        onSelectionChange={(keys) => setSelectedMakam(Array.from(keys)[0] as string)}
+                        placeholder={t("makam.selectMakam")}
+                      />
+                    </label>
+
+                    <label className="grid gap-2">
+                      <span className={`text-xs font-semibold ${tokens.colors.text.secondary}`}>{t("usul.usul")}</span>
+                      <Select
+                        ariaLabel={t("usul.selectUsul")}
+                        items={usulItems}
+                        selectedKeys={new Set(selectedUsulId ? [selectedUsulId] : [])}
+                        onSelectionChange={(keys) => setSelectedUsul(Array.from(keys)[0] as string)}
+                        placeholder={t("usul.selectUsul")}
+                      />
+                    </label>
+
+                    <label className="grid gap-2">
+                      <span className={`text-xs font-semibold ${tokens.colors.text.secondary}`}>{t("makam.instrument")}</span>
+                      <Select
+                        ariaLabel={t("makam.selectInstrument")}
+                        items={instrumentItems}
+                        selectedKeys={new Set([selectedInstrument])}
+                        onSelectionChange={(keys) => setSelectedInstrument(Array.from(keys)[0] as InstrumentType)}
+                        placeholder={t("makam.selectInstrument")}
+                      />
+                    </label>
+                  </div>
+                </CardBody>
+              </Card>
+
+              <Card className={`${tokens.colors.border.base} border`}>
+                <CardBody className="p-5">
+                  <div className="flex items-center justify-between gap-4">
+                    <div>
+                      <p className="text-sm font-semibold text-[var(--color-text-primary)]">
+                        {t("notaEditor.captureTitle")}
+                      </p>
+                      <p className={`mt-1 text-xs leading-relaxed ${tokens.colors.text.secondary}`}>
+                        {t("notaEditor.captureBody")}
+                      </p>
+                    </div>
+                    <div className="text-right">
+                      <p className="text-2xl font-bold text-[var(--color-primary-600)]">{recordedNotes.length}</p>
+                      <p className={`text-xs ${tokens.colors.text.secondary}`}>{t("notaEditor.notesRecorded")}</p>
+                    </div>
+                  </div>
+                  <Button
+                    ariaLabel={recordButtonLabel}
+                    variant={isRecording ? "danger" : "primary"}
+                    size="md"
+                    className="mt-5 w-full"
+                    onPress={toggleRecording}
+                  >
+                    {recordButtonLabel}
+                  </Button>
+                </CardBody>
+              </Card>
+            </aside>
+
+            <div className="min-w-0 space-y-6">
+              <Card className={`${tokens.colors.border.base} overflow-hidden border`}>
+                <CardBody className="p-0">
+                  <div className="flex flex-col gap-3 border-b border-[var(--color-border-subtle)] px-5 py-4 md:flex-row md:items-center md:justify-between">
+                    <div>
+                      <h2 className="text-lg font-semibold text-[var(--color-text-primary)]">
+                        {t("notaEditor.surfaceTitle", {instrument: selectedInstrumentName})}
+                      </h2>
+                      <p className={`mt-1 text-sm ${tokens.colors.text.secondary}`}>
+                        {t("notaEditor.surfaceDescription")}
+                      </p>
+                    </div>
+                    <div className="flex flex-wrap gap-2">
+                      <Badge color="primary" ariaLabel={t("makam.title")}>
+                        {selectedMakamName ?? t("notaEditor.noMakam")}
+                      </Badge>
+                      <Badge color="secondary" ariaLabel={t("usul.title")}>
+                        {selectedUsulName ?? t("notaEditor.noUsul")}
+                      </Badge>
+                    </div>
+                  </div>
+                  <div className="p-4 sm:p-5">
+                    <InstrumentSurface
+                      onNoteOn={handleNoteOn}
+                      onNoteOff={handleNoteOff}
+                      activeNotes={activeNotes}
+                      instrument={selectedInstrument}
+                      instrumentName={selectedInstrumentName}
+                      noteCountLabel={t("notaEditor.surfacePadCount")}
+                    />
+                  </div>
+                </CardBody>
+              </Card>
+
+              {recordedNotes.length === 0 ? (
+                <Card className={`${tokens.colors.border.base} border`}>
+                  <CardBody className="grid gap-4 p-5 md:grid-cols-[1fr_auto] md:items-center">
+                    <div>
+                      <p className="text-lg font-semibold text-[var(--color-text-primary)]">
+                        {t("notaEditor.emptyOutputTitle")}
+                      </p>
+                      <p className={`mt-2 max-w-[62ch] text-sm leading-relaxed ${tokens.colors.text.secondary}`}>
+                        {t("notaEditor.emptyOutputBody")}
+                      </p>
+                    </div>
+                    <div className="rounded-lg border border-[var(--color-border-subtle)] bg-[var(--color-bg-elevated)] px-4 py-3 text-sm font-medium text-[var(--color-text-secondary)]">
+                      {t("notaEditor.statusReady")}
+                    </div>
+                  </CardBody>
+                </Card>
+              ) : (
+                <>
+                  <Card className={`${tokens.colors.border.base} border`}>
+                    <CardBody className="p-5">
+                      <div className="mb-4 flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+                        <div>
+                          <h2 className="text-lg font-semibold text-[var(--color-text-primary)]">
+                            {t("notaEditor.timelineTitle")}
+                          </h2>
+                          <p className={`mt-1 text-sm ${tokens.colors.text.secondary}`}>
+                            {t("notaEditor.timelineDescription")}
+                          </p>
+                        </div>
+                      </div>
+                      <div className="overflow-x-auto">
+                        <PianoRollViewer
+                          notes={recordedNotes}
+                          playbackPosition={playbackPosition}
+                          width={Math.max(520, Math.min(940, recordedNotes.length * 80))}
+                          height={280}
+                          playAriaLabel={t("common.play")}
+                          stopAriaLabel={t("common.stop")}
+                          clearAriaLabel={t("common.clear")}
+                          emptyStateAriaLabel={t("notaEditor.emptyState")}
+                          onPlay={playRecordedNotes}
+                          onStop={stopPlayback}
+                          onClear={clearNotes}
+                          isPlaying={isPlaying}
+                        />
+                      </div>
+                    </CardBody>
+                  </Card>
+
+                  <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_340px]">
+                    <Card className={`${tokens.colors.border.base} border`}>
+                      <CardBody className="p-5">
+                        <h2 className="text-lg font-semibold text-[var(--color-text-primary)]">
+                          {t("notaEditor.notation")}
+                        </h2>
+                        <div className="mt-4 overflow-x-auto">
+                          <VexFlowViewer
+                            notes={recordedNotes}
+                            width={Math.max(440, Math.min(820, recordedNotes.length * 60 + 100))}
+                            height={200}
+                          />
+                        </div>
+                      </CardBody>
+                    </Card>
+
+                    <Card className={`${tokens.colors.border.base} border`}>
+                      <CardBody className="p-5">
+                        <h2 className="text-lg font-semibold text-[var(--color-text-primary)]">
+                          {t("notaEditor.savePanelTitle")}
+                        </h2>
+                        <div className="mt-4">
+                          <Input
+                            label={t("notaEditor.scoreTitle")}
+                            ariaLabel={t("notaEditor.scoreTitle")}
+                            value={scoreTitle}
+                            onChange={(e) => setScoreTitle(e.target.value)}
+                            placeholder={t("notaEditor.scoreTitlePlaceholder")}
+                            disabled={isSaving}
+                          />
+                        </div>
+                        <Button
+                          variant="primary"
+                          className="mt-4 w-full"
+                          onPress={async () => {
+                            const success = await saveScore();
+                            if (success) {
+                              setSaveMessage(t("notaEditor.saveSuccess"));
+                            }
+                          }}
+                          disabled={isSaving || !scoreTitle.trim()}
+                        >
+                          {isSaving ? t("common.saving") : t("common.save")}
+                        </Button>
+                        {saveError && (
+                          <p className="mt-3 text-sm text-[var(--color-error)]">
+                            {saveError}
+                          </p>
+                        )}
+                        {saveMessage && (
+                          <p className="mt-3 text-sm text-[var(--color-success)]">
+                            {saveMessage}
+                          </p>
+                        )}
+                      </CardBody>
+                    </Card>
+                  </div>
+                </>
+              )}
+            </div>
+          </div>
+        </div>
       </div>
     </UnifiedLayout>
   );

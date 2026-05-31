@@ -1,66 +1,14 @@
 /**
  * Legacy Tokens - Geriye Uyumluluk
- * 
- * Eski token kullanımları için geriye uyumlu export.
- * Yeni kodlarda doğrudan '@/lib/design-system' veya '@/lib' kullanılmalıdır.
+ *
+ * Kanonik token kaynağı `@/shared/tokens` altındadır.
  */
 
-import { 
-  colors as designColors,
-  spacing as designSpacing,
-  typography as designTypography,
-  radius as designRadius,
-  shadows as designShadows,
-} from "./design-system";
-
-/**
- * Eski token formatı - geriye uyumlu
- */
-export const tokens = {
-  colors: {
-    primary: {
-      base: "bg-[var(--color-primary)] text-white",
-      hover: "hover:bg-[var(--color-primary)]/90 text-white",
-      light: "bg-[var(--color-secondary)] text-white",
-    },
-    secondary: {
-      base: "bg-[var(--color-secondary)] text-white",
-      hover: "hover:bg-[var(--color-secondary)]/90 text-white",
-    },
-    accent: {
-      base: "bg-[var(--color-accent)] text-white",
-      hover: "hover:bg-[var(--color-accent)]/90 text-white",
-    },
-    background: {
-      base: designColors.background.base,
-      surface: designColors.background.surface,
-    },
-    text: {
-      primary: designColors.text.primary,
-      secondary: designColors.text.secondary,
-    },
-    border: {
-      base: "border-[var(--color-border)]",
-    },
-    feedback: {
-      error: designColors.feedback.error,
-      success: designColors.feedback.success,
-    },
-  },
-  spacing: {
-    xs: designSpacing.padding.xs,
-    sm: designSpacing.padding.sm,
-    md: designSpacing.padding.md,
-    lg: designSpacing.padding.lg,
-    xl: designSpacing.padding.xl,
-  },
-  radius: {
-    sm: designRadius.DEFAULT.sm,
-    md: designRadius.DEFAULT.md,
-    lg: designRadius.DEFAULT.lg,
-    full: designRadius.DEFAULT.full,
-  },
-} as const;
-
-// Design system export'ları
-export { designColors, designSpacing, designTypography, designRadius, designShadows };
+export {
+  designColors,
+  designRadius,
+  designShadows,
+  designSpacing,
+  designTypography,
+  tokens,
+} from "@/shared/tokens";

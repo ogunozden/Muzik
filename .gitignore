@@ -28,6 +28,7 @@ npm-debug.log*
 # Testing
 coverage/
 .playwright-mcp/
+.layout-guard/
 
 # Build
 build/

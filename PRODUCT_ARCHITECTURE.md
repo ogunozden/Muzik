@@ -26,7 +26,9 @@ notayi takip etmesi ve kendi enstrumaniyla calismasidir.
 
 - Next.js App Router: Uygulama, route handler ve server-side API.
 - React + TypeScript: UI ve tip guvenligi.
-- Tailwind CSS + yerel atom bileşenleri: Tek tasarim sistemi.
+- UnoCSS Wind4 + yerel atom bilesenleri: Utility sinifi uyumlulugu korunur,
+  Tailwind derleyici bagimliligi yoktur; token gercegi CSS custom
+  property'ler ve `src/shared/tokens` katmanidir.
 - Drizzle + libSQL/Turso: Arsiv ve uygulama verisi.
 - Web Audio API: Transport, scheduler, sample player ve synth fallback.
 - Zustand: Studio, playback, mixer ve aktif eser state'i.
@@ -48,8 +50,8 @@ notayi takip etmesi ve kendi enstrumaniyla calismasidir.
 - Icerigi olmayan tutorial/coming-soon sayfalari.
 - Bos veya eski orchestrator hook/context dosyalari.
 - Eski mimari spekleri ve rapor dokumanlari.
-- Kullanilmayan paketler: HeroUI, tailwind-variants, i18next backend/cache,
-  Socket.IO, cors, bundle analyzer.
+- Kullanilmayan paketler: HeroUI, Tailwind CSS derleyici paketleri,
+  tailwind-variants, i18next backend/cache, Socket.IO, cors, bundle analyzer.
 
 ## Kanonik Klasor Yapisi
 
@@ -132,6 +134,12 @@ Kalici route'lar:
 
 Gecici mevcut route'lar urunu bozmayacak sekilde tutulabilir, ancak nav ve ana
 akista sadece kalici route'lar gorunmelidir.
+
+Yerel/admin operasyon route'lari ana kullanici nav akisi degildir. `/references`
+harici kaynak staging/map/sync/audit paneli, `/references/curation` kaynak
+kurasyon dashboard'u, `/references/curation/[catalogId]` parca merkezli kaynak
+detay ekrani ve `/api/external-references` token korumali sabit operasyon API'si
+olarak tutulabilir.
 
 ## Bitti Kabul Kriterleri
 

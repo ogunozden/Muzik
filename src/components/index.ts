@@ -13,3 +13,4 @@ export {MakamPanel} from "./organisms/MakamPanel";
 export {UsulPanel} from "./organisms/UsulPanel";
 export {PianoRollViewer} from "./organisms/PianoRollViewer";
 export {VirtualPiano} from "./organisms/VirtualPiano";
+export {ErrorBoundary} from "./organisms/ErrorBoundary";

@@ -14,7 +14,7 @@ vi.mock("@/components/molecules/PlaybackControls", () => ({
   ),
 }));
 
-vi.mock("@/lib/tokens", () => ({
+vi.mock("@/shared/tokens", () => ({
   tokens: {
     colors: {
       primary: { base: "bg-primary", hover: "hover-primary", light: "bg-primary-light" },
@@ -148,11 +148,11 @@ describe("PianoRollViewer", () => {
   });
 
   describe("Note labels are rendered for each noteName", () => {
-    it("should render note labels", () => {
+    it("should render solfege note labels", () => {
       const notes = [{ pitch: "C4", startTime: 0, duration: 1000 }];
       render(React.createElement(PianoRollViewer, { ...defaultProps, notes }));
-      expect(screen.getByText("C")).toBeDefined();
-      expect(screen.getByText("C#")).toBeDefined();
+      expect(screen.getByText("Do")).toBeDefined();
+      expect(screen.getByText("Do♯")).toBeDefined();
     });
   });
 

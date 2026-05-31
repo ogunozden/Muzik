@@ -14,7 +14,7 @@ import {
   stopAll,
   clearSampleCache,
 } from "@/engines/ses/engine";
-import { appConfig } from "@/lib/config";
+import { appConfig } from "@/shared/config";
 
 /**
  * Audio Service state

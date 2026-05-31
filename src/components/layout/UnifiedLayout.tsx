@@ -10,7 +10,7 @@ import {ReactNode} from "react";
 import {useTranslation} from "react-i18next";
 import Link from "next/link";
 import {usePathname} from "next/navigation";
-import {navigation, appConfig} from "@/lib";
+import {appConfig, navigation} from "@/shared/config";
 
 interface UnifiedLayoutProps {
   children: ReactNode;

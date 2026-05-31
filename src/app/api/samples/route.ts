@@ -1,12 +1,17 @@
 import {mkdir, stat, unlink, writeFile} from "node:fs/promises";
 import path from "node:path";
 import {SAMPLE_SLOT_BY_KEY, SAMPLE_SLOTS} from "@/engines/ses/sample-library";
+import {
+  isAllowedSampleUpload,
+  MAX_SAMPLE_UPLOAD_BYTES,
+  SAMPLE_UPLOAD_EXTENSIONS,
+} from "@/shared/security/upload-policy";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 const SAMPLES_ROOT = path.resolve(process.cwd(), "public", "samples");
-const MAX_SAMPLE_BYTES = 100 * 1024 * 1024;
+const ALLOWED_SAMPLE_EXTENSIONS = SAMPLE_UPLOAD_EXTENSIONS.join(", ");
 
 function resolveSlotPath(relativePath: string): string {
   const resolved = path.resolve(SAMPLES_ROOT, ...relativePath.split("/"));
@@ -93,8 +98,12 @@ export async function POST(request: Request) {
     return Response.json({error: "Missing audio file"}, {status: 400});
   }
 
-  if (file.size > MAX_SAMPLE_BYTES) {
-    return Response.json({error: "Sample file is too large"}, {status: 413});
+  if (!isAllowedSampleUpload(file.name, file.size)) {
+    const status = file.size > MAX_SAMPLE_UPLOAD_BYTES ? 413 : 400;
+    return Response.json(
+      {error: `Sample file must be ${ALLOWED_SAMPLE_EXTENSIONS} and at most 25 MB`},
+      {status},
+    );
   }
 
   const filePath = resolveSlotPath(slot.relativePath);

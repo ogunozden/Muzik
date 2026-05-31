@@ -3,7 +3,7 @@ import { render, screen, fireEvent } from "@testing-library/react";
 import React from "react";
 import { VirtualPiano } from "../VirtualPiano";
 
-vi.mock("@/lib/tokens", () => ({
+vi.mock("@/shared/tokens", () => ({
   tokens: {
     colors: {
       primary: { base: "bg-primary", hover: "hover-primary", light: "bg-primary-light" },
@@ -99,13 +99,23 @@ describe("VirtualPiano", () => {
       const buttons = screen.getAllByRole("button");
       expect(buttons.length).toBeGreaterThan(10);
     });
+
+    it("should position black keys between their neighboring white keys", () => {
+      render(React.createElement(VirtualPiano, defaultProps));
+
+      expect(screen.getByRole("button", { name: /Do diyez 3\. oktav siyah tuş/i }).style.left).toBe("28px");
+      expect(screen.getByRole("button", { name: /Re diyez 3\. oktav siyah tuş/i }).style.left).toBe("68px");
+      expect(screen.getByRole("button", { name: /Fa diyez 3\. oktav siyah tuş/i }).style.left).toBe("148px");
+      expect(screen.getByRole("button", { name: /Sol diyez 3\. oktav siyah tuş/i }).style.left).toBe("188px");
+      expect(screen.getByRole("button", { name: /La diyez 3\. oktav siyah tuş/i }).style.left).toBe("228px");
+    });
   });
 
   describe("Each white key button has aria-label from whiteKeyAriaLabel(noteName, octave)", () => {
     it("should render white key with correct aria-label", () => {
       render(React.createElement(VirtualPiano, defaultProps));
       const buttons = screen.getAllByRole("button");
-      const c3Button = buttons.find((btn) => btn.getAttribute("aria-label") === "C 3 white key");
+      const c3Button = buttons.find((btn) => btn.getAttribute("aria-label") === "Do 3. oktav beyaz tuş");
       expect(c3Button).toBeDefined();
     });
   });
@@ -114,7 +124,7 @@ describe("VirtualPiano", () => {
     it("should render black key with correct aria-label", () => {
       render(React.createElement(VirtualPiano, defaultProps));
       const buttons = screen.getAllByRole("button");
-      const cSharp3Button = buttons.find((btn) => btn.getAttribute("aria-label") === "C# 3 black key");
+      const cSharp3Button = buttons.find((btn) => btn.getAttribute("aria-label") === "Do diyez 3. oktav siyah tuş");
       expect(cSharp3Button).toBeDefined();
     });
   });
@@ -122,7 +132,7 @@ describe("VirtualPiano", () => {
   describe("activeNotes prop changes key styling (accent color when midiNumber in activeNotes)", () => {
     it("should apply accent styling to active white key", () => {
       render(React.createElement(VirtualPiano, { ...defaultProps, activeNotes: [48] }));
-      const button = screen.getByRole("button", { name: /C 3 white key/i });
+      const button = screen.getByRole("button", { name: /Do 3\. oktav beyaz tuş/i });
       expect(button.className).toContain("bg-accent");
     });
   });
@@ -130,7 +140,7 @@ describe("VirtualPiano", () => {
   describe("onNoteOn callback is called when a white key is pressed", () => {
     it("should call onNoteOn when white key is pressed", () => {
       render(React.createElement(VirtualPiano, defaultProps));
-      const button = screen.getByRole("button", { name: /C 3 white key/i });
+      const button = screen.getByRole("button", { name: /Do 3\. oktav beyaz tuş/i });
       fireEvent.mouseDown(button);
       expect(defaultProps.onNoteOn).toHaveBeenCalledWith(48);
     });
@@ -139,7 +149,7 @@ describe("VirtualPiano", () => {
   describe("onNoteOff callback is called when a white key is released (mouseLeave)", () => {
     it("should call onNoteOff on mouseLeave", () => {
       render(React.createElement(VirtualPiano, defaultProps));
-      const button = screen.getByRole("button", { name: /C 3 white key/i });
+      const button = screen.getByRole("button", { name: /Do 3\. oktav beyaz tuş/i });
       fireEvent.mouseLeave(button);
       expect(defaultProps.onNoteOff).toHaveBeenCalledWith(48);
     });

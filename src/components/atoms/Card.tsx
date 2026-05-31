@@ -1,7 +1,7 @@
 "use client";
 
 import type { HTMLAttributes, ReactNode } from "react";
-import { tokens } from "@/lib/tokens";
+import { tokens } from "@/shared/tokens";
 
 interface CardProps extends HTMLAttributes<HTMLDivElement> {
   children: ReactNode;

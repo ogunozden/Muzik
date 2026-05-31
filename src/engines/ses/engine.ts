@@ -32,6 +32,13 @@ export type ScheduledPercussionHit = {
   percussionInstrument?: InstrumentType;
 };
 
+export type RhythmSymbolInput = {
+  beat: number;
+  symbol: string;
+  isAccent: boolean;
+  timeValue?: number;
+};
+
 export async function initAudio(): Promise<boolean> {
   return initAudioBase();
 }
@@ -54,15 +61,16 @@ export async function playScale(
 
 export async function playRhythm(
   beats: number,
-  symbols: Array<{beat: number; symbol: string; isAccent: boolean}>,
+  symbols: RhythmSymbolInput[],
   bpm: number = 120,
   percussionInstrument?: InstrumentType,
 ): Promise<void> {
-  const percussionSymbols: Array<{beat: number; symbol: string; isAccent: boolean}> = symbols.map(
+  const percussionSymbols: RhythmSymbolInput[] = symbols.map(
     (s) => ({
       beat: s.beat,
       symbol: s.symbol,
       isAccent: s.isAccent,
+      timeValue: s.timeValue,
     })
   );
   await playRhythmWithPercussion(beats, percussionSymbols, bpm, percussionInstrument);

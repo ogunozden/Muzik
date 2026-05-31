@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import {tokens} from "@/lib/tokens";
+import {tokens} from "@/shared/tokens";
 
 interface CustomButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: "primary" | "secondary" | "accent" | "bordered" | "outline" | "light" | "danger";

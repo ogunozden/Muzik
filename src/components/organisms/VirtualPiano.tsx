@@ -1,11 +1,12 @@
 "use client";
 
 import {useCallback, useRef, memo, useMemo} from "react";
-import {PIANO_KEYS, midiToNoteName} from "@/engines/nota/data";
+import {PIANO_KEYS} from "@/engines/nota/data";
 import {PIANO_CONFIG} from "@/lib/constants";
 import {playNote} from "@/engines/ses/engine";
 import type {InstrumentType} from "@/engines/ses/engine";
-import {tokens} from "@/lib/tokens";
+import {tokens} from "@/shared/tokens";
+import {formatSolfegePitch, formatSolfegePitchFromMidi} from "@/core/domain/note-naming";
 
 interface VirtualPianoProps {
   onNoteOn?: (midiNumber: number) => void;
@@ -21,8 +22,8 @@ function VirtualPianoComponent({
   onNoteOff,
   activeNotes = [],
   instrument = "ud",
-  whiteKeyAriaLabel = (noteName, octave) => `${noteName} ${octave} white key`,
-  blackKeyAriaLabel = (noteName, octave) => `${noteName} ${octave} black key`,
+  whiteKeyAriaLabel = (noteName, octave) => `${formatSolfegePitch(`${noteName}${octave}`, "spoken")} beyaz tuş`,
+  blackKeyAriaLabel = (noteName, octave) => `${formatSolfegePitch(`${noteName}${octave}`, "spoken")} siyah tuş`,
 }: VirtualPianoProps) {
   const activeRef = useRef<Set<number>>(new Set());
 
@@ -47,14 +48,6 @@ function VirtualPianoComponent({
     if (action === "on") handleNoteOn(midiNumber);
     else handleNoteOff(midiNumber);
   }, [handleNoteOn, handleNoteOff]);
-
-  const blackKeyRelativePositions: Record<string, number> = {
-    "C#": -0.5,
-    "D#": 0.5,
-    "F#": 0.5,
-    "G#": -0.5,
-    "A#": 0.5,
-  };
 
   const whiteKeyPositions = useMemo(() => {
     const whiteIndexMap = new Map<number, number>();
@@ -88,7 +81,7 @@ function VirtualPianoComponent({
                 transition-colors duration-75 select-none
                 ${activeNotes.includes(key.midiNumber)
                   ? `${tokens.colors.accent.base} text-white`
-                  : `bg-white ${tokens.colors.text.primary} hover:${tokens.colors.background.base} active:${tokens.colors.background.base}`
+                  : `bg-white ${tokens.colors.text.primary} hover:bg-[var(--color-bg-base)] active:bg-[var(--color-bg-base)]`
                 }`}
               style={{
                 left,
@@ -103,7 +96,7 @@ function VirtualPianoComponent({
               onTouchEnd={(e) => touchHandler(e, key.midiNumber, "off")}
               type="button"
             >
-              {midiToNoteName(key.midiNumber)}
+              {formatSolfegePitchFromMidi(key.midiNumber)}
             </button>
           );
         })}
@@ -114,8 +107,7 @@ function VirtualPianoComponent({
           const octaveStartIndex = PIANO_KEYS.white.findIndex((wk) => wk.octave === key.octave);
           const prevWhiteInOctave = keyIndex - octaveStartIndex;
           const basePos = octaveOffset * 7 * PIANO_CONFIG.whiteKeyWidth + prevWhiteInOctave * PIANO_CONFIG.whiteKeyWidth;
-          const relOffset = blackKeyRelativePositions[key.noteName] ?? 0;
-          const left = basePos + relOffset * PIANO_CONFIG.whiteKeyWidth;
+          const left = basePos + PIANO_CONFIG.whiteKeyWidth - PIANO_CONFIG.blackKeyWidth / 2;
 
           return (
             <button

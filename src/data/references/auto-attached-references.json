@@ -1,0 +1,145 @@
+{
+  "version": 1,
+  "matcherVersion": "external-source-map-v1",
+  "references": [
+    {
+      "catalogId": "muhayyer--ilahi--duyek--toprakta_yatacak--dede_efendi",
+      "sourceId": "divanmakam-toprakta-yatacak-teni-tenim-var-deyup-neylersin-dede-score",
+      "status": "auto-attached",
+      "rank": 1,
+      "confidenceScore": 1,
+      "confidenceLevel": "high",
+      "matchReasons": [
+        "makam:exact",
+        "form:exact",
+        "usul:exact",
+        "title:token-match",
+        "composer:token-match",
+        "mapping:accepted"
+      ],
+      "conflicts": [],
+      "attachedAt": "2026-05-31",
+      "matcherVersion": "external-source-map-v1",
+      "profileId": "divanmakam"
+    },
+    {
+      "catalogId": "rast--ilahi--sofyan--sevgi_baht--tahir_karagoz",
+      "sourceId": "divanmakam-sevgi-baht-olmus-ezelden-bize-tahir-karagoz-hafiz-score",
+      "status": "auto-attached",
+      "rank": 1,
+      "confidenceScore": 1,
+      "confidenceLevel": "high",
+      "matchReasons": [
+        "makam:exact",
+        "form:exact",
+        "usul:exact",
+        "title:token-match",
+        "composer:token-match",
+        "mapping:accepted"
+      ],
+      "conflicts": [],
+      "attachedAt": "2026-05-31",
+      "matcherVersion": "external-source-map-v1",
+      "profileId": "divanmakam"
+    },
+    {
+      "catalogId": "saba--ilahi--duyek--git_ey--munir_nurettin_selcuk",
+      "sourceId": "ogm-materyal-git-ey-akan-goz-yasim-ilahi-score",
+      "status": "auto-attached",
+      "rank": 1,
+      "confidenceScore": 1,
+      "confidenceLevel": "high",
+      "matchReasons": [
+        "makam:exact",
+        "form:exact",
+        "usul:exact",
+        "title:token-match",
+        "composer:token-match",
+        "mapping:accepted"
+      ],
+      "conflicts": [],
+      "attachedAt": "2026-05-31",
+      "matcherVersion": "external-source-map-v1",
+      "profileId": "ogm-materyal"
+    },
+    {
+      "catalogId": "segah--ilahi--duyek--ey_acep--seyh_huseyin_halis_efendi",
+      "sourceId": "divanmakam-ey-acep-kudret-beni-kilmistir-alim-u-asina-score",
+      "status": "auto-attached",
+      "rank": 1,
+      "confidenceScore": 0.91,
+      "confidenceLevel": "high",
+      "matchReasons": [
+        "makam:exact",
+        "form:exact",
+        "usul:exact",
+        "title:token-match",
+        "composer:token-match",
+        "mapping:accepted"
+      ],
+      "conflicts": [],
+      "attachedAt": "2026-05-31",
+      "matcherVersion": "external-source-map-v1",
+      "profileId": "divanmakam"
+    },
+    {
+      "catalogId": "sehnaz--ilahi--duyek--zahid_bize--selahaddin_demirtas",
+      "sourceId": "divanmakam-zahid-bize-tan-eyleme-hak-ismin-okur-dilimiz-score",
+      "status": "auto-attached",
+      "rank": 1,
+      "confidenceScore": 0.81,
+      "confidenceLevel": "high",
+      "matchReasons": [
+        "makam:exact",
+        "form:exact",
+        "usul:exact",
+        "title:token-match",
+        "mapping:accepted"
+      ],
+      "conflicts": [],
+      "attachedAt": "2026-05-31",
+      "matcherVersion": "external-source-map-v1",
+      "profileId": "divanmakam"
+    },
+    {
+      "catalogId": "ussak--ilahi--duyek--allah_emrin--zekai_dede",
+      "sourceId": "ogm-materyal-allah-emrin-tutalim-rahmetine-batalim-ussak-ilahi-score",
+      "status": "auto-attached",
+      "rank": 1,
+      "confidenceScore": 0.91,
+      "confidenceLevel": "high",
+      "matchReasons": [
+        "makam:exact",
+        "form:exact",
+        "usul:exact",
+        "title:token-match",
+        "composer:token-match",
+        "mapping:accepted"
+      ],
+      "conflicts": [],
+      "attachedAt": "2026-05-31",
+      "matcherVersion": "external-source-map-v1",
+      "profileId": "ogm-materyal"
+    },
+    {
+      "catalogId": "ussak--ilahi--sofyan--askinla_cak--haci_nafiz_bey",
+      "sourceId": "divanmakam-askinla-cak-olsa-bu-ten-ben-yine-illallah-score",
+      "status": "auto-attached",
+      "rank": 1,
+      "confidenceScore": 1,
+      "confidenceLevel": "high",
+      "matchReasons": [
+        "makam:exact",
+        "form:exact",
+        "usul:exact",
+        "title:token-match",
+        "composer:token-match",
+        "mapping:accepted"
+      ],
+      "conflicts": [],
+      "attachedAt": "2026-05-31",
+      "matcherVersion": "external-source-map-v1",
+      "profileId": "divanmakam"
+    }
+  ]
+}

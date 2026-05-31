@@ -1,0 +1,21 @@
+{
+  "autoDownloadMedia": false,
+  "autoEmbedMedia": false,
+  "inlinePreviewMedia": true,
+  "embedRequiresAllowlistedProvider": true,
+  "allowedEmbedProviders": ["youtube", "score", "archive"],
+  "allowedFrameSources": [
+    "'self'",
+    "https://www.youtube.com",
+    "https://www.youtube-nocookie.com",
+    "https://divanmakam.com",
+    "https://www.salihbora.com",
+    "https://ogmmateryal.eba.gov.tr"
+  ],
+  "iframeSandbox": ["allow-scripts", "allow-same-origin", "allow-presentation"],
+  "metadataFetchTimeoutMs": 5000,
+  "metadataFetchMaxBytes": 65536,
+  "metadataFetchAllowedContentTypes": ["text/html", "application/xhtml+xml"],
+  "allowedUrlProtocols": ["https:"],
+  "idPatternSource": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+}

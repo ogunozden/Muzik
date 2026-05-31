@@ -1,7 +1,7 @@
 "use client";
 
 import type {HTMLAttributes} from "react";
-import {tokens} from "@/lib/tokens";
+import {tokens} from "@/shared/tokens";
 
 type BadgeColor = "default" | "primary" | "secondary" | "accent" | "success" | "warning" | "danger";
 type BadgeSize = "sm" | "md";

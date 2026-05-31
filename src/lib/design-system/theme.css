@@ -10,8 +10,6 @@
  * - Toprak tonları (Türk müziği estetiği)
  */
 
-@import "tailwindcss";
-
 /* ============================================
    ROOT VARIABLES
    ============================================ */
@@ -70,6 +68,9 @@
   --color-primary-700: oklch(30% 0.10 45);
   --color-primary-800: oklch(22% 0.08 45);
   --color-primary-900: oklch(15% 0.06 45);
+  --color-primary: var(--color-primary-500);
+  --color-primary-light: var(--color-primary-400);
+  --color-primary-dark: var(--color-primary-700);
   
   /* ---- Colors - Secondary (Altın/Bej) ---- */
   
@@ -84,6 +85,9 @@
   --color-secondary-700: oklch(34% 0.12 85);
   --color-secondary-800: oklch(26% 0.10 85);
   --color-secondary-900: oklch(20% 0.08 85);
+  --color-secondary: var(--color-secondary-500);
+  --color-secondary-light: var(--color-secondary-400);
+  --color-secondary-dark: var(--color-secondary-700);
   
   /* ---- Colors - Tertiary (Yumuşak Krem) ---- */
   
@@ -102,6 +106,9 @@
   --color-bg-surface: oklch(100% 0 0);
   --color-bg-elevated: oklch(99% 0.005 85);
   --color-bg-muted: oklch(95% 0.01 85);
+  --color-background: var(--color-bg-base);
+  --color-surface: var(--color-bg-surface);
+  --color-elevated: var(--color-bg-elevated);
   
   /* Text - Koyu kahve tonları */
   --color-text-primary: oklch(20% 0.02 45);
@@ -116,6 +123,10 @@
   --color-border-subtle: oklch(93% 0.01 85);
   --color-border-strong: oklch(75% 0.02 85);
   --color-border-accent: var(--color-primary-300);
+  --color-border: var(--color-border-default);
+  --color-border-light: var(--color-border-subtle);
+  --color-border-dark: var(--color-border-strong);
+  --color-border-base: var(--color-border-default);
 
   /* Accent Colors (Missing variables) */
   --color-accent: var(--color-primary-500);

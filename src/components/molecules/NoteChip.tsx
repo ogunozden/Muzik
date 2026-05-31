@@ -1,6 +1,6 @@
 "use client";
 
-import {tokens} from "@/lib/tokens";
+import {tokens} from "@/shared/tokens";
 import {Badge} from "@/components/atoms/Badge";
 
 interface NoteChipProps {

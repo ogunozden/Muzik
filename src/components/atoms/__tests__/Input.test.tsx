@@ -2,7 +2,7 @@ import { describe, it, expect, vi } from "vitest";
 import { render, screen, fireEvent } from "@testing-library/react";
 import { Input } from "../Input";
 
-vi.mock("@/lib/tokens", () => ({
+vi.mock("@/shared/tokens", () => ({
   tokens: {
     colors: {
       primary: { base: "bg-primary", hover: "hover-primary", light: "bg-primary-light" },

@@ -2,7 +2,7 @@
 
 import {memo} from "react";
 import {useTranslation} from "react-i18next";
-import {tokens} from "@/lib/tokens";
+import {tokens} from "@/shared/tokens";
 import {Button} from "@/components/atoms/Button";
 import {LabeledSelect} from "@/components/molecules/LabeledSelect";
 

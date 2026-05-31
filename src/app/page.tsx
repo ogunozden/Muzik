@@ -5,7 +5,7 @@ import Link from "next/link";
 import {UnifiedLayout} from "@/components/layout/UnifiedLayout";
 import {MAKAM_DATA} from "@/engines/makam/data";
 import {USUL_DATA} from "@/engines/usul/data";
-import {tokens} from "@/lib/tokens";
+import {tokens} from "@/shared/tokens";
 
 export default function HomePage() {
   const {t} = useTranslation();
@@ -39,7 +39,7 @@ export default function HomePage() {
                 Çalış →
               </span>
             </div>
-            <h2 className={`text-xl font-semibold ${tokens.colors.primary.base} mb-2`}>
+            <h2 className="mb-2 text-xl font-semibold text-[var(--color-primary-700)]">
               {t("home.studioCard")}
             </h2>
             <p className={`text-sm ${tokens.colors.text.secondary} mb-5 leading-relaxed`}>
@@ -71,7 +71,7 @@ export default function HomePage() {
                 Çal →
               </span>
             </div>
-            <h2 className={`text-xl font-semibold ${tokens.colors.secondary.base} mb-2`}>
+            <h2 className="mb-2 text-xl font-semibold text-[var(--color-secondary-700)]">
               {t("home.rhythmCard")}
             </h2>
             <p className={`text-sm ${tokens.colors.text.secondary} mb-5 leading-relaxed`}>
@@ -114,13 +114,13 @@ export default function HomePage() {
         {/* Quick Links */}
         <div className="mt-20 pt-8 border-t border-[var(--color-border)]">
           <div className="flex flex-wrap gap-6 text-sm">
-            <Link href="/archive" className={`${tokens.colors.text.secondary} hover:${tokens.colors.text.primary} transition-colors`}>
+            <Link href="/archive" className="text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors">
               📚 Arşiv
             </Link>
-            <Link href="/studio/follow" className={`${tokens.colors.text.secondary} hover:${tokens.colors.text.primary} transition-colors`}>
+            <Link href="/studio/follow" className="text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors">
               🎧 Eser Takip
             </Link>
-            <Link href="/samples" className={`${tokens.colors.text.secondary} hover:${tokens.colors.text.primary} transition-colors`}>
+            <Link href="/samples" className="text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors">
               🎹 Sesler
             </Link>
           </div>

@@ -1,3 +1,5 @@
+import {formatSolfegePitch} from "@/core/domain/note-naming";
+
 export type SampleCategory = "melodic" | "percussion";
 
 export interface SampleSlot {
@@ -88,7 +90,7 @@ function makeMelodicSlots(): SampleSlot[] {
         instrumentId: instrument.id,
         instrumentName: instrument.name,
         groupLabel: instrument.name,
-        label: noteName,
+        label: formatSolfegePitch(noteName),
         fileName,
         relativePath,
         url: makeUrl(relativePath),

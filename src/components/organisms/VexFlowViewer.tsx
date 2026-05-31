@@ -56,13 +56,12 @@ export const VexFlowViewer: React.FC<VexFlowViewerProps> = ({ notes, width = 800
       // Clear previous SVG
       containerRef.current.innerHTML = "";
 
-      const VF = Vex.default?.Flow || Vex.Flow;
-      if (!VF) return;
+      const { Accidental, Formatter, Renderer, Stave, StaveNote, Voice } = Vex;
 
       // Genişliği nota sayısına göre ölçekle (en az prop genişliği)
       const calculatedWidth = Math.max(width, notes.length * 60 + 100);
 
-      const renderer = new VF.Renderer(containerRef.current, VF.Renderer.Backends.SVG);
+      const renderer = new Renderer(containerRef.current, Renderer.Backends.SVG);
       renderer.resize(calculatedWidth, height);
       const context = renderer.getContext();
       context.setFont("Arial", 10);
@@ -91,7 +90,7 @@ export const VexFlowViewer: React.FC<VexFlowViewerProps> = ({ notes, width = 800
       const staveWidth = Math.max(200, (calculatedWidth - 20) / Math.max(1, measuresOfNotes.length));
 
       measuresOfNotes.forEach((measureNotes, measureIdx) => {
-        const stave = new VF.Stave(staveX, 40, staveWidth);
+        const stave = new Stave(staveX, 40, staveWidth);
         if (measureIdx === 0) {
           stave.addClef("treble").addTimeSignature("4/4");
         }
@@ -101,14 +100,14 @@ export const VexFlowViewer: React.FC<VexFlowViewerProps> = ({ notes, width = 800
           const { key, accidental } = pitchToVexKey(note.pitch);
           const vexDuration = durationToVexDuration(note.duration);
 
-          const vfNote = new VF.StaveNote({
+          const vfNote = new StaveNote({
             clef: "treble",
             keys: [key],
             duration: vexDuration,
           });
 
           if (accidental) {
-            vfNote.addModifier(new VF.Accidental(accidental));
+            vfNote.addModifier(new Accidental(accidental));
           }
 
           return vfNote;
@@ -116,9 +115,9 @@ export const VexFlowViewer: React.FC<VexFlowViewerProps> = ({ notes, width = 800
 
         if (staveNotes.length > 0) {
           try {
-            const voice = new VF.Voice({ num_beats: 4, beat_value: 4 }).setStrict(false);
+            const voice = new Voice({ numBeats: 4, beatValue: 4 }).setStrict(false);
             voice.addTickables(staveNotes);
-            new VF.Formatter().joinVoices([voice]).format([voice], staveWidth - 30);
+            new Formatter().joinVoices([voice]).format([voice], staveWidth - 30);
             voice.draw(context, stave);
           } catch {
             // Eğer vuruş sayısı tutmuyorsa sessizce geç

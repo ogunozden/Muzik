@@ -22,7 +22,7 @@ const sampleScore = {
   makam: "nihavend",
   usul: "duyek",
   form: null,
-  notesData: [],
+  notesData: [{pitch: "C4", duration: 0.5, velocity: 100, startTime: 0}],
   userId: null,
   createdAt: null,
   updatedAt: null,
@@ -82,7 +82,35 @@ describe("/api/scores/[id] route", () => {
 
     expect(response.status).toBe(200);
     expect(body).toEqual({ score: updatedScore });
-    expect(set).toHaveBeenCalledWith(expect.objectContaining({ title: updatedScore.title }));
+    expect(set).toHaveBeenCalledWith(expect.objectContaining({ title: updatedScore.title, updatedAt: expect.any(Date) }));
+  });
+
+  it("rejects updates with no allowed fields", async () => {
+    const request = new Request("http://localhost/api/scores/1", {
+      method: "PUT",
+      body: JSON.stringify({ userId: 42 }),
+    }) as NextRequest;
+
+    const response = await PUT(request, context("1"));
+    const body = await response.json();
+
+    expect(response.status).toBe(400);
+    expect(body.error).toContain("Güncellenecek alan bulunamadı");
+    expect(db.update).not.toHaveBeenCalled();
+  });
+
+  it("rejects updates with invalid notesData", async () => {
+    const request = new Request("http://localhost/api/scores/1", {
+      method: "PUT",
+      body: JSON.stringify({ notesData: [{ pitch: "C4", startTime: 0 }] }),
+    }) as NextRequest;
+
+    const response = await PUT(request, context("1"));
+    const body = await response.json();
+
+    expect(response.status).toBe(400);
+    expect(body.error).toContain("notesData");
+    expect(db.update).not.toHaveBeenCalled();
   });
 
   it("deletes a score and returns message plus deleted score", async () => {

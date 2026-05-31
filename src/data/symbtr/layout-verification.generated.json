@@ -1,0 +1,6 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-05-10",
+  "policy": "Only human-reviewed or visual-regression-approved PDF measure boxes may be promoted from pdf-vector-candidate to verified. Every verified box must carry a SymbTr measureIndex that maps it back to score playback. Empty entries mean no candidate has been approved yet.",
+  "entries": {}
+}

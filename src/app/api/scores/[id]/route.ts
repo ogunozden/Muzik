@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/db";
 import { scores } from "@/db/schema";
 import { eq } from "drizzle-orm";
+import { parseScoreUpdatePayload } from "@/core/application/score-payload";
 
 // GET /api/scores/[id] - Tekil eser getir
 export async function GET(
@@ -43,17 +44,16 @@ export async function PUT(
     }
 
     const body = await request.json();
-    const { title, composer, makam, usul, form, notesData } = body;
+    const payload = parseScoreUpdatePayload(body);
+
+    if (!payload.ok) {
+      return NextResponse.json({ error: payload.error }, { status: 400 });
+    }
 
     const [updated] = await db
       .update(scores)
       .set({
-        ...(title && { title }),
-        ...(composer !== undefined && { composer }),
-        ...(makam && { makam }),
-        ...(usul && { usul }),
-        ...(form !== undefined && { form }),
-        ...(notesData && { notesData }),
+        ...payload.value,
         updatedAt: new Date(),
       })
       .where(eq(scores.id, id))

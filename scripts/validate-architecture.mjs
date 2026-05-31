@@ -82,6 +82,14 @@ for (const relativePath of legacyRedirectRoutes) {
   }
 }
 
+const navigationConfigPath = "src/shared/config/navigation.config.ts";
+if (exists(navigationConfigPath)) {
+  const navigationConfig = fs.readFileSync(path.join(root, navigationConfigPath), "utf8");
+  if (/id:\s*["']references["']/.test(navigationConfig)) {
+    failures.push("Admin route must stay out of main navigation: references");
+  }
+}
+
 function walk(dir, files = []) {
   if (!fs.existsSync(dir)) return files;
   for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {

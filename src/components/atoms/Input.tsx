@@ -1,7 +1,7 @@
 "use client";
 
 import type {InputHTMLAttributes} from "react";
-import {tokens} from "@/lib/tokens";
+import {tokens} from "@/shared/tokens";
 
 interface CustomInputProps extends Omit<InputHTMLAttributes<HTMLInputElement>, "className"> {
   label?: string;

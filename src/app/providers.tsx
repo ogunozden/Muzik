@@ -4,10 +4,10 @@
 
 "use client";
 
-import { useState, useEffect, type ReactNode, Suspense } from "react";
+import { useSyncExternalStore, type ReactNode, Suspense } from "react";
 import i18n from "@/lib/i18n";
 import { I18nextProvider } from "react-i18next";
-import { ErrorBoundary } from "@/components/organisms/ErrorBoundary";
+import { ErrorBoundary } from "@/shared/ui";
 
 // ============================================
 // LOADING FALLBACK
@@ -47,12 +47,16 @@ function LoadingFallback() {
 // HYDRATION SAFE RENDER
 // ============================================
 
-function HydrationSafeProvider({ children }: { children: ReactNode }) {
-  const [mounted, setMounted] = useState(false);
+const subscribeToHydration = () => () => {};
+const getClientHydrationSnapshot = () => true;
+const getServerHydrationSnapshot = () => false;
 
-  useEffect(() => {
-    setMounted(true);
-  }, []);
+function HydrationSafeProvider({ children }: { children: ReactNode }) {
+  const mounted = useSyncExternalStore(
+    subscribeToHydration,
+    getClientHydrationSnapshot,
+    getServerHydrationSnapshot,
+  );
 
   if (!mounted) {
     return (

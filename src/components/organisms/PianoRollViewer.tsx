@@ -3,8 +3,9 @@
 import {useMemo} from "react";
 import {NotaEvent} from "@/types";
 import {PIANO_CONFIG, NOTE_NAMES} from "@/lib/constants";
-import {tokens} from "@/lib/tokens";
+import {tokens} from "@/shared/tokens";
 import {PlaybackControls} from "@/components/molecules/PlaybackControls";
+import {formatSolfegePitchClass, getPitchClassIndex, parsePitch} from "@/core/domain/note-naming";
 
 interface PianoRollViewerProps {
   notes: NotaEvent[];
@@ -53,11 +54,11 @@ export function PianoRollViewer({
     }
     const minTime = Math.min(...notes.map((n) => n.startTime));
     const mapped: RollNote[] = notes.map((note) => {
-      const noteLabel = note.pitch.replace("#", "").replace(/\d+/, "");
-      const noteOctave = parseInt(note.pitch.match(/\d+/)?.[0] ?? "4");
-      const noteIndex = NOTE_NAMES.indexOf(noteLabel as typeof NOTE_NAMES[number]);
+      const parsedPitch = parsePitch(note.pitch);
+      const noteOctave = parsedPitch?.octave ?? 4;
+      const noteIndex = parsedPitch ? getPitchClassIndex(parsedPitch.pitchClass) : 0;
       const octaveOffset = noteOctave - PIANO_CONFIG.startOctave;
-      const totalIndex = octaveOffset * 12 + noteIndex;
+      const totalIndex = octaveOffset * 12 + Math.max(noteIndex, 0);
       const y = totalIndex * NOTE_HEIGHT;
       return {
         ...note,
@@ -90,7 +91,7 @@ export function PianoRollViewer({
   const noteLabels = useMemo(() => {
     return NOTE_NAMES.map((noteName, idx) => ({
       key: noteName,
-      label: noteName,
+      label: formatSolfegePitchClass(noteName),
       top: idx * NOTE_HEIGHT,
     }));
   }, []);

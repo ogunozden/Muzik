@@ -14,26 +14,26 @@ export const colors = {
   // PRIMARY - Ana Marka Rengi
   // ============================================
   primary: {
-    DEFAULT: "var(--color-primary)",
-    light: "var(--color-primary-light)",
-    dark: "var(--color-primary-dark)",
-    bg: "bg-[var(--color-primary)]",
-    text: "text-[var(--color-primary)]",
-    border: "border-[var(--color-primary)]",
-    hover: "hover:bg-[var(--color-primary)]/90",
+    DEFAULT: "var(--color-primary-500)",
+    light: "var(--color-primary-100)",
+    dark: "var(--color-primary-700)",
+    bg: "bg-[var(--color-primary-500)]",
+    text: "text-[var(--color-primary-700)]",
+    border: "border-[var(--color-primary-500)]",
+    hover: "hover:bg-[var(--color-primary-600)]",
   },
 
   // ============================================
   // SECONDARY - İkincil Renk
   // ============================================
   secondary: {
-    DEFAULT: "var(--color-secondary)",
-    light: "var(--color-secondary-light)",
-    dark: "var(--color-secondary-dark)",
-    bg: "bg-[var(--color-secondary)]",
-    text: "text-[var(--color-secondary)]",
-    border: "border-[var(--color-secondary)]",
-    hover: "hover:bg-[var(--color-secondary)]/90",
+    DEFAULT: "var(--color-secondary-500)",
+    light: "var(--color-secondary-100)",
+    dark: "var(--color-secondary-700)",
+    bg: "bg-[var(--color-secondary-500)]",
+    text: "text-[var(--color-secondary-700)]",
+    border: "border-[var(--color-secondary-500)]",
+    hover: "hover:bg-[var(--color-secondary-600)]",
   },
 
   // ============================================
@@ -53,9 +53,9 @@ export const colors = {
   // BACKGROUND - Arka Plan Renkleri
   // ============================================
   background: {
-    base: "bg-[var(--color-background)]",
-    surface: "bg-[var(--color-surface)]",
-    elevated: "bg-[var(--color-elevated)]",
+    base: "bg-[var(--color-bg-base)]",
+    surface: "bg-[var(--color-bg-surface)]",
+    elevated: "bg-[var(--color-bg-elevated)]",
   },
 
   // ============================================
@@ -66,16 +66,16 @@ export const colors = {
     secondary: "text-[var(--color-text-secondary)]",
     disabled: "text-[var(--color-text-disabled)]",
     inverse: "text-[var(--color-text-inverse)]",
-    link: "text-[var(--color-primary)] hover:underline",
+    link: "text-[var(--color-primary-600)] hover:underline",
   },
 
   // ============================================
   // BORDER - Kenarlık Renkleri
   // ============================================
   border: {
-    DEFAULT: "border-[var(--color-border)]",
-    light: "border-[var(--color-border-light)]",
-    dark: "border-[var(--color-border-dark)]",
+    DEFAULT: "border-[var(--color-border-default)]",
+    light: "border-[var(--color-border-subtle)]",
+    dark: "border-[var(--color-border-strong)]",
   },
 
   // ============================================
@@ -112,8 +112,8 @@ export const colors = {
   // USUL - Usül Sembol Renkleri
   // ============================================
   usul: {
-    dum: "text-[var(--color-primary)]",
-    tek: "text-[var(--color-secondary)]",
+    dum: "text-[var(--color-primary-700)]",
+    tek: "text-[var(--color-secondary-700)]",
     ke: "text-[var(--color-accent)]",
   },
 } as const;

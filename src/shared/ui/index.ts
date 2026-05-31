@@ -4,6 +4,7 @@ export {
   Card,
   CardBody,
   CardHeader,
+  ErrorBoundary,
   Input,
   LabeledSelect,
   LabeledSlider,

@@ -1,6 +1,6 @@
 "use client";
 
-import {tokens} from "@/lib/tokens";
+import {tokens} from "@/shared/tokens";
 import {Select} from "@/components/atoms/Select";
 
 interface LabeledSelectProps {

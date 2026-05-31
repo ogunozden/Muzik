@@ -6,16 +6,16 @@
 export const colors = {
   // Ana renkler - Primary palette
   primary: {
-    DEFAULT: "var(--color-primary)",
-    light: "var(--color-primary-light)",
-    dark: "var(--color-primary-dark)",
+    DEFAULT: "var(--color-primary-500)",
+    light: "var(--color-primary-100)",
+    dark: "var(--color-primary-700)",
   },
   
   // İkincil renkler - Secondary palette
   secondary: {
-    DEFAULT: "var(--color-secondary)",
-    light: "var(--color-secondary-light)",
-    dark: "var(--color-secondary-dark)",
+    DEFAULT: "var(--color-secondary-500)",
+    light: "var(--color-secondary-100)",
+    dark: "var(--color-secondary-700)",
   },
   
   // Vurgu rengi - Accent palette
@@ -27,9 +27,9 @@ export const colors = {
   
   // Arka plan - Background
   background: {
-    base: "var(--color-background)",
-    surface: "var(--color-surface)",
-    elevated: "var(--color-elevated)",
+    base: "var(--color-bg-base)",
+    surface: "var(--color-bg-surface)",
+    elevated: "var(--color-bg-elevated)",
   },
   
   // Metin - Text
@@ -42,9 +42,9 @@ export const colors = {
   
   // Kenarlık - Border
   border: {
-    DEFAULT: "var(--color-border)",
-    light: "var(--color-border-light)",
-    dark: "var(--color-border-dark)",
+    DEFAULT: "var(--color-border-default)",
+    light: "var(--color-border-subtle)",
+    dark: "var(--color-border-strong)",
   },
   
   // Geri bildirim - Feedback
@@ -57,8 +57,8 @@ export const colors = {
   
   // Usül sembolleri - Rhythm symbols
   usul: {
-    dum: "var(--color-primary)",
-    tek: "var(--color-secondary)",
+    dum: "var(--color-primary-500)",
+    tek: "var(--color-secondary-500)",
     ke: "var(--color-accent)",
   },
 } as const;

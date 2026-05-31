@@ -1,0 +1,35 @@
+{
+  "version": 1,
+  "decisions": [
+    {
+      "catalogId": "cargah--ilahi--devrikebir--kudumun_rahmeti--aziz_mahmud_hudai",
+      "status": "needs-disambiguation",
+      "reviewedAt": "2026-05-10",
+      "reason": "Initial web review found similarly titled score pages with mismatched form, usul, or composer metadata. Keep this entry in the backlog, but do not place it in the next manual batch until an exact catalog-level source is verified."
+    },
+    {
+      "catalogId": "hicaz_uzzal--ilahi--sofyan--gelin_gidelim--dede_efendi",
+      "status": "needs-disambiguation",
+      "reviewedAt": "2026-05-10",
+      "reason": "Initial web review found similarly titled results that did not prove the exact Hicaz Uzzal, Ilahi, Sofyan, Dede Efendi catalog entry. Keep this entry visible in the backlog while skipping it from the next manual batch."
+    },
+    {
+      "catalogId": "hicaz_uzzal--ilahi--duyek--eya_alemlerin--dede_efendi",
+      "status": "needs-disambiguation",
+      "reviewedAt": "2026-05-10",
+      "reason": "Initial web review found strong similarly titled score and recording sources for Hicaz, Ilahi, Sofyan, Dede Efendi rather than the exact Hicaz Uzzal, Ilahi, Duyek catalog entry. Keep this entry visible in the backlog while skipping it from the next manual batch."
+    },
+    {
+      "catalogId": "hicaz_zirgule--ilahi--sofyan--hic_bulunmaz--husnu_sarier",
+      "status": "needs-disambiguation",
+      "reviewedAt": "2026-05-10",
+      "reason": "Initial web review found similarly titled Hicaz Zirgule, Ilahi, Husnu Sarier score sources, but the visible usul metadata is Nim Sofyan rather than the catalog entry's Sofyan value. Keep this entry visible in the backlog while skipping it from the next manual batch."
+    },
+    {
+      "catalogId": "muhayyer--ilahi--sofyan--duseli_bu_askin--dede_efendi",
+      "status": "source-mismatch",
+      "reviewedAt": "2026-05-10",
+      "reason": "Web review found strong Düşeli Bu Aşkın Canım Eline sources for Dede Efendi and Muhayyer İlahi, but the directly visible score metadata marks the usul as Düyek while the SymbTr catalog entry is Sofyan. A recent academic source also notes Sofyan/Düyek manuscript disagreement, so keep this visible in the backlog and skip it from the next manual batch until an exact Sofyan catalog-level source is verified."
+    }
+  ]
+}

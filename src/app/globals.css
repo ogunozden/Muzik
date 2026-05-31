@@ -5,7 +5,7 @@
  * Token reference: src/lib/design-system/theme.css
  */
 
-@import "tailwindcss";
+@unocss all;
 @import "../lib/design-system/theme.css";
 
 /* ============================================

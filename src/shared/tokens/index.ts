@@ -1,3 +1,11 @@
+import {
+  colors as designColors,
+  radius as designRadius,
+  shadows as designShadows,
+  spacing as designSpacing,
+  typography as designTypography,
+} from "@/lib/design-system";
+
 export {
   colors,
   radius,
@@ -7,4 +15,57 @@ export {
 } from "@/lib/design-system";
 
 export * as componentTokens from "@/lib/design-system/components";
-export { tokens } from "@/lib/tokens";
+
+export const tokens = {
+  colors: {
+    primary: {
+      base: "bg-[var(--color-primary-500)] text-white",
+      hover: "hover:bg-[var(--color-primary-600)] text-white",
+      light: "bg-[var(--color-primary-100)] text-[var(--color-primary-700)]",
+    },
+    secondary: {
+      base: "bg-[var(--color-secondary-500)] text-[var(--color-text-primary)]",
+      hover: "hover:bg-[var(--color-secondary-600)] text-[var(--color-text-primary)]",
+    },
+    accent: {
+      base: "bg-[var(--color-accent)] text-white",
+      hover: "hover:bg-[var(--color-primary-600)] text-white",
+    },
+    background: {
+      base: "bg-[var(--color-bg-base)]",
+      surface: "bg-[var(--color-bg-surface)]",
+    },
+    text: {
+      primary: "text-[var(--color-text-primary)]",
+      secondary: "text-[var(--color-text-secondary)]",
+    },
+    border: {
+      base: "border-[var(--color-border-default)]",
+    },
+    feedback: {
+      error: designColors.feedback.error,
+      success: designColors.feedback.success,
+    },
+  },
+  spacing: {
+    xs: designSpacing.padding.xs,
+    sm: designSpacing.padding.sm,
+    md: designSpacing.padding.md,
+    lg: designSpacing.padding.lg,
+    xl: designSpacing.padding.xl,
+  },
+  radius: {
+    sm: designRadius.DEFAULT.sm,
+    md: designRadius.DEFAULT.md,
+    lg: designRadius.DEFAULT.lg,
+    full: designRadius.DEFAULT.full,
+  },
+} as const;
+
+export {
+  designColors,
+  designRadius,
+  designShadows,
+  designSpacing,
+  designTypography,
+};

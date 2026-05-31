@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/db";
 import { scores } from "@/db/schema";
+import { parseScoreCreatePayload } from "@/core/application/score-payload";
 
 // GET /api/scores - Tüm eserleri listele
 export async function GET() {
@@ -20,25 +21,23 @@ export async function GET() {
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { title, composer, makam, usul, form, notesData, userId } = body;
+    const payload = parseScoreCreatePayload(body);
 
-    if (!title || !makam || !usul || !notesData) {
+    if (!payload.ok) {
       return NextResponse.json(
-        { error: "Zorunlu alanlar eksik: title, makam, usul, notesData" },
+        { error: payload.error },
         { status: 400 }
       );
     }
 
+    const now = new Date();
     const [newScore] = await db
       .insert(scores)
       .values({
-        title,
-        composer: composer || null,
-        makam,
-        usul,
-        form: form || null,
-        notesData,
-        userId: userId || null,
+        ...payload.value,
+        userId: null,
+        createdAt: now,
+        updatedAt: now,
       })
       .returning();
 

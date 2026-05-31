@@ -1,0 +1,130 @@
+{
+  "version": 1,
+  "sources": [
+    {
+      "id": "divanmakam-toprakta-yatacak-teni-tenim-var",
+      "catalogId": "muhayyer--ilahi--duyek--toprakta_yatacak--dede_efendi",
+      "provider": "score",
+      "url": "https://divanmakam.com/forum/toprakta-yatacak-teni-tenim-var-deyup-neylersin-dede-efendi-muhayyer.35720/",
+      "title": "Toprakta Yatacak Teni Tenim Var Deyüp Neylersin - Dede Efendi - Muhayyer",
+      "sourceProvider": "DîvânMakam",
+      "checkedAt": "2026-05-10",
+      "observed": {
+        "title": "Toprakta Yatacak Teni Tenim Var Deyüp Neylersin",
+        "makam": "Muhayyer",
+        "form": "İlahi",
+        "usul": "Düyek",
+        "composer": "Dede Efendi"
+      }
+    },
+    {
+      "id": "divanmakam-sevgi-baht-olmus-ezelden-bize",
+      "catalogId": "rast--ilahi--sofyan--sevgi_baht--tahir_karagoz",
+      "provider": "score",
+      "url": "https://divanmakam.com/forum/sevgi-baht-olmus-ezelden-bize-tahir-karagoz-hafiz-rast.32916/",
+      "title": "Sevgi Baht Olmuş Ezelden Bize - Tahir Karagöz - Hafız - Rast",
+      "sourceProvider": "DîvânMakam",
+      "checkedAt": "2026-05-10",
+      "observed": {
+        "title": "Sevgi Baht Olmuş Ezelden Bize",
+        "makam": "Rast",
+        "form": "İlahi",
+        "usul": "Sofyan",
+        "composer": "Tahir Karagöz"
+      }
+    },
+    {
+      "id": "ogm-materyal-git-ey-akan-gozyasim",
+      "catalogId": "saba--ilahi--duyek--git_ey--munir_nurettin_selcuk",
+      "provider": "score",
+      "url": "https://ogmmateryal.eba.gov.tr/kitap/guzel-sanatlar-lisesi/muzik/12/tsm-koro/files/basic-html/page114.html",
+      "title": "Git Ey Akan Göz Yaşım - İlahi",
+      "sourceProvider": "OGM Materyal",
+      "checkedAt": "2026-05-10",
+      "observed": {
+        "title": "Git Ey Akan Göz Yaşım",
+        "makam": "Sabâ",
+        "form": "İlahi",
+        "usul": "Düyek",
+        "composer": "Münir Nurettin Selçuk"
+      }
+    },
+    {
+      "id": "divanmakam-ey-acep-kudret-beni-kilmistir",
+      "provider": "score",
+      "url": "https://divanmakam.com/forum/ey-acep-kudret-beni-kilmistir-alim-u-asina-halis-efendi-seyh-segah.13786/",
+      "title": "Ey Acep Kudret Beni Kılmıştır Alim Ü Aşina - Halis Efendi (Şeyh) - Segah",
+      "sourceProvider": "DîvânMakam",
+      "checkedAt": "2026-05-10",
+      "observed": {
+        "title": "Ey Acep Kudret Beni Kılmıştır Alim Ü Aşina",
+        "makam": "Segah",
+        "form": "İlahi",
+        "usul": "Düyek",
+        "composer": "Halis Efendi (Şeyh)"
+      }
+    },
+    {
+      "id": "divanmakam-zahid-bize-tan-eyleme",
+      "provider": "score",
+      "url": "https://divanmakam.com/forum/zahid-bize-tan-eyleme-hak-ismin-okur-dilimiz-selahattin-demirtas-sehnaz.39322/",
+      "title": "Zahid Bize Tan Eyleme Hak İsmin Okur Dilimiz - Selahattin Demirtaş - Şehnaz",
+      "sourceProvider": "DîvânMakam",
+      "checkedAt": "2026-05-10",
+      "observed": {
+        "title": "Zahid Bize Tan Eyleme Hak İsmin Okur Dilimiz",
+        "makam": "Şehnaz",
+        "form": "İlahi",
+        "usul": "Düyek",
+        "composer": "Selahattin Demirtaş"
+      }
+    },
+    {
+      "id": "ogm-materyal-allah-emrin-tutalim",
+      "provider": "score",
+      "url": "https://ogmmateryal.eba.gov.tr/kitap/guzel-sanatlar-lisesi/muzik/12/thm-teori-uygulama/files/basic-html/page37.html",
+      "title": "Allah Emrin Tutalım Rahmetine Batalım - Uşşak İlahi",
+      "sourceProvider": "OGM Materyal",
+      "checkedAt": "2026-05-10",
+      "observed": {
+        "title": "Allah Emrin Tutalım Rahmetine Batalım",
+        "makam": "Uşşak",
+        "form": "İlahi",
+        "usul": "Düyek",
+        "composer": "Zekai Dede"
+      }
+    },
+    {
+      "id": "divanmakam-askinla-cak-olsa-bu-ten",
+      "catalogId": "ussak--ilahi--sofyan--askinla_cak--haci_nafiz_bey",
+      "provider": "score",
+      "url": "https://divanmakam.com/forum/askinla-cak-olsa-bu-ten-ben-yine-illallah-direm-nafiz-bey-haci-ussak.2713/",
+      "title": "Aşkınla Çak Olsa Bu Ten Ben Yine İllallah Direm - Nafiz Bey (Hacı) - Uşşak",
+      "sourceProvider": "DîvânMakam",
+      "checkedAt": "2026-05-10",
+      "observed": {
+        "title": "Aşkınla Çak Olsa Bu Ten Ben Yine İllallah Direm",
+        "makam": "Uşşak",
+        "form": "İlahi",
+        "usul": "Sofyan",
+        "composer": "Nafiz Bey (Hacı)"
+      }
+    },
+    {
+      "id": "divanmakam-duseli-bu-askin-canim-eline",
+      "catalogId": "muhayyer--ilahi--sofyan--duseli_bu_askin--dede_efendi",
+      "provider": "score",
+      "url": "https://divanmakam.com/forum/duseli-bu-askin-canim-eline-dede-efendi-muhayyer.11277/",
+      "title": "Düşeli Bu Aşkın Canım Eline - Dede Efendi - Muhayyer",
+      "sourceProvider": "DîvânMakam",
+      "checkedAt": "2026-05-10",
+      "observed": {
+        "title": "Düşeli Bu Aşkın Canım Eline",
+        "makam": "Muhayyer",
+        "form": "İlahi",
+        "usul": "Düyek",
+        "composer": "Dede Efendi"
+      }
+    }
+  ]
+}

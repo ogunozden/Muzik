@@ -25,7 +25,7 @@ vi.mock("@/components/molecules/LabeledSelect", () => ({
   ),
 }));
 
-vi.mock("@/lib/tokens", () => ({
+vi.mock("@/shared/tokens", () => ({
   tokens: {
     colors: {
       primary: { base: "bg-primary", hover: "hover-primary", light: "bg-primary-light" },

@@ -135,7 +135,7 @@ export const typography = {
   },
 } as const;
 
-// CSS class mappings for Tailwind integration
+// CSS utility class mappings for the active UnoCSS Wind4 integration.
 export const typographyClasses = {
   // Font families
   fontFamily: {

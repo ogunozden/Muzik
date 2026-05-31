@@ -1,0 +1,46 @@
+{
+  "version": 1,
+  "generatedAt": "2026-05-31T22:23:43.518Z",
+  "stats": [
+    {
+      "profileId": "divanmakam",
+      "acceptedCount": 5,
+      "removedCount": 0,
+      "deletedCount": 0,
+      "correctedCount": 0,
+      "mismatchCount": 0,
+      "embedSuccessCount": 0,
+      "embedFailureCount": 0
+    },
+    {
+      "profileId": "ogm-materyal",
+      "acceptedCount": 2,
+      "removedCount": 0,
+      "deletedCount": 0,
+      "correctedCount": 0,
+      "mismatchCount": 0,
+      "embedSuccessCount": 0,
+      "embedFailureCount": 0
+    },
+    {
+      "profileId": "salihbora",
+      "acceptedCount": 0,
+      "removedCount": 0,
+      "deletedCount": 0,
+      "correctedCount": 0,
+      "mismatchCount": 0,
+      "embedSuccessCount": 0,
+      "embedFailureCount": 0
+    },
+    {
+      "profileId": "youtube",
+      "acceptedCount": 0,
+      "removedCount": 0,
+      "deletedCount": 0,
+      "correctedCount": 0,
+      "mismatchCount": 0,
+      "embedSuccessCount": 0,
+      "embedFailureCount": 0
+    }
+  ]
+}

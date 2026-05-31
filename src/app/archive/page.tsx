@@ -2,11 +2,9 @@
 
 import { useEffect, useState, memo } from "react";
 import { useTranslation } from "react-i18next";
-import { Card, CardBody } from "@/components/atoms/Card";
 import { UnifiedLayout } from "@/components/layout/UnifiedLayout";
-import { tokens } from "@/lib/tokens";
-import { Badge } from "@/components/atoms/Badge";
-import { Button } from "@/components/atoms/Button";
+import { tokens } from "@/shared/tokens";
+import { Badge, Button, Card, CardBody } from "@/shared/ui";
 import Link from "next/link";
 import dynamic from "next/dynamic";
 import { NotaEvent } from "@/types";

@@ -1,0 +1,431 @@
+{
+  "totalCatalogEntries": 3000,
+  "officialSymbTrMetadataEntries": 3000,
+  "curatedReferenceEntries": 22,
+  "missingCuratedEntries": 2978,
+  "curationDecisionEntries": 5,
+  "deferredMissingEntries": 5,
+  "bulkCandidateEntries": 7,
+  "acceptedBulkCandidateEntries": 7,
+  "acceptedBulkCandidateCatalogIds": [
+    "muhayyer--ilahi--duyek--toprakta_yatacak--dede_efendi",
+    "rast--ilahi--sofyan--sevgi_baht--tahir_karagoz",
+    "saba--ilahi--duyek--git_ey--munir_nurettin_selcuk",
+    "segah--ilahi--duyek--ey_acep--seyh_huseyin_halis_efendi",
+    "sehnaz--ilahi--duyek--zahid_bize--selahaddin_demirtas",
+    "ussak--ilahi--duyek--allah_emrin--zekai_dede",
+    "ussak--ilahi--sofyan--askinla_cak--haci_nafiz_bey"
+  ],
+  "researchSourceProfileEntries": 4,
+  "candidateReviewQueueEntries": 11912,
+  "candidateReviewQueueByStatus": [
+    {
+      "value": "needs-review",
+      "count": 11908
+    },
+    {
+      "value": "conflict",
+      "count": 4
+    }
+  ],
+  "candidateReviewQueueByProfile": [
+    {
+      "value": "divanmakam",
+      "count": 2978
+    },
+    {
+      "value": "ogm-materyal",
+      "count": 2978
+    },
+    {
+      "value": "salihbora",
+      "count": 2978
+    },
+    {
+      "value": "youtube",
+      "count": 2978
+    }
+  ],
+  "catalogFormatCoverage": {
+    "txt": 3000,
+    "mid": 3000,
+    "xml": 3000,
+    "mu2": 3000,
+    "pdf": 3000
+  },
+  "missingByPriorityGroup": [
+    {
+      "value": "pdf-and-musicxml",
+      "count": 2978
+    }
+  ],
+  "topMissingByForm": [
+    {
+      "value": "Sarki",
+      "count": 1517
+    },
+    {
+      "value": "Turku",
+      "count": 353
+    },
+    {
+      "value": "Seyir",
+      "count": 173
+    },
+    {
+      "value": "Sazsemaisi",
+      "count": 122
+    },
+    {
+      "value": "Kupe",
+      "count": 120
+    },
+    {
+      "value": "Pesrev",
+      "count": 117
+    },
+    {
+      "value": "Aranagme",
+      "count": 76
+    },
+    {
+      "value": "Beste",
+      "count": 61
+    },
+    {
+      "value": "Agirsemai",
+      "count": 47
+    },
+    {
+      "value": "İlahi",
+      "count": 43
+    },
+    {
+      "value": "Yuruksemai",
+      "count": 43
+    },
+    {
+      "value": "Fantezi",
+      "count": 40
+    },
+    {
+      "value": "Ornek Oz",
+      "count": 34
+    },
+    {
+      "value": "Nakis",
+      "count": 23
+    },
+    {
+      "value": "Zeybek",
+      "count": 19
+    },
+    {
+      "value": "Kocekce",
+      "count": 15
+    },
+    {
+      "value": "Rumeliturkusu",
+      "count": 15
+    },
+    {
+      "value": "Mars",
+      "count": 14
+    },
+    {
+      "value": "Murabba",
+      "count": 11
+    },
+    {
+      "value": "Taksim",
+      "count": 11
+    }
+  ],
+  "topMissingByMakam": [
+    {
+      "value": "Nihavent",
+      "count": 192
+    },
+    {
+      "value": "Hicaz",
+      "count": 179
+    },
+    {
+      "value": "Ussak",
+      "count": 158
+    },
+    {
+      "value": "Rast",
+      "count": 153
+    },
+    {
+      "value": "Huzzam",
+      "count": 152
+    },
+    {
+      "value": "Kurdilihicazkar",
+      "count": 141
+    },
+    {
+      "value": "Huseyni",
+      "count": 117
+    },
+    {
+      "value": "Segah",
+      "count": 108
+    },
+    {
+      "value": "Mahur",
+      "count": 103
+    },
+    {
+      "value": "Hicazkar",
+      "count": 87
+    },
+    {
+      "value": "Muhayyer",
+      "count": 77
+    },
+    {
+      "value": "Beyati",
+      "count": 76
+    },
+    {
+      "value": "Hicaz Uzzal",
+      "count": 76
+    },
+    {
+      "value": "Buselik",
+      "count": 73
+    },
+    {
+      "value": "Saba",
+      "count": 73
+    },
+    {
+      "value": "Karcigar",
+      "count": 70
+    },
+    {
+      "value": "Acemasiran",
+      "count": 69
+    },
+    {
+      "value": "Muhayyerkurdi",
+      "count": 49
+    },
+    {
+      "value": "Acemkurdi",
+      "count": 46
+    },
+    {
+      "value": "Hicaz Humayun",
+      "count": 46
+    }
+  ],
+  "topMissingByUsul": [
+    {
+      "value": "Aksak",
+      "count": 436
+    },
+    {
+      "value": "Duyek",
+      "count": 427
+    },
+    {
+      "value": "Sofyan",
+      "count": 358
+    },
+    {
+      "value": "Curcuna",
+      "count": 187
+    },
+    {
+      "value": "Aksaksemai",
+      "count": 175
+    },
+    {
+      "value": "Agiraksak",
+      "count": 139
+    },
+    {
+      "value": "Semai",
+      "count": 138
+    },
+    {
+      "value": "Nimsofyan",
+      "count": 133
+    },
+    {
+      "value": "Yuruksemai",
+      "count": 92
+    },
+    {
+      "value": "Senginsemai",
+      "count": 89
+    },
+    {
+      "value": "Turkaksagi",
+      "count": 87
+    },
+    {
+      "value": "Devrihindi",
+      "count": 86
+    },
+    {
+      "value": "Yuruksemai İi",
+      "count": 49
+    },
+    {
+      "value": "Musemmen",
+      "count": 46
+    },
+    {
+      "value": "Devrikebir",
+      "count": 44
+    },
+    {
+      "value": "Kapali Curcuna",
+      "count": 44
+    },
+    {
+      "value": "Evfer",
+      "count": 33
+    },
+    {
+      "value": "Hafif",
+      "count": 28
+    },
+    {
+      "value": "Muhammes",
+      "count": 25
+    },
+    {
+      "value": "Agirduyek",
+      "count": 21
+    }
+  ],
+  "nextBatchSize": 100,
+  "nextBatchCatalogIds": [
+    "ussak--ilahi--duyek--dostun_senden--ali_rifat_cagatay",
+    "ussak--ilahi--sofyan--ey_sehinsah-i--tiznam_yusuf_celebi",
+    "ussak--ilahi--sofyan--hak_taala--ali_ufki",
+    "acemasiran--pesrev--duyek--son_pesrev--huseyin_fahreddin_dede",
+    "evic_horasani--pesrev--duyek--1--kanuni_mehmed_bey",
+    "acemasiran--sarki--sofyan--bakma_sakin--sakir_aga",
+    "acemasiran--sarki--duyek--bu_hal--sadettin_kaynak",
+    "acemasiran--sarki--duyek--bulutlar_kokunu--sadettin_kaynak",
+    "acemasiran--sarki--aksak--dinle_sozum--iii_selim",
+    "acemasiran--sarki--aksak--dustum_bir--ali_riza_avni_tinaz",
+    "acemasiran--sarki--aksak--gonlum_dusuyor--ismail_baha_surelsan",
+    "acemasiran--sarki--sofyan--gonul_sana--sadettin_kaynak",
+    "acemasiran--sarki--duyek--gonul_seni--sadettin_kaynak",
+    "acemasiran--sarki--aksak--gordum_seni--irfan_dogrusoz",
+    "acemasiran--sarki--aksak--lutfeyle_meded--dede_efendi",
+    "acemasiran--sarki--sofyan--nideyim_bilmem--sadettin_kaynak",
+    "acemasiran--sarki--aksak--o_tebessum--ismail_baha_surelsan",
+    "acemasiran--sarki--aksak--oldu_gonul--dede_efendi",
+    "acemasiran--sarki--duyek--pence-i_gamdan--misirli_udi_ibrahim_efendi",
+    "acemasiran--sarki--duyek--ruhumda_derin--kemal_gurses",
+    "acemasiran--sarki--duyek--sim-ten_gonca--sakir_aga",
+    "acemasiran--sarki--aksak--yanar_sinem--ismet_aga",
+    "acembuselik--sarki--aksak--coktan_idim--kemenceci_usta_yani",
+    "acemkurdi--sarki--aksak--altin_tasta--nimet_hanim",
+    "acemkurdi--sarki--duyek--artik_gelecek--arif_sami_toker",
+    "acemkurdi--sarki--duyek--baharla_hazan--avni_anil",
+    "acemkurdi--sarki--aksak--beyhude_yere--ercument_berker",
+    "acemkurdi--sarki--duyek--bir_baska--avni_anil",
+    "acemkurdi--sarki--duyek--bir_sevda--arif_sami_toker",
+    "acemkurdi--sarki--aksak--hatay--cevdet_cagla",
+    "acemkurdi--sarki--aksak--kir_atima--nasibin_mehmet_yuru",
+    "acemkurdi--sarki--duyek--ne_kadar--arif_sami_toker",
+    "acemkurdi--sarki--aksak--ruhum_su--alaeddin_yavasca",
+    "acemkurdi--sarki--duyek--unutmak_istesem--arif_sami_toker",
+    "acemkurdi--sarki--sofyan--yar_pesinde--zeki_duygulu",
+    "askefza--sarki--sofyan--kimbilir_belki--murat_demirhan",
+    "askefza--sarki--sofyan--omrumuzun_bahari--erol_sayan",
+    "bestenigar--sarki--aksak--çok_gordu--haci_arif_bey",
+    "bestenigar--sarki--aksak--perisan_halin--emin_ongan",
+    "bestenigar--sarki--aksak--sana_gul--omer_sami_gupgup",
+    "bestenigar--sarki--duyek--yakti_cihani--ismet_aga",
+    "beyati--sarki--sofyan--acilan_bir--ertugrul_yalcinkaya",
+    "beyati--sarki--duyek--askn_fecri--sadettin_kaynak",
+    "beyati--sarki--duyek--bende_oldum--rifat_bey",
+    "beyati--sarki--aksak--delisin_deli--selahaddin_pinar",
+    "beyati--sarki--duyek--dilbera_sazin--tanburi_isak",
+    "beyati--sarki--duyek--emel-i_meyl-i--sevki_bey",
+    "beyati--sarki--aksak--gonlum_geri--kasim_inaltekin",
+    "beyati--sarki--duyek--gonul_telim--erdinc_celikkol",
+    "beyati--sarki--duyek--hayli_demdir--suphi_ziya_ozbekkan",
+    "beyati--sarki--aksak--karsidan_yar--dede_efendi",
+    "beyati--sarki--aksak--meclise_gel--tanburi_mustafa_cavus",
+    "beyati--sarki--aksak--ne_semtden--kemani_riza_efendi",
+    "beyati--sarki--duyek--ruhuma_sundugun--sadettin_kaynak",
+    "beyati--sarki--aksak--sebep_ne--markar_aga",
+    "beyati--sarki--duyek--seni_ne_cok--erol_sayan",
+    "beyati--sarki--duyek--zaman_icinde--semahat_ozdenses",
+    "beyatiaraban--sarki--aksak--baga_girdim--sadi_hosses",
+    "beyatiaraban--sarki--aksak--bana_noldu--rahmi_bey",
+    "beyatiaraban--sarki--aksak--bana_seyran-i--rahmi_bey",
+    "beyatiaraban--sarki--duyek--gozumde_isve-numadir--ahmet_rasim_bey",
+    "beyatiaraban--sarki--aksak--lutfunu_kestin--haci_arif_bey",
+    "buselik--sarki--sofyan--aldin_aklim--rifat_bey",
+    "buselik--sarki--duyek--askin_once--amir_ates",
+    "buselik--sarki--aksak--beni_ihmal--ismail_baha_surelsan",
+    "buselik--sarki--aksak--bir_misli--sakir_aga",
+    "buselik--sarki--aksak--bir_pur_cefa--iii_selim",
+    "buselik--sarki--duyek--bir_sitemin--durri_turan",
+    "buselik--sarki--aksak--bos_kalbimi--suphi_ziya_ozbekkan",
+    "buselik--sarki--duyek--bunu_inkar--ismet_aga",
+    "buselik--sarki--aksak--cehrendeki_tilsimda--yilmaz_karakoyunlu",
+    "buselik--sarki--duyek--denizlerin_otesinden--ismail_baha_surelsan",
+    "buselik--sarki--aksak--dil_sana--tanburi_isak",
+    "buselik--sarki--aksak--eda_ile--dede_efendi",
+    "buselik--sarki--duyek--gecti_bahar--fehmi_tokay",
+    "buselik--sarki--duyek--gonul_harareti--sukru_senozan",
+    "buselik--sarki--duyek--gozumde_ozleyis--selahattin_inal",
+    "buselik--sarki--sofyan--iki_kizimiz--erol_sayan",
+    "buselik--sarki--aksak--inanmaz_vad_i--latif_aga",
+    "buselik--sarki--duyek--keremkani_efendim--tanburi_mustafa_cavus",
+    "buselik--sarki--sofyan--ol_meh--medeni_aziz_efendi",
+    "buselik--sarki--aksak--omrumun_guzel--emin_ongan",
+    "buselik--sarki--duyek--ruzgar_kirdi--selahaddin_erkose",
+    "buselik--sarki--duyek--saclarima_ak--sadettin_kaynak",
+    "buselik--sarki--aksak--sen_de_gozden--cinucen_tanrikorur",
+    "buselik--sarki--duyek--sevgim_bitti_mi--arif_sami_toker",
+    "buselik--sarki--duyek--sunbulistan_etmis--sakir_aga",
+    "buselik--sarki--duyek--yalandir_dogustan--munir_nurettin_selcuk",
+    "buselik--sarki--duyek--zaman_olur--selahattin_icli",
+    "dilkeshaveran--sarki--aksak--acildi_bahcede--zeki_arif_ataergin",
+    "dilkeshaveran--sarki--duyek--gel_benim--radife_erten",
+    "evcara--sarki--aksak--gel_ey--dede_efendi",
+    "evcara--sarki--aksak--sen_hangi--ozgen_gurbuz",
+    "evic--sarki--sofyan--distan_viran--fahri_kopuz",
+    "evic--sarki--duyek--doguyor_omrume--sadettin_kaynak",
+    "evic--sarki--aksak--sen_boyle--omer_sami_gupgup",
+    "evic--sarki--aksak--sevdim_bir_gonca-i_rana--dede_efendi",
+    "ferahnak--sarki--aksak--ben_muptela--dede_efendi",
+    "ferahnak--sarki--aksak--bir_nigahin--tanburi_cemil_bey",
+    "ferahnak--sarki--aksak--gozlerinden_dokulen--gulen_ertek"
+  ],
+  "deferredCatalogIds": [
+    "cargah--ilahi--devrikebir--kudumun_rahmeti--aziz_mahmud_hudai",
+    "hicaz_uzzal--ilahi--duyek--eya_alemlerin--dede_efendi",
+    "hicaz_uzzal--ilahi--sofyan--gelin_gidelim--dede_efendi",
+    "hicaz_zirgule--ilahi--sofyan--hic_bulunmaz--husnu_sarier",
+    "muhayyer--ilahi--sofyan--duseli_bu_askin--dede_efendi"
+  ],
+  "backlogCsv": "output/external-reference-coverage/symbtr-curated-reference-backlog.csv",
+  "backlogJson": "output/external-reference-coverage/symbtr-curated-reference-backlog.json",
+  "nextBatchCsv": "output/external-reference-coverage/symbtr-curated-reference-next-batch.csv",
+  "nextBatchJson": "output/external-reference-coverage/symbtr-curated-reference-next-batch.json",
+  "bulkCandidatesCsv": "output/external-reference-coverage/symbtr-curated-reference-bulk-candidates.csv",
+  "bulkCandidatesJson": "output/external-reference-coverage/symbtr-curated-reference-bulk-candidates.json",
+  "candidateReviewQueueCsv": "output/external-reference-coverage/symbtr-curated-reference-candidate-review-queue.csv",
+  "candidateReviewQueueJson": "output/external-reference-coverage/symbtr-curated-reference-candidate-review-queue.json",
+  "policy": "No media is downloaded. Safe inline preview/embed is allowed only for validated HTTPS sources with provider-specific verification, sandbox, lazy loading and fallback links.",
+  "curationRule": "Entries are prioritized by missing curated references, catalog-reported PDF/MusicXML/TXT source formats, named title/composer fields, and common form/usul groups. Search URLs are generated for review only; they are not evidence by themselves.",
+  "nextBatchRule": "Rows with needs-disambiguation, source-mismatch, or deferred curation decisions remain in the backlog but are skipped from the next manual batch.",
+  "bulkCandidateRule": "Accepted bulk candidates are counted as curated references only after catalog id, source URL policy, duplicate identity, status, and date checks pass.",
+  "candidateReviewRule": "Provider-profile search candidates are review queue entries, not source evidence; they stay needs-review or conflict until a validated source URL is imported and accepted."
+}

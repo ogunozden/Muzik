@@ -1,6 +1,6 @@
 "use client";
 
-import {useEffect, useRef, useCallback} from "react";
+import {useCallback, useEffect, useRef, useState} from "react";
 
 interface MidiMessageEvent {
   data: Uint8Array;
@@ -23,6 +23,7 @@ interface UseMidiInputOptions {
 export function useMidiInput({onNoteOn, onNoteOff, enabled = true}: UseMidiInputOptions) {
   const midiAccessRef = useRef<MidiAccess | null>(null);
   const activeNotesRef = useRef<Set<number>>(new Set());
+  const [activeNotes, setActiveNotes] = useState<number[]>([]);
 
   const handleMidiMessage = useCallback((event: MidiMessageEvent) => {
     const [status, note, velocity] = event.data as Uint8Array;
@@ -31,9 +32,11 @@ export function useMidiInput({onNoteOn, onNoteOff, enabled = true}: UseMidiInput
     if (command === 9 && velocity > 0) {
       onNoteOn?.(note, velocity);
       activeNotesRef.current.add(note);
+      setActiveNotes((current) => current.includes(note) ? current : [...current, note]);
     } else if (command === 8 || (command === 9 && velocity === 0)) {
       onNoteOff?.(note);
       activeNotesRef.current.delete(note);
+      setActiveNotes((current) => current.filter((activeNote) => activeNote !== note));
     }
   }, [onNoteOn, onNoteOff]);
 
@@ -65,6 +68,6 @@ export function useMidiInput({onNoteOn, onNoteOff, enabled = true}: UseMidiInput
 
   return {
     isSupported: typeof navigator !== "undefined" && "requestMIDIAccess" in navigator,
-    activeNotes: Array.from(activeNotesRef.current),
+    activeNotes,
   };
 }

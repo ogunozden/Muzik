@@ -1,0 +1,49 @@
+{
+  "version": 1,
+  "profiles": [
+    {
+      "id": "divanmakam",
+      "label": "DîvânMakam",
+      "baseUrl": "https://divanmakam.com",
+      "searchUrlTemplate": "https://duckduckgo.com/?q=site%3Adivanmakam.com%2Fforum%2F+{query}",
+      "provider": "score",
+      "trustWeight": 0.85,
+      "embedCapability": "iframe",
+      "metadataStrategy": "og-title",
+      "enabled": true
+    },
+    {
+      "id": "youtube",
+      "label": "YouTube",
+      "baseUrl": "https://www.youtube.com",
+      "searchUrlTemplate": "https://www.youtube.com/results?search_query={query}",
+      "provider": "youtube",
+      "trustWeight": 0.65,
+      "embedCapability": "youtube",
+      "metadataStrategy": "oembed",
+      "enabled": true
+    },
+    {
+      "id": "salihbora",
+      "label": "Salih Bora Nota Arşivi",
+      "baseUrl": "https://www.salihbora.com",
+      "searchUrlTemplate": "https://duckduckgo.com/?q=site%3Asalihbora.com+{query}",
+      "provider": "score",
+      "trustWeight": 0.7,
+      "embedCapability": "iframe",
+      "metadataStrategy": "html-title",
+      "enabled": true
+    },
+    {
+      "id": "ogm-materyal",
+      "label": "OGM Materyal",
+      "baseUrl": "https://ogmmateryal.eba.gov.tr",
+      "searchUrlTemplate": "https://duckduckgo.com/?q=site%3Aogmmateryal.eba.gov.tr+{query}",
+      "provider": "score",
+      "trustWeight": 0.75,
+      "embedCapability": "iframe",
+      "metadataStrategy": "html-title",
+      "enabled": true
+    }
+  ]
+}

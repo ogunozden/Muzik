@@ -9,6 +9,20 @@ import { schedulePercussionHit, applyADSREnvelope } from "./synth";
 
 const SYNTHETIC_FALLBACK_ENABLED = process.env.NEXT_PUBLIC_ENABLE_SYNTH_FALLBACK !== "false";
 
+type RhythmSymbolInput = {
+  beat: number;
+  symbol: string;
+  isAccent: boolean;
+  timeValue?: number;
+};
+
+export type RhythmScheduleHit = {
+  startOffset: number;
+  beatDuration: number;
+  symbol: PercussionSymbol;
+  isAccent: boolean;
+};
+
 export async function initAudio(): Promise<boolean> {
   if (typeof window === "undefined") {
     return false;
@@ -266,7 +280,7 @@ export async function playScaleWithInstrument(
 
 export async function playRhythmWithPercussion(
   beats: number,
-  symbols: Array<{beat: number; symbol: string; isAccent: boolean}>,
+  symbols: RhythmSymbolInput[],
   bpm: number = 120,
   percussionInstrument?: InstrumentType,
 ): Promise<void> {
@@ -274,24 +288,45 @@ export async function playRhythmWithPercussion(
   const context = getOrCreateAudioContext();
   if (!ok || !context) return;
 
-  const beatDuration = 60 / bpm;
+  const schedule = buildRhythmSchedule(beats, symbols, bpm);
   await preloadPercussionSymbolSamples(
     symbols.map((symbol) => symbol.symbol).filter(isPercussionSymbol),
     percussionInstrument,
   );
 
-  for (let i = 0; i < beats; i++) {
-    const symbol = symbols[i];
-    if (!symbol || !isPercussionSymbol(symbol.symbol)) continue;
+  const baseTime = context.currentTime + 0.02;
 
-    const startAt = context.currentTime + 0.02 + i * beatDuration;
-    const accent = symbol.isAccent;
+  for (const hit of schedule) {
+    const startAt = baseTime + hit.startOffset;
 
-    if (!scheduleSampledPercussionHit(context, symbol.symbol as PercussionSymbol, accent, startAt, beatDuration, percussionInstrument)) {
+    if (!scheduleSampledPercussionHit(context, hit.symbol, hit.isAccent, startAt, hit.beatDuration, percussionInstrument)) {
       if (!SYNTHETIC_FALLBACK_ENABLED) continue;
-      schedulePercussionHit(context, symbol.symbol as PercussionSymbol, accent, startAt, beatDuration, percussionInstrument);
+      schedulePercussionHit(context, hit.symbol, hit.isAccent, startAt, hit.beatDuration, percussionInstrument);
     }
   }
+}
+
+export function buildRhythmSchedule(
+  beats: number,
+  symbols: RhythmSymbolInput[],
+  bpm: number = 120,
+): RhythmScheduleHit[] {
+  const beatDuration = 60 / bpm;
+
+  return symbols
+    .filter((symbol): symbol is RhythmSymbolInput & {symbol: PercussionSymbol} =>
+      Number.isFinite(symbol.beat) &&
+      symbol.beat >= 1 &&
+      symbol.beat <= beats &&
+      isPercussionSymbol(symbol.symbol),
+    )
+    .sort((left, right) => left.beat - right.beat)
+    .map((symbol) => ({
+      startOffset: (symbol.beat - 1) * beatDuration,
+      beatDuration: beatDuration * Math.max(symbol.timeValue ?? 1, 0.25),
+      symbol: symbol.symbol,
+      isAccent: symbol.isAccent,
+    }));
 }
 
 export function playInstrumentNoteScheduled(

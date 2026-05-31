@@ -17,7 +17,7 @@ const sampleScore = {
   makam: "nihavend",
   usul: "duyek",
   form: null,
-  notesData: [],
+  notesData: [{pitch: "C4", duration: 0.5, velocity: 100, startTime: 0}],
   userId: null,
   createdAt: null,
   updatedAt: null,
@@ -53,7 +53,26 @@ describe("/api/scores route", () => {
     expect(db.insert).not.toHaveBeenCalled();
   });
 
-  it("creates a score with the editor response shape", async () => {
+  it("rejects create requests when notesData is not a note event array", async () => {
+    const request = new Request("http://localhost/api/scores", {
+      method: "POST",
+      body: JSON.stringify({
+        title: sampleScore.title,
+        makam: sampleScore.makam,
+        usul: sampleScore.usul,
+        notesData: [{pitch: "C4", duration: 0}],
+      }),
+    }) as NextRequest;
+
+    const response = await POST(request);
+    const body = await response.json();
+
+    expect(response.status).toBe(400);
+    expect(body.error).toContain("notesData");
+    expect(db.insert).not.toHaveBeenCalled();
+  });
+
+  it("creates a score with timestamps and ignores body userId", async () => {
     const returning = vi.fn().mockResolvedValue([sampleScore]);
     const values = vi.fn().mockReturnValue({ returning });
     vi.mocked(db.insert).mockReturnValue({ values } as never);
@@ -65,6 +84,7 @@ describe("/api/scores route", () => {
         makam: sampleScore.makam,
         usul: sampleScore.usul,
         notesData: sampleScore.notesData,
+        userId: 42,
       }),
     }) as NextRequest;
 
@@ -79,6 +99,9 @@ describe("/api/scores route", () => {
         makam: sampleScore.makam,
         usul: sampleScore.usul,
         notesData: sampleScore.notesData,
+        userId: null,
+        createdAt: expect.any(Date),
+        updatedAt: expect.any(Date),
       })
     );
   });

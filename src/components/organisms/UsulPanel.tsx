@@ -6,7 +6,7 @@
 
 "use client";
 
-import {memo, useState} from "react";
+import {memo} from "react";
 import {useTranslation} from "react-i18next";
 import {Button} from "@/components/atoms/Button";
 import {LabeledSelect} from "@/components/molecules/LabeledSelect";
@@ -45,7 +45,6 @@ function UsulPanelComponent({
   className = "",
 }: UsulPanelProps) {
   const {t} = useTranslation();
-  const [notationMode, setNotationMode] = useState<"visual" | "notation">("notation");
 
   return (
     <div 
@@ -80,7 +79,6 @@ function UsulPanelComponent({
             padding: "var(--space-4)",
           }}
         >
-          {/* Notation Toggle */}
           <div 
             style={{
               display: "flex",
@@ -96,61 +94,13 @@ function UsulPanelComponent({
                 color: "var(--color-text-secondary)",
               }}
             >
-              Vuruşlar
+              Darp akışı
             </span>
-            <div style={{display: "flex", gap: "var(--space-1)"}}>
-              <button
-                onClick={() => setNotationMode("visual")}
-                style={{
-                  padding: "0.25rem 0.5rem",
-                  fontSize: "0.75rem",
-                  borderRadius: "0.25rem",
-                  ...(notationMode === "visual" 
-                    ? {
-                        backgroundColor: "var(--color-primary-100)",
-                        color: "var(--color-primary-700)",
-                        border: "none",
-                      }
-                    : {
-                        backgroundColor: "transparent",
-                        color: "var(--color-text-tertiary)",
-                        border: "1px solid var(--color-border-default)",
-                      }
-                  ),
-                  cursor: "pointer",
-                  transition: "all 0.15s",
-                }}
-              >
-                Görsel
-              </button>
-              <button
-                onClick={() => setNotationMode("notation")}
-                style={{
-                  padding: "0.25rem 0.5rem",
-                  fontSize: "0.75rem",
-                  borderRadius: "0.25rem",
-                  ...(notationMode === "notation" 
-                    ? {
-                        backgroundColor: "var(--color-primary-100)",
-                        color: "var(--color-primary-700)",
-                        border: "none",
-                      }
-                    : {
-                        backgroundColor: "transparent",
-                        color: "var(--color-text-tertiary)",
-                        border: "1px solid var(--color-border-default)",
-                      }
-                  ),
-                  cursor: "pointer",
-                  transition: "all 0.15s",
-                }}
-              >
-                Nota
-              </button>
-            </div>
+            <span style={{fontSize: "0.75rem", color: "var(--color-text-secondary)"}}>
+              {beats}/{unit}
+            </span>
           </div>
 
-          {/* Notation View - Ana gösterim */}
           <div style={{overflowX: "auto"}}>
             <UsulNotation
               symbols={symbols}

@@ -32,6 +32,36 @@ describe("usul/data", () => {
         expect(usul.stressPattern).toHaveLength(usul.beats);
       });
     });
+
+    it("should model Devr-i Kebir as 6+4+6+4+4+4 instead of a flat four-beat repeat", () => {
+      const devriKebir = getUsulById("devrikebir");
+
+      expect(devriKebir).toBeDefined();
+      expect(devriKebir?.symbols.filter((symbol) => symbol.symbol === "dum").map((symbol) => symbol.beat)).toEqual([
+        1,
+        4,
+        7,
+        11,
+        14,
+        17,
+        21,
+        25,
+      ]);
+      expect(devriKebir?.symbols.filter((symbol) => symbol.symbol === "ke").map((symbol) => symbol.beat)).toEqual([
+        9,
+        19,
+        23,
+        27,
+      ]);
+      expect(devriKebir?.stressPattern).toEqual([
+        1, 0, 0, 1, 0, 0,
+        1, 0, 0, 0,
+        1, 0, 0, 1, 0, 0,
+        1, 0, 0, 0,
+        1, 0, 0, 0,
+        1, 0, 0, 0,
+      ]);
+    });
   });
 
   describe("getUsulBeatDuration", () => {

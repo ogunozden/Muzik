@@ -1,11 +1,11 @@
 "use client";
 
 import {ChangeEvent, useCallback, useEffect, useMemo, useState} from "react";
-import {Button} from "@/components/atoms/Button";
 import {UnifiedLayout} from "@/components/layout/UnifiedLayout";
 import {clearSampleCache, playNote, playRhythm} from "@/engines/ses/engine";
 import type {InstrumentType} from "@/engines/ses/engine";
-import {tokens} from "@/lib/tokens";
+import {Button} from "@/shared/ui";
+import {tokens} from "@/shared/tokens";
 
 interface SampleSlotStatus {
   key: string;
@@ -57,22 +57,48 @@ export default function SeslerPage() {
   const [uploadingKey, setUploadingKey] = useState<string | null>(null);
   const [message, setMessage] = useState<string>("");
 
-  const refreshSlots = useCallback(async () => {
+  const loadSlots = useCallback(async () => {
     clearSampleCache();
-    setIsLoading(true);
     const response = await fetch("/api/samples", {cache: "no-store"});
-    const data = (await response.json()) as SamplesResponse;
+    return (await response.json()) as SamplesResponse;
+  }, []);
+
+  const applySlots = useCallback((data: SamplesResponse) => {
     setSlots(data.slots);
     setActiveGroup((current) => current || data.slots[0]?.groupLabel || "");
     setIsLoading(false);
   }, []);
 
   useEffect(() => {
-    void refreshSlots().catch(() => {
+    let cancelled = false;
+
+    void loadSlots()
+      .then((data) => {
+        if (!cancelled) applySlots(data);
+      })
+      .catch(() => {
+        if (!cancelled) {
+          setMessage("Ses kütüphanesi okunamadı.");
+          setIsLoading(false);
+        }
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [applySlots, loadSlots]);
+
+  const refreshSlots = useCallback(async () => {
+    setIsLoading(true);
+
+    try {
+      const data = await loadSlots();
+      applySlots(data);
+    } catch {
       setMessage("Ses kütüphanesi okunamadı.");
       setIsLoading(false);
-    });
-  }, [refreshSlots]);
+    }
+  }, [applySlots, loadSlots]);
 
   const groups = useMemo(() => {
     const grouped = new Map<string, SampleSlotStatus[]>();
@@ -285,7 +311,7 @@ export default function SeslerPage() {
                       {uploadingKey === slot.key ? "Yükleniyor" : "Yükle"}
                       <input
                         type="file"
-                        accept="audio/*,.wav,.mp3,.ogg,.m4a"
+                        accept="audio/*,.wav,.mp3,.ogg,.flac"
                         className="sr-only"
                         disabled={uploadingKey !== null}
                         onChange={(event) => void uploadSample(slot.key, event)}
@@ -355,7 +381,7 @@ export default function SeslerPage() {
                             {uploadingKey === slot.key ? "Yükleniyor" : "Yükle"}
                             <input
                               type="file"
-                              accept="audio/*,.wav,.mp3,.ogg,.m4a"
+                              accept="audio/*,.wav,.mp3,.ogg,.flac"
                               className="sr-only"
                               disabled={uploadingKey !== null}
                               onChange={(event) => void uploadSample(slot.key, event)}

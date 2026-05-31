@@ -7,6 +7,12 @@
 
 import dynamic from "next/dynamic";
 
+const PIANO_LOADING_KEY_HEIGHTS = [
+  62, 104, 78, 126, 92, 138, 70,
+  116, 86, 132, 98, 144, 74, 120,
+  90, 136, 82, 112, 100, 128, 68,
+];
+
 /**
  * Virtual Piano - Ağır piyano componenti
  * Sadece nota-editor ve recording sayfalarında kullanılır
@@ -43,7 +49,7 @@ function PianoLoadingSkeleton() {
           className="bg-white/50 rounded-b animate-pulse"
           style={{
             width: 46,
-            height: `${60 + Math.random() * 80}px`,
+            height: `${PIANO_LOADING_KEY_HEIGHTS[i]}px`,
           }}
         />
       ))}

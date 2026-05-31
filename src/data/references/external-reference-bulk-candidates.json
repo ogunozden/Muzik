@@ -1,0 +1,173 @@
+{
+  "version": 1,
+  "candidates": [
+    {
+      "catalogId": "muhayyer--ilahi--duyek--toprakta_yatacak--dede_efendi",
+      "status": "accepted",
+      "checkedAt": "2026-05-10",
+      "evidence": {
+        "title": "Toprakta Yatacak Teni Tenim Var Deyüp Neylersin",
+        "makam": "Muhayyer",
+        "form": "İlahi",
+        "usul": "Düyek",
+        "composer": "Dede Efendi",
+        "sourceProvider": "DîvânMakam"
+      },
+      "source": {
+        "id": "divanmakam-toprakta-yatacak-teni-tenim-var-score",
+        "label": "Nota kaynağı",
+        "provider": "score",
+        "url": "https://divanmakam.com/forum/toprakta-yatacak-teni-tenim-var-deyup-neylersin-dede-efendi-muhayyer.35720/",
+        "title": "Toprakta Yatacak Teni Tenim Var Deyüp Neylersin - Dede Efendi - Muhayyer",
+        "access": "external-link",
+        "verification": "manual",
+        "verifiedAt": "2026-05-10",
+        "notes": "Bulk web curation checked title, composer Dede Efendi, Muhayyer makam, İlahi form and Düyek usul against the SymbTr catalog entry."
+      }
+    },
+    {
+      "catalogId": "rast--ilahi--sofyan--sevgi_baht--tahir_karagoz",
+      "status": "accepted",
+      "checkedAt": "2026-05-10",
+      "evidence": {
+        "title": "Sevgi Baht Olmuş Ezelden Bize",
+        "makam": "Rast",
+        "form": "İlahi",
+        "usul": "Sofyan",
+        "composer": "Tahir Karagöz",
+        "sourceProvider": "DîvânMakam"
+      },
+      "source": {
+        "id": "divanmakam-sevgi-baht-olmus-ezelden-bize-score",
+        "label": "Nota kaynağı",
+        "provider": "score",
+        "url": "https://divanmakam.com/forum/sevgi-baht-olmus-ezelden-bize-tahir-karagoz-hafiz-rast.32916/",
+        "title": "Sevgi Baht Olmuş Ezelden Bize - Tahir Karagöz - Hafız - Rast",
+        "access": "external-link",
+        "verification": "manual",
+        "verifiedAt": "2026-05-10",
+        "notes": "Bulk web curation checked title, composer Tahir Karagöz, Rast makam, İlahi form and Sofyan usul against the SymbTr catalog entry."
+      }
+    },
+    {
+      "catalogId": "saba--ilahi--duyek--git_ey--munir_nurettin_selcuk",
+      "status": "accepted",
+      "checkedAt": "2026-05-10",
+      "evidence": {
+        "title": "Git Ey Akan Göz Yaşım",
+        "makam": "Sabâ",
+        "form": "İlahi",
+        "usul": "Düyek",
+        "composer": "Münir Nurettin Selçuk",
+        "sourceProvider": "OGM Materyal"
+      },
+      "source": {
+        "id": "ogm-materyal-git-ey-akan-gozyasim-score",
+        "label": "Nota kaynağı",
+        "provider": "score",
+        "url": "https://ogmmateryal.eba.gov.tr/kitap/guzel-sanatlar-lisesi/muzik/12/tsm-koro/files/basic-html/page114.html",
+        "title": "Git Ey Akan Göz Yaşım - İlahi",
+        "access": "external-link",
+        "verification": "manual",
+        "verifiedAt": "2026-05-10",
+        "notes": "Bulk web curation checked title prefix, composer Münir Nurettin Selçuk, Saba makam, İlahi form and Düyek usul against the SymbTr catalog entry."
+      }
+    },
+    {
+      "catalogId": "segah--ilahi--duyek--ey_acep--seyh_huseyin_halis_efendi",
+      "status": "accepted",
+      "checkedAt": "2026-05-10",
+      "evidence": {
+        "title": "Ey Acep Kudret Beni Kılmıştır Alim Ü Aşina",
+        "makam": "Segah",
+        "form": "İlahi",
+        "usul": "Düyek",
+        "composer": "Halis Efendi (Şeyh)",
+        "sourceProvider": "DîvânMakam"
+      },
+      "source": {
+        "id": "divanmakam-ey-acep-kudret-beni-kilmistir-score",
+        "label": "Nota kaynağı",
+        "provider": "score",
+        "url": "https://divanmakam.com/forum/ey-acep-kudret-beni-kilmistir-alim-u-asina-halis-efendi-seyh-segah.13786/",
+        "title": "Ey Acep Kudret Beni Kılmıştır Alim Ü Aşina - Halis Efendi (Şeyh) - Segah",
+        "access": "external-link",
+        "verification": "manual",
+        "verifiedAt": "2026-05-10",
+        "notes": "Bulk web curation checked title, composer Halis Efendi (Şeyh), Segah makam, İlahi form and Düyek usul against the SymbTr catalog entry."
+      }
+    },
+    {
+      "catalogId": "sehnaz--ilahi--duyek--zahid_bize--selahaddin_demirtas",
+      "status": "accepted",
+      "checkedAt": "2026-05-10",
+      "evidence": {
+        "title": "Zahid Bize Tan Eyleme Hak İsmin Okur Dilimiz",
+        "makam": "Şehnaz",
+        "form": "İlahi",
+        "usul": "Düyek",
+        "composer": "Selahattin Demirtaş",
+        "sourceProvider": "DîvânMakam"
+      },
+      "source": {
+        "id": "divanmakam-zahid-bize-tan-eyleme-sehnaz-score",
+        "label": "Nota kaynağı",
+        "provider": "score",
+        "url": "https://divanmakam.com/forum/zahid-bize-tan-eyleme-hak-ismin-okur-dilimiz-selahattin-demirtas-sehnaz.39322/",
+        "title": "Zahid Bize Tan Eyleme Hak İsmin Okur Dilimiz - Selahattin Demirtaş - Şehnaz",
+        "access": "external-link",
+        "verification": "manual",
+        "verifiedAt": "2026-05-10",
+        "notes": "Bulk web curation checked title, composer Selahattin Demirtaş, Şehnaz makam, İlahi form and Düyek usul against the SymbTr catalog entry."
+      }
+    },
+    {
+      "catalogId": "ussak--ilahi--duyek--allah_emrin--zekai_dede",
+      "status": "accepted",
+      "checkedAt": "2026-05-10",
+      "evidence": {
+        "title": "Allah Emrin Tutalım Rahmetine Batalım",
+        "makam": "Uşşak",
+        "form": "İlahi",
+        "usul": "Düyek",
+        "composer": "Zekai Dede",
+        "sourceProvider": "OGM Materyal"
+      },
+      "source": {
+        "id": "ogm-materyal-allah-emrin-tutalim-score",
+        "label": "Nota kaynağı",
+        "provider": "score",
+        "url": "https://ogmmateryal.eba.gov.tr/kitap/guzel-sanatlar-lisesi/muzik/12/thm-teori-uygulama/files/basic-html/page37.html",
+        "title": "Allah Emrin Tutalım Rahmetine Batalım - Uşşak İlahi",
+        "access": "external-link",
+        "verification": "manual",
+        "verifiedAt": "2026-05-10",
+        "notes": "Bulk web curation checked title, composer Zekai Dede, Uşşak makam, İlahi form and Düyek usul against the SymbTr catalog entry."
+      }
+    },
+    {
+      "catalogId": "ussak--ilahi--sofyan--askinla_cak--haci_nafiz_bey",
+      "status": "accepted",
+      "checkedAt": "2026-05-10",
+      "evidence": {
+        "title": "Aşkınla Çak Olsa Bu Ten Ben Yine İllallah Direm",
+        "makam": "Uşşak",
+        "form": "İlahi",
+        "usul": "Sofyan",
+        "composer": "Nafiz Bey (Hacı)",
+        "sourceProvider": "DîvânMakam"
+      },
+      "source": {
+        "id": "divanmakam-askinla-cak-olsa-bu-ten-score",
+        "label": "Nota kaynağı",
+        "provider": "score",
+        "url": "https://divanmakam.com/forum/askinla-cak-olsa-bu-ten-ben-yine-illallah-direm-nafiz-bey-haci-ussak.2713/",
+        "title": "Aşkınla Çak Olsa Bu Ten Ben Yine İllallah Direm - Nafiz Bey (Hacı) - Uşşak",
+        "access": "external-link",
+        "verification": "manual",
+        "verifiedAt": "2026-05-10",
+        "notes": "Bulk web curation checked title, composer Nafiz Bey (Hacı), Uşşak makam, İlahi form and Sofyan usul against the SymbTr catalog entry."
+      }
+    }
+  ]
+}

@@ -1,0 +1,3 @@
+path,area,preview
+scripts/lib/source-curation-operations.mjs,diff,"import {profileIdForSource} from ""./source-curation-validation.mjs""; import {   CURATION_PATHS,   readCurationRegistries,   readJson,   today,   validateCurrent,   writeJson, } from ""./source-curation"
+src/data/references/source-quality-stats.generated.json,diff,"{   ""version"": 1,   ""generatedAt"": ""2026-06-01T01:33:27.422Z"",   ""stats"": [     {       ""profileId"": ""divanmakam"",       ""acceptedCount"": 5,       ""removedCount"": 0,       ""deletedCount"": 0,       ""co"

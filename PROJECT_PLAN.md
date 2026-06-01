@@ -192,6 +192,12 @@ tek kurala bağlamaktır.
       Merge fonksiyonu yanlışlıkla gelen `needs-review` adayları da fail-closed
       skip eder; testler bu davranışı doğrudan doğrular. Event log/stats
       sınırlarını ayrı modüle inceltecek sonraki dalga açık kalır.
+      2026-06-01 Faz 4: curation registry I/O ve validation ortak sözleşmesi
+      `scripts/lib/source-curation-registry.mjs`, append-only feedback/manual
+      correction/embed-state/stats operasyonları ise
+      `scripts/lib/source-curation-events.mjs` içine ayrıldı. Eski
+      `source-curation-operations.mjs` import yüzeyi korunur ama auto-attach
+      üretimi ile event/stat mutasyonları artık ayrı modül sınırlarında testlenir.
 - [ ] Yeni model için validation/test kapılarını ekle: auto-attached kaynak
       sözleşmesi, feedback event bütünlüğü, silme/geri alma akışı, embed
       allowlist/fallback, filtre sonuçları, ops token davranışı, büyük liste

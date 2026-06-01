@@ -1,7 +1,7 @@
 import {fireEvent, render, screen, waitFor} from "@testing-library/react";
 import type {ReactNode} from "react";
 import {afterEach, beforeEach, describe, expect, it, vi} from "vitest";
-import ReferencesPage from "../page";
+import {ReferencesOperationsDashboard} from "@/features/references/ReferencesOperationsDashboard";
 
 vi.mock("@/components/layout/UnifiedLayout", () => ({
   UnifiedLayout: ({children}: {children: ReactNode}) => <main>{children}</main>,
@@ -39,7 +39,7 @@ const stateFixture = {
       {
         inboxId: "divanmakam-example",
         catalogId: "ussak--ilahi--duyek--example--zekai_dede",
-        status: "accepted",
+        status: "accepted" as const,
         confidenceScore: 180,
         confidenceGap: 40,
         reason: "High-confidence automatic catalog match.",
@@ -101,7 +101,7 @@ describe("ReferencesPage", () => {
     const fetchMock = mockFetch();
     vi.stubGlobal("fetch", fetchMock);
 
-    render(<ReferencesPage />);
+    render(<ReferencesOperationsDashboard />);
 
     await screen.findByRole("heading", {name: "Harici kaynak yönetimi"});
     fireEvent.change(screen.getByLabelText("Ops token"), {
@@ -125,7 +125,7 @@ describe("ReferencesPage", () => {
     const fetchMock = mockFetch();
     vi.stubGlobal("fetch", fetchMock);
 
-    render(<ReferencesPage />);
+    render(<ReferencesOperationsDashboard />);
 
     await screen.findByRole("heading", {name: "Harici kaynak yönetimi"});
     fireEvent.change(screen.getByLabelText("Ops token"), {
@@ -157,5 +157,49 @@ describe("ReferencesPage", () => {
         }),
       }),
     );
+  });
+
+  it("renders a read-only snapshot without fetching token-protected state on first paint", async () => {
+    const fetchMock = mockFetch();
+    vi.stubGlobal("fetch", fetchMock);
+
+    render(
+      <ReferencesOperationsDashboard
+        initialState={{
+          ...stateFixture,
+          inbox: {
+            ...stateFixture.inbox,
+            sources: stateFixture.inbox.sources.map((source) => ({
+              id: source.id,
+              provider: source.provider,
+              title: source.title,
+              sourceProvider: source.sourceProvider,
+              checkedAt: source.checkedAt,
+              observed: source.observed,
+            })),
+          },
+          mapping: {
+            ...stateFixture.mapping,
+            mappings: stateFixture.mapping.mappings.map((mapping) => ({
+              ...mapping,
+              candidate: {
+                source: {
+                  title: mapping.candidate.source.title,
+                  provider: mapping.candidate.source.provider,
+                },
+              },
+            })),
+          },
+        }}
+        initialMessage="Salt-okunur kaynak operasyon snapshot yüklendi."
+      />,
+    );
+
+    await screen.findByText("Salt-okunur kaynak operasyon snapshot yüklendi.");
+    expect(screen.getByText("22 / 3.000")).toBeDefined();
+    expect(screen.getByText("2.978")).toBeDefined();
+    expect(screen.getByText("Example Source")).toBeDefined();
+    expect(screen.queryByRole("link", {name: "Example Source"})).toBeNull();
+    expect(fetchMock).not.toHaveBeenCalled();
   });
 });

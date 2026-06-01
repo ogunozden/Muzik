@@ -332,6 +332,12 @@ tek kurala bağlamaktır.
       katalog id'sinin auto-attached accepted view'ını hydrate eder ve kaynak
       notları, feedback logu, manuel düzeltme içeriği gibi operatör alanlarını
       client HTML'ine taşımaz.
+      2026-06-01 references operasyon snapshot kapısı: `/references` artık
+      token'sız ilk render'da server-side, salt-okunur batch operasyon özeti
+      gösterir; inbox/mapping/coverage artifact'leri hydrate edilir, ancak raw
+      staged URL alanları client HTML'ine taşınmaz. Stage/map/sync/audit
+      işlemleri ve token-protected API state yenilemesi mevcut ops token
+      kontrolünü korur.
       2026-06-01 ek accepted import profile kapısı: bulk accepted kaynak import'u
       artık `research-source-profiles.json` içindeki etkin profile host'una
       eşleşmeyen URL'leri ve eşleşen profile provider'ıyla uyuşmayan source

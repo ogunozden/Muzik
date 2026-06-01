@@ -1,0 +1,18 @@
+{
+  "qa": {
+    "bodyChars": 3819,
+    "externalAnchorCount": 0,
+    "frameworkOverlay": false,
+    "hasBulkAccepted": true,
+    "hasCoverage": true,
+    "hasCurationLink": true,
+    "hasHeading": true,
+    "hasMissing": true,
+    "hasReadonlyMessage": true,
+    "horizontalOverflow": false,
+    "rawStagedUrlInHtml": false,
+    "title": "Muzik - Türk Müziği Platformu",
+    "url": "http://localhost:4015/references"
+  },
+  "logs": []
+}

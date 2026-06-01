@@ -90,6 +90,14 @@ if (exists(navigationConfigPath)) {
   }
 }
 
+const sharedUiIndexPath = "src/shared/ui/index.ts";
+if (exists(sharedUiIndexPath)) {
+  const sharedUiIndex = fs.readFileSync(path.join(root, sharedUiIndexPath), "utf8");
+  if (sharedUiIndex.includes('from "@/components";') || sharedUiIndex.includes("from '@/components';")) {
+    failures.push("shared/ui must export canonical component paths directly, not bridge through @/components");
+  }
+}
+
 function walk(dir, files = []) {
   if (!fs.existsSync(dir)) return files;
   for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {

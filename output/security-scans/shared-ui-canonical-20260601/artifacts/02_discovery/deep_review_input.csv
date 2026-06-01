@@ -1,0 +1,5 @@
+path,area
+scripts/validate-architecture.mjs,diff
+src/features/references/ReferencesCurationDashboard.tsx,diff
+src/features/references/ReferencesCurationDetail.tsx,diff
+src/shared/ui/index.ts,diff

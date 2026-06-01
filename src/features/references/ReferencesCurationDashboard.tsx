@@ -2,8 +2,7 @@
 
 import {useCallback, useMemo, useState} from "react";
 import Link from "next/link";
-import {UnifiedLayout} from "@/components/layout/UnifiedLayout";
-import {Button, Input} from "@/shared/ui";
+import {Button, Input, UnifiedLayout} from "@/shared/ui";
 import {tokens} from "@/shared/tokens";
 
 type CurationAction =

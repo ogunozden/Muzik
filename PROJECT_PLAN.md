@@ -65,10 +65,15 @@ tek kurala bağlamaktır.
       küçük bileşen/use-case modüllerine ayrılmalı. İlk dashboard
       `src/features/references/ReferencesCurationDashboard.tsx` altında;
       App Router sayfası yalnızca bu feature bileşenini bağlar.
-- [ ] `shared/ui` ve token merkezini gerçek kanonik merkez haline getir.
+- [x] `shared/ui` ve token merkezini gerçek kanonik merkez haline getir.
       `src/shared/ui/index.ts` hâlâ `@/components` köprüsünü kullanıyor;
       yeni curation UI eski `src/components`, `src/lib/theme` veya duplicate
       token katmanlarını büyütmemeli.
+      2026-06-01 kanonik merkez dalgası: `src/shared/ui/index.ts` artık
+      `@/components` barrel köprüsünden değil doğrudan atom/molecule/organism
+      component path'lerinden export eder; curation dashboard/detail layout
+      importları `@/shared/ui` üstünden geçer. `validate-architecture.mjs`
+      shared/ui'nin tekrar `@/components` barrel bridge'e dönmesini kırar.
 - [x] `docs/HUMAN_CURATION_SYSTEM_PLAN.md` içindeki eski "önce insan doğrulasın,
       sonra ürüne yaz" yaklaşımını tek bağlayıcı plana indir: otomatik
       iliştirme, inline embed, geri bildirim logu, manuel doldurma alanları,

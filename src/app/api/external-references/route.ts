@@ -75,6 +75,12 @@ const CANDIDATE_REVIEW_BATCH_PLAN_FILE = path.join(
   "external-reference-coverage",
   "symbtr-curated-reference-candidate-review-batch-plan.json",
 );
+const SOURCE_INTAKE_TEMPLATE_FILE = path.join(
+  PROJECT_ROOT,
+  "output",
+  "external-reference-coverage",
+  "symbtr-curated-reference-source-intake-template.json",
+);
 const TEMP_INPUT_DIR = path.join(PROJECT_ROOT, "output", "external-reference-coverage", "ui-input");
 const JSON_MAX_BUFFER_BYTES = 1024 * 1024 * 12;
 const MAX_BULK_TEXT_CHARS = 100_000;
@@ -226,6 +232,21 @@ interface CandidateReviewBatchPlanManifest {
     plannedCandidateCount?: number;
     packetSize?: number;
   };
+  packets?: unknown[];
+}
+
+interface SourceIntakeTemplateManifest {
+  version?: number;
+  type?: string;
+  policyVersion?: string;
+  generatedAt?: string;
+  summary?: {
+    packetCount?: number;
+    templateRowCount?: number;
+    plannedCandidateCount?: number;
+    packetSize?: number;
+  };
+  importContract?: Record<string, unknown>;
   packets?: unknown[];
 }
 
@@ -450,6 +471,7 @@ async function getExternalReferenceState(request: Request) {
     candidateReviewGroupDecisionManifest,
     candidateReviewGroupDecisionRecommendationManifest,
     candidateReviewBatchPlanManifest,
+    sourceIntakeTemplateManifest,
     candidateReviewQueue,
     candidateReviewGroups,
     fullBacklog,
@@ -484,6 +506,7 @@ async function getExternalReferenceState(request: Request) {
     readJsonOrNull<CandidateReviewGroupDecisionManifest>(CANDIDATE_REVIEW_GROUP_DECISIONS_FILE),
     readJsonOrNull<CandidateReviewGroupDecisionRecommendationManifest>(CANDIDATE_REVIEW_GROUP_DECISION_RECOMMENDATIONS_FILE),
     readJsonOrNull<CandidateReviewBatchPlanManifest>(CANDIDATE_REVIEW_BATCH_PLAN_FILE),
+    readJsonOrNull<SourceIntakeTemplateManifest>(SOURCE_INTAKE_TEMPLATE_FILE),
     readJsonOrNull<CandidateReviewRow[]>(CANDIDATE_REVIEW_QUEUE_FILE),
     readJsonOrNull<CandidateReviewGroup[]>(CANDIDATE_REVIEW_GROUPS_FILE),
     readJsonOrNull<CurationBacklogRow[]>(BACKLOG_FILE),
@@ -586,6 +609,20 @@ async function getExternalReferenceState(request: Request) {
         packetSize: candidateReviewBatchPlanManifest?.summary?.packetSize ?? 0,
         policyVersion: candidateReviewBatchPlanManifest?.policyVersion ?? null,
         generatedAt: candidateReviewBatchPlanManifest?.generatedAt ?? null,
+      },
+      sourceIntakeTemplateManifest: {
+        artifactPath: typeof coverage?.sourceIntakeTemplateJson === "string"
+          ? coverage.sourceIntakeTemplateJson
+          : toProjectRelativePath(SOURCE_INTAKE_TEMPLATE_FILE),
+        packetCount: sourceIntakeTemplateManifest?.summary?.packetCount ?? 0,
+        templateRowCount: sourceIntakeTemplateManifest?.summary?.templateRowCount ?? 0,
+        plannedCandidateCount: sourceIntakeTemplateManifest?.summary?.plannedCandidateCount ?? 0,
+        packetSize: sourceIntakeTemplateManifest?.summary?.packetSize ?? 0,
+        policyVersion: sourceIntakeTemplateManifest?.policyVersion ?? null,
+        generatedAt: sourceIntakeTemplateManifest?.generatedAt ?? null,
+        targetScript: typeof sourceIntakeTemplateManifest?.importContract?.targetScript === "string"
+          ? sourceIntakeTemplateManifest.importContract.targetScript
+          : null,
       },
       candidateReviewGroupPage: {
         offset: candidateReviewGroupOffset,

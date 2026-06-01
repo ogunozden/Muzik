@@ -2,6 +2,7 @@ import {getCandidateReviewGroupFingerprint} from "../../src/data/references/cand
 
 export const CANDIDATE_REVIEW_GROUP_DECISION_RECOMMENDATION_VERSION = "candidate-review-group-decision-recommendations-v1";
 export const CANDIDATE_REVIEW_BATCH_PLAN_VERSION = "candidate-review-batch-plan-v1";
+export const CANDIDATE_REVIEW_SOURCE_INTAKE_TEMPLATE_VERSION = "candidate-review-source-intake-template-v1";
 export const DEFAULT_CANDIDATE_REVIEW_PACKET_SIZE = 25;
 
 function buildProfileSearchQuery(row, profile) {
@@ -331,6 +332,119 @@ export function buildCandidateReviewBatchPlan(candidateReviewGroups, candidateRe
       plannedCandidateCount: packets.reduce((total, packet) => total + packet.candidateCount, 0),
       safetyPolicy:
         "Review packets do not create accepted references and do not carry source URLs; they only group review candidates for operator batch decisions.",
+    },
+    packets,
+  };
+}
+
+export function buildCandidateReviewSourceIntakeTemplate(candidateReviewGroups, candidateReviewRows, {
+  generatedAt,
+  packetSize = DEFAULT_CANDIDATE_REVIEW_PACKET_SIZE,
+  checkedAt = "1970-01-01",
+} = {}) {
+  const rowsByCatalogId = candidateReviewRows.reduce((rowsById, row) => {
+    const rows = rowsById.get(row.catalogId) ?? [];
+    rows.push(row);
+    rowsById.set(row.catalogId, rows);
+    return rowsById;
+  }, new Map());
+  const activeGroups = candidateReviewGroups
+    .filter((group) => group.status === "needs-review" && group.deferredFromNextBatch !== true)
+    .sort((left, right) => (
+      right.highestReviewConfidenceScore - left.highestReviewConfidenceScore ||
+      left.priorityGroup.localeCompare(right.priorityGroup, "en") ||
+      left.catalogId.localeCompare(right.catalogId, "en")
+    ));
+  const packets = chunkRows(activeGroups, packetSize).map((groups, index) => {
+    const rows = groups.map((group) => {
+      const candidates = (rowsByCatalogId.get(group.catalogId) ?? [])
+        .slice()
+        .sort((left, right) => (
+          right.reviewConfidenceScore - left.reviewConfidenceScore ||
+          left.profileId.localeCompare(right.profileId, "en")
+        ))
+        .map((candidate) => ({
+          candidateId: candidate.candidateId,
+          profileId: candidate.profileId,
+          profileLabel: candidate.profileLabel,
+          provider: candidate.provider,
+          reviewConfidenceScore: candidate.reviewConfidenceScore,
+          reviewConfidenceLevel: candidate.reviewConfidenceLevel,
+          searchQuery: candidate.searchQuery,
+          searchUrl: candidate.searchUrl,
+        }));
+
+      return {
+        groupId: group.groupId,
+        catalogId: group.catalogId,
+        sourceGroupFingerprint: getCandidateReviewGroupFingerprint(group),
+        status: "needs-source-url",
+        requiredAction: "fill-empty-source-fields-then-import-through-validated-bulk-candidate-manifest",
+        checkedAt,
+        catalog: {
+          makam: group.makam,
+          form: group.form,
+          usul: group.usul,
+          title: group.title,
+          composer: group.composer,
+          priorityGroup: group.priorityGroup,
+        },
+        sourceFields: {
+          sourceId: "",
+          provider: "",
+          label: "",
+          title: "",
+          httpsUrl: "",
+          verification: "",
+          evidenceTitle: "",
+          evidenceMakam: "",
+          evidenceForm: "",
+          evidenceUsul: "",
+          evidenceComposer: "",
+          evidenceSourceProvider: "",
+        },
+        candidates,
+      };
+    });
+
+    return {
+      packetId: `source-intake-packet-${String(index + 1).padStart(4, "0")}`,
+      sequence: index + 1,
+      status: "needs-source-url",
+      groupCount: rows.length,
+      candidateCount: rows.reduce((total, row) => total + row.candidates.length, 0),
+      catalogIds: rows.map((row) => row.catalogId),
+      rows,
+    };
+  });
+
+  return {
+    version: 1,
+    type: "candidate-review-source-intake-template",
+    policyVersion: CANDIDATE_REVIEW_SOURCE_INTAKE_TEMPLATE_VERSION,
+    generatedAt,
+    summary: {
+      totalGroups: candidateReviewGroups.length,
+      candidateReviewQueueEntries: candidateReviewRows.length,
+      activeGroupCount: activeGroups.length,
+      packetSize,
+      packetCount: packets.length,
+      templateRowCount: packets.reduce((total, packet) => total + packet.rows.length, 0),
+      plannedCandidateCount: packets.reduce((total, packet) => total + packet.candidateCount, 0),
+      safetyPolicy:
+        "Source intake templates are blank operator worklists. They do not create accepted references; filled sources must be imported through the validated bulk candidate pipeline.",
+    },
+    importContract: {
+      targetManifestType: "external-reference-bulk-candidates",
+      targetScript: "npm run import:external-references -- --input <json>",
+      acceptedOnlyAfterValidation: true,
+      requiredValidation: [
+        "catalog-id",
+        "https-url-policy",
+        "research-profile-match",
+        "accepted-identity-dedupe",
+        "checked-at-date",
+      ],
     },
     packets,
   };

@@ -230,6 +230,100 @@ function validRegistries() {
         },
       ],
     },
+    sourceIntakeTemplate: {
+      version: 1,
+      type: "candidate-review-source-intake-template",
+      policyVersion: "candidate-review-source-intake-template-v1",
+      generatedAt: "2026-06-01T00:00:00.000Z",
+      summary: {
+        totalGroups: 1,
+        candidateReviewQueueEntries: 1,
+        activeGroupCount: 1,
+        packetSize: 25,
+        packetCount: 1,
+        templateRowCount: 1,
+        plannedCandidateCount: 1,
+        safetyPolicy: "Source intake templates are blank operator worklists. They do not create accepted references; filled sources must be imported through the validated bulk candidate pipeline.",
+      },
+      importContract: {
+        targetManifestType: "external-reference-bulk-candidates",
+        targetScript: "npm run import:external-references -- --input <json>",
+        acceptedOnlyAfterValidation: true,
+        requiredValidation: ["catalog-id", "https-url-policy"],
+      },
+      packets: [
+        {
+          packetId: "source-intake-packet-0001",
+          sequence: 1,
+          status: "needs-source-url",
+          groupCount: 1,
+          candidateCount: 1,
+          catalogIds: [catalog[0].id],
+          rows: [
+            {
+              groupId: `${catalog[0].id}:review-group`,
+              catalogId: catalog[0].id,
+              sourceGroupFingerprint: getCandidateReviewGroupFingerprint({
+                groupId: `${catalog[0].id}:review-group`,
+                catalogId: catalog[0].id,
+                status: "needs-review",
+                reviewAction: "review-provider-candidates",
+                candidateCount: 1,
+                profileCount: 1,
+                profiles: ["youtube"],
+                providers: ["youtube"],
+                confidenceLevels: ["low"],
+                highestReviewConfidenceScore: 64,
+                deferredFromNextBatch: false,
+                makam: "Hicazkar",
+                form: "Peşrev",
+                usul: "Düyek",
+                title: "Test Peşrev",
+                composer: "Besteci",
+                priorityGroup: "pdf-and-musicxml",
+              }),
+              status: "needs-source-url",
+              requiredAction: "fill-empty-source-fields-then-import-through-validated-bulk-candidate-manifest",
+              checkedAt: "2026-06-01",
+              catalog: {
+                makam: "Hicazkar",
+                form: "Peşrev",
+                usul: "Düyek",
+                title: "Test Peşrev",
+                composer: "Besteci",
+                priorityGroup: "pdf-and-musicxml",
+              },
+              sourceFields: {
+                sourceId: "",
+                provider: "",
+                label: "",
+                title: "",
+                httpsUrl: "",
+                verification: "",
+                evidenceTitle: "",
+                evidenceMakam: "",
+                evidenceForm: "",
+                evidenceUsul: "",
+                evidenceComposer: "",
+                evidenceSourceProvider: "",
+              },
+              candidates: [
+                {
+                  candidateId: `${catalog[0].id}:youtube:search`,
+                  profileId: "youtube",
+                  profileLabel: "YouTube",
+                  provider: "youtube",
+                  reviewConfidenceScore: 64,
+                  reviewConfidenceLevel: "low",
+                  searchQuery: "Test Peşrev YouTube",
+                  searchUrl: "https://www.youtube.com/results?search_query=Test%20Pe%C5%9Frev",
+                },
+              ],
+            },
+          ],
+        },
+      ],
+    },
     coverageMatrix: {
       version: 1,
       type: "external-reference-coverage-matrix",
@@ -288,6 +382,8 @@ function validRegistries() {
       candidateReviewGroupDecisionEntries: 0,
       candidateReviewGroupDecisionRecommendationEntries: 0,
       candidateReviewBatchPlanEntries: 1,
+      sourceIntakeTemplatePacketEntries: 1,
+      sourceIntakeTemplateRowEntries: 1,
       candidateReviewQueueByStatus: [{value: "needs-review", count: 1}],
       candidateReviewQueueByProfile: [{value: "youtube", count: 1}],
       candidateReviewGroupsByStatus: [{value: "needs-review", count: 1}],
@@ -317,6 +413,8 @@ function validRegistries() {
         recommendedReviewGroupDecisions: 0,
         plannedReviewPackets: 1,
         plannedReviewGroups: 1,
+        plannedSourceIntakePackets: 1,
+        plannedSourceIntakeRows: 1,
         candidateReviewStatusCounts: [{value: "needs-review", count: 1}],
         duplicateAcceptedIdentityPolicy: "duplicate accepted URL identities fail validation before merge",
         autoAttachPolicy: "only accepted bulk candidates are counted as curated and eligible for auto-attach",
@@ -333,6 +431,7 @@ function validRegistries() {
           "candidate-review-group-decision-drift",
           "candidate-review-group-decision-recommendation-drift",
           "candidate-review-batch-plan-drift",
+          "source-intake-template-drift",
           "coverage-matrix-drift",
           "dedupe-report-drift",
         ],
@@ -359,6 +458,7 @@ describe("source curation validation", () => {
           candidateReviewGroupEntries: 1,
           candidateReviewGroupDecisionRecommendationEntries: 0,
           candidateReviewBatchPlanEntries: 1,
+          sourceIntakeTemplatePacketEntries: 1,
         }),
       }),
     );
@@ -530,9 +630,18 @@ describe("source curation validation", () => {
     registries.candidateReviewBatchPlan.summary.plannedGroupCount = 0;
     registries.candidateReviewBatchPlan.summary.plannedCandidateCount = 0;
     registries.candidateReviewBatchPlan.packets = [];
+    registries.sourceIntakeTemplate.summary.activeGroupCount = 0;
+    registries.sourceIntakeTemplate.summary.packetCount = 0;
+    registries.sourceIntakeTemplate.summary.templateRowCount = 0;
+    registries.sourceIntakeTemplate.summary.plannedCandidateCount = 0;
+    registries.sourceIntakeTemplate.packets = [];
     registries.coverageSummary.candidateReviewBatchPlanEntries = 0;
+    registries.coverageSummary.sourceIntakeTemplatePacketEntries = 0;
+    registries.coverageSummary.sourceIntakeTemplateRowEntries = 0;
     registries.coverageSummary.batchReport.plannedReviewPackets = 0;
     registries.coverageSummary.batchReport.plannedReviewGroups = 0;
+    registries.coverageSummary.batchReport.plannedSourceIntakePackets = 0;
+    registries.coverageSummary.batchReport.plannedSourceIntakeRows = 0;
 
     expect(validateSourceCurationRegistries(registries).errors).toEqual([]);
 
@@ -575,9 +684,18 @@ describe("source curation validation", () => {
     registries.candidateReviewBatchPlan.summary.plannedGroupCount = 0;
     registries.candidateReviewBatchPlan.summary.plannedCandidateCount = 0;
     registries.candidateReviewBatchPlan.packets = [];
+    registries.sourceIntakeTemplate.summary.activeGroupCount = 0;
+    registries.sourceIntakeTemplate.summary.packetCount = 0;
+    registries.sourceIntakeTemplate.summary.templateRowCount = 0;
+    registries.sourceIntakeTemplate.summary.plannedCandidateCount = 0;
+    registries.sourceIntakeTemplate.packets = [];
     registries.coverageSummary.candidateReviewBatchPlanEntries = 0;
+    registries.coverageSummary.sourceIntakeTemplatePacketEntries = 0;
+    registries.coverageSummary.sourceIntakeTemplateRowEntries = 0;
     registries.coverageSummary.batchReport.plannedReviewPackets = 0;
     registries.coverageSummary.batchReport.plannedReviewGroups = 0;
+    registries.coverageSummary.batchReport.plannedSourceIntakePackets = 0;
+    registries.coverageSummary.batchReport.plannedSourceIntakeRows = 0;
 
     expect(validateSourceCurationRegistries(registries).errors).toEqual([]);
 

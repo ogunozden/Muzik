@@ -35,6 +35,7 @@ const CANDIDATE_REVIEW_GROUP_STATUSES = new Set(["needs-review", "conflict", "re
 const CANDIDATE_REVIEW_GROUP_DECISION_STATUSES = new Set(["rejected", "conflict", "deferred"]);
 const CANDIDATE_REVIEW_GROUP_DECISION_RECOMMENDATION_TYPE = "candidate-review-group-decision-recommendations";
 const CANDIDATE_REVIEW_BATCH_PLAN_TYPE = "candidate-review-batch-plan";
+const SOURCE_INTAKE_TEMPLATE_TYPE = "candidate-review-source-intake-template";
 const COVERAGE_MATRIX_TYPE = "external-reference-coverage-matrix";
 const DEDUPE_REPORT_TYPE = "external-reference-dedupe-report";
 const PROVIDERS = new Set(["score", "symbtr", "youtube", "archive", "github"]);
@@ -65,6 +66,7 @@ const REQUIRED_BATCH_VALIDATION_GATES = [
   "candidate-review-group-decision-drift",
   "candidate-review-group-decision-recommendation-drift",
   "candidate-review-batch-plan-drift",
+  "source-intake-template-drift",
   "coverage-matrix-drift",
   "dedupe-report-drift",
 ];
@@ -220,6 +222,8 @@ function validateBatchReport(summary, actualCandidateReviewCount, actualCandidat
     "recommendedReviewGroupDecisions",
     "plannedReviewPackets",
     "plannedReviewGroups",
+    "plannedSourceIntakePackets",
+    "plannedSourceIntakeRows",
   ];
   for (const field of integerFields) {
     if (!Number.isInteger(report[field]) || report[field] < 0) {
@@ -521,6 +525,7 @@ export function validateSourceCurationRegistries({
   candidateReviewGroupDecisions,
   candidateReviewGroupDecisionRecommendations,
   candidateReviewBatchPlan,
+  sourceIntakeTemplate,
   coverageMatrix,
   dedupeReport,
   bulkCandidates,
@@ -1201,6 +1206,127 @@ export function validateSourceCurationRegistries({
           }
         }
       }
+
+      if (sourceIntakeTemplate !== undefined) {
+        if (!sourceIntakeTemplate || typeof sourceIntakeTemplate !== "object") {
+          errors.push("source-intake-template: artifact must be an object");
+        } else if (Array.isArray(candidateReviewGroups)) {
+          if (sourceIntakeTemplate.version !== 1) {
+            errors.push("source-intake-template: version must be 1");
+          }
+          if (sourceIntakeTemplate.type !== SOURCE_INTAKE_TEMPLATE_TYPE) {
+            errors.push(`source-intake-template: type must be ${SOURCE_INTAKE_TEMPLATE_TYPE}`);
+          }
+          if (!Array.isArray(sourceIntakeTemplate.packets)) {
+            errors.push("source-intake-template: packets must be an array");
+          } else {
+            const activeReviewGroups = candidateReviewGroups.filter(
+              (group) => group.status === "needs-review" && group.deferredFromNextBatch !== true,
+            );
+            const activeReviewGroupIds = new Set(activeReviewGroups.map((group) => group.groupId));
+            const reviewGroupByCatalogId = new Map(candidateReviewGroups.map((group) => [group.catalogId, group]));
+            const plannedCatalogIds = [];
+
+            validateUnique(sourceIntakeTemplate.packets.map((packet) => packet.packetId), "source-intake-template", errors);
+
+            for (const packet of sourceIntakeTemplate.packets) {
+              const packetLabel = packet?.packetId ?? "<missing-packet-id>";
+              if (!isNonEmptyString(packet?.packetId)) {
+                errors.push("source-intake-template: packetId is required");
+              }
+              if (packet?.status !== "needs-source-url") {
+                errors.push(`source-intake-template: ${packetLabel} status must be needs-source-url`);
+              }
+              if (!Array.isArray(packet?.catalogIds) || packet.catalogIds.length === 0) {
+                errors.push(`source-intake-template: ${packetLabel} catalogIds must be a non-empty array`);
+                continue;
+              }
+              if (!Array.isArray(packet?.rows) || packet.rows.length !== packet.catalogIds.length) {
+                errors.push(`source-intake-template: ${packetLabel} rows must match catalogIds`);
+                continue;
+              }
+              if (!Number.isInteger(packet.groupCount) || packet.groupCount !== packet.catalogIds.length) {
+                errors.push(`source-intake-template: ${packetLabel} groupCount must match catalogIds`);
+              }
+
+              const expectedCandidateCount = packet.catalogIds.reduce(
+                (total, catalogId) => total + (candidateRowsByCatalogId.get(catalogId) ?? []).length,
+                0,
+              );
+              if (!Number.isInteger(packet.candidateCount) || packet.candidateCount !== expectedCandidateCount) {
+                errors.push(`source-intake-template: ${packetLabel} candidateCount must match review queue rows`);
+              }
+
+              for (const catalogId of packet.catalogIds) {
+                plannedCatalogIds.push(catalogId);
+                const group = reviewGroupByCatalogId.get(catalogId);
+                const row = packet.rows.find((item) => item?.catalogId === catalogId);
+                if (!group || !activeReviewGroupIds.has(group.groupId)) {
+                  errors.push(`source-intake-template: ${packetLabel} catalogId ${catalogId} is not an active needs-review group`);
+                  continue;
+                }
+                if (!row) {
+                  errors.push(`source-intake-template: ${packetLabel} missing template row for ${catalogId}`);
+                  continue;
+                }
+                if (row.groupId !== group.groupId) {
+                  errors.push(`source-intake-template: ${packetLabel} row groupId must match ${group.groupId}`);
+                }
+                if (row.sourceGroupFingerprint !== getCandidateReviewGroupFingerprint(group)) {
+                  errors.push(`source-intake-template: ${packetLabel} sourceGroupFingerprint must match ${group.groupId}`);
+                }
+                if (row.status !== "needs-source-url") {
+                  errors.push(`source-intake-template: ${packetLabel} row status must be needs-source-url`);
+                }
+                const sourceFields = row.sourceFields ?? {};
+                for (const field of ["sourceId", "provider", "label", "title", "httpsUrl", "verification"]) {
+                  if (sourceFields[field] !== "") {
+                    errors.push(`source-intake-template: ${packetLabel} ${catalogId} sourceFields.${field} must be blank`);
+                  }
+                }
+                if (row.sourceId !== undefined || row.sourceUrl !== undefined || row.url !== undefined || row.status === "accepted") {
+                  errors.push(`source-intake-template: ${packetLabel} ${catalogId} must not accept or carry source URLs`);
+                }
+                if (!Array.isArray(row.candidates) || row.candidates.length !== (candidateRowsByCatalogId.get(catalogId) ?? []).length) {
+                  errors.push(`source-intake-template: ${packetLabel} ${catalogId} candidates must match review queue rows`);
+                }
+              }
+            }
+
+            validateUnique(plannedCatalogIds, "source-intake-template catalogIds", errors);
+            const summary = sourceIntakeTemplate.summary ?? {};
+            if (summary.totalGroups !== candidateReviewGroups.length) {
+              errors.push("source-intake-template: summary.totalGroups must match candidate review groups");
+            }
+            if (summary.candidateReviewQueueEntries !== candidateReviewQueue.length) {
+              errors.push("source-intake-template: summary.candidateReviewQueueEntries must match candidate review queue");
+            }
+            if (summary.activeGroupCount !== activeReviewGroups.length) {
+              errors.push("source-intake-template: summary.activeGroupCount must match active needs-review groups");
+            }
+            if (summary.packetCount !== sourceIntakeTemplate.packets.length) {
+              errors.push("source-intake-template: summary.packetCount must match packets");
+            }
+            if (summary.templateRowCount !== plannedCatalogIds.length) {
+              errors.push("source-intake-template: summary.templateRowCount must match packet catalogIds");
+            }
+            if (coverageSummary !== undefined) {
+              validateCoverageCount(
+                coverageSummary,
+                "sourceIntakeTemplatePacketEntries",
+                sourceIntakeTemplate.packets.length,
+                errors,
+              );
+              validateCoverageCount(
+                coverageSummary,
+                "sourceIntakeTemplateRowEntries",
+                plannedCatalogIds.length,
+                errors,
+              );
+            }
+          }
+        }
+      }
     }
   }
 
@@ -1225,6 +1351,9 @@ export function validateSourceCurationRegistries({
         : 0,
       candidateReviewBatchPlanEntries: Array.isArray(candidateReviewBatchPlan?.packets)
         ? candidateReviewBatchPlan.packets.length
+        : 0,
+      sourceIntakeTemplatePacketEntries: Array.isArray(sourceIntakeTemplate?.packets)
+        ? sourceIntakeTemplate.packets.length
         : 0,
     },
   };

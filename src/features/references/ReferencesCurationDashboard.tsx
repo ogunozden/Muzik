@@ -182,6 +182,8 @@ export interface ExternalReferenceState {
       recommendedReviewGroupDecisions?: number;
       plannedReviewPackets?: number;
       plannedReviewGroups?: number;
+      plannedSourceIntakePackets?: number;
+      plannedSourceIntakeRows?: number;
       validationGates?: string[];
     };
     candidateReviewGroupDecisionRecommendationEntries?: number;
@@ -244,6 +246,16 @@ export interface ExternalReferenceState {
       packetSize?: number;
       policyVersion?: string | null;
       generatedAt?: string | null;
+    };
+    sourceIntakeTemplateManifest?: {
+      artifactPath?: string;
+      packetCount?: number;
+      templateRowCount?: number;
+      plannedCandidateCount?: number;
+      packetSize?: number;
+      policyVersion?: string | null;
+      generatedAt?: string | null;
+      targetScript?: string | null;
     };
     candidateReviewGroupPage?: CandidateReviewGroupPage;
     candidateReviewGroupFacets?: {
@@ -845,6 +857,7 @@ export function ReferencesCurationDashboard({
   const candidateReviewGroupDecisionManifest = state.curation?.candidateReviewGroupDecisionManifest;
   const candidateReviewGroupDecisionRecommendationManifest = state.curation?.candidateReviewGroupDecisionRecommendationManifest;
   const candidateReviewBatchPlanManifest = state.curation?.candidateReviewBatchPlanManifest;
+  const sourceIntakeTemplateManifest = state.curation?.sourceIntakeTemplateManifest;
   const candidateReviewGroupPage = state.curation?.candidateReviewGroupPage;
   const candidateReviewGroups = state.curation?.candidateReviewGroups ?? [];
   const candidateReviewPage = state.curation?.candidateReviewPage;
@@ -928,6 +941,7 @@ export function ReferencesCurationDashboard({
                   <p className={`mt-1 text-xs ${tokens.colors.text.secondary}`}>
                     Batch raporu: {formatNumber(batchReport.processedCatalogEntries)} eser işlendi · {formatNumber(batchReport.curatedBeforeBulkCandidates)} önce · +{formatNumber(batchReport.newlyAcceptedCatalogEntries)} accepted · {formatNumber(batchReport.missingAfterBatch)} eksik · {formatNumber(batchReport.deferredMissingEntries)} deferred · {formatNumber(batchReport.validationGates?.length)} kapı
                     {typeof batchReport.recommendedReviewGroupDecisions === "number" && ` · ${formatNumber(batchReport.recommendedReviewGroupDecisions)} öneri`}
+                    {typeof batchReport.plannedSourceIntakeRows === "number" && ` · ${formatNumber(batchReport.plannedSourceIntakeRows)} intake`}
                   </p>
                 )}
                 {candidateManifest?.artifactPath && (
@@ -1001,6 +1015,12 @@ export function ReferencesCurationDashboard({
                 {candidateReviewBatchPlanManifest?.artifactPath && (
                   <code className="block break-all text-xs text-[var(--color-text-primary)]">
                     {candidateReviewBatchPlanManifest.artifactPath} · {formatNumber(candidateReviewBatchPlanManifest.packetCount)} paket · {formatNumber(candidateReviewBatchPlanManifest.plannedGroupCount)} grup · {formatNumber(candidateReviewBatchPlanManifest.plannedCandidateCount)} aday
+                  </code>
+                )}
+                {sourceIntakeTemplateManifest?.artifactPath && (
+                  <code className="block break-all text-xs text-[var(--color-text-primary)]">
+                    {sourceIntakeTemplateManifest.artifactPath} · {formatNumber(sourceIntakeTemplateManifest.packetCount)} paket · {formatNumber(sourceIntakeTemplateManifest.templateRowCount)} boş kaynak satırı · {formatNumber(sourceIntakeTemplateManifest.plannedCandidateCount)} aday
+                    {sourceIntakeTemplateManifest.targetScript ? ` · ${sourceIntakeTemplateManifest.targetScript}` : ""}
                   </code>
                 )}
               </div>

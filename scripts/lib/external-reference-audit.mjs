@@ -3,11 +3,13 @@ import path from "node:path";
 import {
   CANDIDATE_REVIEW_GROUP_DECISION_RECOMMENDATION_VERSION,
   CANDIDATE_REVIEW_BATCH_PLAN_VERSION,
+  CANDIDATE_REVIEW_SOURCE_INTAKE_TEMPLATE_VERSION,
   DEFAULT_CANDIDATE_REVIEW_PACKET_SIZE,
   buildCandidateReviewBatchPlan,
   buildCandidateReviewGroupDecisionRecommendations,
   buildCandidateReviewGroups,
   buildCandidateReviewRows,
+  buildCandidateReviewSourceIntakeTemplate,
 } from "./external-reference-candidate-review.mjs";
 import {
   COVERAGE_MATRIX_VERSION,
@@ -26,6 +28,7 @@ export {
   buildCandidateReviewBatchPlan,
   buildCandidateReviewGroups,
   buildCandidateReviewRows,
+  buildCandidateReviewSourceIntakeTemplate,
   summarizeCounts,
 };
 
@@ -755,6 +758,10 @@ export function runExternalReferenceCoverageAudit({
     safeOutDir,
     "symbtr-curated-reference-candidate-review-batch-plan.json",
   );
+  const candidateReviewSourceIntakeTemplateJsonPath = path.join(
+    safeOutDir,
+    "symbtr-curated-reference-source-intake-template.json",
+  );
   const coverageMatrixJsonPath = path.join(safeOutDir, "symbtr-curated-reference-coverage-matrix.json");
   const dedupeReportJsonPath = path.join(safeOutDir, "symbtr-curated-reference-dedupe-report.json");
   const recommendationReviewedAt = getLatestIsoDate(
@@ -770,6 +777,15 @@ export function runExternalReferenceCoverageAudit({
     packetSize: DEFAULT_CANDIDATE_REVIEW_PACKET_SIZE,
     reviewedAt: recommendationReviewedAt,
   });
+  const candidateReviewSourceIntakeTemplate = buildCandidateReviewSourceIntakeTemplate(
+    candidateReviewGroups,
+    candidateReviewRows,
+    {
+      generatedAt,
+      packetSize: DEFAULT_CANDIDATE_REVIEW_PACKET_SIZE,
+      checkedAt: recommendationReviewedAt,
+    },
+  );
   const candidateReviewGroupDecisionRecommendationManifest = {
     version: 1,
     type: "candidate-review-group-decision-recommendations",
@@ -811,6 +827,10 @@ export function runExternalReferenceCoverageAudit({
     `${JSON.stringify(candidateReviewGroupDecisionRecommendationManifest, null, 2)}\n`,
   );
   writeFileSync(candidateReviewBatchPlanJsonPath, `${JSON.stringify(candidateReviewBatchPlan, null, 2)}\n`);
+  writeFileSync(
+    candidateReviewSourceIntakeTemplateJsonPath,
+    `${JSON.stringify(candidateReviewSourceIntakeTemplate, null, 2)}\n`,
+  );
   writeFileSync(coverageMatrixJsonPath, `${JSON.stringify(coverageMatrix, null, 2)}\n`);
   writeFileSync(dedupeReportJsonPath, `${JSON.stringify(dedupeReport, null, 2)}\n`);
 
@@ -847,9 +867,12 @@ export function runExternalReferenceCoverageAudit({
     candidateReviewScoringSignals: ["profile-trust", "profile-metadata-strategy", "catalog-formats", "catalog-fields", "curation-decision"],
     candidateReviewGroupDecisionRecommendationPolicy: CANDIDATE_REVIEW_GROUP_DECISION_RECOMMENDATION_VERSION,
     candidateReviewBatchPlanPolicy: CANDIDATE_REVIEW_BATCH_PLAN_VERSION,
+    candidateReviewSourceIntakeTemplatePolicy: CANDIDATE_REVIEW_SOURCE_INTAKE_TEMPLATE_VERSION,
     candidateReviewBatchPacketSize: DEFAULT_CANDIDATE_REVIEW_PACKET_SIZE,
     plannedReviewPackets: candidateReviewBatchPlan.summary.packetCount,
     plannedReviewGroups: candidateReviewBatchPlan.summary.plannedGroupCount,
+    plannedSourceIntakePackets: candidateReviewSourceIntakeTemplate.summary.packetCount,
+    plannedSourceIntakeRows: candidateReviewSourceIntakeTemplate.summary.templateRowCount,
     duplicateAcceptedIdentityPolicy: "duplicate accepted URL identities fail validation before merge",
     dedupeReportPolicy: DEDUPE_REPORT_VERSION,
     dedupeCheckedRows: dedupeReport.summary.bulkCandidateEntries + dedupeReport.summary.candidateReviewQueueEntries,
@@ -871,6 +894,7 @@ export function runExternalReferenceCoverageAudit({
       "candidate-review-group-decision-drift",
       "candidate-review-group-decision-recommendation-drift",
       "candidate-review-batch-plan-drift",
+      "source-intake-template-drift",
       "coverage-matrix-drift",
       "dedupe-report-drift",
     ],
@@ -892,6 +916,8 @@ export function runExternalReferenceCoverageAudit({
     candidateReviewGroupEntries: candidateReviewGroups.length,
     candidateReviewGroupDecisionRecommendationEntries: candidateReviewGroupDecisionRecommendations.length,
     candidateReviewBatchPlanEntries: candidateReviewBatchPlan.summary.packetCount,
+    sourceIntakeTemplatePacketEntries: candidateReviewSourceIntakeTemplate.summary.packetCount,
+    sourceIntakeTemplateRowEntries: candidateReviewSourceIntakeTemplate.summary.templateRowCount,
     candidateReviewQueueByStatus: summarizeCounts(candidateReviewRows, "status"),
     candidateReviewQueueByProfile: summarizeCounts(candidateReviewRows, "profileId"),
     candidateReviewGroupsByStatus: summarizeCounts(candidateReviewGroups, "status"),
@@ -936,6 +962,7 @@ export function runExternalReferenceCoverageAudit({
       path.relative(root, candidateReviewGroupRecommendationJsonPath),
     ),
     candidateReviewBatchPlanJson: toProjectPath(path.relative(root, candidateReviewBatchPlanJsonPath)),
+    sourceIntakeTemplateJson: toProjectPath(path.relative(root, candidateReviewSourceIntakeTemplateJsonPath)),
     coverageMatrixJson: toProjectPath(path.relative(root, coverageMatrixJsonPath)),
     dedupeReportJson: toProjectPath(path.relative(root, dedupeReportJsonPath)),
     candidateReviewGroupDecisionsJson: toProjectPath(path.relative(root, paths.candidateReviewGroupDecisions)),

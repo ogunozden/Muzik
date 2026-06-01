@@ -198,6 +198,7 @@ async function buildReadOnlyInitialState(): Promise<ExternalReferenceState> {
   const candidateGroupsPath = path.join(COVERAGE_ROOT, "symbtr-curated-reference-candidate-review-groups.json");
   const recommendationPath = path.join(COVERAGE_ROOT, "symbtr-curated-reference-candidate-review-group-decision-recommendations.json");
   const batchPlanPath = path.join(COVERAGE_ROOT, "symbtr-curated-reference-candidate-review-batch-plan.json");
+  const sourceIntakeTemplatePath = path.join(COVERAGE_ROOT, "symbtr-curated-reference-source-intake-template.json");
   const mappingPath = path.join(COVERAGE_ROOT, "mapped-external-reference-candidates.json");
   const [
     coverage,
@@ -212,6 +213,7 @@ async function buildReadOnlyInitialState(): Promise<ExternalReferenceState> {
     groupDecisionManifest,
     groupDecisionRecommendations,
     candidateReviewBatchPlan,
+    sourceIntakeTemplate,
     candidateReviewQueueData,
     candidateReviewGroupsData,
     backlogData,
@@ -229,6 +231,7 @@ async function buildReadOnlyInitialState(): Promise<ExternalReferenceState> {
     readJsonOrNull<{decisions?: unknown[]}>(path.join(REFERENCES_ROOT, "candidate-review-group-decisions.json")),
     readJsonOrNull<{policyVersion?: string; generatedAt?: string; summary?: Record<string, unknown>; decisions?: unknown[]}>(recommendationPath),
     readJsonOrNull<{policyVersion?: string; generatedAt?: string; summary?: Record<string, unknown>; packets?: unknown[]}>(batchPlanPath),
+    readJsonOrNull<{policyVersion?: string; generatedAt?: string; summary?: Record<string, unknown>; importContract?: Record<string, unknown>; packets?: unknown[]}>(sourceIntakeTemplatePath),
     readJsonOrNull<CandidateReviewRow[]>(candidateQueuePath),
     readJsonOrNull<CandidateReviewGroup[]>(candidateGroupsPath),
     readJsonOrNull<CurationBacklogRow[]>(backlogPath),
@@ -289,6 +292,18 @@ async function buildReadOnlyInitialState(): Promise<ExternalReferenceState> {
         packetSize: Number(candidateReviewBatchPlan?.summary?.packetSize ?? 0),
         policyVersion: candidateReviewBatchPlan?.policyVersion ?? null,
         generatedAt: candidateReviewBatchPlan?.generatedAt ?? null,
+      },
+      sourceIntakeTemplateManifest: {
+        artifactPath: toProjectPath(sourceIntakeTemplatePath),
+        packetCount: Number(sourceIntakeTemplate?.summary?.packetCount ?? 0),
+        templateRowCount: Number(sourceIntakeTemplate?.summary?.templateRowCount ?? 0),
+        plannedCandidateCount: Number(sourceIntakeTemplate?.summary?.plannedCandidateCount ?? 0),
+        packetSize: Number(sourceIntakeTemplate?.summary?.packetSize ?? 0),
+        policyVersion: sourceIntakeTemplate?.policyVersion ?? null,
+        generatedAt: sourceIntakeTemplate?.generatedAt ?? null,
+        targetScript: typeof sourceIntakeTemplate?.importContract?.targetScript === "string"
+          ? sourceIntakeTemplate.importContract.targetScript
+          : null,
       },
       candidateReviewGroupPage: {
         offset: 0,

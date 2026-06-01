@@ -7,6 +7,7 @@ import {
   buildCandidateReviewGroupDecisionRecommendations,
   buildCandidateReviewGroups,
   buildCandidateReviewRows,
+  buildCandidateReviewSourceIntakeTemplate,
   buildCoverageMatrix,
   humanizeSegment,
   readCandidateReviewGroupDecisions,
@@ -193,6 +194,8 @@ describe("external reference audit", () => {
         researchSourceProfileEntries: 3,
         candidateReviewQueueEntries: 3,
         candidateReviewGroupEntries: 1,
+        sourceIntakeTemplatePacketEntries: 0,
+        sourceIntakeTemplateRowEntries: 0,
         nextBatchSize: 0,
         deferredCatalogIds: ["hicaz--pesrev--devrikebir--ucuncu_eser--besteci"],
         batchReport: expect.objectContaining({
@@ -205,6 +208,8 @@ describe("external reference audit", () => {
           generatedReviewCandidates: 3,
           generatedReviewGroups: 1,
           validationGates: expect.arrayContaining(["candidate-review-only", "summary-count-drift", "candidate-review-group-drift"]),
+          plannedSourceIntakePackets: 0,
+          plannedSourceIntakeRows: 0,
         }),
       }),
     );
@@ -238,6 +243,12 @@ describe("external reference audit", () => {
         "utf8",
       ),
     );
+    const sourceIntakeTemplateJson = JSON.parse(
+      readFileSync(
+        path.join(root, "output", "external-reference-coverage", "symbtr-curated-reference-source-intake-template.json"),
+        "utf8",
+      ),
+    );
     const dedupeReportJson = JSON.parse(
       readFileSync(
         path.join(root, "output", "external-reference-coverage", "symbtr-curated-reference-dedupe-report.json"),
@@ -266,6 +277,7 @@ describe("external reference audit", () => {
     expect(summary.candidateReviewGroupDecisionRecommendationsJson).toBe(
       "output/external-reference-coverage/symbtr-curated-reference-candidate-review-group-decision-recommendations.json",
     );
+    expect(summary.sourceIntakeTemplateJson).toBe("output/external-reference-coverage/symbtr-curated-reference-source-intake-template.json");
     expect(summary.coverageMatrixJson).toBe("output/external-reference-coverage/symbtr-curated-reference-coverage-matrix.json");
     expect(summary.coverageMatrixEntries).toBeGreaterThan(0);
     expect(summary.dedupeReportJson).toBe("output/external-reference-coverage/symbtr-curated-reference-dedupe-report.json");
@@ -286,6 +298,17 @@ describe("external reference audit", () => {
           reviewedBy: "batch-policy",
         }),
       ],
+    }));
+    expect(sourceIntakeTemplateJson).toEqual(expect.objectContaining({
+      type: "candidate-review-source-intake-template",
+      summary: expect.objectContaining({
+        packetCount: 0,
+        templateRowCount: 0,
+      }),
+      importContract: expect.objectContaining({
+        acceptedOnlyAfterValidation: true,
+      }),
+      packets: [],
     }));
     expect(coverageMatrixJson).toEqual(expect.objectContaining({
       type: "external-reference-coverage-matrix",
@@ -423,6 +446,44 @@ describe("external reference audit", () => {
         sourceId: expect.anything(),
       }),
     ]));
+  });
+
+  it("builds blank source intake templates from active review groups", () => {
+    const root = createAuditRoot();
+    const rows = buildBacklogRows(
+      catalogEntries,
+      new Set(["ussak--ilahi--duyek--allah_emrin--zekai_dede"]),
+      new Map(),
+    );
+    const profiles = readResearchSourceProfiles(path.join(root, "src/data/references/research-source-profiles.json"));
+    const candidateRows = buildCandidateReviewRows(rows, profiles);
+    const groups = buildCandidateReviewGroups(candidateRows);
+    const template = buildCandidateReviewSourceIntakeTemplate(groups, candidateRows, {
+      generatedAt: "2026-06-01T00:00:00.000Z",
+      packetSize: 25,
+      checkedAt: "2026-06-01",
+    });
+
+    expect(template.summary).toEqual(expect.objectContaining({
+      activeGroupCount: 2,
+      packetCount: 1,
+      templateRowCount: 2,
+      plannedCandidateCount: 6,
+    }));
+    expect(template.importContract).toEqual(expect.objectContaining({
+      targetScript: "npm run import:external-references -- --input <json>",
+      acceptedOnlyAfterValidation: true,
+    }));
+    expect(template.packets[0].rows[0]).toEqual(expect.objectContaining({
+      status: "needs-source-url",
+      sourceGroupFingerprint: expect.stringMatching(/^[a-f0-9]{64}$/),
+      sourceFields: expect.objectContaining({
+        sourceId: "",
+        httpsUrl: "",
+        provider: "",
+      }),
+    }));
+    expect(JSON.stringify(template)).not.toMatch(/"accepted"|sourceUrl/);
   });
 
   it("builds catalog and provider coverage matrix without source attachment data", () => {

@@ -19,6 +19,9 @@ const stateFixture = {
     candidateReviewGroupDecisionRecommendationsJson: "output/external-reference-coverage/symbtr-curated-reference-candidate-review-group-decision-recommendations.json",
     candidateReviewBatchPlanEntries: 119,
     candidateReviewBatchPlanJson: "output/external-reference-coverage/symbtr-curated-reference-candidate-review-batch-plan.json",
+    sourceIntakeTemplatePacketEntries: 119,
+    sourceIntakeTemplateRowEntries: 2973,
+    sourceIntakeTemplateJson: "output/external-reference-coverage/symbtr-curated-reference-source-intake-template.json",
     coverageMatrixEntries: 24,
     coverageMatrixJson: "output/external-reference-coverage/symbtr-curated-reference-coverage-matrix.json",
     dedupeReportEntries: 0,
@@ -35,7 +38,9 @@ const stateFixture = {
       recommendedReviewGroupDecisions: 1,
       plannedReviewPackets: 119,
       plannedReviewGroups: 2973,
-      validationGates: ["candidate-review-group-decision-recommendation-drift", "candidate-review-batch-plan-drift", "dedupe-report-drift"],
+      plannedSourceIntakePackets: 119,
+      plannedSourceIntakeRows: 2973,
+      validationGates: ["candidate-review-group-decision-recommendation-drift", "candidate-review-batch-plan-drift", "source-intake-template-drift", "dedupe-report-drift"],
     },
   },
   curation: {
@@ -127,6 +132,16 @@ const stateFixture = {
       packetSize: 25,
       policyVersion: "candidate-review-batch-plan-v1",
       generatedAt: "2026-06-01T00:00:00.000Z",
+    },
+    sourceIntakeTemplateManifest: {
+      artifactPath: "output/external-reference-coverage/symbtr-curated-reference-source-intake-template.json",
+      packetCount: 119,
+      templateRowCount: 2973,
+      plannedCandidateCount: 14865,
+      packetSize: 25,
+      policyVersion: "candidate-review-source-intake-template-v1",
+      generatedAt: "2026-06-01T00:00:00.000Z",
+      targetScript: "npm run import:external-references -- --input <json>",
     },
     candidateReviewGroupPage: {
       offset: 0,
@@ -371,7 +386,9 @@ describe("ReferencesCurationPage", () => {
     expect(screen.getByText(/candidate-review-group-decisions\.json/)).toBeDefined();
     expect(screen.getByText(/candidate-review-group-decision-recommendations\.json/)).toBeDefined();
     expect(screen.getByText(/candidate-review-batch-plan\.json/)).toBeDefined();
-    expect(screen.getByText(/119 paket/)).toBeDefined();
+    expect(screen.getByText(/source-intake-template\.json/)).toBeDefined();
+    expect(screen.getByText(/2\.973 boş kaynak satırı/)).toBeDefined();
+    expect(screen.getAllByText(/119 paket/).length).toBeGreaterThan(0);
     expect(screen.getByText("review-provider-candidates")).toBeDefined();
     expect(screen.getByLabelText("Grup durum")).toBeDefined();
     expect(screen.getByLabelText("Karar durum")).toBeDefined();

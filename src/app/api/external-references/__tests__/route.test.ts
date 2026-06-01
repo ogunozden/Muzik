@@ -87,6 +87,9 @@ const coverageFixture = {
   candidateReviewGroupDecisionRecommendationsJson: "output/external-reference-coverage/symbtr-curated-reference-candidate-review-group-decision-recommendations.json",
   candidateReviewBatchPlanEntries: 1,
   candidateReviewBatchPlanJson: "output/external-reference-coverage/symbtr-curated-reference-candidate-review-batch-plan.json",
+  sourceIntakeTemplatePacketEntries: 1,
+  sourceIntakeTemplateRowEntries: 1,
+  sourceIntakeTemplateJson: "output/external-reference-coverage/symbtr-curated-reference-source-intake-template.json",
   coverageMatrixEntries: 24,
   coverageMatrixJson: "output/external-reference-coverage/symbtr-curated-reference-coverage-matrix.json",
   dedupeReportEntries: 0,
@@ -388,6 +391,44 @@ const candidateReviewBatchPlanFixture = {
     },
   ],
 };
+const sourceIntakeTemplateFixture = {
+  version: 1,
+  type: "candidate-review-source-intake-template",
+  policyVersion: "candidate-review-source-intake-template-v1",
+  generatedAt: "2026-06-01T00:00:00.000Z",
+  summary: {
+    packetCount: 1,
+    templateRowCount: 1,
+    plannedCandidateCount: 1,
+    packetSize: 25,
+  },
+  importContract: {
+    targetScript: "npm run import:external-references -- --input <json>",
+    acceptedOnlyAfterValidation: true,
+  },
+  packets: [
+    {
+      packetId: "source-intake-packet-0001",
+      catalogIds: [CATALOG_ID],
+      rows: [
+        {
+          groupId: `${CATALOG_ID}:review-group`,
+          catalogId: CATALOG_ID,
+          status: "needs-source-url",
+          sourceGroupFingerprint: getCandidateReviewGroupFingerprint(candidateReviewGroupsFixture[0]),
+          sourceFields: {
+            sourceId: "",
+            provider: "",
+            label: "",
+            title: "",
+            httpsUrl: "",
+            verification: "",
+          },
+        },
+      ],
+    },
+  ],
+};
 const OPS_TOKEN_HEADER = "x-external-reference-ops-token";
 
 function authedRequest(url: string, init: RequestInit = {}): Request {
@@ -454,6 +495,10 @@ function mockJsonFiles() {
 
     if (filePath.includes("candidate-review-batch-plan.json")) {
       return JSON.stringify(candidateReviewBatchPlanFixture);
+    }
+
+    if (filePath.includes("source-intake-template.json")) {
+      return JSON.stringify(sourceIntakeTemplateFixture);
     }
 
     if (filePath.includes("symbtr-curated-reference-backlog.json")) {
@@ -541,6 +586,15 @@ describe("/api/external-references route", () => {
       packetSize: 25,
       artifactPath: "output/external-reference-coverage/symbtr-curated-reference-candidate-review-batch-plan.json",
       policyVersion: "candidate-review-batch-plan-v1",
+    }));
+    expect(body.curation.sourceIntakeTemplateManifest).toEqual(expect.objectContaining({
+      packetCount: 1,
+      templateRowCount: 1,
+      plannedCandidateCount: 1,
+      packetSize: 25,
+      artifactPath: "output/external-reference-coverage/symbtr-curated-reference-source-intake-template.json",
+      policyVersion: "candidate-review-source-intake-template-v1",
+      targetScript: "npm run import:external-references -- --input <json>",
     }));
     expect(body.curation.candidateReviewGroupPage).toEqual(expect.objectContaining({
       returnedCount: 2,

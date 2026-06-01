@@ -42,6 +42,7 @@ const result = validateSourceCurationRegistries({
   candidateReviewBatchPlan: readJson(
     "output/external-reference-coverage/symbtr-curated-reference-candidate-review-batch-plan.json",
   ),
+  sourceIntakeTemplate: readJson("output/external-reference-coverage/symbtr-curated-reference-source-intake-template.json"),
   coverageMatrix: readJson("output/external-reference-coverage/symbtr-curated-reference-coverage-matrix.json"),
   dedupeReport: readJson("output/external-reference-coverage/symbtr-curated-reference-dedupe-report.json"),
   coverageSummary: readJson("output/external-reference-coverage/summary.json"),

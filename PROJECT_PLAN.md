@@ -1311,6 +1311,43 @@ calisma agacindaki bu guncelleme oncesi genis degisiklikleri de kapsadigindan
 6. [x] Eksik Ney dosyalarını muadil üretimle tamamlamama kararını belgeleyerek
        aktif TODO kapsamını kapat.
 
+## 2026-06-01 Kaynak Intake Template Fazı
+
+### Araştırma ve karar
+
+- Data curation akışında aday üretimi ile kabul/attach aşaması ayrıldı.
+  OpenRefine reconciliation dokümanındaki temizle/kümele/adaylaştır yaklaşımı
+  ve W3C PROV provenance modeliyle uyumlu olarak review candidate, group
+  fingerprint ve operator attribution ayrı tutuluyor.
+- Yeni `symbtr-curated-reference-source-intake-template.json`, 2973 aktif
+  needs-review grubu 119 pakete bölen boş kaynak intake şablonudur. Source URL,
+  source id ve provider alanları bilerek boş gelir; accepted kaynak üretimi
+  hâlâ yalnız `npm run import:external-references -- --input <json>` ve
+  validation kapıları üzerinden yapılır.
+- `source-intake-template-drift` validation kapısı eklendi. Template satırları
+  aktif review gruplarıyla, candidate queue sayılarıyla ve
+  `sourceGroupFingerprint` değerleriyle eşleşmek zorundadır; URL/source id veya
+  accepted kaçarsa validation hata verir.
+
+### Kanıt
+
+- `npm run audit:external-references`: `sourceIntakeTemplatePacketEntries=119`,
+  `sourceIntakeTemplateRowEntries=2973`, duplicate 0.
+- `npm run curation:validate`: ok true, 0 error.
+- Targeted tests: 4 dosya, 59 test geçti.
+
+### Sıradaki işler
+
+1. [ ] Source intake artifact'i üzerinden doldurulmuş accepted manifest
+       örneklerini sadece gerçek HTTPS kaynak/evidence ile dry-run importtan
+       geçir.
+2. [ ] PDF layout review packetleri için aynı boş-template/import/validation
+       disiplinini kur; verified manifest hâlâ 0.
+3. [ ] `/references/curation` üzerinde tüm arka plan artifactlerini daha
+       görünür ve filtrelenebilir hale getir.
+4. [ ] `/studio/follow`, enstrüman, usul timing ve kaynak görüntüleme akışlarını
+       full browser audit ile doğrula.
+
 ## 🏛 MİMARİ KURAL SETLERİ (RULE SETS)
 
 ### 1. Dosya ve Klasör Hiyerarşisi Kuralları (Decoupling)

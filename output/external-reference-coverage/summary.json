@@ -22,6 +22,8 @@
   "candidateReviewGroupEntries": 2978,
   "candidateReviewGroupDecisionRecommendationEntries": 0,
   "candidateReviewBatchPlanEntries": 119,
+  "sourceIntakeTemplatePacketEntries": 119,
+  "sourceIntakeTemplateRowEntries": 2973,
   "candidateReviewQueueByStatus": [
     {
       "value": "needs-review",
@@ -176,9 +178,12 @@
     ],
     "candidateReviewGroupDecisionRecommendationPolicy": "candidate-review-group-decision-recommendations-v1",
     "candidateReviewBatchPlanPolicy": "candidate-review-batch-plan-v1",
+    "candidateReviewSourceIntakeTemplatePolicy": "candidate-review-source-intake-template-v1",
     "candidateReviewBatchPacketSize": 25,
     "plannedReviewPackets": 119,
     "plannedReviewGroups": 2973,
+    "plannedSourceIntakePackets": 119,
+    "plannedSourceIntakeRows": 2973,
     "duplicateAcceptedIdentityPolicy": "duplicate accepted URL identities fail validation before merge",
     "dedupeReportPolicy": "external-reference-dedupe-report-v1",
     "dedupeCheckedRows": 14897,
@@ -216,6 +221,7 @@
       "candidate-review-group-decision-drift",
       "candidate-review-group-decision-recommendation-drift",
       "candidate-review-batch-plan-drift",
+      "source-intake-template-drift",
       "coverage-matrix-drift",
       "dedupe-report-drift"
     ]
@@ -601,6 +607,7 @@
   "candidateReviewGroupsJson": "output/external-reference-coverage/symbtr-curated-reference-candidate-review-groups.json",
   "candidateReviewGroupDecisionRecommendationsJson": "output/external-reference-coverage/symbtr-curated-reference-candidate-review-group-decision-recommendations.json",
   "candidateReviewBatchPlanJson": "output/external-reference-coverage/symbtr-curated-reference-candidate-review-batch-plan.json",
+  "sourceIntakeTemplateJson": "output/external-reference-coverage/symbtr-curated-reference-source-intake-template.json",
   "coverageMatrixJson": "output/external-reference-coverage/symbtr-curated-reference-coverage-matrix.json",
   "dedupeReportJson": "output/external-reference-coverage/symbtr-curated-reference-dedupe-report.json",
   "candidateReviewGroupDecisionsJson": "src/data/references/candidate-review-group-decisions.json",

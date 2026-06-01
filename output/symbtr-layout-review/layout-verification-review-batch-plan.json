@@ -1,0 +1,1226 @@
+{
+  "schemaVersion": 1,
+  "type": "symbtr-pdf-layout-verification-review-batch-plan",
+  "generatedAt": "2026-06-01",
+  "reviewer": "local-reviewer",
+  "policy": "This file groups PDF measure candidates for batch visual review only. It must not promote candidates or carry verified measureBoxes; promotion must go through layout-verification.generated.json and npm run verify:symbtr-measures.",
+  "packetSize": 1,
+  "packetCount": 10,
+  "entryCount": 1,
+  "candidateReviewRows": 49,
+  "fingerprintAlgorithm": "sha256:symbtr-layout-candidate-geometry-v1",
+  "sourceReviewTemplate": {
+    "type": "symbtr-pdf-layout-verification-review-template",
+    "generatedAt": "2026-06-01",
+    "entryCount": 1
+  },
+  "packets": [
+    {
+      "packetId": "symbtr-pdf-review-packet-0001",
+      "sequence": 1,
+      "status": "needs-visual-review",
+      "reviewAction": "map-pdf-vector-candidates-to-symbtr-measures",
+      "catalogIds": [
+        "hicazkar--pesrev--devrikebir----tanburi_buyuk_osman_bey"
+      ],
+      "staffRows": [
+        {
+          "catalogId": "hicazkar--pesrev--devrikebir----tanburi_buyuk_osman_bey",
+          "staffRowIndex": 0,
+          "candidateCount": 5,
+          "candidateGeometryFingerprint": "d0d17418435e737dcad9c95082bbfc0d445b5b9504fd950650f82f8dfafb8ed6",
+          "sourceArchiveMemberPath": "pdf_v3/hicazkar--pesrev--devrikebir----tanburi_buyuk_osman_bey.PDF",
+          "sourceMeasureCandidateCount": 49,
+          "scoreMeasureCount": 28,
+          "scoreMeasureIndexes": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15,
+            16,
+            17,
+            18,
+            19,
+            20,
+            21,
+            22,
+            23,
+            24,
+            25,
+            26,
+            27,
+            28
+          ]
+        }
+      ],
+      "candidateCount": 5,
+      "candidateReviewRows": [
+        {
+          "catalogId": "hicazkar--pesrev--devrikebir----tanburi_buyuk_osman_bey",
+          "sourceCandidateRowIndex": 0,
+          "sourceCandidateIndexInRow": 0,
+          "candidateLabel": "row-1-candidate-1",
+          "suggestedMeasureIndex": null,
+          "reviewDecision": "unreviewed",
+          "leftPercent": 2.389,
+          "topPercent": 12.936,
+          "widthPercent": 28.032,
+          "heightPercent": 2.494,
+          "confidence": "pdf-vector-candidate"
+        },
+        {
+          "catalogId": "hicazkar--pesrev--devrikebir----tanburi_buyuk_osman_bey",
+          "sourceCandidateRowIndex": 0,
+          "sourceCandidateIndexInRow": 1,
+          "candidateLabel": "row-1-candidate-2",
+          "suggestedMeasureIndex": null,
+          "reviewDecision": "unreviewed",
+          "leftPercent": 30.421,
+          "topPercent": 12.936,
+          "widthPercent": 30.522,
+          "heightPercent": 2.494,
+          "confidence": "pdf-vector-candidate"
+        },
+        {
+          "catalogId": "hicazkar--pesrev--devrikebir----tanburi_buyuk_osman_bey",
+          "sourceCandidateRowIndex": 0,
+          "sourceCandidateIndexInRow": 2,
+          "candidateLabel": "row-1-candidate-3",
+          "suggestedMeasureIndex": null,
+          "reviewDecision": "unreviewed",
+          "leftPercent": 60.944,
+          "topPercent": 12.936,
+          "widthPercent": 6.068,
+          "heightPercent": 2.494,
+          "confidence": "pdf-vector-candidate"
+        },
+        {
+          "catalogId": "hicazkar--pesrev--devrikebir----tanburi_buyuk_osman_bey",
+          "sourceCandidateRowIndex": 0,
+          "sourceCandidateIndexInRow": 3,
+          "candidateLabel": "row-1-candidate-4",
+          "suggestedMeasureIndex": null,
+          "reviewDecision": "unreviewed",
+          "leftPercent": 67.012,
+          "topPercent": 12.936,
+          "widthPercent": 3.074,
+          "heightPercent": 2.494,
+          "confidence": "pdf-vector-candidate"
+        },
+        {
+          "catalogId": "hicazkar--pesrev--devrikebir----tanburi_buyuk_osman_bey",
+          "sourceCandidateRowIndex": 0,
+          "sourceCandidateIndexInRow": 4,
+          "candidateLabel": "row-1-candidate-5",
+          "suggestedMeasureIndex": null,
+          "reviewDecision": "unreviewed",
+          "leftPercent": 70.086,
+          "topPercent": 12.936,
+          "widthPercent": 27.418,
+          "heightPercent": 2.494,
+          "confidence": "pdf-vector-candidate"
+        }
+      ],
+      "promotionTemplate": {
+        "measureBoxes": [],
+        "policy": "This file groups PDF measure candidates for batch visual review only. It must not promote candidates or carry verified measureBoxes; promotion must go through layout-verification.generated.json and npm run verify:symbtr-measures."
+      }
+    },
+    {
+      "packetId": "symbtr-pdf-review-packet-0002",
+      "sequence": 2,
+      "status": "needs-visual-review",
+      "reviewAction": "map-pdf-vector-candidates-to-symbtr-measures",
+      "catalogIds": [
+        "hicazkar--pesrev--devrikebir----tanburi_buyuk_osman_bey"
+      ],
+      "staffRows": [
+        {
+          "catalogId": "hicazkar--pesrev--devrikebir----tanburi_buyuk_osman_bey",
+          "staffRowIndex": 1,
+          "candidateCount": 4,
+          "candidateGeometryFingerprint": "d0d17418435e737dcad9c95082bbfc0d445b5b9504fd950650f82f8dfafb8ed6",
+          "sourceArchiveMemberPath": "pdf_v3/hicazkar--pesrev--devrikebir----tanburi_buyuk_osman_bey.PDF",
+          "sourceMeasureCandidateCount": 49,
+          "scoreMeasureCount": 28,
+          "scoreMeasureIndexes": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15,
+            16,
+            17,
+            18,
+            19,
+            20,
+            21,
+            22,
+            23,
+            24,
+            25,
+            26,
+            27,
+            28
+          ]
+        }
+      ],
+      "candidateCount": 4,
+      "candidateReviewRows": [
+        {
+          "catalogId": "hicazkar--pesrev--devrikebir----tanburi_buyuk_osman_bey",
+          "sourceCandidateRowIndex": 1,
+          "sourceCandidateIndexInRow": 0,
+          "candidateLabel": "row-2-candidate-1",
+          "suggestedMeasureIndex": null,
+          "reviewDecision": "unreviewed",
+          "leftPercent": 2.389,
+          "topPercent": 21.401,
+          "widthPercent": 19.878,
+          "heightPercent": 2.494,
+          "confidence": "pdf-vector-candidate"
+        },
+        {
+          "catalogId": "hicazkar--pesrev--devrikebir----tanburi_buyuk_osman_bey",
+          "sourceCandidateRowIndex": 1,
+          "sourceCandidateIndexInRow": 1,
+          "candidateLabel": "row-2-candidate-2",
+          "suggestedMeasureIndex": null,
+          "reviewDecision": "unreviewed",
+          "leftPercent": 22.267,
+          "topPercent": 21.401,
+          "widthPercent": 27.861,
+          "heightPercent": 2.494,
+          "confidence": "pdf-vector-candidate"
+        },
+        {
+          "catalogId": "hicazkar--pesrev--devrikebir----tanburi_buyuk_osman_bey",
+          "sourceCandidateRowIndex": 1,
+          "sourceCandidateIndexInRow": 2,
+          "candidateLabel": "row-2-candidate-3",
+          "suggestedMeasureIndex": null,
+          "reviewDecision": "unreviewed",
+          "leftPercent": 50.128,
+          "topPercent": 21.401,
+          "widthPercent": 19.525,
+          "heightPercent": 2.494,
+          "confidence": "pdf-vector-candidate"
+        },
+        {
+          "catalogId": "hicazkar--pesrev--devrikebir----tanburi_buyuk_osman_bey",
+          "sourceCandidateRowIndex": 1,
+          "sourceCandidateIndexInRow": 3,
+          "candidateLabel": "row-2-candidate-4",
+          "suggestedMeasureIndex": null,
+          "reviewDecision": "unreviewed",
+          "leftPercent": 69.653,
+          "topPercent": 21.401,
+          "widthPercent": 27.891,
+          "heightPercent": 2.494,
+          "confidence": "pdf-vector-candidate"
+        }
+      ],
+      "promotionTemplate": {
+        "measureBoxes": [],
+        "policy": "This file groups PDF measure candidates for batch visual review only. It must not promote candidates or carry verified measureBoxes; promotion must go through layout-verification.generated.json and npm run verify:symbtr-measures."
+      }
+    },
+    {
+      "packetId": "symbtr-pdf-review-packet-0003",
+      "sequence": 3,
+      "status": "needs-visual-review",
+      "reviewAction": "map-pdf-vector-candidates-to-symbtr-measures",
+      "catalogIds": [
+        "hicazkar--pesrev--devrikebir----tanburi_buyuk_osman_bey"
+      ],
+      "staffRows": [
+        {
+          "catalogId": "hicazkar--pesrev--devrikebir----tanburi_buyuk_osman_bey",
+          "staffRowIndex": 2,
+          "candidateCount": 5,
+          "candidateGeometryFingerprint": "d0d17418435e737dcad9c95082bbfc0d445b5b9504fd950650f82f8dfafb8ed6",
+          "sourceArchiveMemberPath": "pdf_v3/hicazkar--pesrev--devrikebir----tanburi_buyuk_osman_bey.PDF",
+          "sourceMeasureCandidateCount": 49,
+          "scoreMeasureCount": 28,
+          "scoreMeasureIndexes": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15,
+            16,
+            17,
+            18,
+            19,
+            20,
+            21,
+            22,
+            23,
+            24,
+            25,
+            26,
+            27,
+            28
+          ]
+        }
+      ],
+      "candidateCount": 5,
+      "candidateReviewRows": [
+        {
+          "catalogId": "hicazkar--pesrev--devrikebir----tanburi_buyuk_osman_bey",
+          "sourceCandidateRowIndex": 2,
+          "sourceCandidateIndexInRow": 0,
+          "candidateLabel": "row-3-candidate-1",
+          "suggestedMeasureIndex": null,
+          "reviewDecision": "unreviewed",
+          "leftPercent": 2.389,
+          "topPercent": 29.859,
+          "widthPercent": 34.655,
+          "heightPercent": 2.494,
+          "confidence": "pdf-vector-candidate"
+        },
+        {
+          "catalogId": "hicazkar--pesrev--devrikebir----tanburi_buyuk_osman_bey",
+          "sourceCandidateRowIndex": 2,
+          "sourceCandidateIndexInRow": 1,
+          "candidateLabel": "row-3-candidate-2",
+          "suggestedMeasureIndex": null,
+          "reviewDecision": "unreviewed",
+          "leftPercent": 37.044,
+          "topPercent": 29.859,
+          "widthPercent": 5.484,
+          "heightPercent": 2.494,
+          "confidence": "pdf-vector-candidate"
+        },
+        {
+          "catalogId": "hicazkar--pesrev--devrikebir----tanburi_buyuk_osman_bey",
+          "sourceCandidateRowIndex": 2,
+          "sourceCandidateIndexInRow": 2,
+          "candidateLabel": "row-3-candidate-3",
+          "suggestedMeasureIndex": null,
+          "reviewDecision": "unreviewed",
+          "leftPercent": 42.779,
+          "topPercent": 29.859,
+          "widthPercent": 20.17,
+          "heightPercent": 2.494,
+          "confidence": "pdf-vector-candidate"
+        },
+        {
+          "catalogId": "hicazkar--pesrev--devrikebir----tanburi_buyuk_osman_bey",
+          "sourceCandidateRowIndex": 2,
+          "sourceCandidateIndexInRow": 3,
+          "candidateLabel": "row-3-candidate-4",
+          "suggestedMeasureIndex": null,
+          "reviewDecision": "unreviewed",
+          "leftPercent": 62.949,
+          "topPercent": 29.859,
+          "widthPercent": 28.839,
+          "heightPercent": 2.494,
+          "confidence": "pdf-vector-candidate"
+        },
+        {
+          "catalogId": "hicazkar--pesrev--devrikebir----tanburi_buyuk_osman_bey",
+          "sourceCandidateRowIndex": 2,
+          "sourceCandidateIndexInRow": 4,
+          "candidateLabel": "row-3-candidate-5",
+          "suggestedMeasureIndex": null,
+          "reviewDecision": "unreviewed",
+          "leftPercent": 91.788,
+          "topPercent": 29.859,
+          "widthPercent": 5.735,
+          "heightPercent": 2.494,
+          "confidence": "pdf-vector-candidate"
+        }
+      ],
+      "promotionTemplate": {
+        "measureBoxes": [],
+        "policy": "This file groups PDF measure candidates for batch visual review only. It must not promote candidates or carry verified measureBoxes; promotion must go through layout-verification.generated.json and npm run verify:symbtr-measures."
+      }
+    },
+    {
+      "packetId": "symbtr-pdf-review-packet-0004",
+      "sequence": 4,
+      "status": "needs-visual-review",
+      "reviewAction": "map-pdf-vector-candidates-to-symbtr-measures",
+      "catalogIds": [
+        "hicazkar--pesrev--devrikebir----tanburi_buyuk_osman_bey"
+      ],
+      "staffRows": [
+        {
+          "catalogId": "hicazkar--pesrev--devrikebir----tanburi_buyuk_osman_bey",
+          "staffRowIndex": 3,
+          "candidateCount": 6,
+          "candidateGeometryFingerprint": "d0d17418435e737dcad9c95082bbfc0d445b5b9504fd950650f82f8dfafb8ed6",
+          "sourceArchiveMemberPath": "pdf_v3/hicazkar--pesrev--devrikebir----tanburi_buyuk_osman_bey.PDF",
+          "sourceMeasureCandidateCount": 49,
+          "scoreMeasureCount": 28,
+          "scoreMeasureIndexes": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15,
+            16,
+            17,
+            18,
+            19,
+            20,
+            21,
+            22,
+            23,
+            24,
+            25,
+            26,
+            27,
+            28
+          ]
+        }
+      ],
+      "candidateCount": 6,
+      "candidateReviewRows": [
+        {
+          "catalogId": "hicazkar--pesrev--devrikebir----tanburi_buyuk_osman_bey",
+          "sourceCandidateRowIndex": 3,
+          "sourceCandidateIndexInRow": 0,
+          "candidateLabel": "row-4-candidate-1",
+          "suggestedMeasureIndex": null,
+          "reviewDecision": "unreviewed",
+          "leftPercent": 2.389,
+          "topPercent": 38.325,
+          "widthPercent": 8.729,
+          "heightPercent": 2.494,
+          "confidence": "pdf-vector-candidate"
+        },
+        {
+          "catalogId": "hicazkar--pesrev--devrikebir----tanburi_buyuk_osman_bey",
+          "sourceCandidateRowIndex": 3,
+          "sourceCandidateIndexInRow": 1,
+          "candidateLabel": "row-4-candidate-2",
+          "suggestedMeasureIndex": null,
+          "reviewDecision": "unreviewed",
+          "leftPercent": 11.118,
+          "topPercent": 38.325,
+          "widthPercent": 24.313,
+          "heightPercent": 2.494,
+          "confidence": "pdf-vector-candidate"
+        },
+        {
+          "catalogId": "hicazkar--pesrev--devrikebir----tanburi_buyuk_osman_bey",
+          "sourceCandidateRowIndex": 3,
+          "sourceCandidateIndexInRow": 2,
+          "candidateLabel": "row-4-candidate-3",
+          "suggestedMeasureIndex": null,
+          "reviewDecision": "unreviewed",
+          "leftPercent": 35.431,
+          "topPercent": 38.325,
+          "widthPercent": 13.547,
+          "heightPercent": 2.494,
+          "confidence": "pdf-vector-candidate"
+        },
+        {
+          "catalogId": "hicazkar--pesrev--devrikebir----tanburi_buyuk_osman_bey",
+          "sourceCandidateRowIndex": 3,
+          "sourceCandidateIndexInRow": 3,
+          "candidateLabel": "row-4-candidate-4",
+          "suggestedMeasureIndex": null,
+          "reviewDecision": "unreviewed",
+          "leftPercent": 48.979,
+          "topPercent": 38.325,
+          "widthPercent": 27.024,
+          "heightPercent": 2.494,
+          "confidence": "pdf-vector-candidate"
+        },
+        {
+          "catalogId": "hicazkar--pesrev--devrikebir----tanburi_buyuk_osman_bey",
+          "sourceCandidateRowIndex": 3,
+          "sourceCandidateIndexInRow": 4,
+          "candidateLabel": "row-4-candidate-5",
+          "suggestedMeasureIndex": null,
+          "reviewDecision": "unreviewed",
+          "leftPercent": 76.003,
+          "topPercent": 38.325,
+          "widthPercent": 10.846,
+          "heightPercent": 2.494,
+          "confidence": "pdf-vector-candidate"
+        },
+        {
+          "catalogId": "hicazkar--pesrev--devrikebir----tanburi_buyuk_osman_bey",
+          "sourceCandidateRowIndex": 3,
+          "sourceCandidateIndexInRow": 5,
+          "candidateLabel": "row-4-candidate-6",
+          "suggestedMeasureIndex": null,
+          "reviewDecision": "unreviewed",
+          "leftPercent": 86.849,
+          "topPercent": 38.325,
+          "widthPercent": 10.796,
+          "heightPercent": 2.494,
+          "confidence": "pdf-vector-candidate"
+        }
+      ],
+      "promotionTemplate": {
+        "measureBoxes": [],
+        "policy": "This file groups PDF measure candidates for batch visual review only. It must not promote candidates or carry verified measureBoxes; promotion must go through layout-verification.generated.json and npm run verify:symbtr-measures."
+      }
+    },
+    {
+      "packetId": "symbtr-pdf-review-packet-0005",
+      "sequence": 5,
+      "status": "needs-visual-review",
+      "reviewAction": "map-pdf-vector-candidates-to-symbtr-measures",
+      "catalogIds": [
+        "hicazkar--pesrev--devrikebir----tanburi_buyuk_osman_bey"
+      ],
+      "staffRows": [
+        {
+          "catalogId": "hicazkar--pesrev--devrikebir----tanburi_buyuk_osman_bey",
+          "staffRowIndex": 4,
+          "candidateCount": 3,
+          "candidateGeometryFingerprint": "d0d17418435e737dcad9c95082bbfc0d445b5b9504fd950650f82f8dfafb8ed6",
+          "sourceArchiveMemberPath": "pdf_v3/hicazkar--pesrev--devrikebir----tanburi_buyuk_osman_bey.PDF",
+          "sourceMeasureCandidateCount": 49,
+          "scoreMeasureCount": 28,
+          "scoreMeasureIndexes": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15,
+            16,
+            17,
+            18,
+            19,
+            20,
+            21,
+            22,
+            23,
+            24,
+            25,
+            26,
+            27,
+            28
+          ]
+        }
+      ],
+      "candidateCount": 3,
+      "candidateReviewRows": [
+        {
+          "catalogId": "hicazkar--pesrev--devrikebir----tanburi_buyuk_osman_bey",
+          "sourceCandidateRowIndex": 4,
+          "sourceCandidateIndexInRow": 0,
+          "candidateLabel": "row-5-candidate-1",
+          "suggestedMeasureIndex": null,
+          "reviewDecision": "unreviewed",
+          "leftPercent": 2.389,
+          "topPercent": 46.783,
+          "widthPercent": 41.156,
+          "heightPercent": 2.494,
+          "confidence": "pdf-vector-candidate"
+        },
+        {
+          "catalogId": "hicazkar--pesrev--devrikebir----tanburi_buyuk_osman_bey",
+          "sourceCandidateRowIndex": 4,
+          "sourceCandidateIndexInRow": 1,
+          "candidateLabel": "row-5-candidate-2",
+          "suggestedMeasureIndex": null,
+          "reviewDecision": "unreviewed",
+          "leftPercent": 43.545,
+          "topPercent": 46.783,
+          "widthPercent": 37.619,
+          "heightPercent": 2.494,
+          "confidence": "pdf-vector-candidate"
+        },
+        {
+          "catalogId": "hicazkar--pesrev--devrikebir----tanburi_buyuk_osman_bey",
+          "sourceCandidateRowIndex": 4,
+          "sourceCandidateIndexInRow": 2,
+          "candidateLabel": "row-5-candidate-3",
+          "suggestedMeasureIndex": null,
+          "reviewDecision": "unreviewed",
+          "leftPercent": 81.416,
+          "topPercent": 46.783,
+          "widthPercent": 16.229,
+          "heightPercent": 2.494,
+          "confidence": "pdf-vector-candidate"
+        }
+      ],
+      "promotionTemplate": {
+        "measureBoxes": [],
+        "policy": "This file groups PDF measure candidates for batch visual review only. It must not promote candidates or carry verified measureBoxes; promotion must go through layout-verification.generated.json and npm run verify:symbtr-measures."
+      }
+    },
+    {
+      "packetId": "symbtr-pdf-review-packet-0006",
+      "sequence": 6,
+      "status": "needs-visual-review",
+      "reviewAction": "map-pdf-vector-candidates-to-symbtr-measures",
+      "catalogIds": [
+        "hicazkar--pesrev--devrikebir----tanburi_buyuk_osman_bey"
+      ],
+      "staffRows": [
+        {
+          "catalogId": "hicazkar--pesrev--devrikebir----tanburi_buyuk_osman_bey",
+          "staffRowIndex": 5,
+          "candidateCount": 7,
+          "candidateGeometryFingerprint": "d0d17418435e737dcad9c95082bbfc0d445b5b9504fd950650f82f8dfafb8ed6",
+          "sourceArchiveMemberPath": "pdf_v3/hicazkar--pesrev--devrikebir----tanburi_buyuk_osman_bey.PDF",
+          "sourceMeasureCandidateCount": 49,
+          "scoreMeasureCount": 28,
+          "scoreMeasureIndexes": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15,
+            16,
+            17,
+            18,
+            19,
+            20,
+            21,
+            22,
+            23,
+            24,
+            25,
+            26,
+            27,
+            28
+          ]
+        }
+      ],
+      "candidateCount": 7,
+      "candidateReviewRows": [
+        {
+          "catalogId": "hicazkar--pesrev--devrikebir----tanburi_buyuk_osman_bey",
+          "sourceCandidateRowIndex": 5,
+          "sourceCandidateIndexInRow": 0,
+          "candidateLabel": "row-6-candidate-1",
+          "suggestedMeasureIndex": null,
+          "reviewDecision": "unreviewed",
+          "leftPercent": 2.389,
+          "topPercent": 55.248,
+          "widthPercent": 18.91,
+          "heightPercent": 2.494,
+          "confidence": "pdf-vector-candidate"
+        },
+        {
+          "catalogId": "hicazkar--pesrev--devrikebir----tanburi_buyuk_osman_bey",
+          "sourceCandidateRowIndex": 5,
+          "sourceCandidateIndexInRow": 1,
+          "candidateLabel": "row-6-candidate-2",
+          "suggestedMeasureIndex": null,
+          "reviewDecision": "unreviewed",
+          "leftPercent": 21.299,
+          "topPercent": 55.248,
+          "widthPercent": 22.881,
+          "heightPercent": 2.494,
+          "confidence": "pdf-vector-candidate"
+        },
+        {
+          "catalogId": "hicazkar--pesrev--devrikebir----tanburi_buyuk_osman_bey",
+          "sourceCandidateRowIndex": 5,
+          "sourceCandidateIndexInRow": 2,
+          "candidateLabel": "row-6-candidate-3",
+          "suggestedMeasureIndex": null,
+          "reviewDecision": "unreviewed",
+          "leftPercent": 44.18,
+          "topPercent": 55.248,
+          "widthPercent": 15.271,
+          "heightPercent": 2.494,
+          "confidence": "pdf-vector-candidate"
+        },
+        {
+          "catalogId": "hicazkar--pesrev--devrikebir----tanburi_buyuk_osman_bey",
+          "sourceCandidateRowIndex": 5,
+          "sourceCandidateIndexInRow": 3,
+          "candidateLabel": "row-6-candidate-4",
+          "suggestedMeasureIndex": null,
+          "reviewDecision": "unreviewed",
+          "leftPercent": 59.452,
+          "topPercent": 55.248,
+          "widthPercent": 2.57,
+          "heightPercent": 2.494,
+          "confidence": "pdf-vector-candidate"
+        },
+        {
+          "catalogId": "hicazkar--pesrev--devrikebir----tanburi_buyuk_osman_bey",
+          "sourceCandidateRowIndex": 5,
+          "sourceCandidateIndexInRow": 4,
+          "candidateLabel": "row-6-candidate-5",
+          "suggestedMeasureIndex": null,
+          "reviewDecision": "unreviewed",
+          "leftPercent": 62.022,
+          "topPercent": 55.248,
+          "widthPercent": 12.721,
+          "heightPercent": 2.494,
+          "confidence": "pdf-vector-candidate"
+        },
+        {
+          "catalogId": "hicazkar--pesrev--devrikebir----tanburi_buyuk_osman_bey",
+          "sourceCandidateRowIndex": 5,
+          "sourceCandidateIndexInRow": 5,
+          "candidateLabel": "row-6-candidate-6",
+          "suggestedMeasureIndex": null,
+          "reviewDecision": "unreviewed",
+          "leftPercent": 74.743,
+          "topPercent": 55.248,
+          "widthPercent": 2.55,
+          "heightPercent": 2.494,
+          "confidence": "pdf-vector-candidate"
+        },
+        {
+          "catalogId": "hicazkar--pesrev--devrikebir----tanburi_buyuk_osman_bey",
+          "sourceCandidateRowIndex": 5,
+          "sourceCandidateIndexInRow": 6,
+          "candidateLabel": "row-6-candidate-7",
+          "suggestedMeasureIndex": null,
+          "reviewDecision": "unreviewed",
+          "leftPercent": 77.293,
+          "topPercent": 55.248,
+          "widthPercent": 20.331,
+          "heightPercent": 2.494,
+          "confidence": "pdf-vector-candidate"
+        }
+      ],
+      "promotionTemplate": {
+        "measureBoxes": [],
+        "policy": "This file groups PDF measure candidates for batch visual review only. It must not promote candidates or carry verified measureBoxes; promotion must go through layout-verification.generated.json and npm run verify:symbtr-measures."
+      }
+    },
+    {
+      "packetId": "symbtr-pdf-review-packet-0007",
+      "sequence": 7,
+      "status": "needs-visual-review",
+      "reviewAction": "map-pdf-vector-candidates-to-symbtr-measures",
+      "catalogIds": [
+        "hicazkar--pesrev--devrikebir----tanburi_buyuk_osman_bey"
+      ],
+      "staffRows": [
+        {
+          "catalogId": "hicazkar--pesrev--devrikebir----tanburi_buyuk_osman_bey",
+          "staffRowIndex": 6,
+          "candidateCount": 5,
+          "candidateGeometryFingerprint": "d0d17418435e737dcad9c95082bbfc0d445b5b9504fd950650f82f8dfafb8ed6",
+          "sourceArchiveMemberPath": "pdf_v3/hicazkar--pesrev--devrikebir----tanburi_buyuk_osman_bey.PDF",
+          "sourceMeasureCandidateCount": 49,
+          "scoreMeasureCount": 28,
+          "scoreMeasureIndexes": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15,
+            16,
+            17,
+            18,
+            19,
+            20,
+            21,
+            22,
+            23,
+            24,
+            25,
+            26,
+            27,
+            28
+          ]
+        }
+      ],
+      "candidateCount": 5,
+      "candidateReviewRows": [
+        {
+          "catalogId": "hicazkar--pesrev--devrikebir----tanburi_buyuk_osman_bey",
+          "sourceCandidateRowIndex": 6,
+          "sourceCandidateIndexInRow": 0,
+          "candidateLabel": "row-7-candidate-1",
+          "suggestedMeasureIndex": null,
+          "reviewDecision": "unreviewed",
+          "leftPercent": 2.389,
+          "topPercent": 63.706,
+          "widthPercent": 17.368,
+          "heightPercent": 2.494,
+          "confidence": "pdf-vector-candidate"
+        },
+        {
+          "catalogId": "hicazkar--pesrev--devrikebir----tanburi_buyuk_osman_bey",
+          "sourceCandidateRowIndex": 6,
+          "sourceCandidateIndexInRow": 1,
+          "candidateLabel": "row-7-candidate-2",
+          "suggestedMeasureIndex": null,
+          "reviewDecision": "unreviewed",
+          "leftPercent": 19.757,
+          "topPercent": 63.706,
+          "widthPercent": 11.501,
+          "heightPercent": 2.494,
+          "confidence": "pdf-vector-candidate"
+        },
+        {
+          "catalogId": "hicazkar--pesrev--devrikebir----tanburi_buyuk_osman_bey",
+          "sourceCandidateRowIndex": 6,
+          "sourceCandidateIndexInRow": 2,
+          "candidateLabel": "row-7-candidate-3",
+          "suggestedMeasureIndex": null,
+          "reviewDecision": "unreviewed",
+          "leftPercent": 31.258,
+          "topPercent": 63.706,
+          "widthPercent": 37.457,
+          "heightPercent": 2.494,
+          "confidence": "pdf-vector-candidate"
+        },
+        {
+          "catalogId": "hicazkar--pesrev--devrikebir----tanburi_buyuk_osman_bey",
+          "sourceCandidateRowIndex": 6,
+          "sourceCandidateIndexInRow": 3,
+          "candidateLabel": "row-7-candidate-4",
+          "suggestedMeasureIndex": null,
+          "reviewDecision": "unreviewed",
+          "leftPercent": 68.715,
+          "topPercent": 63.706,
+          "widthPercent": 23.073,
+          "heightPercent": 2.494,
+          "confidence": "pdf-vector-candidate"
+        },
+        {
+          "catalogId": "hicazkar--pesrev--devrikebir----tanburi_buyuk_osman_bey",
+          "sourceCandidateRowIndex": 6,
+          "sourceCandidateIndexInRow": 4,
+          "candidateLabel": "row-7-candidate-5",
+          "suggestedMeasureIndex": null,
+          "reviewDecision": "unreviewed",
+          "leftPercent": 91.788,
+          "topPercent": 63.706,
+          "widthPercent": 5.484,
+          "heightPercent": 2.494,
+          "confidence": "pdf-vector-candidate"
+        }
+      ],
+      "promotionTemplate": {
+        "measureBoxes": [],
+        "policy": "This file groups PDF measure candidates for batch visual review only. It must not promote candidates or carry verified measureBoxes; promotion must go through layout-verification.generated.json and npm run verify:symbtr-measures."
+      }
+    },
+    {
+      "packetId": "symbtr-pdf-review-packet-0008",
+      "sequence": 8,
+      "status": "needs-visual-review",
+      "reviewAction": "map-pdf-vector-candidates-to-symbtr-measures",
+      "catalogIds": [
+        "hicazkar--pesrev--devrikebir----tanburi_buyuk_osman_bey"
+      ],
+      "staffRows": [
+        {
+          "catalogId": "hicazkar--pesrev--devrikebir----tanburi_buyuk_osman_bey",
+          "staffRowIndex": 7,
+          "candidateCount": 6,
+          "candidateGeometryFingerprint": "d0d17418435e737dcad9c95082bbfc0d445b5b9504fd950650f82f8dfafb8ed6",
+          "sourceArchiveMemberPath": "pdf_v3/hicazkar--pesrev--devrikebir----tanburi_buyuk_osman_bey.PDF",
+          "sourceMeasureCandidateCount": 49,
+          "scoreMeasureCount": 28,
+          "scoreMeasureIndexes": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15,
+            16,
+            17,
+            18,
+            19,
+            20,
+            21,
+            22,
+            23,
+            24,
+            25,
+            26,
+            27,
+            28
+          ]
+        }
+      ],
+      "candidateCount": 6,
+      "candidateReviewRows": [
+        {
+          "catalogId": "hicazkar--pesrev--devrikebir----tanburi_buyuk_osman_bey",
+          "sourceCandidateRowIndex": 7,
+          "sourceCandidateIndexInRow": 0,
+          "candidateLabel": "row-8-candidate-1",
+          "suggestedMeasureIndex": null,
+          "reviewDecision": "unreviewed",
+          "leftPercent": 2.389,
+          "topPercent": 72.171,
+          "widthPercent": 8.729,
+          "heightPercent": 2.494,
+          "confidence": "pdf-vector-candidate"
+        },
+        {
+          "catalogId": "hicazkar--pesrev--devrikebir----tanburi_buyuk_osman_bey",
+          "sourceCandidateRowIndex": 7,
+          "sourceCandidateIndexInRow": 1,
+          "candidateLabel": "row-8-candidate-2",
+          "suggestedMeasureIndex": null,
+          "reviewDecision": "unreviewed",
+          "leftPercent": 11.118,
+          "topPercent": 72.171,
+          "widthPercent": 22.398,
+          "heightPercent": 2.494,
+          "confidence": "pdf-vector-candidate"
+        },
+        {
+          "catalogId": "hicazkar--pesrev--devrikebir----tanburi_buyuk_osman_bey",
+          "sourceCandidateRowIndex": 7,
+          "sourceCandidateIndexInRow": 2,
+          "candidateLabel": "row-8-candidate-3",
+          "suggestedMeasureIndex": null,
+          "reviewDecision": "unreviewed",
+          "leftPercent": 33.516,
+          "topPercent": 72.171,
+          "widthPercent": 12.781,
+          "heightPercent": 2.494,
+          "confidence": "pdf-vector-candidate"
+        },
+        {
+          "catalogId": "hicazkar--pesrev--devrikebir----tanburi_buyuk_osman_bey",
+          "sourceCandidateRowIndex": 7,
+          "sourceCandidateIndexInRow": 3,
+          "candidateLabel": "row-8-candidate-4",
+          "suggestedMeasureIndex": null,
+          "reviewDecision": "unreviewed",
+          "leftPercent": 46.297,
+          "topPercent": 72.171,
+          "widthPercent": 22.428,
+          "heightPercent": 2.494,
+          "confidence": "pdf-vector-candidate"
+        },
+        {
+          "catalogId": "hicazkar--pesrev--devrikebir----tanburi_buyuk_osman_bey",
+          "sourceCandidateRowIndex": 7,
+          "sourceCandidateIndexInRow": 4,
+          "candidateLabel": "row-8-candidate-5",
+          "suggestedMeasureIndex": null,
+          "reviewDecision": "unreviewed",
+          "leftPercent": 68.725,
+          "topPercent": 72.171,
+          "widthPercent": 3.195,
+          "heightPercent": 2.494,
+          "confidence": "pdf-vector-candidate"
+        },
+        {
+          "catalogId": "hicazkar--pesrev--devrikebir----tanburi_buyuk_osman_bey",
+          "sourceCandidateRowIndex": 7,
+          "sourceCandidateIndexInRow": 5,
+          "candidateLabel": "row-8-candidate-6",
+          "suggestedMeasureIndex": null,
+          "reviewDecision": "unreviewed",
+          "leftPercent": 71.921,
+          "topPercent": 72.171,
+          "widthPercent": 25.583,
+          "heightPercent": 2.494,
+          "confidence": "pdf-vector-candidate"
+        }
+      ],
+      "promotionTemplate": {
+        "measureBoxes": [],
+        "policy": "This file groups PDF measure candidates for batch visual review only. It must not promote candidates or carry verified measureBoxes; promotion must go through layout-verification.generated.json and npm run verify:symbtr-measures."
+      }
+    },
+    {
+      "packetId": "symbtr-pdf-review-packet-0009",
+      "sequence": 9,
+      "status": "needs-visual-review",
+      "reviewAction": "map-pdf-vector-candidates-to-symbtr-measures",
+      "catalogIds": [
+        "hicazkar--pesrev--devrikebir----tanburi_buyuk_osman_bey"
+      ],
+      "staffRows": [
+        {
+          "catalogId": "hicazkar--pesrev--devrikebir----tanburi_buyuk_osman_bey",
+          "staffRowIndex": 8,
+          "candidateCount": 5,
+          "candidateGeometryFingerprint": "d0d17418435e737dcad9c95082bbfc0d445b5b9504fd950650f82f8dfafb8ed6",
+          "sourceArchiveMemberPath": "pdf_v3/hicazkar--pesrev--devrikebir----tanburi_buyuk_osman_bey.PDF",
+          "sourceMeasureCandidateCount": 49,
+          "scoreMeasureCount": 28,
+          "scoreMeasureIndexes": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15,
+            16,
+            17,
+            18,
+            19,
+            20,
+            21,
+            22,
+            23,
+            24,
+            25,
+            26,
+            27,
+            28
+          ]
+        }
+      ],
+      "candidateCount": 5,
+      "candidateReviewRows": [
+        {
+          "catalogId": "hicazkar--pesrev--devrikebir----tanburi_buyuk_osman_bey",
+          "sourceCandidateRowIndex": 8,
+          "sourceCandidateIndexInRow": 0,
+          "candidateLabel": "row-9-candidate-1",
+          "suggestedMeasureIndex": null,
+          "reviewDecision": "unreviewed",
+          "leftPercent": 2.389,
+          "topPercent": 80.63,
+          "widthPercent": 30.351,
+          "heightPercent": 2.494,
+          "confidence": "pdf-vector-candidate"
+        },
+        {
+          "catalogId": "hicazkar--pesrev--devrikebir----tanburi_buyuk_osman_bey",
+          "sourceCandidateRowIndex": 8,
+          "sourceCandidateIndexInRow": 1,
+          "candidateLabel": "row-9-candidate-2",
+          "suggestedMeasureIndex": null,
+          "reviewDecision": "unreviewed",
+          "leftPercent": 32.74,
+          "topPercent": 80.63,
+          "widthPercent": 12.983,
+          "heightPercent": 2.494,
+          "confidence": "pdf-vector-candidate"
+        },
+        {
+          "catalogId": "hicazkar--pesrev--devrikebir----tanburi_buyuk_osman_bey",
+          "sourceCandidateRowIndex": 8,
+          "sourceCandidateIndexInRow": 2,
+          "candidateLabel": "row-9-candidate-3",
+          "suggestedMeasureIndex": null,
+          "reviewDecision": "unreviewed",
+          "leftPercent": 45.723,
+          "topPercent": 80.63,
+          "widthPercent": 4.304,
+          "heightPercent": 2.494,
+          "confidence": "pdf-vector-candidate"
+        },
+        {
+          "catalogId": "hicazkar--pesrev--devrikebir----tanburi_buyuk_osman_bey",
+          "sourceCandidateRowIndex": 8,
+          "sourceCandidateIndexInRow": 3,
+          "candidateLabel": "row-9-candidate-4",
+          "suggestedMeasureIndex": null,
+          "reviewDecision": "unreviewed",
+          "leftPercent": 50.027,
+          "topPercent": 80.63,
+          "widthPercent": 4.344,
+          "heightPercent": 2.494,
+          "confidence": "pdf-vector-candidate"
+        },
+        {
+          "catalogId": "hicazkar--pesrev--devrikebir----tanburi_buyuk_osman_bey",
+          "sourceCandidateRowIndex": 8,
+          "sourceCandidateIndexInRow": 4,
+          "candidateLabel": "row-9-candidate-5",
+          "suggestedMeasureIndex": null,
+          "reviewDecision": "unreviewed",
+          "leftPercent": 54.371,
+          "topPercent": 80.63,
+          "widthPercent": 43.233,
+          "heightPercent": 2.494,
+          "confidence": "pdf-vector-candidate"
+        }
+      ],
+      "promotionTemplate": {
+        "measureBoxes": [],
+        "policy": "This file groups PDF measure candidates for batch visual review only. It must not promote candidates or carry verified measureBoxes; promotion must go through layout-verification.generated.json and npm run verify:symbtr-measures."
+      }
+    },
+    {
+      "packetId": "symbtr-pdf-review-packet-0010",
+      "sequence": 10,
+      "status": "needs-visual-review",
+      "reviewAction": "map-pdf-vector-candidates-to-symbtr-measures",
+      "catalogIds": [
+        "hicazkar--pesrev--devrikebir----tanburi_buyuk_osman_bey"
+      ],
+      "staffRows": [
+        {
+          "catalogId": "hicazkar--pesrev--devrikebir----tanburi_buyuk_osman_bey",
+          "staffRowIndex": 9,
+          "candidateCount": 3,
+          "candidateGeometryFingerprint": "d0d17418435e737dcad9c95082bbfc0d445b5b9504fd950650f82f8dfafb8ed6",
+          "sourceArchiveMemberPath": "pdf_v3/hicazkar--pesrev--devrikebir----tanburi_buyuk_osman_bey.PDF",
+          "sourceMeasureCandidateCount": 49,
+          "scoreMeasureCount": 28,
+          "scoreMeasureIndexes": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15,
+            16,
+            17,
+            18,
+            19,
+            20,
+            21,
+            22,
+            23,
+            24,
+            25,
+            26,
+            27,
+            28
+          ]
+        }
+      ],
+      "candidateCount": 3,
+      "candidateReviewRows": [
+        {
+          "catalogId": "hicazkar--pesrev--devrikebir----tanburi_buyuk_osman_bey",
+          "sourceCandidateRowIndex": 9,
+          "sourceCandidateIndexInRow": 0,
+          "candidateLabel": "row-10-candidate-1",
+          "suggestedMeasureIndex": null,
+          "reviewDecision": "unreviewed",
+          "leftPercent": 2.389,
+          "topPercent": 89.095,
+          "widthPercent": 49.422,
+          "heightPercent": 2.494,
+          "confidence": "pdf-vector-candidate"
+        },
+        {
+          "catalogId": "hicazkar--pesrev--devrikebir----tanburi_buyuk_osman_bey",
+          "sourceCandidateRowIndex": 9,
+          "sourceCandidateIndexInRow": 1,
+          "candidateLabel": "row-10-candidate-2",
+          "suggestedMeasureIndex": null,
+          "reviewDecision": "unreviewed",
+          "leftPercent": 51.811,
+          "topPercent": 89.095,
+          "widthPercent": 25.452,
+          "heightPercent": 2.494,
+          "confidence": "pdf-vector-candidate"
+        },
+        {
+          "catalogId": "hicazkar--pesrev--devrikebir----tanburi_buyuk_osman_bey",
+          "sourceCandidateRowIndex": 9,
+          "sourceCandidateIndexInRow": 2,
+          "candidateLabel": "row-10-candidate-3",
+          "suggestedMeasureIndex": null,
+          "reviewDecision": "unreviewed",
+          "leftPercent": 77.263,
+          "topPercent": 89.095,
+          "widthPercent": 20.362,
+          "heightPercent": 2.494,
+          "confidence": "pdf-vector-candidate"
+        }
+      ],
+      "promotionTemplate": {
+        "measureBoxes": [],
+        "policy": "This file groups PDF measure candidates for batch visual review only. It must not promote candidates or carry verified measureBoxes; promotion must go through layout-verification.generated.json and npm run verify:symbtr-measures."
+      }
+    }
+  ]
+}

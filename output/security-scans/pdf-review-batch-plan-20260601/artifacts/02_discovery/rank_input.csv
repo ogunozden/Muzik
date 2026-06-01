@@ -1,0 +1,6 @@
+path,area,preview
+output/symbtr-layout-review/layout-verification-review-batch-plan.json,diff,"{ ""schemaVersion"": 1, ""type"": ""symbtr-pdf-layout-verification-review-batch-plan"", ""packetCount"": 10, ""candidateReviewRows"": 49 }"
+output/symbtr-layout-review/layout-verification-summary.json,diff,"{   ""candidateEntries"": 1,   ""verificationEntries"": 0,   ""verifiedEntries"": 0,   ""verifiedMeasureBoxes"": 0,   ""promotionPolicy"": ""Only human-reviewed or visual-regression-approved PDF measure boxes ma"
+scripts/__tests__/render-symbtr-pdf-layout-review.test.mjs,diff,"import {mkdtempSync, readFileSync, rmSync} from ""node:fs""; import path from ""node:path""; import {afterEach, describe, expect, it} from ""vitest""; import {   buildVerificationReviewBatchPlan,   buildVer"
+scripts/render-symbtr-pdf-layout-review.mjs,diff,"import {mkdirSync, readFileSync, writeFileSync} from ""node:fs""; import path from ""node:path""; import {fileURLToPath} from ""node:url""; import {   SYMBTR_LAYOUT_CANDIDATE_FINGERPRINT_ALGORITHM,   getSym"
+scripts/validate-symbtr-layout-verification.mjs,diff,"import { mkdirSync, readFileSync, writeFileSync } from ""node:fs""; import path from ""node:path""; import {   SYMBTR_LAYOUT_CANDIDATE_FINGERPRINT_ALGORITHM,   getSymbTrLayoutCandidateFingerprint, } from "

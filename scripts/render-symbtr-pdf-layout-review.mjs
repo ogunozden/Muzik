@@ -13,7 +13,9 @@ const DEFAULT_CATALOG_ID = "hicazkar--pesrev--devrikebir----tanburi_buyuk_osman_
 const DEFAULT_OUT_DIR = "output/symbtr-layout-review";
 const DEFAULT_GENERATED_AT = "2026-06-01";
 const DEFAULT_REVIEWER = "local-reviewer";
+const DEFAULT_REVIEW_PACKET_SIZE = 1;
 const verificationTemplatePolicy = "This file is a batch review template only. Do not copy rows into layout-verification.generated.json until every selected candidate is human-reviewed or visual-regression-approved and converted into measureBoxes with confidence verified.";
+const verificationBatchPlanPolicy = "This file groups PDF measure candidates for batch visual review only. It must not promote candidates or carry verified measureBoxes; promotion must go through layout-verification.generated.json and npm run verify:symbtr-measures.";
 const layoutPath = path.join(root, "src", "data", "symbtr", "layout.generated.json");
 const pdfZipPath = path.join(root, "symb", "pdf_v3.zip");
 
@@ -376,6 +378,106 @@ function buildVerificationReviewTemplate({layoutData, artifacts, generatedAt, re
   };
 }
 
+function summarizeCandidateRowsByStaffRow(entry) {
+  const rowsByStaffRow = new Map();
+  for (const row of entry.candidateReviewRows) {
+    const rows = rowsByStaffRow.get(row.sourceCandidateRowIndex) ?? [];
+    rows.push(row);
+    rowsByStaffRow.set(row.sourceCandidateRowIndex, rows);
+  }
+
+  return Array.from(rowsByStaffRow, ([staffRowIndex, rows]) => ({
+    staffRowIndex,
+    candidateCount: rows.length,
+    candidates: rows,
+  })).sort((left, right) => left.staffRowIndex - right.staffRowIndex);
+}
+
+function chunkRows(rows, chunkSize) {
+  const chunks = [];
+  for (let index = 0; index < rows.length; index += chunkSize) {
+    chunks.push(rows.slice(index, index + chunkSize));
+  }
+  return chunks;
+}
+
+function buildVerificationReviewBatchPlan({reviewTemplate, generatedAt, reviewer, packetSize = DEFAULT_REVIEW_PACKET_SIZE}) {
+  const reviewEntries = Object.values(reviewTemplate.entries ?? {});
+  const staffRowGroups = reviewEntries.flatMap((entry) =>
+    summarizeCandidateRowsByStaffRow(entry).map((group) => ({
+      ...group,
+      catalogId: entry.catalogId,
+      sourceLayoutGeneratedAt: entry.sourceLayoutGeneratedAt,
+      sourceArchiveMemberPath: entry.sourceArchiveMemberPath,
+      sourceMeasureCandidateCount: entry.sourceMeasureCandidateCount,
+      candidateGeometryFingerprint: entry.candidateGeometryFingerprint,
+      scoreMeasureCount: entry.scoreMeasureSummary.measureCount,
+      scoreMeasureIndexes: entry.scoreMeasureSummary.measureIndexes,
+    })),
+  );
+  const packets = chunkRows(staffRowGroups, packetSize).map((groups, index) => {
+    const candidates = groups.flatMap((group) => group.candidates.map((candidate) => ({
+      ...candidate,
+      catalogId: group.catalogId,
+    })));
+
+    return {
+      packetId: `symbtr-pdf-review-packet-${String(index + 1).padStart(4, "0")}`,
+      sequence: index + 1,
+      status: "needs-visual-review",
+      reviewAction: "map-pdf-vector-candidates-to-symbtr-measures",
+      catalogIds: Array.from(new Set(groups.map((group) => group.catalogId))).sort(),
+      staffRows: groups.map((group) => ({
+        catalogId: group.catalogId,
+        staffRowIndex: group.staffRowIndex,
+        candidateCount: group.candidateCount,
+        candidateGeometryFingerprint: group.candidateGeometryFingerprint,
+        sourceArchiveMemberPath: group.sourceArchiveMemberPath,
+        sourceMeasureCandidateCount: group.sourceMeasureCandidateCount,
+        scoreMeasureCount: group.scoreMeasureCount,
+        scoreMeasureIndexes: group.scoreMeasureIndexes,
+      })),
+      candidateCount: candidates.length,
+      candidateReviewRows: candidates.map((candidate) => ({
+        catalogId: candidate.catalogId,
+        sourceCandidateRowIndex: candidate.sourceCandidateRowIndex,
+        sourceCandidateIndexInRow: candidate.sourceCandidateIndexInRow,
+        candidateLabel: candidate.candidateLabel,
+        suggestedMeasureIndex: null,
+        reviewDecision: "unreviewed",
+        leftPercent: candidate.leftPercent,
+        topPercent: candidate.topPercent,
+        widthPercent: candidate.widthPercent,
+        heightPercent: candidate.heightPercent,
+        confidence: candidate.confidence,
+      })),
+      promotionTemplate: {
+        measureBoxes: [],
+        policy: verificationBatchPlanPolicy,
+      },
+    };
+  });
+
+  return {
+    schemaVersion: 1,
+    type: "symbtr-pdf-layout-verification-review-batch-plan",
+    generatedAt,
+    reviewer,
+    policy: verificationBatchPlanPolicy,
+    packetSize,
+    packetCount: packets.length,
+    entryCount: reviewEntries.length,
+    candidateReviewRows: packets.reduce((total, packet) => total + packet.candidateCount, 0),
+    fingerprintAlgorithm: reviewTemplate.fingerprintAlgorithm,
+    sourceReviewTemplate: {
+      type: reviewTemplate.type,
+      generatedAt: reviewTemplate.generatedAt,
+      entryCount: reviewTemplate.entryCount,
+    },
+    packets,
+  };
+}
+
 function renderReviewArtifact(catalogId, outDir, layoutData, reviewer) {
   const entry = layoutData.entries?.[catalogId];
   if (!entry) {
@@ -435,17 +537,24 @@ if (isMain) {
   const catalogIds = requestedCatalogIds.slice(0, Number.isInteger(limit) && limit > 0 ? limit : requestedCatalogIds.length);
   const artifacts = catalogIds.map((catalogId) => renderReviewArtifact(catalogId, outDir, layoutData, reviewer));
   const template = buildVerificationReviewTemplate({layoutData, artifacts, generatedAt, reviewer});
+  const batchPlan = buildVerificationReviewBatchPlan({reviewTemplate: template, generatedAt, reviewer});
   const safeOutDir = assertInsideProject(path.resolve(root, outDir));
   const templateFileName = options.get("template-file") ?? "layout-verification-review-template.json";
   const templatePath = path.join(safeOutDir, templateFileName);
+  const batchPlanFileName = options.get("batch-plan-file") ?? "layout-verification-review-batch-plan.json";
+  const batchPlanPath = path.join(safeOutDir, batchPlanFileName);
 
   writeFileSync(templatePath, `${JSON.stringify(template, null, 2)}\n`);
+  writeFileSync(batchPlanPath, `${JSON.stringify(batchPlan, null, 2)}\n`);
 
   console.log(JSON.stringify({
     generatedAt,
     outDir: toProjectPath(path.relative(root, safeOutDir)),
     entryCount: artifacts.length,
     reviewTemplate: toProjectPath(path.relative(root, templatePath)),
+    reviewBatchPlan: toProjectPath(path.relative(root, batchPlanPath)),
+    reviewBatchPackets: batchPlan.packetCount,
+    reviewBatchCandidateRows: batchPlan.candidateReviewRows,
     artifacts: artifacts.map((artifact) => ({
       catalogId: artifact.catalogId,
       html: artifact.html,
@@ -460,6 +569,7 @@ if (isMain) {
 }
 
 export {
+  buildVerificationReviewBatchPlan,
   buildVerificationReviewTemplate,
   renderReviewArtifact,
 };

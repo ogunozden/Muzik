@@ -1,7 +1,11 @@
 import {mkdtempSync, readFileSync, rmSync} from "node:fs";
 import path from "node:path";
 import {afterEach, describe, expect, it} from "vitest";
-import {renderReviewArtifact, buildVerificationReviewTemplate} from "../render-symbtr-pdf-layout-review.mjs";
+import {
+  buildVerificationReviewBatchPlan,
+  buildVerificationReviewTemplate,
+  renderReviewArtifact,
+} from "../render-symbtr-pdf-layout-review.mjs";
 
 const HICAZKAR_CATALOG_ID = "hicazkar--pesrev--devrikebir----tanburi_buyuk_osman_bey";
 const tempDirs = [];
@@ -21,6 +25,11 @@ describe("render-symbtr-pdf-layout-review", () => {
     const template = buildVerificationReviewTemplate({
       layoutData,
       artifacts: [artifact],
+      generatedAt: "2026-06-01",
+      reviewer: "test-reviewer",
+    });
+    const batchPlan = buildVerificationReviewBatchPlan({
+      reviewTemplate: template,
       generatedAt: "2026-06-01",
       reviewer: "test-reviewer",
     });
@@ -52,5 +61,19 @@ describe("render-symbtr-pdf-layout-review", () => {
       maxMeasureIndex: 28,
       missingMeasureIndexes: [],
     }));
+    expect(batchPlan).toEqual(expect.objectContaining({
+      schemaVersion: 1,
+      type: "symbtr-pdf-layout-verification-review-batch-plan",
+      packetCount: 10,
+      candidateReviewRows: 49,
+      entryCount: 1,
+    }));
+    expect(batchPlan.packets[0]).toEqual(expect.objectContaining({
+      packetId: "symbtr-pdf-review-packet-0001",
+      status: "needs-visual-review",
+      candidateCount: 5,
+      promotionTemplate: expect.objectContaining({measureBoxes: []}),
+    }));
+    expect(JSON.stringify(batchPlan)).not.toContain('"confidence":"verified"');
   });
 });

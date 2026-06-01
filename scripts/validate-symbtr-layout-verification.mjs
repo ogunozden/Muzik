@@ -28,6 +28,12 @@ const REVIEW_TEMPLATE_PATH = path.join(
   "symbtr-layout-review",
   "layout-verification-review-template.json",
 );
+const REVIEW_BATCH_PLAN_PATH = path.join(
+  PROJECT_ROOT,
+  "output",
+  "symbtr-layout-review",
+  "layout-verification-review-batch-plan.json",
+);
 
 const ALLOWED_METHODS = new Set(["human-reviewed", "visual-regression"]);
 const PERCENT_EPSILON = 0.01;
@@ -552,6 +558,153 @@ function validateReviewTemplate({
   };
 }
 
+function hasPromotedMeasureBoxes(value) {
+  if (!value || typeof value !== "object") return false;
+  if (Array.isArray(value)) return value.some(hasPromotedMeasureBoxes);
+  return Object.entries(value).some(([key, child]) => (
+    key === "measureBoxes" && Array.isArray(child) && child.length > 0
+  ) || (
+    key === "confidence" && child === "verified"
+  ) || hasPromotedMeasureBoxes(child));
+}
+
+function validateReviewBatchPlan({
+  reviewBatchPlanData,
+  reviewTemplateData,
+  errors,
+}) {
+  if (reviewBatchPlanData.schemaVersion !== 1) {
+    errors.push("layout-verification-review-batch-plan.json schemaVersion must be 1");
+  }
+
+  if (reviewBatchPlanData.type !== "symbtr-pdf-layout-verification-review-batch-plan") {
+    errors.push("layout-verification-review-batch-plan.json type must be symbtr-pdf-layout-verification-review-batch-plan");
+  }
+
+  if (!isNonEmptyString(reviewBatchPlanData.generatedAt)) {
+    errors.push("layout-verification-review-batch-plan.json generatedAt must be a non-empty string");
+  }
+
+  if (!isNonEmptyString(reviewBatchPlanData.policy)) {
+    errors.push("layout-verification-review-batch-plan.json policy must be a non-empty string");
+  }
+
+  if (!isNonEmptyString(reviewBatchPlanData.reviewer)) {
+    errors.push("layout-verification-review-batch-plan.json reviewer must be a non-empty string");
+  }
+
+  if (!Number.isInteger(reviewBatchPlanData.packetSize) || reviewBatchPlanData.packetSize < 1) {
+    errors.push("layout-verification-review-batch-plan.json packetSize must be a positive integer");
+  }
+
+  if (reviewBatchPlanData.fingerprintAlgorithm !== SYMBTR_LAYOUT_CANDIDATE_FINGERPRINT_ALGORITHM) {
+    errors.push(
+      `layout-verification-review-batch-plan.json fingerprintAlgorithm must be ${SYMBTR_LAYOUT_CANDIDATE_FINGERPRINT_ALGORITHM}`,
+    );
+  }
+
+  const reviewEntries = getEntries(
+    reviewTemplateData,
+    "layout-verification-review-template",
+    errors,
+  );
+  const expectedRows = [];
+  for (const entry of Object.values(reviewEntries)) {
+    for (const row of entry.candidateReviewRows ?? []) {
+      expectedRows.push(`${entry.catalogId}:${row.sourceCandidateRowIndex}:${row.sourceCandidateIndexInRow}`);
+    }
+  }
+  const expectedRowSet = new Set(expectedRows);
+  const plannedRows = [];
+
+  if (!Array.isArray(reviewBatchPlanData.packets)) {
+    errors.push("layout-verification-review-batch-plan.json packets must be an array");
+  } else {
+    if (reviewBatchPlanData.packetCount !== reviewBatchPlanData.packets.length) {
+      errors.push("layout-verification-review-batch-plan.json packetCount must match packets");
+    }
+
+    const packetIds = new Set();
+    for (const packet of reviewBatchPlanData.packets) {
+      const packetLabel = packet?.packetId ?? "<missing-packet-id>";
+      if (!isNonEmptyString(packet?.packetId)) {
+        errors.push("layout-verification-review-batch-plan.json packetId is required");
+      } else if (packetIds.has(packet.packetId)) {
+        errors.push(`layout-verification-review-batch-plan.json duplicate packetId ${packet.packetId}`);
+      } else {
+        packetIds.add(packet.packetId);
+      }
+
+      if (packet?.status !== "needs-visual-review") {
+        errors.push(`layout-verification-review-batch-plan.json ${packetLabel} status must be needs-visual-review`);
+      }
+
+      if (hasPromotedMeasureBoxes(packet)) {
+        errors.push(`layout-verification-review-batch-plan.json ${packetLabel} must not carry verified measureBoxes`);
+      }
+
+      if (!Array.isArray(packet?.staffRows) || packet.staffRows.length === 0) {
+        errors.push(`layout-verification-review-batch-plan.json ${packetLabel} staffRows must be a non-empty array`);
+      }
+
+      if (!Array.isArray(packet?.candidateReviewRows)) {
+        errors.push(`layout-verification-review-batch-plan.json ${packetLabel} candidateReviewRows must be an array`);
+        continue;
+      }
+
+      if (packet.candidateCount !== packet.candidateReviewRows.length) {
+        errors.push(`layout-verification-review-batch-plan.json ${packetLabel} candidateCount must match candidateReviewRows`);
+      }
+
+      for (const row of packet.candidateReviewRows) {
+        const rowKey = `${row?.catalogId}:${row?.sourceCandidateRowIndex}:${row?.sourceCandidateIndexInRow}`;
+        plannedRows.push(rowKey);
+        if (!expectedRowSet.has(rowKey)) {
+          errors.push(`layout-verification-review-batch-plan.json ${packetLabel} unknown candidate row ${rowKey}`);
+        }
+        if (row?.suggestedMeasureIndex !== null) {
+          errors.push(`layout-verification-review-batch-plan.json ${packetLabel} suggestedMeasureIndex must stay null`);
+        }
+        if (row?.reviewDecision !== "unreviewed") {
+          errors.push(`layout-verification-review-batch-plan.json ${packetLabel} reviewDecision must stay unreviewed`);
+        }
+        if (row?.confidence !== "pdf-vector-candidate") {
+          errors.push(`layout-verification-review-batch-plan.json ${packetLabel} confidence must remain pdf-vector-candidate`);
+        }
+      }
+    }
+  }
+
+  if (reviewBatchPlanData.entryCount !== Object.keys(reviewEntries).length) {
+    errors.push("layout-verification-review-batch-plan.json entryCount must match review template entries");
+  }
+
+  if (reviewBatchPlanData.candidateReviewRows !== plannedRows.length) {
+    errors.push("layout-verification-review-batch-plan.json candidateReviewRows must match planned rows");
+  }
+
+  if (plannedRows.length !== expectedRows.length) {
+    errors.push("layout-verification-review-batch-plan.json must cover every review template candidate row");
+  }
+
+  const plannedRowSet = new Set(plannedRows);
+  if (plannedRowSet.size !== plannedRows.length) {
+    errors.push("layout-verification-review-batch-plan.json must not duplicate candidate rows across packets");
+  }
+
+  for (const rowKey of expectedRows) {
+    if (!plannedRowSet.has(rowKey)) {
+      errors.push(`layout-verification-review-batch-plan.json missing candidate row ${rowKey}`);
+    }
+  }
+
+  return {
+    path: path.relative(PROJECT_ROOT, REVIEW_BATCH_PLAN_PATH).replace(/\\/g, "/"),
+    packetCount: Array.isArray(reviewBatchPlanData.packets) ? reviewBatchPlanData.packets.length : 0,
+    candidateReviewRows: plannedRows.length,
+  };
+}
+
 const errors = [];
 const options = parseCliOptions(process.argv.slice(2));
 const verificationPath = options.has("verification-path")
@@ -560,6 +713,7 @@ const verificationPath = options.has("verification-path")
 const layoutData = readJson(LAYOUT_PATH);
 const verificationData = readJson(verificationPath);
 const reviewTemplateData = readJson(REVIEW_TEMPLATE_PATH);
+const reviewBatchPlanData = readJson(REVIEW_BATCH_PLAN_PATH);
 
 validateTopLevel(layoutData, verificationData, errors);
 
@@ -633,6 +787,11 @@ const reviewTemplateSummary = validateReviewTemplate({
   getScoreMeasureSummary,
   errors,
 });
+const reviewBatchPlanSummary = validateReviewBatchPlan({
+  reviewBatchPlanData,
+  reviewTemplateData,
+  errors,
+});
 
 const summary = {
   candidateEntries: candidateEntryIds.length,
@@ -642,6 +801,7 @@ const summary = {
   promotionPolicy: "Only human-reviewed or visual-regression-approved PDF measure boxes may be promoted from pdf-vector-candidate to verified.",
   candidateStatus: verifiedMeasureBoxes > 0 ? "verified-measure-boxes-present" : "unreviewed-candidates-only",
   reviewTemplate: reviewTemplateSummary,
+  reviewBatchPlan: reviewBatchPlanSummary,
   fingerprintAlgorithm: SYMBTR_LAYOUT_CANDIDATE_FINGERPRINT_ALGORITHM,
   unresolvedCandidateEntries: candidateEntryIds.filter(
     (catalogId) => !verificationEntries[catalogId],

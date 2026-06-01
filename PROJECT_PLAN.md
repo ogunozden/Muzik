@@ -403,6 +403,14 @@ tek kurala bağlamaktır.
       manifest entry'lerinin güncel PDF candidate geometry fingerprint'iyle
       eşleşmesini zorunlu tutar; import hattı stale/elle uydurulmuş manifest'i
       gerçek verification manifest'e yazmadan önce reddeder.
+      2026-06-01 ek PDF batch review packet planı:
+      `review:symbtr-measures` artık
+      `layout-verification-review-batch-plan.json` üretir; 49 PDF vektör
+      adayını 10 staff-row review paketine böler, her pakette candidate
+      fingerprint ve SymbTr ölçü indeks özetini taşır. `verify:symbtr-measures`
+      batch planın tüm candidate row'ları eksiksiz/tekil kapsadığını, packet
+      status'ının `needs-visual-review` kaldığını ve planın `verified`
+      confidence ya da dolu `measureBoxes` taşımadığını doğrular.
 
 ### Tamamlanan Otomasyon ve Altyapı Kanıtları (TODO Dışı)
 
@@ -1112,6 +1120,12 @@ tek kurala bağlamaktır.
   ölçü indeksi, maksimum ölçü indeksi 28 ve eksik SymbTr ölçü indeksi olmadığını
   gösterdi. Boş manifest adayları otomatik onaylamaz; gerçek manifest kutusu
   eklenirse `measureIndex` alanı kaynak TXT offset ölçülerinde bulunmak zorunda.
+- `npm run review:symbtr-measures` artık
+  `layout-verification-review-batch-plan.json` üretir: 10 staff-row packet,
+  49 candidate review row, 0 promoted measure box. `npm run
+  verify:symbtr-measures` summary'si `reviewBatchPlan.packetCount=10` ve
+  `reviewBatchPlan.candidateReviewRows=49` döndürür; validator batch plan içinde
+  `confidence: verified` veya dolu `measureBoxes` görürse fail-closed davranır.
 - `npx vitest run src/data/references/__tests__/external-sources.test.ts src/app/studio/follow/__tests__/page.test.tsx`
   başarılı: 2 test dosyası, 25 test. Resmi SymbTr v3 dış kaynak coverage'i
   3000/3000; kürasyonlu nota/YouTube coverage'i 22/3000 olarak ayrı doğrulandı.

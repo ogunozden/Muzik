@@ -143,6 +143,25 @@ const stateFixture = {
       generatedAt: "2026-06-01T00:00:00.000Z",
       targetScript: "npm run import:external-references -- --input <json>",
     },
+    symbtrLayoutVerificationManifest: {
+      summaryPath: "output/symbtr-layout-review/layout-verification-summary.json",
+      candidateEntries: 1,
+      verificationEntries: 0,
+      verifiedEntries: 0,
+      verifiedMeasureBoxes: 0,
+      unresolvedCandidateEntries: 1,
+      candidateStatus: "unreviewed-candidates-only",
+      promotionPolicy: "Only human-reviewed or visual-regression-approved PDF measure boxes may be promoted from pdf-vector-candidate to verified.",
+      fingerprintAlgorithm: "sha256:symbtr-layout-candidate-geometry-v1",
+      reviewTemplatePath: "output/symbtr-layout-review/layout-verification-review-template.json",
+      reviewTemplateEntryCount: 1,
+      reviewTemplateCandidateRows: 49,
+      reviewBatchPlanPath: "output/symbtr-layout-review/layout-verification-review-batch-plan.json",
+      reviewBatchPacketCount: 10,
+      reviewBatchCandidateRows: 49,
+      targetScript: "npm run import:symbtr-measure-verification -- --input <json>",
+      validationErrorCount: 0,
+    },
     candidateReviewGroupPage: {
       offset: 0,
       limit: 1,
@@ -389,6 +408,11 @@ describe("ReferencesCurationPage", () => {
     expect(screen.getByText(/source-intake-template\.json/)).toBeDefined();
     expect(screen.getByText(/2\.973 boş kaynak satırı/)).toBeDefined();
     expect(screen.getAllByText(/119 paket/).length).toBeGreaterThan(0);
+    expect(screen.getByText("PDF layout doğrulama")).toBeDefined();
+    expect(screen.getByText(/layout-verification-summary\.json/)).toBeDefined();
+    expect(screen.getByText(/layout-verification-review-template\.json/)).toBeDefined();
+    expect(screen.getByText(/layout-verification-review-batch-plan\.json/)).toBeDefined();
+    expect(screen.getByText(/0 hata/)).toBeDefined();
     expect(screen.getByText("review-provider-candidates")).toBeDefined();
     expect(screen.getByLabelText("Grup durum")).toBeDefined();
     expect(screen.getByLabelText("Karar durum")).toBeDefined();

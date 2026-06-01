@@ -429,6 +429,27 @@ const sourceIntakeTemplateFixture = {
     },
   ],
 };
+const symbtrLayoutVerificationSummaryFixture = {
+  candidateEntries: 1,
+  verificationEntries: 0,
+  verifiedEntries: 0,
+  verifiedMeasureBoxes: 0,
+  unresolvedCandidateEntries: 1,
+  candidateStatus: "unreviewed-candidates-only",
+  promotionPolicy: "Only human-reviewed or visual-regression-approved PDF measure boxes may be promoted from pdf-vector-candidate to verified.",
+  fingerprintAlgorithm: "sha256:symbtr-layout-candidate-geometry-v1",
+  reviewTemplate: {
+    path: "output/symbtr-layout-review/layout-verification-review-template.json",
+    entryCount: 1,
+    candidateReviewRows: 49,
+  },
+  reviewBatchPlan: {
+    path: "output/symbtr-layout-review/layout-verification-review-batch-plan.json",
+    packetCount: 10,
+    candidateReviewRows: 49,
+  },
+  errors: [],
+};
 const OPS_TOKEN_HEADER = "x-external-reference-ops-token";
 
 function authedRequest(url: string, init: RequestInit = {}): Request {
@@ -451,6 +472,10 @@ function mockJsonFiles() {
 
     if (filePath.includes("mapped-external-reference-candidates.json")) {
       return JSON.stringify(mappingFixture);
+    }
+
+    if (filePath.includes("layout-verification-summary.json")) {
+      return JSON.stringify(symbtrLayoutVerificationSummaryFixture);
     }
 
     if (filePath.includes("summary.json")) {
@@ -595,6 +620,18 @@ describe("/api/external-references route", () => {
       artifactPath: "output/external-reference-coverage/symbtr-curated-reference-source-intake-template.json",
       policyVersion: "candidate-review-source-intake-template-v1",
       targetScript: "npm run import:external-references -- --input <json>",
+    }));
+    expect(body.curation.symbtrLayoutVerificationManifest).toEqual(expect.objectContaining({
+      candidateEntries: 1,
+      verificationEntries: 0,
+      verifiedMeasureBoxes: 0,
+      unresolvedCandidateEntries: 1,
+      candidateStatus: "unreviewed-candidates-only",
+      reviewBatchPacketCount: 10,
+      reviewBatchCandidateRows: 49,
+      validationErrorCount: 0,
+      summaryPath: "output/symbtr-layout-review/layout-verification-summary.json",
+      targetScript: "npm run import:symbtr-measure-verification -- --input <json>",
     }));
     expect(body.curation.candidateReviewGroupPage).toEqual(expect.objectContaining({
       returnedCount: 2,

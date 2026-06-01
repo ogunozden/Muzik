@@ -10,6 +10,7 @@ export const dynamic = "force-dynamic";
 
 const PROJECT_ROOT = process.cwd();
 const COVERAGE_ROOT = path.join(PROJECT_ROOT, "output", "external-reference-coverage");
+const SYMBTR_LAYOUT_REVIEW_ROOT = path.join(PROJECT_ROOT, "output", "symbtr-layout-review");
 const REFERENCES_ROOT = path.join(PROJECT_ROOT, "src", "data", "references");
 const DEFAULT_BACKLOG_LIMIT = 100;
 const DEFAULT_CANDIDATE_LIMIT = 100;
@@ -96,6 +97,28 @@ interface ResearchProfilesManifest {
 
 interface EmbedStatesManifest {
   states?: unknown[];
+}
+
+interface SymbTrLayoutVerificationSummary {
+  candidateEntries?: number;
+  verificationEntries?: number;
+  verifiedEntries?: number;
+  verifiedMeasureBoxes?: number;
+  unresolvedCandidateEntries?: number;
+  candidateStatus?: string;
+  promotionPolicy?: string;
+  fingerprintAlgorithm?: string;
+  reviewTemplate?: {
+    path?: string;
+    entryCount?: number;
+    candidateReviewRows?: number;
+  };
+  reviewBatchPlan?: {
+    path?: string;
+    packetCount?: number;
+    candidateReviewRows?: number;
+  };
+  errors?: unknown[];
 }
 
 interface QualityStatsManifest {
@@ -199,6 +222,7 @@ async function buildReadOnlyInitialState(): Promise<ExternalReferenceState> {
   const recommendationPath = path.join(COVERAGE_ROOT, "symbtr-curated-reference-candidate-review-group-decision-recommendations.json");
   const batchPlanPath = path.join(COVERAGE_ROOT, "symbtr-curated-reference-candidate-review-batch-plan.json");
   const sourceIntakeTemplatePath = path.join(COVERAGE_ROOT, "symbtr-curated-reference-source-intake-template.json");
+  const layoutVerificationSummaryPath = path.join(SYMBTR_LAYOUT_REVIEW_ROOT, "layout-verification-summary.json");
   const mappingPath = path.join(COVERAGE_ROOT, "mapped-external-reference-candidates.json");
   const [
     coverage,
@@ -214,6 +238,7 @@ async function buildReadOnlyInitialState(): Promise<ExternalReferenceState> {
     groupDecisionRecommendations,
     candidateReviewBatchPlan,
     sourceIntakeTemplate,
+    layoutVerificationSummary,
     candidateReviewQueueData,
     candidateReviewGroupsData,
     backlogData,
@@ -232,6 +257,7 @@ async function buildReadOnlyInitialState(): Promise<ExternalReferenceState> {
     readJsonOrNull<{policyVersion?: string; generatedAt?: string; summary?: Record<string, unknown>; decisions?: unknown[]}>(recommendationPath),
     readJsonOrNull<{policyVersion?: string; generatedAt?: string; summary?: Record<string, unknown>; packets?: unknown[]}>(batchPlanPath),
     readJsonOrNull<{policyVersion?: string; generatedAt?: string; summary?: Record<string, unknown>; importContract?: Record<string, unknown>; packets?: unknown[]}>(sourceIntakeTemplatePath),
+    readJsonOrNull<SymbTrLayoutVerificationSummary>(layoutVerificationSummaryPath),
     readJsonOrNull<CandidateReviewRow[]>(candidateQueuePath),
     readJsonOrNull<CandidateReviewGroup[]>(candidateGroupsPath),
     readJsonOrNull<CurationBacklogRow[]>(backlogPath),
@@ -304,6 +330,25 @@ async function buildReadOnlyInitialState(): Promise<ExternalReferenceState> {
         targetScript: typeof sourceIntakeTemplate?.importContract?.targetScript === "string"
           ? sourceIntakeTemplate.importContract.targetScript
           : null,
+      },
+      symbtrLayoutVerificationManifest: {
+        summaryPath: toProjectPath(layoutVerificationSummaryPath),
+        candidateEntries: Number(layoutVerificationSummary?.candidateEntries ?? 0),
+        verificationEntries: Number(layoutVerificationSummary?.verificationEntries ?? 0),
+        verifiedEntries: Number(layoutVerificationSummary?.verifiedEntries ?? 0),
+        verifiedMeasureBoxes: Number(layoutVerificationSummary?.verifiedMeasureBoxes ?? 0),
+        unresolvedCandidateEntries: Number(layoutVerificationSummary?.unresolvedCandidateEntries ?? 0),
+        candidateStatus: layoutVerificationSummary?.candidateStatus ?? null,
+        promotionPolicy: layoutVerificationSummary?.promotionPolicy ?? null,
+        fingerprintAlgorithm: layoutVerificationSummary?.fingerprintAlgorithm ?? null,
+        reviewTemplatePath: layoutVerificationSummary?.reviewTemplate?.path ?? toProjectPath(path.join(SYMBTR_LAYOUT_REVIEW_ROOT, "layout-verification-review-template.json")),
+        reviewTemplateEntryCount: Number(layoutVerificationSummary?.reviewTemplate?.entryCount ?? 0),
+        reviewTemplateCandidateRows: Number(layoutVerificationSummary?.reviewTemplate?.candidateReviewRows ?? 0),
+        reviewBatchPlanPath: layoutVerificationSummary?.reviewBatchPlan?.path ?? toProjectPath(path.join(SYMBTR_LAYOUT_REVIEW_ROOT, "layout-verification-review-batch-plan.json")),
+        reviewBatchPacketCount: Number(layoutVerificationSummary?.reviewBatchPlan?.packetCount ?? 0),
+        reviewBatchCandidateRows: Number(layoutVerificationSummary?.reviewBatchPlan?.candidateReviewRows ?? 0),
+        targetScript: "npm run import:symbtr-measure-verification -- --input <json>",
+        validationErrorCount: Array.isArray(layoutVerificationSummary?.errors) ? layoutVerificationSummary.errors.length : 0,
       },
       candidateReviewGroupPage: {
         offset: 0,

@@ -257,6 +257,25 @@ export interface ExternalReferenceState {
       generatedAt?: string | null;
       targetScript?: string | null;
     };
+    symbtrLayoutVerificationManifest?: {
+      summaryPath?: string;
+      candidateEntries?: number;
+      verificationEntries?: number;
+      verifiedEntries?: number;
+      verifiedMeasureBoxes?: number;
+      unresolvedCandidateEntries?: number;
+      candidateStatus?: string | null;
+      promotionPolicy?: string | null;
+      fingerprintAlgorithm?: string | null;
+      reviewTemplatePath?: string;
+      reviewTemplateEntryCount?: number;
+      reviewTemplateCandidateRows?: number;
+      reviewBatchPlanPath?: string;
+      reviewBatchPacketCount?: number;
+      reviewBatchCandidateRows?: number;
+      targetScript?: string | null;
+      validationErrorCount?: number;
+    };
     candidateReviewGroupPage?: CandidateReviewGroupPage;
     candidateReviewGroupFacets?: {
       statuses?: BacklogFacet[];
@@ -858,6 +877,7 @@ export function ReferencesCurationDashboard({
   const candidateReviewGroupDecisionRecommendationManifest = state.curation?.candidateReviewGroupDecisionRecommendationManifest;
   const candidateReviewBatchPlanManifest = state.curation?.candidateReviewBatchPlanManifest;
   const sourceIntakeTemplateManifest = state.curation?.sourceIntakeTemplateManifest;
+  const symbtrLayoutVerificationManifest = state.curation?.symbtrLayoutVerificationManifest;
   const candidateReviewGroupPage = state.curation?.candidateReviewGroupPage;
   const candidateReviewGroups = state.curation?.candidateReviewGroups ?? [];
   const candidateReviewPage = state.curation?.candidateReviewPage;
@@ -1104,6 +1124,61 @@ export function ReferencesCurationDashboard({
                 </Button>
               </div>
             </div>
+            {symbtrLayoutVerificationManifest && (
+              <div className="border-b border-[var(--color-border)] px-4 py-3">
+                <div className="grid gap-3 md:grid-cols-4">
+                  <div>
+                    <h3 className={`text-sm font-semibold ${tokens.colors.text.primary}`}>PDF layout doğrulama</h3>
+                    <p className={`mt-1 text-xs ${tokens.colors.text.secondary}`}>
+                      {symbtrLayoutVerificationManifest.candidateStatus ?? "bilinmiyor"} · {formatNumber(symbtrLayoutVerificationManifest.candidateEntries)} aday eser · {formatNumber(symbtrLayoutVerificationManifest.unresolvedCandidateEntries)} bekleyen
+                    </p>
+                  </div>
+                  <div>
+                    <div className={`text-xs uppercase ${tokens.colors.text.secondary}`}>Verified</div>
+                    <div className={`mt-1 text-sm ${tokens.colors.text.primary}`}>
+                      {formatNumber(symbtrLayoutVerificationManifest.verifiedEntries)} eser · {formatNumber(symbtrLayoutVerificationManifest.verifiedMeasureBoxes)} ölçü kutusu
+                    </div>
+                  </div>
+                  <div>
+                    <div className={`text-xs uppercase ${tokens.colors.text.secondary}`}>Review batch</div>
+                    <div className={`mt-1 text-sm ${tokens.colors.text.primary}`}>
+                      {formatNumber(symbtrLayoutVerificationManifest.reviewBatchPacketCount)} paket · {formatNumber(symbtrLayoutVerificationManifest.reviewBatchCandidateRows)} aday satır
+                    </div>
+                  </div>
+                  <div>
+                    <div className={`text-xs uppercase ${tokens.colors.text.secondary}`}>Validation</div>
+                    <div className={`mt-1 text-sm ${tokens.colors.text.primary}`}>
+                      {formatNumber(symbtrLayoutVerificationManifest.validationErrorCount)} hata · {symbtrLayoutVerificationManifest.fingerprintAlgorithm ?? "-"}
+                    </div>
+                  </div>
+                </div>
+                {symbtrLayoutVerificationManifest.promotionPolicy && (
+                  <p className={`mt-3 text-xs ${tokens.colors.text.secondary}`}>{symbtrLayoutVerificationManifest.promotionPolicy}</p>
+                )}
+                <div className="mt-3 grid gap-1">
+                  {symbtrLayoutVerificationManifest.summaryPath && (
+                    <code className="break-all text-xs text-[var(--color-text-primary)]">
+                      {symbtrLayoutVerificationManifest.summaryPath}
+                    </code>
+                  )}
+                  {symbtrLayoutVerificationManifest.reviewTemplatePath && (
+                    <code className="break-all text-xs text-[var(--color-text-primary)]">
+                      {symbtrLayoutVerificationManifest.reviewTemplatePath} · {formatNumber(symbtrLayoutVerificationManifest.reviewTemplateEntryCount)} eser · {formatNumber(symbtrLayoutVerificationManifest.reviewTemplateCandidateRows)} aday satır
+                    </code>
+                  )}
+                  {symbtrLayoutVerificationManifest.reviewBatchPlanPath && (
+                    <code className="break-all text-xs text-[var(--color-text-primary)]">
+                      {symbtrLayoutVerificationManifest.reviewBatchPlanPath} · {formatNumber(symbtrLayoutVerificationManifest.reviewBatchPacketCount)} paket
+                    </code>
+                  )}
+                  {symbtrLayoutVerificationManifest.targetScript && (
+                    <code className="break-all text-xs text-[var(--color-text-primary)]">
+                      {symbtrLayoutVerificationManifest.targetScript}
+                    </code>
+                  )}
+                </div>
+              </div>
+            )}
             {candidateGroupExportText && (
               <div className="border-b border-[var(--color-border)] px-4 py-3">
                 <label htmlFor="candidate-review-group-export-json" className={`flex flex-col gap-1 text-sm ${tokens.colors.text.secondary}`}>

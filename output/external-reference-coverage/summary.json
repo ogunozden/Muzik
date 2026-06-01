@@ -4,7 +4,7 @@
   "curatedReferenceEntries": 22,
   "missingCuratedEntries": 2978,
   "curationDecisionEntries": 5,
-  "candidateReviewGroupDecisionEntries": 0,
+  "candidateReviewGroupDecisionEntries": 5,
   "deferredMissingEntries": 5,
   "bulkCandidateEntries": 7,
   "acceptedBulkCandidateEntries": 7,
@@ -20,7 +20,7 @@
   "researchSourceProfileEntries": 5,
   "candidateReviewQueueEntries": 14890,
   "candidateReviewGroupEntries": 2978,
-  "candidateReviewGroupDecisionRecommendationEntries": 5,
+  "candidateReviewGroupDecisionRecommendationEntries": 0,
   "candidateReviewBatchPlanEntries": 119,
   "candidateReviewQueueByStatus": [
     {
@@ -57,14 +57,8 @@
   "candidateReviewGroupsByStatus": [
     {
       "value": "needs-review",
-      "count": 2977
+      "count": 2973
     },
-    {
-      "value": "conflict",
-      "count": 1
-    }
-  ],
-  "candidateReviewGroupDecisionRecommendationsByStatus": [
     {
       "value": "deferred",
       "count": 4
@@ -74,11 +68,21 @@
       "count": 1
     }
   ],
+  "candidateReviewGroupDecisionRecommendationsByStatus": [],
   "coverageMatrixEntries": 350,
   "dedupeReportEntries": 0,
   "cleanedDuplicateRows": 0,
   "duplicateRowsAfterDedupe": 0,
-  "candidateReviewGroupDecisionsByStatus": [],
+  "candidateReviewGroupDecisionsByStatus": [
+    {
+      "value": "deferred",
+      "count": 4
+    },
+    {
+      "value": "conflict",
+      "count": 1
+    }
+  ],
   "batchReport": {
     "version": 1,
     "flow": [
@@ -154,8 +158,8 @@
     ],
     "generatedReviewCandidates": 14890,
     "generatedReviewGroups": 2978,
-    "appliedReviewGroupDecisions": 0,
-    "recommendedReviewGroupDecisions": 5,
+    "appliedReviewGroupDecisions": 5,
+    "recommendedReviewGroupDecisions": 0,
     "candidateReviewQueryFields": [
       "makam",
       "form",

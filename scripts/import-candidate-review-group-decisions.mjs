@@ -118,10 +118,6 @@ function readInputDecisions(filePath, packetId) {
         : []
   );
 
-  if (rows.length === 0) {
-    throw new Error("Input must include a non-empty decisions/groups array or candidate review batch plan packets.");
-  }
-
   return {
     inputKind: packetDecisionRows?.inputKind ?? "candidate-review-group-decisions",
     packetCount: packetDecisionRows?.packetCount ?? 0,

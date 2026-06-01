@@ -134,6 +134,10 @@ function applyCandidateReviewGroupDecisionStatus(group, decision) {
 }
 
 function getCandidateReviewGroupDecisionRecommendation(group) {
+  if (group.decisionReviewedAt || String(group.reviewAction ?? "").startsWith("batch-decision-")) {
+    return null;
+  }
+
   if (group.status === "conflict") {
     return {
       status: "conflict",

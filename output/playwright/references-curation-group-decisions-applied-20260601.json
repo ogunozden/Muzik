@@ -1,0 +1,18 @@
+{
+  "bodyLength": 80269,
+  "hasCurationSurface": true,
+  "hasDecisionCount": true,
+  "hasRecommendationZero": true,
+  "horizontalOverflow": false,
+  "title": "Muzik - Türk Müziği Platformu",
+  "url": "http://localhost:4015/references/curation",
+  "viewport": {
+    "clientWidth": 591,
+    "height": 1272,
+    "scrollWidth": 591,
+    "width": 599
+  },
+  "logCount": 0,
+  "logs": [],
+  "screenshotPath": "C:/Users/ogunozden/Desktop/Muzik/output/playwright/references-curation-group-decisions-applied-20260601.png"
+}

@@ -806,10 +806,24 @@ tek kurala bağlamaktır.
 - 2026-06-01 candidate review packet import doğrulaması:
   `npx vitest run scripts/__tests__/import-candidate-review-group-decisions.test.mjs`
   geçti: 1 dosya, 7 test. Gerçek 119 paketlik
-  `symbtr-curated-reference-candidate-review-batch-plan.json` üzerinde dry-run
-  119 paket / 2973 karar satırı üretti; `--packet-id candidate-review-packet-0001`
-  dry-run 25 karar satırı üretti ve `candidate-review-group-decisions.json`
-  write yapılmadan değişmedi. `npm run curation:validate` 0 error ile geçti.
+      `symbtr-curated-reference-candidate-review-batch-plan.json` üzerinde dry-run
+      119 paket / 2973 karar satırı üretti; `--packet-id candidate-review-packet-0001`
+      dry-run 25 karar satırı üretti ve `candidate-review-group-decisions.json`
+      write yapılmadan değişmedi. `npm run curation:validate` 0 error ile geçti.
+
+- 2026-06-01 candidate review group önerilerini uygulama doğrulaması:
+  `npm run import:candidate-review-decisions -- --input
+  output/external-reference-coverage/symbtr-curated-reference-candidate-review-group-decision-recommendations.json
+  --write` 5 öneriyi tek batch halinde kalıcı karara çevirdi. Kararlar yalnız
+  `deferred` (4) ve `conflict` (1) durumlarını taşır; accepted source id/URL
+  üretmez. Ardından `npm run audit:external-references` ve `npm run
+  curation:validate` geçti: summary `candidateReviewGroupDecisionEntries=5`,
+  `candidateReviewGroupDecisionRecommendationEntries=0`, batch report
+  `appliedReviewGroupDecisions=5` ve `recommendedReviewGroupDecisions=0`
+  döndürür; group status dağılımı `2973 needs-review / 4 deferred / 1
+  conflict`, auto-attach hâlâ yalnız 7 accepted bulk kaynakla sınırlı. Ek kök
+  neden düzeltmesiyle karar verilmiş gruplar tekrar öneri üretmez ve boş öneri
+  manifesti `import:candidate-review-decisions` için idempotent no-op olur.
 
 - 2026-06-01 candidate review group öneri doğrulaması:
   `npx vitest run scripts/lib/__tests__/external-reference-audit.test.mjs scripts/lib/__tests__/source-curation-validation.test.mjs src/app/api/external-references/__tests__/route.test.ts src/app/references/curation/__tests__/page.test.tsx`

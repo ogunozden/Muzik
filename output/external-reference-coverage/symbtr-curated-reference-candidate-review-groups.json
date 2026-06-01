@@ -3,7 +3,7 @@
     "groupId": "muhayyer--ilahi--sofyan--duseli_bu_askin--dede_efendi:review-group",
     "catalogId": "muhayyer--ilahi--sofyan--duseli_bu_askin--dede_efendi",
     "status": "conflict",
-    "reviewAction": "resolve-conflict-before-import",
+    "reviewAction": "batch-decision-conflict",
     "candidateCount": 5,
     "profileCount": 5,
     "profiles": [
@@ -29,7 +29,150 @@
     "usul": "Sofyan",
     "title": "Duseli Bu Askin",
     "composer": "Dede Efendi",
-    "priorityGroup": "pdf-and-musicxml"
+    "priorityGroup": "pdf-and-musicxml",
+    "decisionReason": "batch-recommend-source-mismatch-conflict",
+    "decisionReviewedAt": "2026-05-10",
+    "decisionReviewedBy": "batch-policy"
+  },
+  {
+    "groupId": "cargah--ilahi--devrikebir--kudumun_rahmeti--aziz_mahmud_hudai:review-group",
+    "catalogId": "cargah--ilahi--devrikebir--kudumun_rahmeti--aziz_mahmud_hudai",
+    "status": "deferred",
+    "reviewAction": "batch-decision-deferred",
+    "candidateCount": 5,
+    "profileCount": 5,
+    "profiles": [
+      "divanmakam",
+      "internet-archive",
+      "ogm-materyal",
+      "salihbora",
+      "youtube"
+    ],
+    "providers": [
+      "archive",
+      "score",
+      "youtube"
+    ],
+    "confidenceLevels": [
+      "low",
+      "needs-context"
+    ],
+    "highestReviewConfidenceScore": 74,
+    "deferredFromNextBatch": true,
+    "makam": "Cargah",
+    "form": "İlahi",
+    "usul": "Devrikebir",
+    "title": "Kudumun Rahmeti",
+    "composer": "Aziz Mahmud Hudai",
+    "priorityGroup": "pdf-and-musicxml",
+    "decisionReason": "batch-recommend-existing-curation-deferred",
+    "decisionReviewedAt": "2026-05-10",
+    "decisionReviewedBy": "batch-policy"
+  },
+  {
+    "groupId": "hicaz_uzzal--ilahi--duyek--eya_alemlerin--dede_efendi:review-group",
+    "catalogId": "hicaz_uzzal--ilahi--duyek--eya_alemlerin--dede_efendi",
+    "status": "deferred",
+    "reviewAction": "batch-decision-deferred",
+    "candidateCount": 5,
+    "profileCount": 5,
+    "profiles": [
+      "divanmakam",
+      "internet-archive",
+      "ogm-materyal",
+      "salihbora",
+      "youtube"
+    ],
+    "providers": [
+      "archive",
+      "score",
+      "youtube"
+    ],
+    "confidenceLevels": [
+      "low",
+      "needs-context"
+    ],
+    "highestReviewConfidenceScore": 74,
+    "deferredFromNextBatch": true,
+    "makam": "Hicaz Uzzal",
+    "form": "İlahi",
+    "usul": "Duyek",
+    "title": "Eya Alemlerin",
+    "composer": "Dede Efendi",
+    "priorityGroup": "pdf-and-musicxml",
+    "decisionReason": "batch-recommend-existing-curation-deferred",
+    "decisionReviewedAt": "2026-05-10",
+    "decisionReviewedBy": "batch-policy"
+  },
+  {
+    "groupId": "hicaz_uzzal--ilahi--sofyan--gelin_gidelim--dede_efendi:review-group",
+    "catalogId": "hicaz_uzzal--ilahi--sofyan--gelin_gidelim--dede_efendi",
+    "status": "deferred",
+    "reviewAction": "batch-decision-deferred",
+    "candidateCount": 5,
+    "profileCount": 5,
+    "profiles": [
+      "divanmakam",
+      "internet-archive",
+      "ogm-materyal",
+      "salihbora",
+      "youtube"
+    ],
+    "providers": [
+      "archive",
+      "score",
+      "youtube"
+    ],
+    "confidenceLevels": [
+      "low",
+      "needs-context"
+    ],
+    "highestReviewConfidenceScore": 74,
+    "deferredFromNextBatch": true,
+    "makam": "Hicaz Uzzal",
+    "form": "İlahi",
+    "usul": "Sofyan",
+    "title": "Gelin Gidelim",
+    "composer": "Dede Efendi",
+    "priorityGroup": "pdf-and-musicxml",
+    "decisionReason": "batch-recommend-existing-curation-deferred",
+    "decisionReviewedAt": "2026-05-10",
+    "decisionReviewedBy": "batch-policy"
+  },
+  {
+    "groupId": "hicaz_zirgule--ilahi--sofyan--hic_bulunmaz--husnu_sarier:review-group",
+    "catalogId": "hicaz_zirgule--ilahi--sofyan--hic_bulunmaz--husnu_sarier",
+    "status": "deferred",
+    "reviewAction": "batch-decision-deferred",
+    "candidateCount": 5,
+    "profileCount": 5,
+    "profiles": [
+      "divanmakam",
+      "internet-archive",
+      "ogm-materyal",
+      "salihbora",
+      "youtube"
+    ],
+    "providers": [
+      "archive",
+      "score",
+      "youtube"
+    ],
+    "confidenceLevels": [
+      "low",
+      "needs-context"
+    ],
+    "highestReviewConfidenceScore": 74,
+    "deferredFromNextBatch": true,
+    "makam": "Hicaz Zirgule",
+    "form": "İlahi",
+    "usul": "Sofyan",
+    "title": "Hic Bulunmaz",
+    "composer": "Husnu Sarier",
+    "priorityGroup": "pdf-and-musicxml",
+    "decisionReason": "batch-recommend-existing-curation-deferred",
+    "decisionReviewedAt": "2026-05-10",
+    "decisionReviewedBy": "batch-policy"
   },
   {
     "groupId": "acem--ilahi--nimevsat--calabim_bir--haci_bayram_veli:review-group",
@@ -95165,134 +95308,6 @@
     "usul": "Devrikebir",
     "title": "",
     "composer": "",
-    "priorityGroup": "pdf-and-musicxml"
-  },
-  {
-    "groupId": "cargah--ilahi--devrikebir--kudumun_rahmeti--aziz_mahmud_hudai:review-group",
-    "catalogId": "cargah--ilahi--devrikebir--kudumun_rahmeti--aziz_mahmud_hudai",
-    "status": "needs-review",
-    "reviewAction": "review-provider-candidates",
-    "candidateCount": 5,
-    "profileCount": 5,
-    "profiles": [
-      "divanmakam",
-      "internet-archive",
-      "ogm-materyal",
-      "salihbora",
-      "youtube"
-    ],
-    "providers": [
-      "archive",
-      "score",
-      "youtube"
-    ],
-    "confidenceLevels": [
-      "low",
-      "needs-context"
-    ],
-    "highestReviewConfidenceScore": 74,
-    "deferredFromNextBatch": true,
-    "makam": "Cargah",
-    "form": "İlahi",
-    "usul": "Devrikebir",
-    "title": "Kudumun Rahmeti",
-    "composer": "Aziz Mahmud Hudai",
-    "priorityGroup": "pdf-and-musicxml"
-  },
-  {
-    "groupId": "hicaz_uzzal--ilahi--duyek--eya_alemlerin--dede_efendi:review-group",
-    "catalogId": "hicaz_uzzal--ilahi--duyek--eya_alemlerin--dede_efendi",
-    "status": "needs-review",
-    "reviewAction": "review-provider-candidates",
-    "candidateCount": 5,
-    "profileCount": 5,
-    "profiles": [
-      "divanmakam",
-      "internet-archive",
-      "ogm-materyal",
-      "salihbora",
-      "youtube"
-    ],
-    "providers": [
-      "archive",
-      "score",
-      "youtube"
-    ],
-    "confidenceLevels": [
-      "low",
-      "needs-context"
-    ],
-    "highestReviewConfidenceScore": 74,
-    "deferredFromNextBatch": true,
-    "makam": "Hicaz Uzzal",
-    "form": "İlahi",
-    "usul": "Duyek",
-    "title": "Eya Alemlerin",
-    "composer": "Dede Efendi",
-    "priorityGroup": "pdf-and-musicxml"
-  },
-  {
-    "groupId": "hicaz_uzzal--ilahi--sofyan--gelin_gidelim--dede_efendi:review-group",
-    "catalogId": "hicaz_uzzal--ilahi--sofyan--gelin_gidelim--dede_efendi",
-    "status": "needs-review",
-    "reviewAction": "review-provider-candidates",
-    "candidateCount": 5,
-    "profileCount": 5,
-    "profiles": [
-      "divanmakam",
-      "internet-archive",
-      "ogm-materyal",
-      "salihbora",
-      "youtube"
-    ],
-    "providers": [
-      "archive",
-      "score",
-      "youtube"
-    ],
-    "confidenceLevels": [
-      "low",
-      "needs-context"
-    ],
-    "highestReviewConfidenceScore": 74,
-    "deferredFromNextBatch": true,
-    "makam": "Hicaz Uzzal",
-    "form": "İlahi",
-    "usul": "Sofyan",
-    "title": "Gelin Gidelim",
-    "composer": "Dede Efendi",
-    "priorityGroup": "pdf-and-musicxml"
-  },
-  {
-    "groupId": "hicaz_zirgule--ilahi--sofyan--hic_bulunmaz--husnu_sarier:review-group",
-    "catalogId": "hicaz_zirgule--ilahi--sofyan--hic_bulunmaz--husnu_sarier",
-    "status": "needs-review",
-    "reviewAction": "review-provider-candidates",
-    "candidateCount": 5,
-    "profileCount": 5,
-    "profiles": [
-      "divanmakam",
-      "internet-archive",
-      "ogm-materyal",
-      "salihbora",
-      "youtube"
-    ],
-    "providers": [
-      "archive",
-      "score",
-      "youtube"
-    ],
-    "confidenceLevels": [
-      "low",
-      "needs-context"
-    ],
-    "highestReviewConfidenceScore": 74,
-    "deferredFromNextBatch": true,
-    "makam": "Hicaz Zirgule",
-    "form": "İlahi",
-    "usul": "Sofyan",
-    "title": "Hic Bulunmaz",
-    "composer": "Husnu Sarier",
     "priorityGroup": "pdf-and-musicxml"
   }
 ]

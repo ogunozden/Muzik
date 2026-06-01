@@ -90,6 +90,29 @@ describe("import-candidate-review-group-decisions", () => {
     ]);
   });
 
+  it("treats an empty decision manifest as an idempotent no-op", () => {
+    const root = createRoot();
+    writeJson(root, "input/decisions.json", {
+      version: 1,
+      decisions: [],
+    });
+
+    const output = JSON.parse(runScript(root, "input/decisions.json", true));
+    const manifest = JSON.parse(readFileSync(
+      path.join(root, "src/data/references/candidate-review-group-decisions.json"),
+      "utf8",
+    ));
+
+    expect(output).toEqual(expect.objectContaining({
+      dryRun: false,
+      inputDecisionCount: 0,
+      addedDecisionCount: 0,
+      updatedDecisionCount: 0,
+      outputDecisionCount: 0,
+    }));
+    expect(manifest.decisions).toEqual([]);
+  });
+
   it("imports decision rows from a candidate review batch plan packet", () => {
     const root = createRoot();
     writeJson(root, "input/batch-plan.json", {

@@ -62,6 +62,13 @@ describe("external-reference-candidate-review", () => {
     const candidates = buildCandidateReviewRows(backlogRows, profiles);
     const groups = buildCandidateReviewGroups(candidates);
     const recommendations = buildCandidateReviewGroupDecisionRecommendations(groups, "2026-06-01");
+    const decidedRecommendations = buildCandidateReviewGroupDecisionRecommendations([
+      {
+        ...groups.find((group) => group.catalogId === "muhayyer--ilahi--sofyan--duseli_bu_askin--dede_efendi"),
+        reviewAction: "batch-decision-conflict",
+        decisionReviewedAt: "2026-06-01",
+      },
+    ], "2026-06-01");
     const batchPlan = buildCandidateReviewBatchPlan(groups, candidates, {
       generatedAt: "2026-06-01T00:00:00.000Z",
       packetSize: 1,
@@ -101,6 +108,7 @@ describe("external-reference-candidate-review", () => {
         recommendationRule: "generated-conflict-review-group",
       }),
     ]);
+    expect(decidedRecommendations).toEqual([]);
     expect(batchPlan).toEqual(expect.objectContaining({
       type: "candidate-review-batch-plan",
       summary: expect.objectContaining({

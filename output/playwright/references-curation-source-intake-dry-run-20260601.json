@@ -1,0 +1,106 @@
+{
+  "capturedAt": "2026-06-01",
+  "url": "http://localhost:4015/references/curation",
+  "checks": {
+    "clientWidth": 591,
+    "containsAccepted": true,
+    "containsCommand": true,
+    "containsHttps": true,
+    "containsManifest": true,
+    "containsSourcePanel": true,
+    "containsZeroError": true,
+    "noHorizontalOverflow": true,
+    "overflowNodes": [
+      {
+        "left": 571.265625,
+        "overflowX": "visible",
+        "right": 654.46875,
+        "tag": "A",
+        "text": "🥁Ritim",
+        "width": 83.203125
+      },
+      {
+        "left": 583.265625,
+        "overflowX": "visible",
+        "right": 642.46875,
+        "tag": "SPAN",
+        "text": "🥁Ritim",
+        "width": 59.203125
+      },
+      {
+        "left": 583.265625,
+        "overflowX": "visible",
+        "right": 602.5,
+        "tag": "SPAN",
+        "text": "🥁",
+        "width": 19.234375
+      },
+      {
+        "left": 658.46875,
+        "overflowX": "visible",
+        "right": 739.734375,
+        "tag": "A",
+        "text": "📚Arşiv",
+        "width": 81.265625
+      },
+      {
+        "left": 670.46875,
+        "overflowX": "visible",
+        "right": 727.734375,
+        "tag": "SPAN",
+        "text": "📚Arşiv",
+        "width": 57.265625
+      },
+      {
+        "left": 670.46875,
+        "overflowX": "visible",
+        "right": 689.703125,
+        "tag": "SPAN",
+        "text": "📚",
+        "width": 19.234375
+      },
+      {
+        "left": 743.734375,
+        "overflowX": "visible",
+        "right": 920.9375,
+        "tag": "A",
+        "text": "🎹Sample Kütüphanesi",
+        "width": 177.203125
+      },
+      {
+        "left": 755.734375,
+        "overflowX": "visible",
+        "right": 908.9375,
+        "tag": "SPAN",
+        "text": "🎹Sample Kütüphanesi",
+        "width": 153.203125
+      },
+      {
+        "left": 755.734375,
+        "overflowX": "visible",
+        "right": 774.96875,
+        "tag": "SPAN",
+        "text": "🎹",
+        "width": 19.234375
+      },
+      {
+        "left": 924.9375,
+        "overflowX": "visible",
+        "right": 1037.390625,
+        "tag": "A",
+        "text": "🎙️Makamlar",
+        "width": 112.453125
+      }
+    ],
+    "scrollWidth": 591,
+    "title": "Muzik - Türk Müziği Platformu",
+    "url": "http://localhost:4015/references/curation",
+    "viewportHeight": 1272,
+    "viewportWidth": 599
+  },
+  "console": {
+    "warningOrErrorCount": 0,
+    "logs": []
+  },
+  "screenshotPath": "output/playwright/references-curation-source-intake-dry-run-20260601.png"
+}

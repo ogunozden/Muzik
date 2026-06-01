@@ -36,6 +36,7 @@ const CANDIDATE_REVIEW_GROUP_DECISION_STATUSES = new Set(["rejected", "conflict"
 const CANDIDATE_REVIEW_GROUP_DECISION_RECOMMENDATION_TYPE = "candidate-review-group-decision-recommendations";
 const CANDIDATE_REVIEW_BATCH_PLAN_TYPE = "candidate-review-batch-plan";
 const SOURCE_INTAKE_TEMPLATE_TYPE = "candidate-review-source-intake-template";
+const SOURCE_INTAKE_ACCEPTED_IMPORT_DRY_RUN_TYPE = "source-intake-accepted-import-dry-run";
 const COVERAGE_MATRIX_TYPE = "external-reference-coverage-matrix";
 const DEDUPE_REPORT_TYPE = "external-reference-dedupe-report";
 const PROVIDERS = new Set(["score", "symbtr", "youtube", "archive", "github"]);
@@ -511,6 +512,74 @@ function validateDedupeReport({
   }
 }
 
+function validateSourceIntakeAcceptedImportDryRun({
+  sourceIntakeAcceptedImportDryRun,
+  bulkCandidates,
+  errors,
+}) {
+  if (sourceIntakeAcceptedImportDryRun === undefined) return;
+  if (!sourceIntakeAcceptedImportDryRun || typeof sourceIntakeAcceptedImportDryRun !== "object") {
+    errors.push("source-intake-accepted-import-dry-run: artifact must be an object");
+    return;
+  }
+
+  if (sourceIntakeAcceptedImportDryRun.version !== 1) {
+    errors.push("source-intake-accepted-import-dry-run: version must be 1");
+  }
+  if (sourceIntakeAcceptedImportDryRun.type !== SOURCE_INTAKE_ACCEPTED_IMPORT_DRY_RUN_TYPE) {
+    errors.push(`source-intake-accepted-import-dry-run: type must be ${SOURCE_INTAKE_ACCEPTED_IMPORT_DRY_RUN_TYPE}`);
+  }
+  if (sourceIntakeAcceptedImportDryRun.dryRun !== true) {
+    errors.push("source-intake-accepted-import-dry-run: dryRun must be true");
+  }
+  if (!Array.isArray(sourceIntakeAcceptedImportDryRun.errors) || sourceIntakeAcceptedImportDryRun.errors.length !== 0) {
+    errors.push("source-intake-accepted-import-dry-run: errors must be an empty array");
+  }
+
+  const requiredGates = [
+    "accepted-candidates-present",
+    "accepted-evidence-complete",
+    "https-url-policy",
+    "research-profile-match",
+    "accepted-identity-dedupe",
+    "dry-run-import-no-write",
+  ];
+  const gates = new Set(sourceIntakeAcceptedImportDryRun.validationGates ?? []);
+  for (const gate of requiredGates) {
+    if (!gates.has(gate)) {
+      errors.push(`source-intake-accepted-import-dry-run: missing validation gate ${gate}`);
+    }
+  }
+
+  const bulkRows = Array.isArray(bulkCandidates) ? bulkCandidates : [];
+  const acceptedRows = bulkRows.filter((candidate) => candidate?.status === "accepted");
+  const evidenceCompleteRows = acceptedRows.filter((candidate) => {
+    const evidence = candidate.evidence ?? {};
+    return ["title", "makam", "form", "usul", "composer", "sourceProvider"].every((field) => isNonEmptyString(evidence[field]));
+  });
+  const httpsRows = acceptedRows.filter((candidate) => isHttpUrl(candidate.source?.url));
+  const summary = sourceIntakeAcceptedImportDryRun.summary ?? {};
+
+  if (summary.acceptedCandidateCount !== acceptedRows.length) {
+    errors.push("source-intake-accepted-import-dry-run: summary.acceptedCandidateCount must match accepted bulk candidates");
+  }
+  if (summary.httpsAcceptedCount !== httpsRows.length) {
+    errors.push("source-intake-accepted-import-dry-run: summary.httpsAcceptedCount must match accepted HTTPS sources");
+  }
+  if (summary.evidenceCompleteCount !== evidenceCompleteRows.length) {
+    errors.push("source-intake-accepted-import-dry-run: summary.evidenceCompleteCount must match accepted evidence rows");
+  }
+  if (summary.dryRunAddedCandidateCount !== 0) {
+    errors.push("source-intake-accepted-import-dry-run: dryRunAddedCandidateCount must stay 0 for current accepted duplicate proof");
+  }
+  if (summary.dryRunSkippedDuplicateCount !== acceptedRows.length) {
+    errors.push("source-intake-accepted-import-dry-run: dryRunSkippedDuplicateCount must match accepted duplicate proof rows");
+  }
+  if (summary.dryRunOutputCandidateCount !== bulkRows.length) {
+    errors.push("source-intake-accepted-import-dry-run: dryRunOutputCandidateCount must match bulk candidate count");
+  }
+}
+
 export function validateSourceCurationRegistries({
   catalog,
   autoAttached,
@@ -526,6 +595,7 @@ export function validateSourceCurationRegistries({
   candidateReviewGroupDecisionRecommendations,
   candidateReviewBatchPlan,
   sourceIntakeTemplate,
+  sourceIntakeAcceptedImportDryRun,
   coverageMatrix,
   dedupeReport,
   bulkCandidates,
@@ -986,13 +1056,18 @@ export function validateSourceCurationRegistries({
           enabledProfileCount: enabledResearchProfileIds.size,
           errors,
         });
-        validateDedupeReport({
-          dedupeReport,
-          coverageSummary,
-          candidateReviewQueue,
-          bulkCandidates,
-          errors,
-        });
+  validateDedupeReport({
+    dedupeReport,
+    coverageSummary,
+    candidateReviewQueue,
+    bulkCandidates,
+    errors,
+  });
+  validateSourceIntakeAcceptedImportDryRun({
+    sourceIntakeAcceptedImportDryRun,
+    bulkCandidates,
+    errors,
+  });
       }
 
       if (candidateReviewGroups !== undefined) {
@@ -1355,6 +1430,8 @@ export function validateSourceCurationRegistries({
       sourceIntakeTemplatePacketEntries: Array.isArray(sourceIntakeTemplate?.packets)
         ? sourceIntakeTemplate.packets.length
         : 0,
+      sourceIntakeAcceptedImportDryRunAcceptedEntries:
+        sourceIntakeAcceptedImportDryRun?.summary?.acceptedCandidateCount ?? 0,
     },
   };
 }

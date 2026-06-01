@@ -257,6 +257,21 @@ export interface ExternalReferenceState {
       generatedAt?: string | null;
       targetScript?: string | null;
     };
+    sourceIntakeAcceptedImportDryRunManifest?: {
+      artifactPath?: string;
+      input?: string | null;
+      generatedAt?: string | null;
+      dryRun?: boolean;
+      acceptedCandidateCount?: number;
+      httpsAcceptedCount?: number;
+      evidenceCompleteCount?: number;
+      dryRunAddedCandidateCount?: number;
+      dryRunSkippedDuplicateCount?: number;
+      dryRunOutputCandidateCount?: number;
+      validationGateCount?: number;
+      validationErrorCount?: number;
+      targetScript?: string | null;
+    };
     symbtrLayoutVerificationManifest?: {
       summaryPath?: string;
       candidateEntries?: number;
@@ -877,6 +892,7 @@ export function ReferencesCurationDashboard({
   const candidateReviewGroupDecisionRecommendationManifest = state.curation?.candidateReviewGroupDecisionRecommendationManifest;
   const candidateReviewBatchPlanManifest = state.curation?.candidateReviewBatchPlanManifest;
   const sourceIntakeTemplateManifest = state.curation?.sourceIntakeTemplateManifest;
+  const sourceIntakeAcceptedImportDryRunManifest = state.curation?.sourceIntakeAcceptedImportDryRunManifest;
   const symbtrLayoutVerificationManifest = state.curation?.symbtrLayoutVerificationManifest;
   const candidateReviewGroupPage = state.curation?.candidateReviewGroupPage;
   const candidateReviewGroups = state.curation?.candidateReviewGroups ?? [];
@@ -1043,6 +1059,11 @@ export function ReferencesCurationDashboard({
                     {sourceIntakeTemplateManifest.targetScript ? ` · ${sourceIntakeTemplateManifest.targetScript}` : ""}
                   </code>
                 )}
+                {sourceIntakeAcceptedImportDryRunManifest?.artifactPath && (
+                  <code className="block break-all text-xs text-[var(--color-text-primary)]">
+                    {sourceIntakeAcceptedImportDryRunManifest.artifactPath} · {formatNumber(sourceIntakeAcceptedImportDryRunManifest.acceptedCandidateCount)} accepted dry-run · {formatNumber(sourceIntakeAcceptedImportDryRunManifest.validationErrorCount)} hata
+                  </code>
+                )}
               </div>
               <div className="grid w-full gap-2 sm:grid-cols-2 lg:max-w-6xl lg:grid-cols-9">
                 <FilterSelect label="Grup durum" value={candidateGroupStatusFilter} options={filterOptions.candidateGroupStatuses} onChange={(value) => {
@@ -1174,6 +1195,48 @@ export function ReferencesCurationDashboard({
                   {symbtrLayoutVerificationManifest.targetScript && (
                     <code className="break-all text-xs text-[var(--color-text-primary)]">
                       {symbtrLayoutVerificationManifest.targetScript}
+                    </code>
+                  )}
+                </div>
+              </div>
+            )}
+            {sourceIntakeAcceptedImportDryRunManifest && (
+              <div className="border-b border-[var(--color-border)] px-4 py-3">
+                <div className="grid gap-3 md:grid-cols-4">
+                  <div>
+                    <h3 className={`text-sm font-semibold ${tokens.colors.text.primary}`}>Source intake accepted dry-run</h3>
+                    <p className={`mt-1 text-xs ${tokens.colors.text.secondary}`}>
+                      {sourceIntakeAcceptedImportDryRunManifest.dryRun ? "dry-run" : "eksik"} · {formatNumber(sourceIntakeAcceptedImportDryRunManifest.acceptedCandidateCount)} accepted · {formatNumber(sourceIntakeAcceptedImportDryRunManifest.httpsAcceptedCount)} HTTPS
+                    </p>
+                  </div>
+                  <div>
+                    <div className={`text-xs uppercase ${tokens.colors.text.secondary}`}>Evidence</div>
+                    <div className={`mt-1 text-sm ${tokens.colors.text.primary}`}>
+                      {formatNumber(sourceIntakeAcceptedImportDryRunManifest.evidenceCompleteCount)} tam · {formatNumber(sourceIntakeAcceptedImportDryRunManifest.validationGateCount)} kapı
+                    </div>
+                  </div>
+                  <div>
+                    <div className={`text-xs uppercase ${tokens.colors.text.secondary}`}>Import sonucu</div>
+                    <div className={`mt-1 text-sm ${tokens.colors.text.primary}`}>
+                      {formatNumber(sourceIntakeAcceptedImportDryRunManifest.dryRunAddedCandidateCount)} eklenecek · {formatNumber(sourceIntakeAcceptedImportDryRunManifest.dryRunSkippedDuplicateCount)} duplicate
+                    </div>
+                  </div>
+                  <div>
+                    <div className={`text-xs uppercase ${tokens.colors.text.secondary}`}>Validation</div>
+                    <div className={`mt-1 text-sm ${tokens.colors.text.primary}`}>
+                      {formatNumber(sourceIntakeAcceptedImportDryRunManifest.validationErrorCount)} hata · {formatNumber(sourceIntakeAcceptedImportDryRunManifest.dryRunOutputCandidateCount)} output
+                    </div>
+                  </div>
+                </div>
+                <div className="mt-3 grid gap-1">
+                  {sourceIntakeAcceptedImportDryRunManifest.input && (
+                    <code className="break-all text-xs text-[var(--color-text-primary)]">
+                      {sourceIntakeAcceptedImportDryRunManifest.input}
+                    </code>
+                  )}
+                  {sourceIntakeAcceptedImportDryRunManifest.targetScript && (
+                    <code className="break-all text-xs text-[var(--color-text-primary)]">
+                      {sourceIntakeAcceptedImportDryRunManifest.targetScript}
                     </code>
                   )}
                 </div>

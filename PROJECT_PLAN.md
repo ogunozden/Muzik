@@ -1338,9 +1338,14 @@ calisma agacindaki bu guncelleme oncesi genis degisiklikleri de kapsadigindan
 
 ### Sıradaki işler
 
-1. [ ] Source intake artifact'i üzerinden doldurulmuş accepted manifest
+1. [x] Source intake artifact'i üzerinden doldurulmuş accepted manifest
        örneklerini sadece gerçek HTTPS kaynak/evidence ile dry-run importtan
-       geçir.
+       geçir. 2026-06-01 ek kapı:
+       `npm run verify:external-source-intake` mevcut 7 accepted kaynağı
+       evidence completeness, HTTPS, source profile match, identity dedupe ve
+       dry-run no-write importer kapılarından geçirip
+       `output/external-reference-coverage/source-intake-accepted-import-dry-run.json`
+       artifact'ini üretir; `/references/curation` bunu operatöre gösterir.
 2. [ ] PDF layout review packetleri için aynı boş-template/import/validation
        disiplinini kur; verified manifest hâlâ 0.
 3. [ ] `/references/curation` üzerinde tüm arka plan artifactlerini daha

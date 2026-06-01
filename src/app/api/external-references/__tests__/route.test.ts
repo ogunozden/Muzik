@@ -429,6 +429,31 @@ const sourceIntakeTemplateFixture = {
     },
   ],
 };
+const sourceIntakeAcceptedDryRunFixture = {
+  version: 1,
+  type: "source-intake-accepted-import-dry-run",
+  generatedAt: "2026-06-01T00:00:00.000Z",
+  input: "src/data/references/external-reference-bulk-candidates.json",
+  dryRun: true,
+  validationGates: [
+    "accepted-candidates-present",
+    "accepted-evidence-complete",
+    "https-url-policy",
+    "research-profile-match",
+    "accepted-identity-dedupe",
+    "dry-run-import-no-write",
+  ],
+  summary: {
+    acceptedCandidateCount: 7,
+    httpsAcceptedCount: 7,
+    evidenceCompleteCount: 7,
+    dryRunAddedCandidateCount: 0,
+    dryRunSkippedDuplicateCount: 7,
+    dryRunExistingCandidateCount: 7,
+    dryRunOutputCandidateCount: 7,
+  },
+  errors: [],
+};
 const symbtrLayoutVerificationSummaryFixture = {
   candidateEntries: 1,
   verificationEntries: 0,
@@ -526,6 +551,10 @@ function mockJsonFiles() {
       return JSON.stringify(sourceIntakeTemplateFixture);
     }
 
+    if (filePath.includes("source-intake-accepted-import-dry-run.json")) {
+      return JSON.stringify(sourceIntakeAcceptedDryRunFixture);
+    }
+
     if (filePath.includes("symbtr-curated-reference-backlog.json")) {
       return JSON.stringify(backlogFixture);
     }
@@ -620,6 +649,19 @@ describe("/api/external-references route", () => {
       artifactPath: "output/external-reference-coverage/symbtr-curated-reference-source-intake-template.json",
       policyVersion: "candidate-review-source-intake-template-v1",
       targetScript: "npm run import:external-references -- --input <json>",
+    }));
+    expect(body.curation.sourceIntakeAcceptedImportDryRunManifest).toEqual(expect.objectContaining({
+      artifactPath: "output/external-reference-coverage/source-intake-accepted-import-dry-run.json",
+      input: "src/data/references/external-reference-bulk-candidates.json",
+      dryRun: true,
+      acceptedCandidateCount: 7,
+      httpsAcceptedCount: 7,
+      evidenceCompleteCount: 7,
+      dryRunAddedCandidateCount: 0,
+      dryRunSkippedDuplicateCount: 7,
+      validationGateCount: 6,
+      validationErrorCount: 0,
+      targetScript: "npm run verify:external-source-intake",
     }));
     expect(body.curation.symbtrLayoutVerificationManifest).toEqual(expect.objectContaining({
       candidateEntries: 1,

@@ -81,6 +81,12 @@ const SOURCE_INTAKE_TEMPLATE_FILE = path.join(
   "external-reference-coverage",
   "symbtr-curated-reference-source-intake-template.json",
 );
+const SOURCE_INTAKE_ACCEPTED_DRY_RUN_FILE = path.join(
+  PROJECT_ROOT,
+  "output",
+  "external-reference-coverage",
+  "source-intake-accepted-import-dry-run.json",
+);
 const SYMBTR_LAYOUT_VERIFICATION_SUMMARY_FILE = path.join(
   PROJECT_ROOT,
   "output",
@@ -266,6 +272,24 @@ interface SourceIntakeTemplateManifest {
   };
   importContract?: Record<string, unknown>;
   packets?: unknown[];
+}
+
+interface SourceIntakeAcceptedImportDryRunManifest {
+  generatedAt?: string;
+  type?: string;
+  input?: string;
+  dryRun?: boolean;
+  validationGates?: string[];
+  summary?: {
+    acceptedCandidateCount?: number;
+    httpsAcceptedCount?: number;
+    evidenceCompleteCount?: number;
+    dryRunAddedCandidateCount?: number;
+    dryRunSkippedDuplicateCount?: number;
+    dryRunExistingCandidateCount?: number;
+    dryRunOutputCandidateCount?: number;
+  };
+  errors?: unknown[];
 }
 
 interface SymbTrLayoutVerificationSummary {
@@ -512,6 +536,7 @@ async function getExternalReferenceState(request: Request) {
     candidateReviewGroupDecisionRecommendationManifest,
     candidateReviewBatchPlanManifest,
     sourceIntakeTemplateManifest,
+    sourceIntakeAcceptedDryRunManifest,
     symbtrLayoutVerificationSummary,
     candidateReviewQueue,
     candidateReviewGroups,
@@ -548,6 +573,7 @@ async function getExternalReferenceState(request: Request) {
     readJsonOrNull<CandidateReviewGroupDecisionRecommendationManifest>(CANDIDATE_REVIEW_GROUP_DECISION_RECOMMENDATIONS_FILE),
     readJsonOrNull<CandidateReviewBatchPlanManifest>(CANDIDATE_REVIEW_BATCH_PLAN_FILE),
     readJsonOrNull<SourceIntakeTemplateManifest>(SOURCE_INTAKE_TEMPLATE_FILE),
+    readJsonOrNull<SourceIntakeAcceptedImportDryRunManifest>(SOURCE_INTAKE_ACCEPTED_DRY_RUN_FILE),
     readJsonOrNull<SymbTrLayoutVerificationSummary>(SYMBTR_LAYOUT_VERIFICATION_SUMMARY_FILE),
     readJsonOrNull<CandidateReviewRow[]>(CANDIDATE_REVIEW_QUEUE_FILE),
     readJsonOrNull<CandidateReviewGroup[]>(CANDIDATE_REVIEW_GROUPS_FILE),
@@ -665,6 +691,25 @@ async function getExternalReferenceState(request: Request) {
         targetScript: typeof sourceIntakeTemplateManifest?.importContract?.targetScript === "string"
           ? sourceIntakeTemplateManifest.importContract.targetScript
           : null,
+      },
+      sourceIntakeAcceptedImportDryRunManifest: {
+        artifactPath: toProjectRelativePath(SOURCE_INTAKE_ACCEPTED_DRY_RUN_FILE),
+        input: sourceIntakeAcceptedDryRunManifest?.input ?? null,
+        generatedAt: sourceIntakeAcceptedDryRunManifest?.generatedAt ?? null,
+        dryRun: sourceIntakeAcceptedDryRunManifest?.dryRun === true,
+        acceptedCandidateCount: sourceIntakeAcceptedDryRunManifest?.summary?.acceptedCandidateCount ?? 0,
+        httpsAcceptedCount: sourceIntakeAcceptedDryRunManifest?.summary?.httpsAcceptedCount ?? 0,
+        evidenceCompleteCount: sourceIntakeAcceptedDryRunManifest?.summary?.evidenceCompleteCount ?? 0,
+        dryRunAddedCandidateCount: sourceIntakeAcceptedDryRunManifest?.summary?.dryRunAddedCandidateCount ?? 0,
+        dryRunSkippedDuplicateCount: sourceIntakeAcceptedDryRunManifest?.summary?.dryRunSkippedDuplicateCount ?? 0,
+        dryRunOutputCandidateCount: sourceIntakeAcceptedDryRunManifest?.summary?.dryRunOutputCandidateCount ?? 0,
+        validationGateCount: Array.isArray(sourceIntakeAcceptedDryRunManifest?.validationGates)
+          ? sourceIntakeAcceptedDryRunManifest.validationGates.length
+          : 0,
+        validationErrorCount: Array.isArray(sourceIntakeAcceptedDryRunManifest?.errors)
+          ? sourceIntakeAcceptedDryRunManifest.errors.length
+          : 0,
+        targetScript: "npm run verify:external-source-intake",
       },
       symbtrLayoutVerificationManifest: {
         summaryPath: toProjectRelativePath(SYMBTR_LAYOUT_VERIFICATION_SUMMARY_FILE),

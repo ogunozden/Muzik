@@ -143,6 +143,21 @@ const stateFixture = {
       generatedAt: "2026-06-01T00:00:00.000Z",
       targetScript: "npm run import:external-references -- --input <json>",
     },
+    sourceIntakeAcceptedImportDryRunManifest: {
+      artifactPath: "output/external-reference-coverage/source-intake-accepted-import-dry-run.json",
+      input: "src/data/references/external-reference-bulk-candidates.json",
+      generatedAt: "2026-06-01T00:00:00.000Z",
+      dryRun: true,
+      acceptedCandidateCount: 7,
+      httpsAcceptedCount: 7,
+      evidenceCompleteCount: 7,
+      dryRunAddedCandidateCount: 0,
+      dryRunSkippedDuplicateCount: 7,
+      dryRunOutputCandidateCount: 7,
+      validationGateCount: 6,
+      validationErrorCount: 0,
+      targetScript: "npm run verify:external-source-intake",
+    },
     symbtrLayoutVerificationManifest: {
       summaryPath: "output/symbtr-layout-review/layout-verification-summary.json",
       candidateEntries: 1,
@@ -395,7 +410,7 @@ describe("ReferencesCurationPage", () => {
     expect(screen.getByRole("heading", {name: "Aday review queue"})).toBeDefined();
     expect(screen.getByLabelText("Besteci")).toBeDefined();
     expect(screen.getByLabelText("Silme")).toBeDefined();
-    expect(screen.getByText("src/data/references/external-reference-bulk-candidates.json")).toBeDefined();
+    expect(screen.getAllByText("src/data/references/external-reference-bulk-candidates.json").length).toBeGreaterThan(0);
     expect(screen.getAllByText("output/external-reference-coverage/symbtr-curated-reference-candidate-review-queue.json").length).toBeGreaterThan(0);
     expect(screen.getByText(/symbtr-curated-reference-coverage-matrix\.json/)).toBeDefined();
     expect(screen.getByText(/24 kırılım/)).toBeDefined();
@@ -406,13 +421,18 @@ describe("ReferencesCurationPage", () => {
     expect(screen.getByText(/candidate-review-group-decision-recommendations\.json/)).toBeDefined();
     expect(screen.getByText(/candidate-review-batch-plan\.json/)).toBeDefined();
     expect(screen.getByText(/source-intake-template\.json/)).toBeDefined();
+    expect(screen.getByText(/source-intake-accepted-import-dry-run\.json/)).toBeDefined();
     expect(screen.getByText(/2\.973 boş kaynak satırı/)).toBeDefined();
+    expect(screen.getByText("Source intake accepted dry-run")).toBeDefined();
+    expect(screen.getAllByText(/7 accepted/).length).toBeGreaterThan(0);
+    expect(screen.getByText(/7 HTTPS/)).toBeDefined();
+    expect(screen.getByText(/npm run verify:external-source-intake/)).toBeDefined();
     expect(screen.getAllByText(/119 paket/).length).toBeGreaterThan(0);
     expect(screen.getByText("PDF layout doğrulama")).toBeDefined();
     expect(screen.getByText(/layout-verification-summary\.json/)).toBeDefined();
     expect(screen.getByText(/layout-verification-review-template\.json/)).toBeDefined();
     expect(screen.getByText(/layout-verification-review-batch-plan\.json/)).toBeDefined();
-    expect(screen.getByText(/0 hata/)).toBeDefined();
+    expect(screen.getAllByText(/0 hata/).length).toBeGreaterThan(0);
     expect(screen.getByText("review-provider-candidates")).toBeDefined();
     expect(screen.getByLabelText("Grup durum")).toBeDefined();
     expect(screen.getByLabelText("Karar durum")).toBeDefined();

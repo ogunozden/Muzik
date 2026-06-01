@@ -121,6 +121,24 @@ interface SymbTrLayoutVerificationSummary {
   errors?: unknown[];
 }
 
+interface SourceIntakeAcceptedImportDryRunManifest {
+  generatedAt?: string;
+  type?: string;
+  input?: string;
+  dryRun?: boolean;
+  validationGates?: string[];
+  summary?: {
+    acceptedCandidateCount?: number;
+    httpsAcceptedCount?: number;
+    evidenceCompleteCount?: number;
+    dryRunAddedCandidateCount?: number;
+    dryRunSkippedDuplicateCount?: number;
+    dryRunExistingCandidateCount?: number;
+    dryRunOutputCandidateCount?: number;
+  };
+  errors?: unknown[];
+}
+
 interface QualityStatsManifest {
   generatedAt?: string | null;
   stats?: CurationStat[];
@@ -222,6 +240,7 @@ async function buildReadOnlyInitialState(): Promise<ExternalReferenceState> {
   const recommendationPath = path.join(COVERAGE_ROOT, "symbtr-curated-reference-candidate-review-group-decision-recommendations.json");
   const batchPlanPath = path.join(COVERAGE_ROOT, "symbtr-curated-reference-candidate-review-batch-plan.json");
   const sourceIntakeTemplatePath = path.join(COVERAGE_ROOT, "symbtr-curated-reference-source-intake-template.json");
+  const sourceIntakeAcceptedDryRunPath = path.join(COVERAGE_ROOT, "source-intake-accepted-import-dry-run.json");
   const layoutVerificationSummaryPath = path.join(SYMBTR_LAYOUT_REVIEW_ROOT, "layout-verification-summary.json");
   const mappingPath = path.join(COVERAGE_ROOT, "mapped-external-reference-candidates.json");
   const [
@@ -238,6 +257,7 @@ async function buildReadOnlyInitialState(): Promise<ExternalReferenceState> {
     groupDecisionRecommendations,
     candidateReviewBatchPlan,
     sourceIntakeTemplate,
+    sourceIntakeAcceptedDryRun,
     layoutVerificationSummary,
     candidateReviewQueueData,
     candidateReviewGroupsData,
@@ -257,6 +277,7 @@ async function buildReadOnlyInitialState(): Promise<ExternalReferenceState> {
     readJsonOrNull<{policyVersion?: string; generatedAt?: string; summary?: Record<string, unknown>; decisions?: unknown[]}>(recommendationPath),
     readJsonOrNull<{policyVersion?: string; generatedAt?: string; summary?: Record<string, unknown>; packets?: unknown[]}>(batchPlanPath),
     readJsonOrNull<{policyVersion?: string; generatedAt?: string; summary?: Record<string, unknown>; importContract?: Record<string, unknown>; packets?: unknown[]}>(sourceIntakeTemplatePath),
+    readJsonOrNull<SourceIntakeAcceptedImportDryRunManifest>(sourceIntakeAcceptedDryRunPath),
     readJsonOrNull<SymbTrLayoutVerificationSummary>(layoutVerificationSummaryPath),
     readJsonOrNull<CandidateReviewRow[]>(candidateQueuePath),
     readJsonOrNull<CandidateReviewGroup[]>(candidateGroupsPath),
@@ -330,6 +351,25 @@ async function buildReadOnlyInitialState(): Promise<ExternalReferenceState> {
         targetScript: typeof sourceIntakeTemplate?.importContract?.targetScript === "string"
           ? sourceIntakeTemplate.importContract.targetScript
           : null,
+      },
+      sourceIntakeAcceptedImportDryRunManifest: {
+        artifactPath: toProjectPath(sourceIntakeAcceptedDryRunPath),
+        input: sourceIntakeAcceptedDryRun?.input ?? null,
+        generatedAt: sourceIntakeAcceptedDryRun?.generatedAt ?? null,
+        dryRun: sourceIntakeAcceptedDryRun?.dryRun === true,
+        acceptedCandidateCount: Number(sourceIntakeAcceptedDryRun?.summary?.acceptedCandidateCount ?? 0),
+        httpsAcceptedCount: Number(sourceIntakeAcceptedDryRun?.summary?.httpsAcceptedCount ?? 0),
+        evidenceCompleteCount: Number(sourceIntakeAcceptedDryRun?.summary?.evidenceCompleteCount ?? 0),
+        dryRunAddedCandidateCount: Number(sourceIntakeAcceptedDryRun?.summary?.dryRunAddedCandidateCount ?? 0),
+        dryRunSkippedDuplicateCount: Number(sourceIntakeAcceptedDryRun?.summary?.dryRunSkippedDuplicateCount ?? 0),
+        dryRunOutputCandidateCount: Number(sourceIntakeAcceptedDryRun?.summary?.dryRunOutputCandidateCount ?? 0),
+        validationGateCount: Array.isArray(sourceIntakeAcceptedDryRun?.validationGates)
+          ? sourceIntakeAcceptedDryRun.validationGates.length
+          : 0,
+        validationErrorCount: Array.isArray(sourceIntakeAcceptedDryRun?.errors)
+          ? sourceIntakeAcceptedDryRun.errors.length
+          : 0,
+        targetScript: "npm run verify:external-source-intake",
       },
       symbtrLayoutVerificationManifest: {
         summaryPath: toProjectPath(layoutVerificationSummaryPath),

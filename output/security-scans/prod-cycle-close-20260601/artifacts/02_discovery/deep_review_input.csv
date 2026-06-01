@@ -1,0 +1,10 @@
+file,risk_area,reason
+scripts/audit-prod-cycle.mjs,command-orchestration,"New prod-cycle command runs local npm scripts and reads generated JSON artifacts."
+scripts/audit-references-curation-runtime.mjs,runtime-payload-gate,"Runtime audit now asserts prod-cycle artifact and command evidence in /references/curation HTML payload."
+scripts/verify-symbtr-layout-review-import.mjs,file-integrity,"Empty PDF verification import now hashes the verified manifest before and after dry-run."
+scripts/import-symbtr-layout-verification.mjs,file-validation,"Dry-run preview validation can skip the old empty-import artifact to avoid circular validation."
+scripts/validate-symbtr-layout-verification.mjs,file-integrity,"PDF layout validator now requires SHA256 unchanged proof."
+src/app/api/external-references/route.ts,api-state-shape,"API now exposes prod-cycle summary and PDF hash proof from generated artifacts."
+src/app/references/curation/page.tsx,server-rendered-state,"Read-only page initial state now exposes prod-cycle summary and PDF hash proof."
+src/features/references/ReferencesCurationDashboard.tsx,client-rendering,"Dashboard displays prod-cycle audit status and artifact inventory."
+package.json,script-entrypoint,"Adds npm run audit:prod-cycle local orchestration command."

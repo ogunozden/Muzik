@@ -21,7 +21,10 @@
     "reviewTemplateEntryCount": 1,
     "reviewBatchPacketCount": 10,
     "dryRunInputEntryCount": 0,
-    "dryRunVerifiedMeasureBoxCount": 0
+    "dryRunVerifiedMeasureBoxCount": 0,
+    "verificationManifestBeforeSha256": "95c29022d907a426027495e8f60bd1cf9133035036390484bb501b4d6c783dce",
+    "verificationManifestAfterSha256": "95c29022d907a426027495e8f60bd1cf9133035036390484bb501b4d6c783dce",
+    "verificationManifestUnchanged": true
   },
   "fingerprintAlgorithm": "sha256:symbtr-layout-candidate-geometry-v1",
   "unresolvedCandidateEntries": 1,

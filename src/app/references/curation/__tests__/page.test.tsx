@@ -178,9 +178,36 @@ const stateFixture = {
       emptyImportTemplatePath: "output/symbtr-layout-review/layout-verification-empty-import-template.json",
       emptyImportDryRunInputEntries: 0,
       emptyImportDryRunVerifiedMeasureBoxes: 0,
+      emptyImportVerificationManifestBeforeSha256: "95c29022d907a426027495e8f60bd1cf9133035036390484bb501b4d6c783dce",
+      emptyImportVerificationManifestAfterSha256: "95c29022d907a426027495e8f60bd1cf9133035036390484bb501b4d6c783dce",
+      emptyImportVerificationManifestUnchanged: true,
       targetScript: "npm run import:symbtr-measure-verification -- --input <json>",
       emptyImportDryRunScript: "npm run verify:symbtr-layout-review-import",
       validationErrorCount: 0,
+    },
+    prodCycleAudit: {
+      artifactPath: "output/external-reference-coverage/prod-cycle-summary.json",
+      generatedAt: "2026-06-01T13:24:15.728Z",
+      ok: true,
+      errorCount: 0,
+      warningCount: 0,
+      commandCount: 10,
+      processedCatalogEntries: 3000,
+      totalCatalogEntries: 3000,
+      curatedReferenceEntries: 22,
+      missingCuratedEntries: 2978,
+      duplicateRowsAfterDedupe: 0,
+      autoAttachAcceptedOnly: true,
+      reviewQueueHasAccepted: false,
+      candidateReviewQueueEntries: 14890,
+      candidateReviewGroupEntries: 2978,
+      sourceIntakeTemplateRows: 2973,
+      acceptedPromotionEligibleFromReviewQueue: 0,
+      acceptedBulkCandidateCount: 7,
+      reviewOnlyCandidateCount: 14890,
+      pdfVerifiedMeasureBoxes: 0,
+      pdfVerificationManifestUnchanged: true,
+      targetScript: "npm run audit:prod-cycle",
     },
     candidateReviewGroupPage: {
       offset: 0,
@@ -416,6 +443,10 @@ describe("ReferencesCurationPage", () => {
     expect(screen.getByLabelText("Artifact kategori")).toBeDefined();
     expect(screen.getByLabelText("Artifact durum")).toBeDefined();
     expect(screen.getByText("Coverage summary")).toBeDefined();
+    expect(screen.getByRole("heading", {name: "Prod-cycle audit"})).toBeDefined();
+    expect(screen.getByText("Prod-cycle audit summary")).toBeDefined();
+    expect(screen.getAllByText(/prod-cycle-summary\.json/).length).toBeGreaterThan(0);
+    expect(screen.getAllByText(/npm run audit:prod-cycle/).length).toBeGreaterThan(0);
     expect(screen.getByText("PDF empty import dry-run")).toBeDefined();
     expect(screen.getByText("Research source profiles")).toBeDefined();
     expect(screen.getAllByText(/artifact · batch pipeline/).length).toBeGreaterThan(0);
@@ -458,8 +489,9 @@ describe("ReferencesCurationPage", () => {
     expect(screen.getByRole("link", {name: "YouTube"}).getAttribute("href")).toContain("youtube.com");
 
     fireEvent.change(screen.getByLabelText("Artifact kategori"), {target: {value: "Validation"}});
-    expect(screen.getAllByText(/2 gösteriliyor/).length).toBeGreaterThan(0);
+    expect(screen.getAllByText(/3 gösteriliyor/).length).toBeGreaterThan(0);
     expect(screen.getByText("Accepted source dry-run")).toBeDefined();
+    expect(screen.getByText("Prod-cycle audit summary")).toBeDefined();
     expect(screen.getByText("PDF empty import dry-run")).toBeDefined();
     fireEvent.change(screen.getByLabelText("Artifact durum"), {target: {value: "dry-run"}});
     expect(screen.getAllByText(/2 gösteriliyor/).length).toBeGreaterThan(0);

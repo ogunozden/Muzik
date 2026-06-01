@@ -121,7 +121,12 @@ describe("verify-symbtr-layout-review-import", () => {
       dryRunInputEntryCount: 0,
       dryRunOutputEntryCount: 0,
       dryRunVerifiedMeasureBoxCount: 0,
+      verificationManifestBeforeSha256: expect.stringMatching(/^[a-f0-9]{64}$/),
+      verificationManifestAfterSha256: expect.stringMatching(/^[a-f0-9]{64}$/),
+      verificationManifestUnchanged: true,
     }));
+    expect(report.summary.verificationManifestBeforeSha256).toBe(report.summary.verificationManifestAfterSha256);
+    expect(report.validationGates).toEqual(expect.arrayContaining(["verified-manifest-sha256-unchanged"]));
     expect(written.errors).toEqual([]);
   });
 

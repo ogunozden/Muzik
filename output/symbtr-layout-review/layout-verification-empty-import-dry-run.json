@@ -6,12 +6,14 @@
   "input": "output/symbtr-layout-review/layout-verification-empty-import-template.json",
   "sourceReviewTemplate": "output/symbtr-layout-review/layout-verification-review-template.json",
   "sourceReviewBatchPlan": "output/symbtr-layout-review/layout-verification-review-batch-plan.json",
+  "verificationManifest": "src/data/symbtr/layout-verification.generated.json",
   "targetScript": "npm run import:symbtr-measure-verification -- --input <json>",
   "validationGates": [
     "review-template-non-promoting",
     "review-batch-plan-complete",
     "empty-import-no-write",
-    "verified-manifest-unchanged"
+    "verified-manifest-unchanged",
+    "verified-manifest-sha256-unchanged"
   ],
   "summary": {
     "reviewTemplateEntryCount": 1,
@@ -20,7 +22,10 @@
     "reviewBatchCandidateRows": 49,
     "dryRunInputEntryCount": 0,
     "dryRunOutputEntryCount": 0,
-    "dryRunVerifiedMeasureBoxCount": 0
+    "dryRunVerifiedMeasureBoxCount": 0,
+    "verificationManifestBeforeSha256": "95c29022d907a426027495e8f60bd1cf9133035036390484bb501b4d6c783dce",
+    "verificationManifestAfterSha256": "95c29022d907a426027495e8f60bd1cf9133035036390484bb501b4d6c783dce",
+    "verificationManifestUnchanged": true
   },
   "dryRunResult": {
     "dryRun": true,

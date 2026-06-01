@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+import {createHash} from "node:crypto";
 import {execFileSync} from "node:child_process";
 import {existsSync, mkdirSync, readFileSync, writeFileSync} from "node:fs";
 import path from "node:path";
@@ -11,6 +12,7 @@ const DEFAULT_REVIEW_TEMPLATE = "output/symbtr-layout-review/layout-verification
 const DEFAULT_REVIEW_BATCH_PLAN = "output/symbtr-layout-review/layout-verification-review-batch-plan.json";
 const DEFAULT_IMPORT_TEMPLATE = "output/symbtr-layout-review/layout-verification-empty-import-template.json";
 const DEFAULT_SUMMARY_OUTPUT = "output/symbtr-layout-review/layout-verification-empty-import-dry-run.json";
+const DEFAULT_VERIFICATION_MANIFEST = "src/data/symbtr/layout-verification.generated.json";
 const IMPORT_SCRIPT = path.join(SCRIPT_DIR, "import-symbtr-layout-verification.mjs");
 
 function parseCliOptions(argv) {
@@ -60,6 +62,11 @@ function readJson(filePath, label) {
   }
 
   return JSON.parse(readFileSync(filePath, "utf8"));
+}
+
+function sha256File(filePath) {
+  if (!existsSync(filePath)) return null;
+  return createHash("sha256").update(readFileSync(filePath)).digest("hex");
 }
 
 function hasPromotedMeasureBoxes(value) {
@@ -143,14 +150,21 @@ export function buildSymbTrLayoutReviewImportDryRun({
   reviewTemplatePath = DEFAULT_REVIEW_TEMPLATE,
   reviewBatchPlanPath = DEFAULT_REVIEW_BATCH_PLAN,
   importTemplatePath = DEFAULT_IMPORT_TEMPLATE,
+  verificationManifestPath = DEFAULT_VERIFICATION_MANIFEST,
   generatedAt = DEFAULT_GENERATED_AT,
 } = {}) {
   const safeReviewTemplatePath = assertInsideProject(reviewTemplatePath, root, "layout review template");
   const safeReviewBatchPlanPath = assertInsideProject(reviewBatchPlanPath, root, "layout review batch plan");
   const safeImportTemplatePath = assertInsideProject(importTemplatePath, root, "layout empty import template");
+  const safeVerificationManifestPath = assertInsideProject(
+    verificationManifestPath,
+    root,
+    "layout verification manifest",
+  );
   const reviewTemplate = readJson(safeReviewTemplatePath, "layout review template");
   const reviewBatchPlan = readJson(safeReviewBatchPlanPath, "layout review batch plan");
   const inputSummary = validateReviewInputs({reviewTemplate, reviewBatchPlan});
+  const verificationManifestBeforeSha256 = sha256File(safeVerificationManifestPath);
 
   const emptyImportTemplate = {
     schemaVersion: 1,
@@ -166,6 +180,7 @@ export function buildSymbTrLayoutReviewImportDryRun({
   writeFileSync(safeImportTemplatePath, `${JSON.stringify(emptyImportTemplate, null, 2)}\n`);
 
   const dryRunResult = runImportDryRun({root, importTemplatePath: safeImportTemplatePath});
+  const verificationManifestAfterSha256 = sha256File(safeVerificationManifestPath);
 
   return {
     version: 1,
@@ -175,12 +190,14 @@ export function buildSymbTrLayoutReviewImportDryRun({
     input: toProjectPath(safeImportTemplatePath, root),
     sourceReviewTemplate: toProjectPath(safeReviewTemplatePath, root),
     sourceReviewBatchPlan: toProjectPath(safeReviewBatchPlanPath, root),
+    verificationManifest: toProjectPath(safeVerificationManifestPath, root),
     targetScript: "npm run import:symbtr-measure-verification -- --input <json>",
     validationGates: [
       "review-template-non-promoting",
       "review-batch-plan-complete",
       "empty-import-no-write",
       "verified-manifest-unchanged",
+      "verified-manifest-sha256-unchanged",
     ],
     summary: {
       reviewTemplateEntryCount: inputSummary.templateEntryCount,
@@ -190,6 +207,9 @@ export function buildSymbTrLayoutReviewImportDryRun({
       dryRunInputEntryCount: dryRunResult.inputEntryCount,
       dryRunOutputEntryCount: dryRunResult.outputEntryCount,
       dryRunVerifiedMeasureBoxCount: dryRunResult.verifiedMeasureBoxCount,
+      verificationManifestBeforeSha256,
+      verificationManifestAfterSha256,
+      verificationManifestUnchanged: verificationManifestBeforeSha256 === verificationManifestAfterSha256,
     },
     dryRunResult,
     errors: [],

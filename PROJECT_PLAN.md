@@ -1388,6 +1388,19 @@ calisma agacindaki bu guncelleme oncesi genis degisiklikleri de kapsadigindan
        görsel takip, SymbTr/PDF/kaynak görünürlüğü, aday/verified PDF ayrımı,
        enstrüman kontrolleri, sample fallback, katalog arama, yatay taşma ve
        console warning/error durumunu JSON + PNG kanıtıyla doğrular.
+5. [x] Tek prod-cycle kapısı ekle. 2026-06-01 kapanış komutu:
+       `npm run audit:prod-cycle` source/profile coverage audit, accepted source
+       dry-run, PDF empty-import SHA256 kapısı, PDF layout verification,
+       `curation:validate`, sample/instrument audit, `/studio/follow` browser
+       audit, `/references/curation` runtime payload audit, route layout guard
+       ve `audit:security` adımlarını sabit `http://localhost:4015` üstünde
+       sırayla çalıştırır. Çıktı:
+       `output/external-reference-coverage/prod-cycle-summary.json`; `ok: true`
+       yalnız 3000 katalog satırı işlenmiş, duplicate sonrası 0 kalmış,
+       auto-attach accepted-only kalmış, review queue içinde accepted yok,
+       PDF verified manifest SHA256 before/after değişmemiş, browser warning/error
+       0 ve npm audit 0 vulnerability ise üretilir. `/references/curation`
+       artık bu prod-cycle artifact'ini operasyon merkezi içinde gösterir.
 
 ## 🏛 MİMARİ KURAL SETLERİ (RULE SETS)
 

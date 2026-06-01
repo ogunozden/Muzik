@@ -39,6 +39,13 @@ CLI flow remains available for batch work:
    `src/data/references/external-reference-bulk-candidates.json`.
 5. Run `npm run audit:external-references` to refresh coverage and backlog
    summaries.
+6. Run `npm run audit:prod-cycle` before closing a production-near batch phase.
+   It executes the source/profile audit, accepted-source dry-run, candidate
+   decision validation, PDF layout verification, curation validation,
+   sample/instrument audit, `/studio/follow` browser audit, `/references/curation`
+   runtime payload audit, layout guard and security audit on the fixed local
+   port `4015`, then writes
+   `output/external-reference-coverage/prod-cycle-summary.json`.
 
 Examples:
 
@@ -149,6 +156,25 @@ converted into a real bulk candidate import without losing provenance.
   template. Filled evidence belongs in a separate accepted bulk candidate input
   and must pass `npm run import:external-references -- --input <json>` before it
   can affect attached sources.
+
+## Prod-Cycle Summary
+
+`npm run audit:prod-cycle` is the single production-near closure gate for this
+batch-first pipeline. It does not promote review candidates. It only reports
+`ok: true` when the full 3000-entry catalog has been processed, duplicate rows
+after dedupe are `0`, auto-attach remains accepted-only, review-only candidates
+are not attached, accepted dry-run evidence is complete, PDF empty-import
+verification keeps the verified manifest SHA256 unchanged, browser/runtime
+payload gates pass and `npm audit --audit-level=moderate` reports `0`
+vulnerabilities.
+
+The generated `prod-cycle-summary.json` classifies the remaining queue by
+provider profile, candidate/group status, confidence bucket and missing evidence
+reason. The current expected low accepted coverage is therefore a truthful
+backlog state, not a failure: entries stay in `needs-review`, `conflict`,
+`rejected` or `deferred` until a validated HTTPS source with provider profile
+match, catalog id match, duplicate-safe identity, `checkedAt` and conflict-free
+metadata is imported through the accepted-source validation path.
 
 ## Acceptance Rules
 

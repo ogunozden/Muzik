@@ -76,6 +76,8 @@ export async function auditReferencesCurationRuntime({
   requireContains(html, "symbtr-curated-reference-source-intake-template.json", "source intake artifact file", errors);
   requireContains(html, "missingCuratedEntries", "missing backlog metric key", errors);
   requireContains(html, "candidateReviewQueueEntries", "candidate review queue metric key", errors);
+  requireContains(html, "prod-cycle-summary.json", "prod-cycle summary artifact", errors);
+  requireContains(html, "npm run audit:prod-cycle", "prod-cycle command", errors);
   requireContains(html, "Read-only batch snapshot", "read-only snapshot message", errors);
 
   const summary = {
@@ -103,6 +105,8 @@ export async function auditReferencesCurationRuntime({
       hasSourceIntakeArtifactFile: html.includes("symbtr-curated-reference-source-intake-template.json"),
       hasBacklogMetric: html.includes("missingCuratedEntries"),
       hasCandidateQueueMetric: html.includes("candidateReviewQueueEntries"),
+      hasProdCycleArtifact: html.includes("prod-cycle-summary.json"),
+      hasProdCycleCommand: html.includes("npm run audit:prod-cycle"),
       hasReadOnlySnapshotMessage: html.includes("Read-only batch snapshot"),
     },
     ok: errors.length === 0,

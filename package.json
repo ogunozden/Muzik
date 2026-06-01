@@ -21,6 +21,7 @@
     "audit:studio-follow": "node scripts/audit-studio-follow-browser.mjs --base-url http://localhost:4015 --summary-output output/playwright/studio-follow-browser-audit-20260601.json --screenshot-output output/playwright/studio-follow-browser-audit-20260601.png",
     "audit:references-curation-runtime": "node scripts/audit-references-curation-runtime.mjs --base-url http://localhost:4015",
     "audit:external-references": "node scripts/audit-external-reference-coverage.mjs",
+    "audit:prod-cycle": "node scripts/audit-prod-cycle.mjs --base-url http://localhost:4015 --summary-output output/external-reference-coverage/prod-cycle-summary.json",
     "stage:external-source": "node scripts/stage-external-sources.mjs",
     "stage:external-sources": "node scripts/stage-external-sources.mjs",
     "map:external-references": "node scripts/map-external-source-inbox.mjs",

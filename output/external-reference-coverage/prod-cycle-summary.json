@@ -1,0 +1,424 @@
+{
+  "version": 1,
+  "type": "batch-first-prod-cycle-audit",
+  "generatedAt": "2026-06-01T13:56:37.285Z",
+  "baseUrl": "http://localhost:4015",
+  "ok": true,
+  "errors": [],
+  "warnings": [],
+  "commandResults": [
+    {
+      "id": "external-reference-audit",
+      "command": "npm run audit:external-references",
+      "ok": true,
+      "exitCode": 0,
+      "durationMs": 1263,
+      "timedOut": false,
+      "stdoutTail": [
+        "  \"candidateReviewBatchPlanJson\": \"output/external-reference-coverage/symbtr-curated-reference-candidate-review-batch-plan.json\",",
+        "  \"sourceIntakeTemplateJson\": \"output/external-reference-coverage/symbtr-curated-reference-source-intake-template.json\",",
+        "  \"coverageMatrixJson\": \"output/external-reference-coverage/symbtr-curated-reference-coverage-matrix.json\",",
+        "  \"dedupeReportJson\": \"output/external-reference-coverage/symbtr-curated-reference-dedupe-report.json\",",
+        "  \"candidateReviewGroupDecisionsJson\": \"src/data/references/candidate-review-group-decisions.json\",",
+        "  \"policy\": \"No media is downloaded. Safe inline preview/embed is allowed only for validated HTTPS sources with provider-specific verification, sandbox, lazy loading and fallback links.\",",
+        "  \"curationRule\": \"Entries are prioritized by missing curated references, catalog-reported PDF/MusicXML/TXT source formats, named title/composer fields, and common form/usul groups. Search URLs are generated for review only; they are not evidence by themselves.\",",
+        "  \"nextBatchRule\": \"Rows with needs-disambiguation, source-mismatch, or deferred curation decisions remain in the backlog but are skipped from the next manual batch.\",",
+        "  \"bulkCandidateRule\": \"Accepted bulk candidates are counted as curated references only after catalog id, source URL policy, duplicate identity, status, and date checks pass.\",",
+        "  \"candidateReviewRule\": \"Provider-profile search candidates are review queue entries, not source evidence; they stay needs-review or conflict until a validated source URL is imported and accepted.\",",
+        "  \"candidateReviewGroupDecisionRule\": \"Review group decisions and recommendations may mark generated groups rejected, conflict, or deferred in batch; they never create accepted sources or auto-attach without a validated source URL.\"",
+        "}"
+      ],
+      "stderrTail": []
+    },
+    {
+      "id": "source-intake-dry-run",
+      "command": "npm run verify:external-source-intake",
+      "ok": true,
+      "exitCode": 0,
+      "durationMs": 436,
+      "timedOut": false,
+      "stdoutTail": [
+        "    \"dryRun\": true,",
+        "    \"existingCandidateCount\": 7,",
+        "    \"incomingCandidateCount\": 7,",
+        "    \"addedCandidateCount\": 0,",
+        "    \"skippedDuplicateCount\": 7,",
+        "    \"outputCandidateCount\": 7,",
+        "    \"output\": \"src/data/references/external-reference-bulk-candidates.json\",",
+        "    \"addedCatalogIds\": []",
+        "  },",
+        "  \"errors\": [],",
+        "  \"summaryOutput\": \"output/external-reference-coverage/source-intake-accepted-import-dry-run.json\"",
+        "}"
+      ],
+      "stderrTail": []
+    },
+    {
+      "id": "pdf-empty-import-dry-run",
+      "command": "npm run verify:symbtr-layout-review-import",
+      "ok": true,
+      "exitCode": 0,
+      "durationMs": 512,
+      "timedOut": false,
+      "stdoutTail": [
+        "  },",
+        "  \"dryRunResult\": {",
+        "    \"dryRun\": true,",
+        "    \"inputEntryCount\": 0,",
+        "    \"existingEntryCount\": 0,",
+        "    \"outputEntryCount\": 0,",
+        "    \"verifiedMeasureBoxCount\": 0,",
+        "    \"outputPath\": \"src/data/symbtr/layout-verification.generated.json\"",
+        "  },",
+        "  \"errors\": [],",
+        "  \"summaryOutput\": \"output/symbtr-layout-review/layout-verification-empty-import-dry-run.json\"",
+        "}"
+      ],
+      "stderrTail": []
+    },
+    {
+      "id": "pdf-layout-verification",
+      "command": "npm run verify:symbtr-measures",
+      "ok": true,
+      "exitCode": 0,
+      "durationMs": 384,
+      "timedOut": false,
+      "stdoutTail": [
+        "  \"unresolvedCandidateEntries\": 1,",
+        "  \"scoreMeasureSummaries\": [",
+        "    {",
+        "      \"catalogId\": \"hicazkar--pesrev--devrikebir----tanburi_buyuk_osman_bey\",",
+        "      \"pdfMeasureCandidateCount\": 49,",
+        "      \"symbtrMeasureCount\": 28,",
+        "      \"symbtrMaxMeasureIndex\": 28,",
+        "      \"missingSymbtrMeasureIndexes\": []",
+        "    }",
+        "  ],",
+        "  \"errors\": []",
+        "}"
+      ],
+      "stderrTail": []
+    },
+    {
+      "id": "curation-validation",
+      "command": "npm run curation:validate",
+      "ok": true,
+      "exitCode": 0,
+      "durationMs": 702,
+      "timedOut": false,
+      "stdoutTail": [
+        "    \"researchSourceProfiles\": 5,",
+        "    \"embedStates\": 0,",
+        "    \"sourceQualityStats\": 5,",
+        "    \"candidateReviewQueueEntries\": 14890,",
+        "    \"candidateReviewGroupEntries\": 2978,",
+        "    \"candidateReviewGroupDecisionEntries\": 5,",
+        "    \"candidateReviewGroupDecisionRecommendationEntries\": 0,",
+        "    \"candidateReviewBatchPlanEntries\": 119,",
+        "    \"sourceIntakeTemplatePacketEntries\": 119,",
+        "    \"sourceIntakeAcceptedImportDryRunAcceptedEntries\": 7",
+        "  }",
+        "}"
+      ],
+      "stderrTail": []
+    },
+    {
+      "id": "samples-instruments-audit",
+      "command": "npm run audit:samples",
+      "ok": true,
+      "exitCode": 0,
+      "durationMs": 1876,
+      "timedOut": false,
+      "stdoutTail": [
+        "> muzik@0.1.0 audit:samples",
+        "> vitest run src/engines/ses/__tests__/sample-library.test.ts src/engines/ses/__tests__/sample-coverage.test.ts src/app/api/samples/__tests__/route.test.ts",
+        "",
+        "",
+        " RUN  v4.1.5 C:/Users/ogunozden/Desktop/Muzik",
+        "",
+        "",
+        " Test Files  3 passed (3)",
+        "      Tests  11 passed (11)",
+        "   Start at  16:56:20",
+        "   Duration  1.16s (transform 179ms, setup 0ms, import 282ms, tests 116ms, environment 2.44s)"
+      ],
+      "stderrTail": []
+    },
+    {
+      "id": "studio-follow-browser-audit",
+      "command": "npm run audit:studio-follow",
+      "ok": true,
+      "exitCode": 0,
+      "durationMs": 6546,
+      "timedOut": false,
+      "stdoutTail": [
+        "        \"viewportHeight\": 844,",
+        "        \"clientWidth\": 390,",
+        "        \"scrollWidth\": 390,",
+        "        \"horizontalOverflow\": false",
+        "      }",
+        "    }",
+        "  ],",
+        "  \"browserWarningOrErrorCount\": 0,",
+        "  \"browserEvents\": [],",
+        "  \"screenshot\": \"output/playwright/studio-follow-browser-audit-20260601.png\",",
+        "  \"ok\": true",
+        "}"
+      ],
+      "stderrTail": []
+    },
+    {
+      "id": "references-curation-runtime-audit",
+      "command": "npm run audit:references-curation-runtime",
+      "ok": true,
+      "exitCode": 0,
+      "durationMs": 732,
+      "timedOut": false,
+      "stdoutTail": [
+        "  \"evidence\": {",
+        "    \"hasSourceIntakeArtifactPath\": true,",
+        "    \"hasSourceIntakeArtifactFile\": true,",
+        "    \"hasBacklogMetric\": true,",
+        "    \"hasCandidateQueueMetric\": true,",
+        "    \"hasProdCycleArtifact\": true,",
+        "    \"hasProdCycleCommand\": true,",
+        "    \"hasReadOnlySnapshotMessage\": true",
+        "  },",
+        "  \"ok\": true,",
+        "  \"errors\": []",
+        "}"
+      ],
+      "stderrTail": []
+    },
+    {
+      "id": "layout-guard",
+      "command": "npm run guardrails:layout -- --base-url http://localhost:4015 --routes /references/curation,/studio/follow",
+      "ok": true,
+      "exitCode": 0,
+      "durationMs": 6668,
+      "timedOut": false,
+      "stdoutTail": [
+        "> muzik@0.1.0 guardrails:layout",
+        "> node scripts/validate-route-layout.mjs --base-url http://localhost:4015 --routes /references/curation,/studio/follow",
+        "",
+        "Layout guard base URL: http://localhost:4015",
+        "Routes: /references/curation, /studio/follow",
+        "OK mobile  /references/curation Muzik - Türk Müziği Platformu; 8 clipped candidates within non-overflowing page",
+        "OK desktop /references/curation Muzik - Türk Müziği Platformu",
+        "OK mobile  /studio/follow     Muzik - Türk Müziği Platformu; 8 clipped candidates within non-overflowing page",
+        "OK desktop /studio/follow     Muzik - Türk Müziği Platformu; 8 clipped candidates within non-overflowing page",
+        "Layout guard passed for 2 routes across 2 viewports."
+      ],
+      "stderrTail": []
+    },
+    {
+      "id": "security-audit",
+      "command": "npm run audit:security",
+      "ok": true,
+      "exitCode": 0,
+      "durationMs": 1146,
+      "timedOut": false,
+      "stdoutTail": [
+        "> muzik@0.1.0 audit:security",
+        "> npm audit --audit-level=moderate",
+        "",
+        "found 0 vulnerabilities"
+      ],
+      "stderrTail": []
+    }
+  ],
+  "pipeline": {
+    "requiredFlow": [
+      "ingest",
+      "normalize",
+      "dedupe",
+      "provider-profile-classify",
+      "candidate-generate",
+      "confidence-score",
+      "status-assign",
+      "safe-auto-attach-accepted-only",
+      "validate",
+      "coverage-report"
+    ],
+    "actualFlow": [
+      "ingest",
+      "normalize",
+      "dedupe",
+      "provider-profile-classify",
+      "candidate-generate",
+      "confidence-score",
+      "status-assign",
+      "safe-auto-attach-accepted-only",
+      "validate",
+      "coverage-report"
+    ],
+    "processedCatalogEntries": 3000,
+    "totalCatalogEntries": 3000,
+    "curatedReferenceEntries": 22,
+    "missingCuratedEntries": 2978,
+    "duplicateRowsAfterDedupe": 0,
+    "autoAttachPolicy": "only accepted bulk candidates are counted as curated and eligible for auto-attach",
+    "autoAttachAcceptedOnly": true,
+    "reviewQueueHasAccepted": false
+  },
+  "queueClosure": {
+    "candidateReviewQueueEntries": 14890,
+    "candidateReviewGroupEntries": 2978,
+    "sourceIntakeTemplateRows": 2973,
+    "sourceIntakeTemplatePackets": 119,
+    "byProviderProfile": [
+      {
+        "value": "divanmakam",
+        "count": 2978
+      },
+      {
+        "value": "internet-archive",
+        "count": 2978
+      },
+      {
+        "value": "ogm-materyal",
+        "count": 2978
+      },
+      {
+        "value": "salihbora",
+        "count": 2978
+      },
+      {
+        "value": "youtube",
+        "count": 2978
+      }
+    ],
+    "byCandidateStatus": [
+      {
+        "value": "needs-review",
+        "count": 14885
+      },
+      {
+        "value": "conflict",
+        "count": 5
+      }
+    ],
+    "byGroupStatus": [
+      {
+        "value": "needs-review",
+        "count": 2973
+      },
+      {
+        "value": "deferred",
+        "count": 4
+      },
+      {
+        "value": "conflict",
+        "count": 1
+      }
+    ],
+    "byConfidenceLevel": [
+      {
+        "value": "medium",
+        "count": 10842
+      },
+      {
+        "value": "low",
+        "count": 4043
+      },
+      {
+        "value": "needs-context",
+        "count": 5
+      }
+    ],
+    "acceptedPromotionEligibleFromReviewQueue": 0,
+    "acceptedBulkCandidateCount": 7,
+    "reviewOnlyCandidateCount": 14890,
+    "safeBacklogGroupCount": 2978,
+    "evidenceMissingReasonCounts": [
+      {
+        "reason": "review-only-search-candidate-not-source-evidence",
+        "count": 14890
+      },
+      {
+        "reason": "needs-validated-https-source-url-before-accepted",
+        "count": 2973
+      },
+      {
+        "reason": "deferred-or-conflict-group-decision",
+        "count": 5
+      }
+    ],
+    "policy": "Review queue candidates are searchable leads only. They remain needs-review/conflict/deferred until batch import supplies HTTPS URL, provider profile match, catalog id match, duplicate-safe identity, checkedAt and conflict-free evidence."
+  },
+  "sourceIntakeVerification": {
+    "dryRun": true,
+    "acceptedCandidateCount": 7,
+    "httpsAcceptedCount": 7,
+    "evidenceCompleteCount": 7,
+    "dryRunSkippedDuplicateCount": 7,
+    "validationGates": [
+      "accepted-candidates-present",
+      "accepted-evidence-complete",
+      "https-url-policy",
+      "research-profile-match",
+      "accepted-identity-dedupe",
+      "dry-run-import-no-write"
+    ]
+  },
+  "pdfVerification": {
+    "candidateEntries": 1,
+    "verificationEntries": 0,
+    "verifiedEntries": 0,
+    "verifiedMeasureBoxes": 0,
+    "candidateStatus": "unreviewed-candidates-only",
+    "promotionPolicy": "Only human-reviewed or visual-regression-approved PDF measure boxes may be promoted from pdf-vector-candidate to verified.",
+    "emptyImportDryRun": {
+      "path": "output/symbtr-layout-review/layout-verification-empty-import-dry-run.json",
+      "input": "output/symbtr-layout-review/layout-verification-empty-import-template.json",
+      "reviewTemplateEntryCount": 1,
+      "reviewBatchPacketCount": 10,
+      "dryRunInputEntryCount": 0,
+      "dryRunVerifiedMeasureBoxCount": 0,
+      "verificationManifestBeforeSha256": "95c29022d907a426027495e8f60bd1cf9133035036390484bb501b4d6c783dce",
+      "verificationManifestAfterSha256": "95c29022d907a426027495e8f60bd1cf9133035036390484bb501b4d6c783dce",
+      "verificationManifestUnchanged": true
+    }
+  },
+  "runtime": {
+    "studioFollow": {
+      "ok": true,
+      "browserWarningOrErrorCount": 0,
+      "screenshot": "output/playwright/studio-follow-browser-audit-20260601.png"
+    },
+    "referencesCuration": {
+      "ok": true,
+      "targetUrl": "http://localhost:4015/references/curation",
+      "htmlBytes": 481514,
+      "hydratedCandidateIds": 100,
+      "hydratedCatalogIds": 287,
+      "hasRawPacketArrays": false,
+      "hasSourceIntakeRowFields": false,
+      "screenshot": "output/playwright/references-curation-runtime-audit-20260601.png"
+    }
+  },
+  "security": {
+    "npmAuditModerateOrHigher": "0 vulnerabilities"
+  },
+  "openWork": [
+    {
+      "id": "external-reference-coverage",
+      "status": "batch-queue",
+      "count": 2978,
+      "reason": "Missing works require validated real external sources; search candidates are not evidence and are not auto-attached."
+    },
+    {
+      "id": "pdf-measure-verification",
+      "status": "candidate-only",
+      "count": 1,
+      "reason": "PDF measure boxes remain candidate data until human or visual-regression verification promotes them."
+    }
+  ],
+  "artifacts": {
+    "coverageSummary": "output/external-reference-coverage/summary.json",
+    "sourceIntakeDryRun": "output/external-reference-coverage/source-intake-accepted-import-dry-run.json",
+    "pdfLayoutVerificationSummary": "output/symbtr-layout-review/layout-verification-summary.json",
+    "referencesRuntimeAudit": "output/playwright/references-curation-batch-runtime-audit-20260601.json",
+    "studioFollowAudit": "output/playwright/studio-follow-browser-audit-20260601.json"
+  }
+}

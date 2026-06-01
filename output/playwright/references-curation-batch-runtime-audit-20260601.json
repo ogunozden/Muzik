@@ -1,18 +1,18 @@
 {
   "version": 1,
   "type": "references-curation-batch-runtime-audit",
-  "generatedAt": "2026-06-01T13:24:15.728Z",
+  "generatedAt": "2026-06-01T13:56:29.440Z",
   "targetUrl": "http://localhost:4015/references/curation",
   "route": "/references/curation",
   "status": 200,
-  "durationMs": 412,
+  "durationMs": 331,
   "thresholds": {
     "maxHtmlBytes": 750000,
     "maxHydratedCandidateIds": 120,
     "maxHydratedCatalogIds": 320
   },
   "metrics": {
-    "htmlBytes": 480454,
+    "htmlBytes": 481514,
     "hydratedCandidateIds": 100,
     "hydratedCatalogIds": 287,
     "hasRawPacketArrays": false,
@@ -23,6 +23,8 @@
     "hasSourceIntakeArtifactFile": true,
     "hasBacklogMetric": true,
     "hasCandidateQueueMetric": true,
+    "hasProdCycleArtifact": true,
+    "hasProdCycleCommand": true,
     "hasReadOnlySnapshotMessage": true
   },
   "ok": true,

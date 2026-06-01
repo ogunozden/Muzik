@@ -302,9 +302,36 @@ export interface ExternalReferenceState {
       emptyImportTemplatePath?: string | null;
       emptyImportDryRunInputEntries?: number;
       emptyImportDryRunVerifiedMeasureBoxes?: number;
+      emptyImportVerificationManifestBeforeSha256?: string | null;
+      emptyImportVerificationManifestAfterSha256?: string | null;
+      emptyImportVerificationManifestUnchanged?: boolean;
       targetScript?: string | null;
       emptyImportDryRunScript?: string | null;
       validationErrorCount?: number;
+    };
+    prodCycleAudit?: {
+      artifactPath?: string;
+      generatedAt?: string | null;
+      ok?: boolean;
+      errorCount?: number;
+      warningCount?: number;
+      commandCount?: number;
+      processedCatalogEntries?: number;
+      totalCatalogEntries?: number;
+      curatedReferenceEntries?: number;
+      missingCuratedEntries?: number;
+      duplicateRowsAfterDedupe?: number;
+      autoAttachAcceptedOnly?: boolean;
+      reviewQueueHasAccepted?: boolean;
+      candidateReviewQueueEntries?: number;
+      candidateReviewGroupEntries?: number;
+      sourceIntakeTemplateRows?: number;
+      acceptedPromotionEligibleFromReviewQueue?: number;
+      acceptedBulkCandidateCount?: number;
+      reviewOnlyCandidateCount?: number;
+      pdfVerifiedMeasureBoxes?: number;
+      pdfVerificationManifestUnchanged?: boolean;
+      targetScript?: string | null;
     };
     candidateReviewGroupPage?: CandidateReviewGroupPage;
     candidateReviewGroupFacets?: {
@@ -468,6 +495,7 @@ function buildArtifactInventory(state: ExternalReferenceState): ArtifactInventor
   const sourceIntakeTemplateManifest = curation?.sourceIntakeTemplateManifest;
   const sourceIntakeAcceptedImportDryRunManifest = curation?.sourceIntakeAcceptedImportDryRunManifest;
   const symbtrLayoutVerificationManifest = curation?.symbtrLayoutVerificationManifest;
+  const prodCycleAudit = curation?.prodCycleAudit;
 
   if (coverage) {
     addItem({
@@ -617,6 +645,21 @@ function buildArtifactInventory(state: ExternalReferenceState): ArtifactInventor
       `${formatNumber(sourceIntakeAcceptedImportDryRunManifest.validationErrorCount)} hata`,
     ],
     command: sourceIntakeAcceptedImportDryRunManifest.targetScript,
+  } : null);
+
+  addItem(prodCycleAudit?.artifactPath ? {
+    id: "prod-cycle-summary",
+    label: "Prod-cycle audit summary",
+    category: "Validation",
+    status: prodCycleAudit.ok ? "ok" : "needs-review",
+    path: prodCycleAudit.artifactPath,
+    metrics: [
+      `${formatNumber(prodCycleAudit.processedCatalogEntries)} eser`,
+      `${formatNumber(prodCycleAudit.candidateReviewQueueEntries)} review-only`,
+      `${formatNumber(prodCycleAudit.errorCount)} hata`,
+      `${formatNumber(prodCycleAudit.warningCount)} uyarı`,
+    ],
+    command: prodCycleAudit.targetScript,
   } : null);
 
   addItem(symbtrLayoutVerificationManifest?.summaryPath ? {
@@ -1237,6 +1280,7 @@ export function ReferencesCurationDashboard({
   const sourceIntakeTemplateManifest = state.curation?.sourceIntakeTemplateManifest;
   const sourceIntakeAcceptedImportDryRunManifest = state.curation?.sourceIntakeAcceptedImportDryRunManifest;
   const symbtrLayoutVerificationManifest = state.curation?.symbtrLayoutVerificationManifest;
+  const prodCycleAudit = state.curation?.prodCycleAudit;
   const candidateReviewGroupPage = state.curation?.candidateReviewGroupPage;
   const candidateReviewGroups = state.curation?.candidateReviewGroups ?? [];
   const candidateReviewPage = state.curation?.candidateReviewPage;
@@ -1308,6 +1352,43 @@ export function ReferencesCurationDashboard({
               </article>
             ))}
           </section>
+
+          {prodCycleAudit && (
+            <section className={`min-w-0 overflow-hidden border ${tokens.colors.border.base} ${tokens.radius.lg} ${tokens.colors.background.surface}`}>
+              <div className="flex flex-col gap-3 border-b border-[var(--color-border)] px-4 py-3 lg:flex-row lg:items-start lg:justify-between">
+                <div>
+                  <h2 className={`text-lg font-semibold ${tokens.colors.text.primary}`}>Prod-cycle audit</h2>
+                  <p className={`text-xs ${tokens.colors.text.secondary}`}>
+                    {prodCycleAudit.ok ? "OK" : "Review"} · {formatNumber(prodCycleAudit.commandCount)} komut · {formatNumber(prodCycleAudit.errorCount)} hata · {formatNumber(prodCycleAudit.warningCount)} uyarı · {formatDate(prodCycleAudit.generatedAt)}
+                  </p>
+                  {prodCycleAudit.artifactPath && (
+                    <code className="mt-1 block break-all text-xs text-[var(--color-text-primary)]">{prodCycleAudit.artifactPath}</code>
+                  )}
+                  {prodCycleAudit.targetScript && (
+                    <code className="mt-1 block break-all text-xs text-[var(--color-text-primary)]">{prodCycleAudit.targetScript}</code>
+                  )}
+                </div>
+                <div className="grid w-full gap-2 text-sm sm:grid-cols-2 lg:max-w-3xl lg:grid-cols-4">
+                  <div>
+                    <div className={`text-xs uppercase ${tokens.colors.text.secondary}`}>Catalog</div>
+                    <div className={tokens.colors.text.primary}>{formatNumber(prodCycleAudit.processedCatalogEntries)} / {formatNumber(prodCycleAudit.totalCatalogEntries)}</div>
+                  </div>
+                  <div>
+                    <div className={`text-xs uppercase ${tokens.colors.text.secondary}`}>Queue</div>
+                    <div className={tokens.colors.text.primary}>{formatNumber(prodCycleAudit.candidateReviewQueueEntries)} aday · {formatNumber(prodCycleAudit.candidateReviewGroupEntries)} grup</div>
+                  </div>
+                  <div>
+                    <div className={`text-xs uppercase ${tokens.colors.text.secondary}`}>Safety</div>
+                    <div className={tokens.colors.text.primary}>{prodCycleAudit.autoAttachAcceptedOnly ? "accepted-only" : "review"} · {formatNumber(prodCycleAudit.duplicateRowsAfterDedupe)} duplicate</div>
+                  </div>
+                  <div>
+                    <div className={`text-xs uppercase ${tokens.colors.text.secondary}`}>PDF</div>
+                    <div className={tokens.colors.text.primary}>{formatNumber(prodCycleAudit.pdfVerifiedMeasureBoxes)} verified · {prodCycleAudit.pdfVerificationManifestUnchanged ? "hash OK" : "hash review"}</div>
+                  </div>
+                </div>
+              </div>
+            </section>
+          )}
 
           <section className={`min-w-0 overflow-hidden border ${tokens.colors.border.base} ${tokens.radius.lg} ${tokens.colors.background.surface}`}>
             <div className="flex flex-col gap-3 border-b border-[var(--color-border)] px-4 py-3 lg:flex-row lg:items-end lg:justify-between">

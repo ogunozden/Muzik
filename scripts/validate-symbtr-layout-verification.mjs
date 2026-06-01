@@ -742,6 +742,7 @@ function validateEmptyImportDryRun({
     "review-batch-plan-complete",
     "empty-import-no-write",
     "verified-manifest-unchanged",
+    "verified-manifest-sha256-unchanged",
   ];
   const gates = new Set(emptyImportDryRunData.validationGates ?? []);
   for (const gate of requiredGates) {
@@ -772,6 +773,24 @@ function validateEmptyImportDryRun({
   if (summary.dryRunVerifiedMeasureBoxCount !== 0) {
     errors.push("layout-verification-empty-import-dry-run.json dryRunVerifiedMeasureBoxCount must stay 0 until explicit verified import");
   }
+  if (
+    typeof summary.verificationManifestBeforeSha256 !== "string" ||
+    !/^[a-f0-9]{64}$/.test(summary.verificationManifestBeforeSha256)
+  ) {
+    errors.push("layout-verification-empty-import-dry-run.json verificationManifestBeforeSha256 must be a sha256 hex string");
+  }
+  if (
+    typeof summary.verificationManifestAfterSha256 !== "string" ||
+    !/^[a-f0-9]{64}$/.test(summary.verificationManifestAfterSha256)
+  ) {
+    errors.push("layout-verification-empty-import-dry-run.json verificationManifestAfterSha256 must be a sha256 hex string");
+  }
+  if (summary.verificationManifestBeforeSha256 !== summary.verificationManifestAfterSha256) {
+    errors.push("layout-verification-empty-import-dry-run.json verification manifest sha256 must stay unchanged");
+  }
+  if (summary.verificationManifestUnchanged !== true) {
+    errors.push("layout-verification-empty-import-dry-run.json verificationManifestUnchanged must be true");
+  }
 
   return {
     path: path.relative(PROJECT_ROOT, EMPTY_IMPORT_DRY_RUN_PATH).replace(/\\/g, "/"),
@@ -780,11 +799,15 @@ function validateEmptyImportDryRun({
     reviewBatchPacketCount: summary.reviewBatchPacketCount ?? 0,
     dryRunInputEntryCount: summary.dryRunInputEntryCount ?? 0,
     dryRunVerifiedMeasureBoxCount: summary.dryRunVerifiedMeasureBoxCount ?? 0,
+    verificationManifestBeforeSha256: summary.verificationManifestBeforeSha256,
+    verificationManifestAfterSha256: summary.verificationManifestAfterSha256,
+    verificationManifestUnchanged: summary.verificationManifestUnchanged === true,
   };
 }
 
 const errors = [];
 const options = parseCliOptions(process.argv.slice(2));
+const skipEmptyImportDryRun = options.get("skip-empty-import-dry-run") === "true";
 const verificationPath = options.has("verification-path")
   ? assertInsideProject(options.get("verification-path"))
   : VERIFICATION_PATH;
@@ -792,7 +815,7 @@ const layoutData = readJson(LAYOUT_PATH);
 const verificationData = readJson(verificationPath);
 const reviewTemplateData = readJson(REVIEW_TEMPLATE_PATH);
 const reviewBatchPlanData = readJson(REVIEW_BATCH_PLAN_PATH);
-const emptyImportDryRunData = existsSync(EMPTY_IMPORT_DRY_RUN_PATH)
+const emptyImportDryRunData = !skipEmptyImportDryRun && existsSync(EMPTY_IMPORT_DRY_RUN_PATH)
   ? readJson(EMPTY_IMPORT_DRY_RUN_PATH)
   : undefined;
 

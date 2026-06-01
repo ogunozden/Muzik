@@ -12,6 +12,7 @@ const PROJECT_ROOT = process.cwd();
 const COVERAGE_ROOT = path.join(PROJECT_ROOT, "output", "external-reference-coverage");
 const SYMBTR_LAYOUT_REVIEW_ROOT = path.join(PROJECT_ROOT, "output", "symbtr-layout-review");
 const REFERENCES_ROOT = path.join(PROJECT_ROOT, "src", "data", "references");
+const PROD_CYCLE_SUMMARY_PATH = path.join(COVERAGE_ROOT, "prod-cycle-summary.json");
 const DEFAULT_BACKLOG_LIMIT = 100;
 const DEFAULT_CANDIDATE_LIMIT = 100;
 const DEFAULT_CANDIDATE_GROUP_LIMIT = 80;
@@ -125,8 +126,44 @@ interface SymbTrLayoutVerificationSummary {
     reviewBatchPacketCount?: number;
     dryRunInputEntryCount?: number;
     dryRunVerifiedMeasureBoxCount?: number;
+    verificationManifestBeforeSha256?: string;
+    verificationManifestAfterSha256?: string;
+    verificationManifestUnchanged?: boolean;
   } | null;
   errors?: unknown[];
+}
+
+interface ProdCycleSummary {
+  generatedAt?: string;
+  ok?: boolean;
+  errors?: unknown[];
+  warnings?: unknown[];
+  commandResults?: unknown[];
+  pipeline?: {
+    totalCatalogEntries?: number;
+    processedCatalogEntries?: number;
+    curatedReferenceEntries?: number;
+    missingCuratedEntries?: number;
+    duplicateRowsAfterDedupe?: number;
+    autoAttachAcceptedOnly?: boolean;
+    reviewQueueHasAccepted?: boolean;
+  };
+  queueClosure?: {
+    candidateReviewQueueEntries?: number;
+    candidateReviewGroupEntries?: number;
+    sourceIntakeTemplateRows?: number;
+    acceptedPromotionEligibleFromReviewQueue?: number;
+    acceptedBulkCandidateCount?: number;
+    reviewOnlyCandidateCount?: number;
+  };
+  pdfVerification?: {
+    verifiedMeasureBoxes?: number;
+    emptyImportDryRun?: {
+      verificationManifestUnchanged?: boolean;
+      verificationManifestBeforeSha256?: string;
+      verificationManifestAfterSha256?: string;
+    } | null;
+  };
 }
 
 interface SourceIntakeAcceptedImportDryRunManifest {
@@ -269,6 +306,7 @@ async function buildReadOnlyInitialState(): Promise<ExternalReferenceState> {
     sourceIntakeAcceptedDryRun,
     layoutVerificationSummary,
     layoutEmptyImportDryRun,
+    prodCycleSummary,
     candidateReviewQueueData,
     candidateReviewGroupsData,
     backlogData,
@@ -290,6 +328,7 @@ async function buildReadOnlyInitialState(): Promise<ExternalReferenceState> {
     readJsonOrNull<SourceIntakeAcceptedImportDryRunManifest>(sourceIntakeAcceptedDryRunPath),
     readJsonOrNull<SymbTrLayoutVerificationSummary>(layoutVerificationSummaryPath),
     readJsonOrNull<Record<string, unknown>>(layoutEmptyImportDryRunPath),
+    readJsonOrNull<ProdCycleSummary>(PROD_CYCLE_SUMMARY_PATH),
     readJsonOrNull<CandidateReviewRow[]>(candidateQueuePath),
     readJsonOrNull<CandidateReviewGroup[]>(candidateGroupsPath),
     readJsonOrNull<CurationBacklogRow[]>(backlogPath),
@@ -405,9 +444,39 @@ async function buildReadOnlyInitialState(): Promise<ExternalReferenceState> {
           : null,
         emptyImportDryRunInputEntries: Number(layoutVerificationSummary?.emptyImportDryRun?.dryRunInputEntryCount ?? 0),
         emptyImportDryRunVerifiedMeasureBoxes: Number(layoutVerificationSummary?.emptyImportDryRun?.dryRunVerifiedMeasureBoxCount ?? 0),
+        emptyImportVerificationManifestBeforeSha256: layoutVerificationSummary?.emptyImportDryRun?.verificationManifestBeforeSha256 ?? null,
+        emptyImportVerificationManifestAfterSha256: layoutVerificationSummary?.emptyImportDryRun?.verificationManifestAfterSha256 ?? null,
+        emptyImportVerificationManifestUnchanged:
+          layoutVerificationSummary?.emptyImportDryRun?.verificationManifestUnchanged === true,
         targetScript: "npm run import:symbtr-measure-verification -- --input <json>",
         emptyImportDryRunScript: "npm run verify:symbtr-layout-review-import",
         validationErrorCount: Array.isArray(layoutVerificationSummary?.errors) ? layoutVerificationSummary.errors.length : 0,
+      },
+      prodCycleAudit: {
+        artifactPath: toProjectPath(PROD_CYCLE_SUMMARY_PATH),
+        generatedAt: prodCycleSummary?.generatedAt ?? null,
+        ok: prodCycleSummary?.ok === true,
+        errorCount: Array.isArray(prodCycleSummary?.errors) ? prodCycleSummary.errors.length : 0,
+        warningCount: Array.isArray(prodCycleSummary?.warnings) ? prodCycleSummary.warnings.length : 0,
+        commandCount: Array.isArray(prodCycleSummary?.commandResults) ? prodCycleSummary.commandResults.length : 0,
+        processedCatalogEntries: Number(prodCycleSummary?.pipeline?.processedCatalogEntries ?? 0),
+        totalCatalogEntries: Number(prodCycleSummary?.pipeline?.totalCatalogEntries ?? 0),
+        curatedReferenceEntries: Number(prodCycleSummary?.pipeline?.curatedReferenceEntries ?? 0),
+        missingCuratedEntries: Number(prodCycleSummary?.pipeline?.missingCuratedEntries ?? 0),
+        duplicateRowsAfterDedupe: Number(prodCycleSummary?.pipeline?.duplicateRowsAfterDedupe ?? 0),
+        autoAttachAcceptedOnly: prodCycleSummary?.pipeline?.autoAttachAcceptedOnly === true,
+        reviewQueueHasAccepted: prodCycleSummary?.pipeline?.reviewQueueHasAccepted === true,
+        candidateReviewQueueEntries: Number(prodCycleSummary?.queueClosure?.candidateReviewQueueEntries ?? 0),
+        candidateReviewGroupEntries: Number(prodCycleSummary?.queueClosure?.candidateReviewGroupEntries ?? 0),
+        sourceIntakeTemplateRows: Number(prodCycleSummary?.queueClosure?.sourceIntakeTemplateRows ?? 0),
+        acceptedPromotionEligibleFromReviewQueue:
+          Number(prodCycleSummary?.queueClosure?.acceptedPromotionEligibleFromReviewQueue ?? 0),
+        acceptedBulkCandidateCount: Number(prodCycleSummary?.queueClosure?.acceptedBulkCandidateCount ?? 0),
+        reviewOnlyCandidateCount: Number(prodCycleSummary?.queueClosure?.reviewOnlyCandidateCount ?? 0),
+        pdfVerifiedMeasureBoxes: Number(prodCycleSummary?.pdfVerification?.verifiedMeasureBoxes ?? 0),
+        pdfVerificationManifestUnchanged:
+          prodCycleSummary?.pdfVerification?.emptyImportDryRun?.verificationManifestUnchanged === true,
+        targetScript: "npm run audit:prod-cycle",
       },
       candidateReviewGroupPage: {
         offset: 0,

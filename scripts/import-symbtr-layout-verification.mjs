@@ -197,6 +197,7 @@ try {
     "scripts/validate-symbtr-layout-verification.mjs",
     "--verification-path",
     path.relative(root, previewPath),
+    "--skip-empty-import-dry-run",
   ], {
     cwd: root,
     encoding: "utf8",

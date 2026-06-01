@@ -237,6 +237,12 @@ describe("external reference audit", () => {
         "utf8",
       ),
     );
+    const dedupeReportJson = JSON.parse(
+      readFileSync(
+        path.join(root, "output", "external-reference-coverage", "symbtr-curated-reference-dedupe-report.json"),
+        "utf8",
+      ),
+    );
     expect(nextBatchJson).toEqual([]);
     expect(backlogJson).toHaveLength(3);
     expect(candidateReviewJson).toHaveLength(3);
@@ -261,6 +267,10 @@ describe("external reference audit", () => {
     );
     expect(summary.coverageMatrixJson).toBe("output/external-reference-coverage/symbtr-curated-reference-coverage-matrix.json");
     expect(summary.coverageMatrixEntries).toBeGreaterThan(0);
+    expect(summary.dedupeReportJson).toBe("output/external-reference-coverage/symbtr-curated-reference-dedupe-report.json");
+    expect(summary.dedupeReportEntries).toBe(0);
+    expect(summary.duplicateRowsAfterDedupe).toBe(0);
+    expect(summary.cleanedDuplicateRows).toBe(0);
     expect(summary.candidateReviewGroupDecisionRecommendationEntries).toBe(1);
     expect(candidateReviewGroupRecommendationsJson).toEqual(expect.objectContaining({
       type: "candidate-review-group-decision-recommendations",
@@ -300,6 +310,16 @@ describe("external reference audit", () => {
             candidateReviewQueueEntries: 1,
           }),
         ]),
+      }),
+    }));
+    expect(dedupeReportJson).toEqual(expect.objectContaining({
+      type: "external-reference-dedupe-report",
+      summary: expect.objectContaining({
+        bulkCandidateEntries: 1,
+        acceptedBulkCandidateEntries: 1,
+        candidateReviewQueueEntries: 3,
+        duplicateRows: 0,
+        cleanedDuplicateRows: 0,
       }),
     }));
   });

@@ -25,6 +25,7 @@ function dedupeSources(sources) {
 }
 
 const result = validateSourceCurationRegistries({
+  bulkCandidates: readJson("src/data/references/external-reference-bulk-candidates.json").candidates ?? [],
   catalog: readJson("src/data/symbtr/catalog.generated.json"),
   autoAttached: readJson("src/data/references/auto-attached-references.json"),
   feedback: readJson("src/data/references/source-feedback-events.json"),
@@ -39,6 +40,7 @@ const result = validateSourceCurationRegistries({
     "output/external-reference-coverage/symbtr-curated-reference-candidate-review-group-decision-recommendations.json",
   ),
   coverageMatrix: readJson("output/external-reference-coverage/symbtr-curated-reference-coverage-matrix.json"),
+  dedupeReport: readJson("output/external-reference-coverage/symbtr-curated-reference-dedupe-report.json"),
   coverageSummary: readJson("output/external-reference-coverage/summary.json"),
   sources: dedupeSources([
     ...sourcesFromMapping(readJson("output/external-reference-coverage/mapped-external-reference-candidates.json")),

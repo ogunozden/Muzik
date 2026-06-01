@@ -19,6 +19,10 @@ const stateFixture = {
     candidateReviewGroupDecisionRecommendationsJson: "output/external-reference-coverage/symbtr-curated-reference-candidate-review-group-decision-recommendations.json",
     coverageMatrixEntries: 24,
     coverageMatrixJson: "output/external-reference-coverage/symbtr-curated-reference-coverage-matrix.json",
+    dedupeReportEntries: 0,
+    dedupeReportJson: "output/external-reference-coverage/symbtr-curated-reference-dedupe-report.json",
+    cleanedDuplicateRows: 0,
+    duplicateRowsAfterDedupe: 0,
     batchReport: {
       processedCatalogEntries: 3000,
       curatedBeforeBulkCandidates: 15,
@@ -27,7 +31,7 @@ const stateFixture = {
       deferredMissingEntries: 5,
       generatedReviewCandidates: 14890,
       recommendedReviewGroupDecisions: 1,
-      validationGates: ["candidate-review-group-decision-recommendation-drift"],
+      validationGates: ["candidate-review-group-decision-recommendation-drift", "dedupe-report-drift"],
     },
   },
   curation: {
@@ -348,6 +352,8 @@ describe("ReferencesCurationPage", () => {
     expect(screen.getAllByText("output/external-reference-coverage/symbtr-curated-reference-candidate-review-queue.json").length).toBeGreaterThan(0);
     expect(screen.getByText(/symbtr-curated-reference-coverage-matrix\.json/)).toBeDefined();
     expect(screen.getByText(/24 kırılım/)).toBeDefined();
+    expect(screen.getByText(/symbtr-curated-reference-dedupe-report\.json/)).toBeDefined();
+    expect(screen.getByText(/0 duplicate/)).toBeDefined();
     expect(screen.getByText("output/external-reference-coverage/symbtr-curated-reference-candidate-review-groups.json")).toBeDefined();
     expect(screen.getByText(/candidate-review-group-decisions\.json/)).toBeDefined();
     expect(screen.getByText(/candidate-review-group-decision-recommendations\.json/)).toBeDefined();

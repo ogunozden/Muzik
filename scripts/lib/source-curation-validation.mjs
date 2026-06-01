@@ -33,6 +33,7 @@ const CANDIDATE_REVIEW_GROUP_STATUSES = new Set(["needs-review", "conflict", "re
 const CANDIDATE_REVIEW_GROUP_DECISION_STATUSES = new Set(["rejected", "conflict", "deferred"]);
 const CANDIDATE_REVIEW_GROUP_DECISION_RECOMMENDATION_TYPE = "candidate-review-group-decision-recommendations";
 const COVERAGE_MATRIX_TYPE = "external-reference-coverage-matrix";
+const DEDUPE_REPORT_TYPE = "external-reference-dedupe-report";
 const PROVIDERS = new Set(["score", "symbtr", "youtube", "archive", "github"]);
 const EMBED_CAPABILITIES = new Set(["none", "iframe", "pdf", "youtube"]);
 const EMBED_TYPES = new Set(["none", "iframe", "pdf", "youtube"]);
@@ -61,6 +62,7 @@ const REQUIRED_BATCH_VALIDATION_GATES = [
   "candidate-review-group-decision-drift",
   "candidate-review-group-decision-recommendation-drift",
   "coverage-matrix-drift",
+  "dedupe-report-drift",
 ];
 
 function hasCatalogId(catalogIds, catalogId) {
@@ -383,6 +385,105 @@ function validateCoverageMatrixTotals({
   }
 }
 
+function getDuplicateRowCount(rows, getKey) {
+  const counts = new Map();
+  for (const row of rows) {
+    const key = getKey(row);
+    if (!key) continue;
+    counts.set(key, (counts.get(key) ?? 0) + 1);
+  }
+
+  return Array.from(counts.values()).reduce((total, count) => total + Math.max(0, count - 1), 0);
+}
+
+function normalizeReferenceIdentity(source) {
+  try {
+    const parsedUrl = new URL(source?.url ?? "");
+    parsedUrl.hash = "";
+    parsedUrl.searchParams.delete("utm_source");
+    parsedUrl.searchParams.delete("utm_medium");
+    parsedUrl.searchParams.delete("utm_campaign");
+    parsedUrl.searchParams.delete("utm_term");
+    parsedUrl.searchParams.delete("utm_content");
+
+    if (parsedUrl.hostname === "youtu.be") {
+      const videoId = parsedUrl.pathname.replace(/^\/+/, "");
+      return `youtube:${videoId}`;
+    }
+    if (parsedUrl.hostname.endsWith("youtube.com")) {
+      const videoId = parsedUrl.searchParams.get("v");
+      if (videoId) return `youtube:${videoId}`;
+    }
+    parsedUrl.searchParams.sort();
+    return parsedUrl.toString().replace(/\/$/, "");
+  } catch {
+    return String(source?.url ?? "");
+  }
+}
+
+function validateDedupeReport({
+  dedupeReport,
+  coverageSummary,
+  candidateReviewQueue,
+  bulkCandidates,
+  errors,
+}) {
+  if (dedupeReport === undefined) return;
+  if (!dedupeReport || typeof dedupeReport !== "object") {
+    errors.push("dedupe-report: artifact must be an object");
+    return;
+  }
+
+  if (dedupeReport.version !== 1) {
+    errors.push("dedupe-report: version must be 1");
+  }
+  if (dedupeReport.type !== DEDUPE_REPORT_TYPE) {
+    errors.push(`dedupe-report: type must be ${DEDUPE_REPORT_TYPE}`);
+  }
+
+  const summary = dedupeReport.summary ?? {};
+  const candidateRows = Array.isArray(candidateReviewQueue) ? candidateReviewQueue : [];
+  const bulkRows = Array.isArray(bulkCandidates) ? bulkCandidates : [];
+  const acceptedRows = bulkRows.filter((candidate) => candidate?.status === "accepted");
+  const expected = {
+    bulkCandidateEntries: coverageSummary?.bulkCandidateEntries ?? bulkRows.length,
+    acceptedBulkCandidateEntries: coverageSummary?.acceptedBulkCandidateEntries ?? acceptedRows.length,
+    candidateReviewQueueEntries: candidateRows.length,
+    acceptedDuplicateSourceIdRows: getDuplicateRowCount(acceptedRows, (candidate) => `${candidate.catalogId}:${candidate.source?.id ?? ""}`),
+    acceptedDuplicateUrlIdentityRows: getDuplicateRowCount(acceptedRows, (candidate) => normalizeReferenceIdentity(candidate.source ?? {})),
+    candidateReviewDuplicateIdRows: getDuplicateRowCount(candidateRows, (row) => row.candidateId),
+  };
+  expected.duplicateRows =
+    expected.acceptedDuplicateSourceIdRows +
+    expected.acceptedDuplicateUrlIdentityRows +
+    expected.candidateReviewDuplicateIdRows;
+  expected.cleanedDuplicateRows = expected.duplicateRows;
+
+  for (const [field, value] of Object.entries(expected)) {
+    if (!Number.isInteger(summary[field]) || summary[field] < 0) {
+      errors.push(`dedupe-report: summary.${field} must be a non-negative integer`);
+    } else if (summary[field] !== value) {
+      errors.push(`dedupe-report: summary.${field} ${summary[field]} does not match ${value}`);
+    }
+  }
+
+  if (summary.duplicateRows !== 0) {
+    errors.push("dedupe-report: duplicateRows must be 0 before auto-attach");
+  }
+  if (coverageSummary?.batchReport?.duplicateRowsAfterDedupe !== summary.duplicateRows) {
+    errors.push("coverage-summary: batchReport.duplicateRowsAfterDedupe must match dedupe report");
+  }
+  if (coverageSummary?.batchReport?.cleanedDuplicateRows !== summary.cleanedDuplicateRows) {
+    errors.push("coverage-summary: batchReport.cleanedDuplicateRows must match dedupe report");
+  }
+  if (coverageSummary?.duplicateRowsAfterDedupe !== summary.duplicateRows) {
+    errors.push("coverage-summary: duplicateRowsAfterDedupe must match dedupe report");
+  }
+  if (coverageSummary?.cleanedDuplicateRows !== summary.cleanedDuplicateRows) {
+    errors.push("coverage-summary: cleanedDuplicateRows must match dedupe report");
+  }
+}
+
 export function validateSourceCurationRegistries({
   catalog,
   autoAttached,
@@ -397,6 +498,8 @@ export function validateSourceCurationRegistries({
   candidateReviewGroupDecisions,
   candidateReviewGroupDecisionRecommendations,
   coverageMatrix,
+  dedupeReport,
+  bulkCandidates,
   coverageSummary,
 }) {
   const errors = [];
@@ -846,6 +949,13 @@ export function validateSourceCurationRegistries({
           actualCandidateReviewCount: candidateReviewQueue.length,
           actualCandidateReviewGroupCount: Array.isArray(candidateReviewGroups) ? candidateReviewGroups.length : 0,
           enabledProfileCount: enabledResearchProfileIds.size,
+          errors,
+        });
+        validateDedupeReport({
+          dedupeReport,
+          coverageSummary,
+          candidateReviewQueue,
+          bulkCandidates,
           errors,
         });
       }

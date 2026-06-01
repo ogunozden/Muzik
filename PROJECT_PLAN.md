@@ -257,6 +257,13 @@ tek kurala bağlamaktır.
       summary ve queue satırlarına karşı doğrulanır. Başında tire olan katalog
       segmentlerinin metrikte başı boşluklu değere dönüşmesi merkezi
       `humanizeSegment` trim düzeltmesiyle giderildi.
+      2026-06-01 ek dedupe rapor kapısı: audit artık
+      `symbtr-curated-reference-dedupe-report.json` üretir; accepted bulk
+      source id, accepted URL identity ve generated review candidate id
+      duplicate satırları `dedupe-report-drift` kapısıyla summary, batch report,
+      bulk manifest ve review queue'ya karşı doğrulanır. Mevcut 14.897 satırlık
+      batch kontrolünde 0 duplicate / 0 temizlenen duplicate raporlandı; duplicate
+      accepted identity yine auto-attach öncesi fail-closed kalır.
       2026-06-01 runtime takip notu: `/references/curation` production
       `next start` üzerinde layout/browser/console kapılarından geçti; mevcut
       `next dev --webpack` PostCSS/UnoCSS loader yolu aynı sayfada 500 üretiyor.

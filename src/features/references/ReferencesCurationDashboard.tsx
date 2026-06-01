@@ -186,6 +186,10 @@ interface ExternalReferenceState {
     candidateReviewGroupDecisionRecommendationsJson?: string;
     coverageMatrixEntries?: number;
     coverageMatrixJson?: string;
+    dedupeReportEntries?: number;
+    dedupeReportJson?: string;
+    cleanedDuplicateRows?: number;
+    duplicateRowsAfterDedupe?: number;
   } | null;
   curation?: {
     summary?: {
@@ -395,6 +399,7 @@ function metricCards(state: ExternalReferenceState) {
     {label: "Backlog", value: formatNumber(state.coverage?.missingCuratedEntries), meta: `${formatNumber(backlogPage.returnedCount)} / ${formatNumber(backlogPage.filteredTotal)} sırada`},
     {label: "Batch", value: formatNumber(batchReport?.processedCatalogEntries), meta: `${formatNumber(batchReport?.generatedReviewCandidates)} aday`},
     {label: "Matrix", value: formatNumber(state.coverage?.coverageMatrixEntries), meta: "coverage kırılımı"},
+    {label: "Dedupe", value: formatNumber(state.coverage?.duplicateRowsAfterDedupe), meta: `${formatNumber(state.coverage?.cleanedDuplicateRows)} temizlenen`},
     {label: "Conflict", value: formatNumber(summary.conflictCount), meta: "eşleşme"},
     {label: "Removed", value: formatNumber(summary.removedCount), meta: "kullanıcı"},
     {label: "Feedback", value: formatNumber(summary.feedbackEventCount), meta: "event"},
@@ -898,6 +903,11 @@ export function ReferencesCurationDashboard() {
                 {state.coverage?.coverageMatrixJson && (
                   <code className="mt-1 block break-all text-xs text-[var(--color-text-primary)]">
                     {state.coverage.coverageMatrixJson} · {formatNumber(state.coverage.coverageMatrixEntries)} kırılım
+                  </code>
+                )}
+                {state.coverage?.dedupeReportJson && (
+                  <code className="mt-1 block break-all text-xs text-[var(--color-text-primary)]">
+                    {state.coverage.dedupeReportJson} · {formatNumber(state.coverage.duplicateRowsAfterDedupe)} duplicate · {formatNumber(state.coverage.cleanedDuplicateRows)} temizlenen
                   </code>
                 )}
               </div>

@@ -12,6 +12,7 @@ const ALLOWED_BULK_CANDIDATE_STATUSES = new Set(["accepted", "needs-review", "re
 const ALLOWED_CANDIDATE_REVIEW_GROUP_DECISION_STATUSES = new Set(["needs-review", "rejected", "conflict", "deferred"]);
 const CANDIDATE_REVIEW_GROUP_DECISION_RECOMMENDATION_VERSION = "candidate-review-group-decision-recommendations-v1";
 const COVERAGE_MATRIX_VERSION = "external-reference-coverage-matrix-v1";
+const DEDUPE_REPORT_VERSION = "external-reference-dedupe-report-v1";
 const SCORE_SOURCE_HINTS = [
   "site:neyzen.com nota",
   "site:defteriniz.com nota",
@@ -640,6 +641,70 @@ export function buildCoverageMatrix({
   };
 }
 
+function getDuplicateGroups(rows, getKey) {
+  const groups = new Map();
+  for (const row of rows) {
+    const key = getKey(row);
+    if (!key) continue;
+    const group = groups.get(key) ?? [];
+    group.push(row);
+    groups.set(key, group);
+  }
+
+  return Array.from(groups.entries())
+    .filter(([, group]) => group.length > 1)
+    .map(([key, group]) => ({
+      key,
+      count: group.length,
+      duplicateCount: group.length - 1,
+    }));
+}
+
+export function buildDedupeReport({
+  bulkCandidates,
+  acceptedBulkCandidates,
+  candidateReviewRows,
+  generatedAt,
+}) {
+  const acceptedSourceIdDuplicates = getDuplicateGroups(
+    acceptedBulkCandidates,
+    (candidate) => `${candidate.catalogId}:${candidate.source?.id ?? ""}`,
+  );
+  const acceptedUrlIdentityDuplicates = getDuplicateGroups(
+    acceptedBulkCandidates,
+    (candidate) => getReferenceIdentity(candidate.source ?? {}),
+  );
+  const candidateReviewIdDuplicates = getDuplicateGroups(candidateReviewRows, (row) => row.candidateId);
+  const acceptedDuplicateSourceIdRows = acceptedSourceIdDuplicates.reduce((total, group) => total + group.duplicateCount, 0);
+  const acceptedDuplicateUrlIdentityRows = acceptedUrlIdentityDuplicates.reduce((total, group) => total + group.duplicateCount, 0);
+  const candidateReviewDuplicateIdRows = candidateReviewIdDuplicates.reduce((total, group) => total + group.duplicateCount, 0);
+  const duplicateRows = acceptedDuplicateSourceIdRows + acceptedDuplicateUrlIdentityRows + candidateReviewDuplicateIdRows;
+
+  return {
+    version: 1,
+    type: "external-reference-dedupe-report",
+    policyVersion: DEDUPE_REPORT_VERSION,
+    generatedAt,
+    summary: {
+      bulkCandidateEntries: bulkCandidates.length,
+      acceptedBulkCandidateEntries: acceptedBulkCandidates.length,
+      candidateReviewQueueEntries: candidateReviewRows.length,
+      acceptedDuplicateSourceIdRows,
+      acceptedDuplicateUrlIdentityRows,
+      candidateReviewDuplicateIdRows,
+      duplicateRows,
+      cleanedDuplicateRows: duplicateRows,
+      policy:
+        "Accepted source ids, accepted URL identities, and generated review candidate ids must be unique; duplicate accepted identities fail validation before auto-attach.",
+    },
+    duplicateGroups: {
+      acceptedSourceIds: acceptedSourceIdDuplicates,
+      acceptedUrlIdentities: acceptedUrlIdentityDuplicates,
+      candidateReviewIds: candidateReviewIdDuplicates,
+    },
+  };
+}
+
 export function buildBacklogRows(entries, curatedCatalogIds, curationDecisionsByCatalogId) {
   return entries
     .map((entry) => {
@@ -1043,6 +1108,7 @@ export function runExternalReferenceCoverageAudit({
     "symbtr-curated-reference-candidate-review-group-decision-recommendations.json",
   );
   const coverageMatrixJsonPath = path.join(safeOutDir, "symbtr-curated-reference-coverage-matrix.json");
+  const dedupeReportJsonPath = path.join(safeOutDir, "symbtr-curated-reference-dedupe-report.json");
   const recommendationReviewedAt = getLatestIsoDate(
     Array.from(curationDecisionsByCatalogId.values()).map((decision) => decision.reviewedAt),
   );
@@ -1071,6 +1137,12 @@ export function runExternalReferenceCoverageAudit({
     researchProfiles,
     generatedAt,
   });
+  const dedupeReport = buildDedupeReport({
+    bulkCandidates,
+    acceptedBulkCandidates,
+    candidateReviewRows,
+    generatedAt,
+  });
   writeFileSync(csvPath, renderCsv(rows));
   writeFileSync(backlogJsonPath, `${JSON.stringify(rows, null, 2)}\n`);
   writeFileSync(nextBatchCsvPath, renderCsv(nextBatchRows));
@@ -1086,6 +1158,7 @@ export function runExternalReferenceCoverageAudit({
     `${JSON.stringify(candidateReviewGroupDecisionRecommendationManifest, null, 2)}\n`,
   );
   writeFileSync(coverageMatrixJsonPath, `${JSON.stringify(coverageMatrix, null, 2)}\n`);
+  writeFileSync(dedupeReportJsonPath, `${JSON.stringify(dedupeReport, null, 2)}\n`);
 
   const batchReport = {
     version: 1,
@@ -1120,6 +1193,10 @@ export function runExternalReferenceCoverageAudit({
     candidateReviewScoringSignals: ["profile-trust", "profile-metadata-strategy", "catalog-formats", "catalog-fields", "curation-decision"],
     candidateReviewGroupDecisionRecommendationPolicy: CANDIDATE_REVIEW_GROUP_DECISION_RECOMMENDATION_VERSION,
     duplicateAcceptedIdentityPolicy: "duplicate accepted URL identities fail validation before merge",
+    dedupeReportPolicy: DEDUPE_REPORT_VERSION,
+    dedupeCheckedRows: dedupeReport.summary.bulkCandidateEntries + dedupeReport.summary.candidateReviewQueueEntries,
+    cleanedDuplicateRows: dedupeReport.summary.cleanedDuplicateRows,
+    duplicateRowsAfterDedupe: dedupeReport.summary.duplicateRows,
     autoAttachPolicy: "only accepted bulk candidates are counted as curated and eligible for auto-attach",
     acceptedCatalogIds: acceptedBulkCandidates.map((candidate) => candidate.catalogId),
     newlyAcceptedCatalogIds,
@@ -1136,6 +1213,7 @@ export function runExternalReferenceCoverageAudit({
       "candidate-review-group-decision-drift",
       "candidate-review-group-decision-recommendation-drift",
       "coverage-matrix-drift",
+      "dedupe-report-drift",
     ],
   };
 
@@ -1165,6 +1243,12 @@ export function runExternalReferenceCoverageAudit({
       (total, dimensionRows) => total + dimensionRows.length,
       0,
     ) + Object.values(coverageMatrix.candidateDimensions).reduce((total, dimensionRows) => total + dimensionRows.length, 0),
+    dedupeReportEntries:
+      dedupeReport.duplicateGroups.acceptedSourceIds.length +
+      dedupeReport.duplicateGroups.acceptedUrlIdentities.length +
+      dedupeReport.duplicateGroups.candidateReviewIds.length,
+    cleanedDuplicateRows: dedupeReport.summary.cleanedDuplicateRows,
+    duplicateRowsAfterDedupe: dedupeReport.summary.duplicateRows,
     candidateReviewGroupDecisionsByStatus: summarizeCounts(
       Array.from(candidateReviewGroupDecisionsByCatalogId.values()),
       "status",
@@ -1192,6 +1276,7 @@ export function runExternalReferenceCoverageAudit({
       path.relative(root, candidateReviewGroupRecommendationJsonPath),
     ),
     coverageMatrixJson: toProjectPath(path.relative(root, coverageMatrixJsonPath)),
+    dedupeReportJson: toProjectPath(path.relative(root, dedupeReportJsonPath)),
     candidateReviewGroupDecisionsJson: toProjectPath(path.relative(root, paths.candidateReviewGroupDecisions)),
     policy:
       "No media is downloaded. Safe inline preview/embed is allowed only for validated HTTPS sources with provider-specific verification, sandbox, lazy loading and fallback links.",

@@ -74,6 +74,9 @@
     }
   ],
   "coverageMatrixEntries": 350,
+  "dedupeReportEntries": 0,
+  "cleanedDuplicateRows": 0,
+  "duplicateRowsAfterDedupe": 0,
   "candidateReviewGroupDecisionsByStatus": [],
   "batchReport": {
     "version": 1,
@@ -168,6 +171,10 @@
     ],
     "candidateReviewGroupDecisionRecommendationPolicy": "candidate-review-group-decision-recommendations-v1",
     "duplicateAcceptedIdentityPolicy": "duplicate accepted URL identities fail validation before merge",
+    "dedupeReportPolicy": "external-reference-dedupe-report-v1",
+    "dedupeCheckedRows": 14897,
+    "cleanedDuplicateRows": 0,
+    "duplicateRowsAfterDedupe": 0,
     "autoAttachPolicy": "only accepted bulk candidates are counted as curated and eligible for auto-attach",
     "acceptedCatalogIds": [
       "muhayyer--ilahi--duyek--toprakta_yatacak--dede_efendi",
@@ -199,7 +206,8 @@
       "candidate-review-group-drift",
       "candidate-review-group-decision-drift",
       "candidate-review-group-decision-recommendation-drift",
-      "coverage-matrix-drift"
+      "coverage-matrix-drift",
+      "dedupe-report-drift"
     ]
   },
   "catalogFormatCoverage": {
@@ -583,6 +591,7 @@
   "candidateReviewGroupsJson": "output/external-reference-coverage/symbtr-curated-reference-candidate-review-groups.json",
   "candidateReviewGroupDecisionRecommendationsJson": "output/external-reference-coverage/symbtr-curated-reference-candidate-review-group-decision-recommendations.json",
   "coverageMatrixJson": "output/external-reference-coverage/symbtr-curated-reference-coverage-matrix.json",
+  "dedupeReportJson": "output/external-reference-coverage/symbtr-curated-reference-dedupe-report.json",
   "candidateReviewGroupDecisionsJson": "src/data/references/candidate-review-group-decisions.json",
   "policy": "No media is downloaded. Safe inline preview/embed is allowed only for validated HTTPS sources with provider-specific verification, sandbox, lazy loading and fallback links.",
   "curationRule": "Entries are prioritized by missing curated references, catalog-reported PDF/MusicXML/TXT source formats, named title/composer fields, and common form/usul groups. Search URLs are generated for review only; they are not evidence by themselves.",

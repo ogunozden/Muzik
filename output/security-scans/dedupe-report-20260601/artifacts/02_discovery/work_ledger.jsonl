@@ -1,0 +1,11 @@
+row_id,path,status,notes
+1,scripts/lib/external-reference-audit.mjs,completed,Reviewed generated artifact write and accepted-source flow; no new source promotion or unsafe path control.
+2,scripts/lib/source-curation-validation.mjs,completed,Reviewed validator behavior; new checks fail closed on drift and duplicate rows.
+3,scripts/validate-source-curation.mjs,completed,Reviewed fixed project-relative reads; no user-controlled path introduced.
+4,src/features/references/ReferencesCurationDashboard.tsx,completed,Reviewed display-only UI addition; no raw HTML or mutation action introduced.
+5,src/app/api/external-references/__tests__/route.test.ts,completed,Fixture/test-only change; no runtime security impact.
+6,src/app/references/curation/__tests__/page.test.tsx,completed,Fixture/test-only change; no runtime security impact.
+7,scripts/lib/__tests__/external-reference-audit.test.mjs,completed,Test-only coverage for generated artifact.
+8,scripts/lib/__tests__/source-curation-validation.test.mjs,completed,Test-only coverage for drift rejection.
+9,output/external-reference-coverage/summary.json,completed,Generated aggregate counts only; no secrets or source payload expansion.
+10,output/external-reference-coverage/symbtr-curated-reference-dedupe-report.json,completed,Generated aggregate duplicate groups; current groups empty and no sensitive values exposed.

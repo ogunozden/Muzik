@@ -86,6 +86,10 @@ const coverageFixture = {
   candidateReviewGroupDecisionRecommendationsJson: "output/external-reference-coverage/symbtr-curated-reference-candidate-review-group-decision-recommendations.json",
   coverageMatrixEntries: 24,
   coverageMatrixJson: "output/external-reference-coverage/symbtr-curated-reference-coverage-matrix.json",
+  dedupeReportEntries: 0,
+  dedupeReportJson: "output/external-reference-coverage/symbtr-curated-reference-dedupe-report.json",
+  cleanedDuplicateRows: 0,
+  duplicateRowsAfterDedupe: 0,
 };
 const autoAttachedFixture = {
   version: 1,
@@ -451,6 +455,8 @@ describe("/api/external-references route", () => {
     expect(body.coverage.missingCuratedEntries).toBe(2978);
     expect(body.coverage.coverageMatrixJson).toBe("output/external-reference-coverage/symbtr-curated-reference-coverage-matrix.json");
     expect(body.coverage.coverageMatrixEntries).toBe(24);
+    expect(body.coverage.dedupeReportJson).toBe("output/external-reference-coverage/symbtr-curated-reference-dedupe-report.json");
+    expect(body.coverage.duplicateRowsAfterDedupe).toBe(0);
     expect(body.curation.summary.autoAttachedCount).toBe(1);
     expect(body.curation.summary.sourceQualityStatCount).toBe(1);
     expect(body.curation.autoAttachedReferences[0].source.url).toBe("https://divanmakam.com/forum/example.1/");

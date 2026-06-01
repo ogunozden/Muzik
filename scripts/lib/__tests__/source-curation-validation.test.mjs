@@ -183,6 +183,27 @@ function validRegistries() {
         confidenceLevel: [{value: "low", candidateReviewQueueEntries: 1, affectedCatalogEntries: 1, needsReviewEntries: 1, conflictEntries: 0}],
       },
     },
+    dedupeReport: {
+      version: 1,
+      type: "external-reference-dedupe-report",
+      policyVersion: "external-reference-dedupe-report-v1",
+      generatedAt: "2026-06-01T00:00:00.000Z",
+      summary: {
+        bulkCandidateEntries: 0,
+        acceptedBulkCandidateEntries: 0,
+        candidateReviewQueueEntries: 1,
+        acceptedDuplicateSourceIdRows: 0,
+        acceptedDuplicateUrlIdentityRows: 0,
+        candidateReviewDuplicateIdRows: 0,
+        duplicateRows: 0,
+        cleanedDuplicateRows: 0,
+      },
+      duplicateGroups: {
+        acceptedSourceIds: [],
+        acceptedUrlIdentities: [],
+        candidateReviewIds: [],
+      },
+    },
     coverageSummary: {
       totalCatalogEntries: 2,
       curatedReferenceEntries: 1,
@@ -236,8 +257,13 @@ function validRegistries() {
           "candidate-review-group-decision-drift",
           "candidate-review-group-decision-recommendation-drift",
           "coverage-matrix-drift",
+          "dedupe-report-drift",
         ],
+        cleanedDuplicateRows: 0,
+        duplicateRowsAfterDedupe: 0,
       },
+      cleanedDuplicateRows: 0,
+      duplicateRowsAfterDedupe: 0,
     },
   };
 }
@@ -536,9 +562,25 @@ describe("source curation validation", () => {
         "coverage-summary: batchReport.validationGates must include accepted-identity-dedupe",
         "coverage-summary: batchReport.validationGates must include metadata-strategy-profile-drift",
         "coverage-summary: batchReport.validationGates must include coverage-matrix-drift",
+        "coverage-summary: batchReport.validationGates must include dedupe-report-drift",
         "coverage-summary: batchReport.autoAttachPolicy must document accepted-only auto-attach",
         "coverage-summary: batchReport.duplicateAcceptedIdentityPolicy must document duplicate accepted URL protection",
       ]),
     );
+  });
+
+  it("rejects dedupe report drift from generated queues and summary", () => {
+    const registries = validRegistries();
+    registries.dedupeReport.summary.candidateReviewQueueEntries = 2;
+    registries.dedupeReport.summary.duplicateRows = 1;
+    registries.coverageSummary.batchReport.duplicateRowsAfterDedupe = 1;
+
+    const result = validateSourceCurationRegistries(registries);
+
+    expect(result.errors).toEqual(expect.arrayContaining([
+      "dedupe-report: summary.candidateReviewQueueEntries 2 does not match 1",
+      "dedupe-report: summary.duplicateRows 1 does not match 0",
+      "dedupe-report: duplicateRows must be 0 before auto-attach",
+    ]));
   });
 });

@@ -1,9 +1,10 @@
 import {execFile} from "node:child_process";
-import {randomUUID, timingSafeEqual} from "node:crypto";
+import {randomUUID} from "node:crypto";
 import {mkdir, readFile, unlink, writeFile} from "node:fs/promises";
 import path from "node:path";
 import {NextResponse} from "next/server";
 import {SYMBTR_CATALOG, type SymbTrCatalogEntry, type SymbTrFormat} from "@/data/symbtr/catalog";
+import {getLocalOperationAccessError} from "@/shared/security";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -259,58 +260,16 @@ interface BulkCandidateManifest {
 }
 
 function getAccessError(request: Request): NextResponse | null {
-  const operationsEnabled =
-    process.env.NODE_ENV !== "production" ||
-    process.env.EXTERNAL_REFERENCE_OPERATIONS_ENABLED === "true";
-  const requiredToken = process.env.EXTERNAL_REFERENCE_OPERATIONS_TOKEN;
-  const allowUnsafeLocalTokenless =
-    process.env.NODE_ENV !== "production" &&
-    process.env[UNSAFE_LOCAL_FLAG] === "true" &&
-    isLoopbackRequest(request);
-
-  if (!operationsEnabled) {
-    return NextResponse.json(
-      {error: "Harici kaynak operasyonları production ortamında açık değil."},
-      {status: 403},
-    );
-  }
-
-  if (process.env.NODE_ENV === "production" && !requiredToken) {
-    return NextResponse.json(
-      {error: "Production ortamında harici kaynak operasyon token'ı zorunlu."},
-      {status: 403},
-    );
-  }
-
-  if (!requiredToken && !allowUnsafeLocalTokenless) {
-    return NextResponse.json(
-      {error: `Harici kaynak operasyon token'ı gerekli. Local tokenless kullanım için ${UNSAFE_LOCAL_FLAG}=true gerekir.`},
-      {status: 403},
-    );
-  }
-
-  if (requiredToken && !tokenMatches(request.headers.get(OPS_TOKEN_HEADER), requiredToken)) {
-    return NextResponse.json(
-      {error: "Harici kaynak operasyon token'ı geçersiz veya eksik."},
-      {status: 401},
-    );
-  }
-
-  return null;
-}
-
-function isLoopbackRequest(request: Request): boolean {
-  const host = new URL(request.url).hostname;
-  return host === "localhost" || host === "127.0.0.1" || host === "::1" || host === "[::1]";
-}
-
-function tokenMatches(actual: string | null, expected: string): boolean {
-  if (!actual) return false;
-
-  const actualBuffer = Buffer.from(actual);
-  const expectedBuffer = Buffer.from(expected);
-  if (actualBuffer.length !== expectedBuffer.length) return false;
-  return timingSafeEqual(actualBuffer, expectedBuffer);
+  return getLocalOperationAccessError(request, {
+    enabledEnv: "EXTERNAL_REFERENCE_OPERATIONS_ENABLED",
+    tokenEnv: "EXTERNAL_REFERENCE_OPERATIONS_TOKEN",
+    unsafeLocalEnv: UNSAFE_LOCAL_FLAG,
+    tokenHeader: OPS_TOKEN_HEADER,
+    disabledMessage: "Harici kaynak operasyonları production ortamında açık değil.",
+    missingProductionTokenMessage: "Production ortamında harici kaynak operasyon token'ı zorunlu.",
+    missingTokenMessage: `Harici kaynak operasyon token'ı gerekli. Local tokenless kullanım için ${UNSAFE_LOCAL_FLAG}=true gerekir.`,
+    invalidTokenMessage: "Harici kaynak operasyon token'ı geçersiz veya eksik.",
+  });
 }
 
 function toProjectRelativePath(filePath: string): string {

@@ -8,3 +8,4 @@ export {
   isAllowedScoreUpload,
   sanitizeFileName,
 } from "./upload-policy";
+export {getLocalOperationAccessError} from "./local-operations";

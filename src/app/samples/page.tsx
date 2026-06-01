@@ -56,6 +56,7 @@ export default function SeslerPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [uploadingKey, setUploadingKey] = useState<string | null>(null);
   const [message, setMessage] = useState<string>("");
+  const [opsToken, setOpsToken] = useState("");
 
   const loadSlots = useCallback(async () => {
     clearSampleCache();
@@ -146,6 +147,7 @@ export default function SeslerPage() {
     try {
       const response = await fetch("/api/samples", {
         method: "POST",
+        headers: opsToken ? {"x-sample-operations-token": opsToken} : undefined,
         body: formData,
       });
       const data = await response.json();
@@ -161,7 +163,7 @@ export default function SeslerPage() {
     } finally {
       setUploadingKey(null);
     }
-  }, [updateSlot]);
+  }, [opsToken, updateSlot]);
 
   const deleteSample = useCallback(async (slotKey: string) => {
     setUploadingKey(slotKey);
@@ -170,7 +172,10 @@ export default function SeslerPage() {
     try {
       const response = await fetch("/api/samples", {
         method: "DELETE",
-        headers: {"Content-Type": "application/json"},
+        headers: {
+          "Content-Type": "application/json",
+          ...(opsToken ? {"x-sample-operations-token": opsToken} : {}),
+        },
         body: JSON.stringify({slotKey}),
       });
       const data = await response.json();
@@ -186,7 +191,7 @@ export default function SeslerPage() {
     } finally {
       setUploadingKey(null);
     }
-  }, [updateSlot]);
+  }, [opsToken, updateSlot]);
 
   const previewSample = useCallback((slot: SampleSlotStatus) => {
     if (!slot.installed) return;
@@ -240,6 +245,20 @@ export default function SeslerPage() {
           <div className={`text-sm ${tokens.colors.text.secondary}`}>
             {installedCount} / {slots.length} sample hazır
           </div>
+        </div>
+
+        <div className={`mb-4 grid gap-2 border ${tokens.colors.border.base} ${tokens.radius.md} ${tokens.colors.background.surface} p-3 md:max-w-md`}>
+          <label className={`text-xs font-medium ${tokens.colors.text.secondary}`} htmlFor="sample-ops-token">
+            Operasyon token
+          </label>
+          <input
+            id="sample-ops-token"
+            type="password"
+            value={opsToken}
+            onChange={(event) => setOpsToken(event.target.value)}
+            className={`w-full rounded-md border ${tokens.colors.border.base} ${tokens.colors.background.base} px-3 py-2 text-sm ${tokens.colors.text.primary}`}
+            autoComplete="off"
+          />
         </div>
 
         {message && (

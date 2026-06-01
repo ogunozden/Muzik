@@ -2,16 +2,32 @@ import {mkdir, stat, unlink, writeFile} from "node:fs/promises";
 import path from "node:path";
 import {SAMPLE_SLOT_BY_KEY, SAMPLE_SLOTS} from "@/engines/ses/sample-library";
 import {
+  getLocalOperationAccessError,
   isAllowedSampleUpload,
   MAX_SAMPLE_UPLOAD_BYTES,
   SAMPLE_UPLOAD_EXTENSIONS,
-} from "@/shared/security/upload-policy";
+} from "@/shared/security";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 const SAMPLES_ROOT = path.resolve(process.cwd(), "public", "samples");
 const ALLOWED_SAMPLE_EXTENSIONS = SAMPLE_UPLOAD_EXTENSIONS.join(", ");
+const SAMPLE_OPS_TOKEN_HEADER = "x-sample-operations-token";
+const SAMPLE_UNSAFE_LOCAL_FLAG = "SAMPLE_OPERATIONS_ALLOW_UNSAFE_LOCAL";
+
+function getSampleOperationAccessError(request: Request) {
+  return getLocalOperationAccessError(request, {
+    enabledEnv: "SAMPLE_OPERATIONS_ENABLED",
+    tokenEnv: "SAMPLE_OPERATIONS_TOKEN",
+    unsafeLocalEnv: SAMPLE_UNSAFE_LOCAL_FLAG,
+    tokenHeader: SAMPLE_OPS_TOKEN_HEADER,
+    disabledMessage: "Sample operasyonları production ortamında açık değil.",
+    missingProductionTokenMessage: "Production ortamında sample operasyon token'ı zorunlu.",
+    missingTokenMessage: `Sample operasyon token'ı gerekli. Local tokenless kullanım için ${SAMPLE_UNSAFE_LOCAL_FLAG}=true gerekir.`,
+    invalidTokenMessage: "Sample operasyon token'ı geçersiz veya eksik.",
+  });
+}
 
 function resolveSlotPath(relativePath: string): string {
   const resolved = path.resolve(SAMPLES_ROOT, ...relativePath.split("/"));
@@ -81,6 +97,9 @@ export async function GET() {
 }
 
 export async function POST(request: Request) {
+  const accessError = getSampleOperationAccessError(request);
+  if (accessError) return accessError;
+
   const formData = await request.formData();
   const slotKey = formData.get("slotKey");
   const file = formData.get("file");
@@ -117,6 +136,9 @@ export async function POST(request: Request) {
 }
 
 export async function DELETE(request: Request) {
+  const accessError = getSampleOperationAccessError(request);
+  if (accessError) return accessError;
+
   let slotKey: unknown;
 
   try {

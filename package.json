@@ -23,6 +23,7 @@
     "stage:external-sources": "node scripts/stage-external-sources.mjs",
     "map:external-references": "node scripts/map-external-source-inbox.mjs",
     "import:external-references": "node scripts/import-external-reference-candidates.mjs",
+    "import:candidate-review-decisions": "node scripts/import-candidate-review-group-decisions.mjs",
     "sync:external-references": "node scripts/map-external-source-inbox.mjs --write",
     "curation:validate": "node scripts/validate-source-curation.mjs",
     "curation:auto-attach": "node scripts/manage-source-curation.mjs auto-attach --write",

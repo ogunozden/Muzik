@@ -1,0 +1,5 @@
+row_id,path,reason
+1,package.json,script alias exposes the batch decision importer command
+2,scripts/import-candidate-review-group-decisions.mjs,changed parser and write path for operator-supplied review decision imports
+3,scripts/__tests__/import-candidate-review-group-decisions.test.mjs,regression coverage for packet import and source identity rejection
+4,PROJECT_PLAN.md,operator-facing process documentation for the new batch import capability

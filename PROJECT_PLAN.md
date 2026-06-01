@@ -782,8 +782,26 @@ tek kurala bağlamaktır.
         sınırlıdır. `curation:validate`, API state ve `/references/curation`
         dashboard'u packet planı drift/source-field kapısıyla doğrular ve
         görünür yapar.
+65. [x] Candidate review packet karar import'u batch-first hale getirildi:
+        `scripts/import-candidate-review-group-decisions.mjs` artık düz
+        karar manifestine ek olarak
+        `symbtr-curated-reference-candidate-review-batch-plan.json` paketlerini
+        okuyabilir; `--packet-id` ile tek paket ya da tüm plan dry-run/import
+        edilebilir. Import hattı paket veya karar şablonu içinde `sourceId`,
+        `sourceUrl` ya da `url` görürse reddeder; accepted kaynak üretimi hâlâ
+        validated bulk candidate manifest hattıyla sınırlıdır. `package.json`
+        `import:candidate-review-decisions` alias'ını ekler; testler packet
+        import, tek paket seçimi ve source identity sızıntısı reddini kapsar.
 
 ### Doğrulama Notu
+
+- 2026-06-01 candidate review packet import doğrulaması:
+  `npx vitest run scripts/__tests__/import-candidate-review-group-decisions.test.mjs`
+  geçti: 1 dosya, 7 test. Gerçek 119 paketlik
+  `symbtr-curated-reference-candidate-review-batch-plan.json` üzerinde dry-run
+  119 paket / 2973 karar satırı üretti; `--packet-id candidate-review-packet-0001`
+  dry-run 25 karar satırı üretti ve `candidate-review-group-decisions.json`
+  write yapılmadan değişmedi. `npm run curation:validate` 0 error ile geçti.
 
 - 2026-06-01 candidate review group öneri doğrulaması:
   `npx vitest run scripts/lib/__tests__/external-reference-audit.test.mjs scripts/lib/__tests__/source-curation-validation.test.mjs src/app/api/external-references/__tests__/route.test.ts src/app/references/curation/__tests__/page.test.tsx`

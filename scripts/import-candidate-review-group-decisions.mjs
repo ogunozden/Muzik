@@ -24,6 +24,9 @@ function parseArgs(argv) {
     if (arg === "--input") {
       args.input = argv[index + 1];
       index += 1;
+    } else if (arg === "--packet-id") {
+      args.packetId = argv[index + 1];
+      index += 1;
     } else if (arg === "--write") {
       args.write = true;
     } else if (arg === "--dry-run") {
@@ -52,19 +55,78 @@ function readJson(filePath, fallback) {
   return JSON.parse(readFileSync(filePath, "utf8"));
 }
 
-function readInputDecisions(filePath) {
-  const parsed = JSON.parse(readFileSync(filePath, "utf8"));
-  const rows = Array.isArray(parsed.decisions)
-    ? parsed.decisions
-    : Array.isArray(parsed.groups)
-      ? parsed.groups
-      : [];
+function hasSourceIdentityKey(value) {
+  if (!value || typeof value !== "object") return false;
+  if (Array.isArray(value)) return value.some(hasSourceIdentityKey);
+  return Object.entries(value).some(([key, child]) => (
+    key === "sourceId" ||
+    key === "sourceUrl" ||
+    key === "url" ||
+    hasSourceIdentityKey(child)
+  ));
+}
 
-  if (rows.length === 0) {
-    throw new Error("Input must include a non-empty decisions or groups array.");
+function extractPacketDecisionRows(parsed, packetId) {
+  const packets = Array.isArray(parsed.packets)
+    ? parsed.packets
+    : parsed.decisionTemplate && typeof parsed.decisionTemplate === "object"
+      ? [parsed]
+      : [];
+  if (packets.length === 0) return null;
+
+  const selectedPackets = packetId
+    ? packets.filter((packet) => packet?.packetId === packetId)
+    : packets;
+  if (packetId && selectedPackets.length === 0) {
+    throw new Error(`Packet ${packetId} was not found in the input batch plan.`);
   }
 
-  return rows.map(normalizeCandidateReviewGroupDecision);
+  const errors = [];
+  const rows = [];
+  for (const packet of selectedPackets) {
+    const label = packet?.packetId ?? "<missing-packet-id>";
+    if (hasSourceIdentityKey(packet)) {
+      errors.push(`${label}: packet decision imports must not carry accepted source ids or source URLs`);
+    }
+    const packetRows = packet?.decisionTemplate?.decisions;
+    if (!Array.isArray(packetRows) || packetRows.length === 0) {
+      errors.push(`${label}: packet decisionTemplate.decisions must be a non-empty array`);
+      continue;
+    }
+    rows.push(...packetRows);
+  }
+
+  if (errors.length > 0) {
+    throw new Error(`Invalid candidate review packet decision import:\n${errors.join("\n")}`);
+  }
+
+  return {
+    inputKind: "candidate-review-batch-plan",
+    packetCount: selectedPackets.length,
+    rows,
+  };
+}
+
+function readInputDecisions(filePath, packetId) {
+  const parsed = JSON.parse(readFileSync(filePath, "utf8"));
+  const packetDecisionRows = extractPacketDecisionRows(parsed, packetId);
+  const rows = packetDecisionRows?.rows ?? (
+    Array.isArray(parsed.decisions)
+      ? parsed.decisions
+      : Array.isArray(parsed.groups)
+        ? parsed.groups
+        : []
+  );
+
+  if (rows.length === 0) {
+    throw new Error("Input must include a non-empty decisions/groups array or candidate review batch plan packets.");
+  }
+
+  return {
+    inputKind: packetDecisionRows?.inputKind ?? "candidate-review-group-decisions",
+    packetCount: packetDecisionRows?.packetCount ?? 0,
+    decisions: rows.map(normalizeCandidateReviewGroupDecision),
+  };
 }
 
 function readCandidateReviewGroups(filePath) {
@@ -109,7 +171,8 @@ const catalog = readJson(catalogPath, {entries: []});
 const catalogEntries = Array.isArray(catalog.entries) ? catalog.entries : [];
 const candidateReviewGroups = readCandidateReviewGroups(candidateReviewGroupsPath);
 const current = readJson(outputPath, {version: 1, decisions: []});
-const incomingDecisions = readInputDecisions(inputPath);
+const incoming = readInputDecisions(inputPath, args.packetId);
+const incomingDecisions = incoming.decisions;
 validateIncomingDecisionsAgainstGroups(incomingDecisions, candidateReviewGroups);
 const mergedByCatalogId = new Map(
   (Array.isArray(current.decisions) ? current.decisions : [])
@@ -150,6 +213,8 @@ if (args.write) {
 
 console.log(JSON.stringify({
   dryRun: !args.write,
+  inputKind: incoming.inputKind,
+  importedPacketCount: incoming.packetCount,
   inputDecisionCount: incomingDecisions.length,
   existingDecisionCount: Array.isArray(current.decisions) ? current.decisions.length : 0,
   outputDecisionCount: nextManifest.decisions.length,

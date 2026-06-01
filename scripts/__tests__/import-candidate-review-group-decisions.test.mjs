@@ -90,6 +90,149 @@ describe("import-candidate-review-group-decisions", () => {
     ]);
   });
 
+  it("imports decision rows from a candidate review batch plan packet", () => {
+    const root = createRoot();
+    writeJson(root, "input/batch-plan.json", {
+      version: 1,
+      type: "candidate-review-batch-plan",
+      packets: [
+        {
+          packetId: "candidate-review-packet-0001",
+          decisionTemplate: {
+            version: 1,
+            type: "candidate-review-group-decision-template",
+            decisions: [
+              {
+                groupId: `${catalogId}:review-group`,
+                catalogId,
+                sourceGroupFingerprint: getCandidateReviewGroupFingerprint(reviewGroupFor(catalogId)),
+                status: "rejected",
+                reason: "batch-reviewed-no-safe-source",
+                reviewedAt: "2026-06-01",
+                reviewedBy: "local-operator",
+              },
+            ],
+          },
+        },
+      ],
+    });
+
+    const output = JSON.parse(runScript(root, "input/batch-plan.json", true));
+    const manifest = JSON.parse(readFileSync(
+      path.join(root, "src/data/references/candidate-review-group-decisions.json"),
+      "utf8",
+    ));
+
+    expect(output).toEqual(expect.objectContaining({
+      dryRun: false,
+      inputKind: "candidate-review-batch-plan",
+      importedPacketCount: 1,
+      inputDecisionCount: 1,
+      addedDecisionCount: 1,
+    }));
+    expect(manifest.decisions).toEqual([
+      expect.objectContaining({
+        catalogId,
+        status: "rejected",
+      }),
+    ]);
+  });
+
+  it("can import a single packet from a larger batch plan", () => {
+    const root = createRoot();
+    writeJson(root, "input/batch-plan.json", {
+      version: 1,
+      type: "candidate-review-batch-plan",
+      packets: [
+        {
+          packetId: "candidate-review-packet-0001",
+          decisionTemplate: {
+            decisions: [
+              {
+                groupId: `${catalogId}:review-group`,
+                catalogId,
+                sourceGroupFingerprint: getCandidateReviewGroupFingerprint(reviewGroupFor(catalogId)),
+                status: "rejected",
+                reason: "batch-reviewed-no-safe-source",
+                reviewedAt: "2026-06-01",
+                reviewedBy: "local-operator",
+              },
+            ],
+          },
+        },
+        {
+          packetId: "candidate-review-packet-0002",
+          decisionTemplate: {
+            decisions: [
+              {
+                groupId: `${secondCatalogId}:review-group`,
+                catalogId: secondCatalogId,
+                sourceGroupFingerprint: getCandidateReviewGroupFingerprint(reviewGroupFor(secondCatalogId)),
+                status: "deferred",
+                reason: "batch-review-needs-source-context",
+                reviewedAt: "2026-06-01",
+                reviewedBy: "local-operator",
+              },
+            ],
+          },
+        },
+      ],
+    });
+
+    const output = execFileSync(
+      process.execPath,
+      [scriptPath, "--input", "input/batch-plan.json", "--packet-id", "candidate-review-packet-0002", "--write"],
+      {cwd: root, encoding: "utf8", stdio: ["ignore", "pipe", "pipe"]},
+    );
+    const manifest = JSON.parse(readFileSync(
+      path.join(root, "src/data/references/candidate-review-group-decisions.json"),
+      "utf8",
+    ));
+
+    expect(JSON.parse(output)).toEqual(expect.objectContaining({
+      importedPacketCount: 1,
+      inputDecisionCount: 1,
+      outputDecisionCount: 1,
+    }));
+    expect(manifest.decisions).toEqual([
+      expect.objectContaining({
+        catalogId: secondCatalogId,
+        status: "deferred",
+      }),
+    ]);
+  });
+
+  it("rejects packet imports that carry source identity fields", () => {
+    const root = createRoot();
+    writeJson(root, "input/batch-plan.json", {
+      version: 1,
+      type: "candidate-review-batch-plan",
+      packets: [
+        {
+          packetId: "candidate-review-packet-0001",
+          sourceUrl: "https://example.com/not-allowed",
+          decisionTemplate: {
+            decisions: [
+              {
+                groupId: `${catalogId}:review-group`,
+                catalogId,
+                sourceGroupFingerprint: getCandidateReviewGroupFingerprint(reviewGroupFor(catalogId)),
+                status: "rejected",
+                reason: "batch-reviewed-no-safe-source",
+                reviewedAt: "2026-06-01",
+                reviewedBy: "local-operator",
+              },
+            ],
+          },
+        },
+      ],
+    });
+
+    expect(() => runScript(root, "input/batch-plan.json", true)).toThrow(
+      "packet decision imports must not carry accepted source ids or source URLs",
+    );
+  });
+
   it("rejects decisions for catalog rows that are not in the generated review group artifact", () => {
     const root = createRoot();
     writeJson(root, "input/decisions.json", {

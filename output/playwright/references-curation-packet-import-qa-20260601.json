@@ -1,0 +1,13 @@
+{
+  "bodyLength": 80236,
+  "hasBacklog": true,
+  "hasCatalogCount": true,
+  "hasOgmProfile": true,
+  "hasPacketCount": true,
+  "hasPacketPlan": true,
+  "horizontalOverflow": false,
+  "url": "http://localhost:4015/references/curation",
+  "logCount": 0,
+  "logs": [],
+  "screenshotPath": "C:/Users/ogunozden/Desktop/Muzik/output/playwright/references-curation-packet-import-qa-20260601.png"
+}

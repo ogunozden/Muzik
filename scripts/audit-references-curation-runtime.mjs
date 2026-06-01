@@ -85,7 +85,9 @@ export async function auditReferencesCurationRuntime({
   requireContains(html, "output/external-source-discovery/provider-verification-run.json", "provider verification artifact", errors);
   requireContains(html, "output/external-source-discovery/provider-verification-plan.json", "provider verification plan artifact", errors);
   requireContains(html, "output/external-source-discovery/provider-verification-coverage.json", "provider verification coverage artifact", errors);
+  requireContains(html, "output/external-source-discovery/provider-verification-batch-run.json", "provider verification batch artifact", errors);
   requireContains(html, "npm run verify:external-source-providers", "provider verification command", errors);
+  requireContains(html, "npm run verify:external-source-providers:continue", "provider verification continue command", errors);
   requireContains(html, "Read-only batch snapshot", "read-only snapshot message", errors);
 
   const summary = {
@@ -122,7 +124,9 @@ export async function auditReferencesCurationRuntime({
       hasProviderVerificationArtifact: html.includes("output/external-source-discovery/provider-verification-run.json"),
       hasProviderVerificationPlanArtifact: html.includes("output/external-source-discovery/provider-verification-plan.json"),
       hasProviderVerificationCoverageArtifact: html.includes("output/external-source-discovery/provider-verification-coverage.json"),
+      hasProviderVerificationBatchRunArtifact: html.includes("output/external-source-discovery/provider-verification-batch-run.json"),
       hasProviderVerificationCommand: html.includes("npm run verify:external-source-providers"),
+      hasProviderVerificationContinueCommand: html.includes("npm run verify:external-source-providers:continue"),
       hasReadOnlySnapshotMessage: html.includes("Read-only batch snapshot"),
     },
     ok: errors.length === 0,

@@ -25,6 +25,7 @@
     "discover:external-sources": "node scripts/discover-external-sources.mjs --scope missing --providers internet-archive,divanmakam,ogm-materyal,salihbora --dry-run",
     "verify:external-source-discovery": "node scripts/verify-external-source-discovery.mjs",
     "verify:external-source-providers": "node scripts/verify-external-source-providers.mjs --provider all --limit 25 --rows 3",
+    "verify:external-source-providers:continue": "node scripts/run-provider-verification-batches.mjs --provider all --batches 1 --limit 25 --rows 3",
     "stage:external-source": "node scripts/stage-external-sources.mjs",
     "stage:external-sources": "node scripts/stage-external-sources.mjs",
     "map:external-references": "node scripts/map-external-source-inbox.mjs",

@@ -1414,6 +1414,731 @@
         "mediaDownload": false,
         "sourceContentCopied": false
       }
+    },
+    "acemasiran--sarki--duyek--ruhumda_derin--kemal_gurses:internet-archive:acemasiran-sarki-duyek-ruhumda-derin-kemal-gurses": {
+      "cacheKey": "acemasiran--sarki--duyek--ruhumda_derin--kemal_gurses:internet-archive:acemasiran-sarki-duyek-ruhumda-derin-kemal-gurses",
+      "cacheHit": false,
+      "catalogId": "acemasiran--sarki--duyek--ruhumda_derin--kemal_gurses",
+      "providerProfileId": "internet-archive",
+      "connector": "internet-archive",
+      "status": "rejected",
+      "statusReason": "no-provider-result",
+      "checkedAt": "2026-06-01",
+      "searchQuery": "Acemasiran Sarki Duyek Ruhumda Derin Kemal Gurses",
+      "searchUrl": "https://archive.org/advancedsearch.php?q=Ruhumda+Derin+Kemal+Gurses+Acemasiran+Sarki+Duyek&output=json&rows=3&fl%5B%5D=identifier&fl%5B%5D=title&fl%5B%5D=creator&fl%5B%5D=description&fl%5B%5D=mediatype&fl%5B%5D=collection&fl%5B%5D=date",
+      "resultCount": 0,
+      "networkRequest": true,
+      "best": null,
+      "candidates": [],
+      "catalog": {
+        "makam": "Acemasiran",
+        "form": "Sarki",
+        "usul": "Duyek",
+        "title": "Ruhumda Derin",
+        "composer": "Kemal Gurses",
+        "priorityGroup": "pdf-and-musicxml"
+      },
+      "safety": {
+        "directAutoAttach": false,
+        "mediaDownload": false,
+        "sourceContentCopied": false
+      }
+    },
+    "acemasiran--sarki--duyek--sim-ten_gonca--sakir_aga:internet-archive:acemasiran-sarki-duyek-sim-ten-gonca-sakir-aga": {
+      "cacheKey": "acemasiran--sarki--duyek--sim-ten_gonca--sakir_aga:internet-archive:acemasiran-sarki-duyek-sim-ten-gonca-sakir-aga",
+      "cacheHit": false,
+      "catalogId": "acemasiran--sarki--duyek--sim-ten_gonca--sakir_aga",
+      "providerProfileId": "internet-archive",
+      "connector": "internet-archive",
+      "status": "rejected",
+      "statusReason": "no-provider-result",
+      "checkedAt": "2026-06-01",
+      "searchQuery": "Acemasiran Sarki Duyek Sim Ten Gonca Sakir Aga",
+      "searchUrl": "https://archive.org/advancedsearch.php?q=Sim+Ten+Gonca+Sakir+Aga+Acemasiran+Sarki+Duyek&output=json&rows=3&fl%5B%5D=identifier&fl%5B%5D=title&fl%5B%5D=creator&fl%5B%5D=description&fl%5B%5D=mediatype&fl%5B%5D=collection&fl%5B%5D=date",
+      "resultCount": 0,
+      "networkRequest": true,
+      "best": null,
+      "candidates": [],
+      "catalog": {
+        "makam": "Acemasiran",
+        "form": "Sarki",
+        "usul": "Duyek",
+        "title": "Sim Ten Gonca",
+        "composer": "Sakir Aga",
+        "priorityGroup": "pdf-and-musicxml"
+      },
+      "safety": {
+        "directAutoAttach": false,
+        "mediaDownload": false,
+        "sourceContentCopied": false
+      }
+    },
+    "acemasiran--sarki--raksaksagi--bana_tavr-i--sakir_aga:internet-archive:acemasiran-sarki-raksaksagi-bana-tavr-i-sakir-aga": {
+      "cacheKey": "acemasiran--sarki--raksaksagi--bana_tavr-i--sakir_aga:internet-archive:acemasiran-sarki-raksaksagi-bana-tavr-i-sakir-aga",
+      "cacheHit": false,
+      "catalogId": "acemasiran--sarki--raksaksagi--bana_tavr-i--sakir_aga",
+      "providerProfileId": "internet-archive",
+      "connector": "internet-archive",
+      "status": "rejected",
+      "statusReason": "no-provider-result",
+      "checkedAt": "2026-06-01",
+      "searchQuery": "Acemasiran Sarki Raksaksagi Bana Tavr İ Sakir Aga",
+      "searchUrl": "https://archive.org/advancedsearch.php?q=Bana+Tavr+%C4%B0+Sakir+Aga+Acemasiran+Sarki+Raksaksagi&output=json&rows=3&fl%5B%5D=identifier&fl%5B%5D=title&fl%5B%5D=creator&fl%5B%5D=description&fl%5B%5D=mediatype&fl%5B%5D=collection&fl%5B%5D=date",
+      "resultCount": 0,
+      "networkRequest": true,
+      "best": null,
+      "candidates": [],
+      "catalog": {
+        "makam": "Acemasiran",
+        "form": "Sarki",
+        "usul": "Raksaksagi",
+        "title": "Bana Tavr İ",
+        "composer": "Sakir Aga",
+        "priorityGroup": "pdf-and-musicxml"
+      },
+      "safety": {
+        "directAutoAttach": false,
+        "mediaDownload": false,
+        "sourceContentCopied": false
+      }
+    },
+    "acemasiran--sarki--semai--bitmesin_icimdeki--omer_dilek:internet-archive:acemasiran-sarki-semai-bitmesin-icimdeki-omer-dilek": {
+      "cacheKey": "acemasiran--sarki--semai--bitmesin_icimdeki--omer_dilek:internet-archive:acemasiran-sarki-semai-bitmesin-icimdeki-omer-dilek",
+      "cacheHit": false,
+      "catalogId": "acemasiran--sarki--semai--bitmesin_icimdeki--omer_dilek",
+      "providerProfileId": "internet-archive",
+      "connector": "internet-archive",
+      "status": "rejected",
+      "statusReason": "no-provider-result",
+      "checkedAt": "2026-06-01",
+      "searchQuery": "Acemasiran Sarki Semai Bitmesin İCimdeki Omer Dilek",
+      "searchUrl": "https://archive.org/advancedsearch.php?q=Bitmesin+%C4%B0cimdeki+Omer+Dilek+Acemasiran+Sarki+Semai&output=json&rows=3&fl%5B%5D=identifier&fl%5B%5D=title&fl%5B%5D=creator&fl%5B%5D=description&fl%5B%5D=mediatype&fl%5B%5D=collection&fl%5B%5D=date",
+      "resultCount": 0,
+      "networkRequest": true,
+      "best": null,
+      "candidates": [],
+      "catalog": {
+        "makam": "Acemasiran",
+        "form": "Sarki",
+        "usul": "Semai",
+        "title": "Bitmesin İcimdeki",
+        "composer": "Omer Dilek",
+        "priorityGroup": "pdf-and-musicxml"
+      },
+      "safety": {
+        "directAutoAttach": false,
+        "mediaDownload": false,
+        "sourceContentCopied": false
+      }
+    },
+    "acemasiran--sarki--semai--ey_cesm-i--nikogos_aga:internet-archive:acemasiran-sarki-semai-ey-cesm-i-nikogos-aga": {
+      "cacheKey": "acemasiran--sarki--semai--ey_cesm-i--nikogos_aga:internet-archive:acemasiran-sarki-semai-ey-cesm-i-nikogos-aga",
+      "cacheHit": false,
+      "catalogId": "acemasiran--sarki--semai--ey_cesm-i--nikogos_aga",
+      "providerProfileId": "internet-archive",
+      "connector": "internet-archive",
+      "status": "rejected",
+      "statusReason": "no-provider-result",
+      "checkedAt": "2026-06-01",
+      "searchQuery": "Acemasiran Sarki Semai Ey Cesm İ Nikogos Aga",
+      "searchUrl": "https://archive.org/advancedsearch.php?q=Ey+Cesm+%C4%B0+Nikogos+Aga+Acemasiran+Sarki+Semai&output=json&rows=3&fl%5B%5D=identifier&fl%5B%5D=title&fl%5B%5D=creator&fl%5B%5D=description&fl%5B%5D=mediatype&fl%5B%5D=collection&fl%5B%5D=date",
+      "resultCount": 0,
+      "networkRequest": true,
+      "best": null,
+      "candidates": [],
+      "catalog": {
+        "makam": "Acemasiran",
+        "form": "Sarki",
+        "usul": "Semai",
+        "title": "Ey Cesm İ",
+        "composer": "Nikogos Aga",
+        "priorityGroup": "pdf-and-musicxml"
+      },
+      "safety": {
+        "directAutoAttach": false,
+        "mediaDownload": false,
+        "sourceContentCopied": false
+      }
+    },
+    "acemasiran--sarki--semai--sorma_dostum--nuri_halil_poyraz:internet-archive:acemasiran-sarki-semai-sorma-dostum-nuri-halil-poyraz": {
+      "cacheKey": "acemasiran--sarki--semai--sorma_dostum--nuri_halil_poyraz:internet-archive:acemasiran-sarki-semai-sorma-dostum-nuri-halil-poyraz",
+      "cacheHit": false,
+      "catalogId": "acemasiran--sarki--semai--sorma_dostum--nuri_halil_poyraz",
+      "providerProfileId": "internet-archive",
+      "connector": "internet-archive",
+      "status": "rejected",
+      "statusReason": "no-provider-result",
+      "checkedAt": "2026-06-01",
+      "searchQuery": "Acemasiran Sarki Semai Sorma Dostum Nuri Halil Poyraz",
+      "searchUrl": "https://archive.org/advancedsearch.php?q=Sorma+Dostum+Nuri+Halil+Poyraz+Acemasiran+Sarki+Semai&output=json&rows=3&fl%5B%5D=identifier&fl%5B%5D=title&fl%5B%5D=creator&fl%5B%5D=description&fl%5B%5D=mediatype&fl%5B%5D=collection&fl%5B%5D=date",
+      "resultCount": 0,
+      "networkRequest": true,
+      "best": null,
+      "candidates": [],
+      "catalog": {
+        "makam": "Acemasiran",
+        "form": "Sarki",
+        "usul": "Semai",
+        "title": "Sorma Dostum",
+        "composer": "Nuri Halil Poyraz",
+        "priorityGroup": "pdf-and-musicxml"
+      },
+      "safety": {
+        "directAutoAttach": false,
+        "mediaDownload": false,
+        "sourceContentCopied": false
+      }
+    },
+    "acemasiran--sarki--semai--yagmur_ol--amir_ates:internet-archive:acemasiran-sarki-semai-yagmur-ol-amir-ates": {
+      "cacheKey": "acemasiran--sarki--semai--yagmur_ol--amir_ates:internet-archive:acemasiran-sarki-semai-yagmur-ol-amir-ates",
+      "cacheHit": false,
+      "catalogId": "acemasiran--sarki--semai--yagmur_ol--amir_ates",
+      "providerProfileId": "internet-archive",
+      "connector": "internet-archive",
+      "status": "rejected",
+      "statusReason": "no-provider-result",
+      "checkedAt": "2026-06-01",
+      "searchQuery": "Acemasiran Sarki Semai Yagmur Ol Amir Ates",
+      "searchUrl": "https://archive.org/advancedsearch.php?q=Yagmur+Ol+Amir+Ates+Acemasiran+Sarki+Semai&output=json&rows=3&fl%5B%5D=identifier&fl%5B%5D=title&fl%5B%5D=creator&fl%5B%5D=description&fl%5B%5D=mediatype&fl%5B%5D=collection&fl%5B%5D=date",
+      "resultCount": 0,
+      "networkRequest": true,
+      "best": null,
+      "candidates": [],
+      "catalog": {
+        "makam": "Acemasiran",
+        "form": "Sarki",
+        "usul": "Semai",
+        "title": "Yagmur Ol",
+        "composer": "Amir Ates",
+        "priorityGroup": "pdf-and-musicxml"
+      },
+      "safety": {
+        "directAutoAttach": false,
+        "mediaDownload": false,
+        "sourceContentCopied": false
+      }
+    },
+    "acemasiran--sarki--senginsemai--canan_okuyor--ali_riza_avni_tinaz:internet-archive:acemasiran-sarki-senginsemai-canan-okuyor-ali-riza-avni-tinaz": {
+      "cacheKey": "acemasiran--sarki--senginsemai--canan_okuyor--ali_riza_avni_tinaz:internet-archive:acemasiran-sarki-senginsemai-canan-okuyor-ali-riza-avni-tinaz",
+      "cacheHit": false,
+      "catalogId": "acemasiran--sarki--senginsemai--canan_okuyor--ali_riza_avni_tinaz",
+      "providerProfileId": "internet-archive",
+      "connector": "internet-archive",
+      "status": "rejected",
+      "statusReason": "no-provider-result",
+      "checkedAt": "2026-06-01",
+      "searchQuery": "Acemasiran Sarki Senginsemai Canan Okuyor Ali Riza Avni Tinaz",
+      "searchUrl": "https://archive.org/advancedsearch.php?q=Canan+Okuyor+Ali+Riza+Avni+Tinaz+Acemasiran+Sarki+Senginsemai&output=json&rows=3&fl%5B%5D=identifier&fl%5B%5D=title&fl%5B%5D=creator&fl%5B%5D=description&fl%5B%5D=mediatype&fl%5B%5D=collection&fl%5B%5D=date",
+      "resultCount": 0,
+      "networkRequest": true,
+      "best": null,
+      "candidates": [],
+      "catalog": {
+        "makam": "Acemasiran",
+        "form": "Sarki",
+        "usul": "Senginsemai",
+        "title": "Canan Okuyor",
+        "composer": "Ali Riza Avni Tinaz",
+        "priorityGroup": "pdf-and-musicxml"
+      },
+      "safety": {
+        "directAutoAttach": false,
+        "mediaDownload": false,
+        "sourceContentCopied": false
+      }
+    },
+    "acemasiran--sarki--senginsemai--zehrolsa_bile--bimen_sen:internet-archive:acemasiran-sarki-senginsemai-zehrolsa-bile-bimen-sen": {
+      "cacheKey": "acemasiran--sarki--senginsemai--zehrolsa_bile--bimen_sen:internet-archive:acemasiran-sarki-senginsemai-zehrolsa-bile-bimen-sen",
+      "cacheHit": false,
+      "catalogId": "acemasiran--sarki--senginsemai--zehrolsa_bile--bimen_sen",
+      "providerProfileId": "internet-archive",
+      "connector": "internet-archive",
+      "status": "rejected",
+      "statusReason": "no-provider-result",
+      "checkedAt": "2026-06-01",
+      "searchQuery": "Acemasiran Sarki Senginsemai Zehrolsa Bile Bimen Sen",
+      "searchUrl": "https://archive.org/advancedsearch.php?q=Zehrolsa+Bile+Bimen+Sen+Acemasiran+Sarki+Senginsemai&output=json&rows=3&fl%5B%5D=identifier&fl%5B%5D=title&fl%5B%5D=creator&fl%5B%5D=description&fl%5B%5D=mediatype&fl%5B%5D=collection&fl%5B%5D=date",
+      "resultCount": 0,
+      "networkRequest": true,
+      "best": null,
+      "candidates": [],
+      "catalog": {
+        "makam": "Acemasiran",
+        "form": "Sarki",
+        "usul": "Senginsemai",
+        "title": "Zehrolsa Bile",
+        "composer": "Bimen Sen",
+        "priorityGroup": "pdf-and-musicxml"
+      },
+      "safety": {
+        "directAutoAttach": false,
+        "mediaDownload": false,
+        "sourceContentCopied": false
+      }
+    },
+    "acemasiran--sarki--sofyan--bakma_sakin--sakir_aga:internet-archive:acemasiran-sarki-sofyan-bakma-sakin-sakir-aga": {
+      "cacheKey": "acemasiran--sarki--sofyan--bakma_sakin--sakir_aga:internet-archive:acemasiran-sarki-sofyan-bakma-sakin-sakir-aga",
+      "cacheHit": false,
+      "catalogId": "acemasiran--sarki--sofyan--bakma_sakin--sakir_aga",
+      "providerProfileId": "internet-archive",
+      "connector": "internet-archive",
+      "status": "rejected",
+      "statusReason": "no-provider-result",
+      "checkedAt": "2026-06-01",
+      "searchQuery": "Acemasiran Sarki Sofyan Bakma Sakin Sakir Aga",
+      "searchUrl": "https://archive.org/advancedsearch.php?q=Bakma+Sakin+Sakir+Aga+Acemasiran+Sarki+Sofyan&output=json&rows=3&fl%5B%5D=identifier&fl%5B%5D=title&fl%5B%5D=creator&fl%5B%5D=description&fl%5B%5D=mediatype&fl%5B%5D=collection&fl%5B%5D=date",
+      "resultCount": 0,
+      "networkRequest": true,
+      "best": null,
+      "candidates": [],
+      "catalog": {
+        "makam": "Acemasiran",
+        "form": "Sarki",
+        "usul": "Sofyan",
+        "title": "Bakma Sakin",
+        "composer": "Sakir Aga",
+        "priorityGroup": "pdf-and-musicxml"
+      },
+      "safety": {
+        "directAutoAttach": false,
+        "mediaDownload": false,
+        "sourceContentCopied": false
+      }
+    },
+    "acemasiran--sarki--sofyan--gonul_sana--sadettin_kaynak:internet-archive:acemasiran-sarki-sofyan-gonul-sana-sadettin-kaynak": {
+      "cacheKey": "acemasiran--sarki--sofyan--gonul_sana--sadettin_kaynak:internet-archive:acemasiran-sarki-sofyan-gonul-sana-sadettin-kaynak",
+      "cacheHit": false,
+      "catalogId": "acemasiran--sarki--sofyan--gonul_sana--sadettin_kaynak",
+      "providerProfileId": "internet-archive",
+      "connector": "internet-archive",
+      "status": "rejected",
+      "statusReason": "no-provider-result",
+      "checkedAt": "2026-06-01",
+      "searchQuery": "Acemasiran Sarki Sofyan Gonul Sana Sadettin Kaynak",
+      "searchUrl": "https://archive.org/advancedsearch.php?q=Gonul+Sana+Sadettin+Kaynak+Acemasiran+Sarki+Sofyan&output=json&rows=3&fl%5B%5D=identifier&fl%5B%5D=title&fl%5B%5D=creator&fl%5B%5D=description&fl%5B%5D=mediatype&fl%5B%5D=collection&fl%5B%5D=date",
+      "resultCount": 0,
+      "networkRequest": true,
+      "best": null,
+      "candidates": [],
+      "catalog": {
+        "makam": "Acemasiran",
+        "form": "Sarki",
+        "usul": "Sofyan",
+        "title": "Gonul Sana",
+        "composer": "Sadettin Kaynak",
+        "priorityGroup": "pdf-and-musicxml"
+      },
+      "safety": {
+        "directAutoAttach": false,
+        "mediaDownload": false,
+        "sourceContentCopied": false
+      }
+    },
+    "acemasiran--sarki--sofyan--nideyim_bilmem--sadettin_kaynak:internet-archive:acemasiran-sarki-sofyan-nideyim-bilmem-sadettin-kaynak": {
+      "cacheKey": "acemasiran--sarki--sofyan--nideyim_bilmem--sadettin_kaynak:internet-archive:acemasiran-sarki-sofyan-nideyim-bilmem-sadettin-kaynak",
+      "cacheHit": false,
+      "catalogId": "acemasiran--sarki--sofyan--nideyim_bilmem--sadettin_kaynak",
+      "providerProfileId": "internet-archive",
+      "connector": "internet-archive",
+      "status": "rejected",
+      "statusReason": "no-provider-result",
+      "checkedAt": "2026-06-01",
+      "searchQuery": "Acemasiran Sarki Sofyan Nideyim Bilmem Sadettin Kaynak",
+      "searchUrl": "https://archive.org/advancedsearch.php?q=Nideyim+Bilmem+Sadettin+Kaynak+Acemasiran+Sarki+Sofyan&output=json&rows=3&fl%5B%5D=identifier&fl%5B%5D=title&fl%5B%5D=creator&fl%5B%5D=description&fl%5B%5D=mediatype&fl%5B%5D=collection&fl%5B%5D=date",
+      "resultCount": 0,
+      "networkRequest": true,
+      "best": null,
+      "candidates": [],
+      "catalog": {
+        "makam": "Acemasiran",
+        "form": "Sarki",
+        "usul": "Sofyan",
+        "title": "Nideyim Bilmem",
+        "composer": "Sadettin Kaynak",
+        "priorityGroup": "pdf-and-musicxml"
+      },
+      "safety": {
+        "directAutoAttach": false,
+        "mediaDownload": false,
+        "sourceContentCopied": false
+      }
+    },
+    "acemasiran--sarki--yuruksemai--gel_ey_denizin--aleko_bacanos:internet-archive:acemasiran-sarki-yuruksemai-gel-ey-denizin-aleko-bacanos": {
+      "cacheKey": "acemasiran--sarki--yuruksemai--gel_ey_denizin--aleko_bacanos:internet-archive:acemasiran-sarki-yuruksemai-gel-ey-denizin-aleko-bacanos",
+      "cacheHit": false,
+      "catalogId": "acemasiran--sarki--yuruksemai--gel_ey_denizin--aleko_bacanos",
+      "providerProfileId": "internet-archive",
+      "connector": "internet-archive",
+      "status": "rejected",
+      "statusReason": "no-provider-result",
+      "checkedAt": "2026-06-01",
+      "searchQuery": "Acemasiran Sarki Yuruksemai Gel Ey Denizin Aleko Bacanos",
+      "searchUrl": "https://archive.org/advancedsearch.php?q=Gel+Ey+Denizin+Aleko+Bacanos+Acemasiran+Sarki+Yuruksemai&output=json&rows=3&fl%5B%5D=identifier&fl%5B%5D=title&fl%5B%5D=creator&fl%5B%5D=description&fl%5B%5D=mediatype&fl%5B%5D=collection&fl%5B%5D=date",
+      "resultCount": 0,
+      "networkRequest": true,
+      "best": null,
+      "candidates": [],
+      "catalog": {
+        "makam": "Acemasiran",
+        "form": "Sarki",
+        "usul": "Yuruksemai",
+        "title": "Gel Ey Denizin",
+        "composer": "Aleko Bacanos",
+        "priorityGroup": "pdf-and-musicxml"
+      },
+      "safety": {
+        "directAutoAttach": false,
+        "mediaDownload": false,
+        "sourceContentCopied": false
+      }
+    },
+    "acemasiran--sazsemaisi--aksaksemai----gazi_giray_han:internet-archive:acemasiran-sazsemaisi-aksaksemai-gazi-giray-han": {
+      "cacheKey": "acemasiran--sazsemaisi--aksaksemai----gazi_giray_han:internet-archive:acemasiran-sazsemaisi-aksaksemai-gazi-giray-han",
+      "cacheHit": false,
+      "catalogId": "acemasiran--sazsemaisi--aksaksemai----gazi_giray_han",
+      "providerProfileId": "internet-archive",
+      "connector": "internet-archive",
+      "status": "rejected",
+      "statusReason": "no-provider-result",
+      "checkedAt": "2026-06-01",
+      "searchQuery": "Acemasiran Sazsemaisi Aksaksemai Gazi Giray Han",
+      "searchUrl": "https://archive.org/advancedsearch.php?q=Gazi+Giray+Han+Acemasiran+Sazsemaisi+Aksaksemai&output=json&rows=3&fl%5B%5D=identifier&fl%5B%5D=title&fl%5B%5D=creator&fl%5B%5D=description&fl%5B%5D=mediatype&fl%5B%5D=collection&fl%5B%5D=date",
+      "resultCount": 0,
+      "networkRequest": true,
+      "best": null,
+      "candidates": [],
+      "catalog": {
+        "makam": "Acemasiran",
+        "form": "Sazsemaisi",
+        "usul": "Aksaksemai",
+        "title": "",
+        "composer": "Gazi Giray Han",
+        "priorityGroup": "pdf-and-musicxml"
+      },
+      "safety": {
+        "directAutoAttach": false,
+        "mediaDownload": false,
+        "sourceContentCopied": false
+      }
+    },
+    "acemasiran--sazsemaisi--aksaksemai----misirli_udi_ibrahim_efendi:internet-archive:acemasiran-sazsemaisi-aksaksemai-misirli-udi-ibrahim-efendi": {
+      "cacheKey": "acemasiran--sazsemaisi--aksaksemai----misirli_udi_ibrahim_efendi:internet-archive:acemasiran-sazsemaisi-aksaksemai-misirli-udi-ibrahim-efendi",
+      "cacheHit": false,
+      "catalogId": "acemasiran--sazsemaisi--aksaksemai----misirli_udi_ibrahim_efendi",
+      "providerProfileId": "internet-archive",
+      "connector": "internet-archive",
+      "status": "rejected",
+      "statusReason": "no-provider-result",
+      "checkedAt": "2026-06-01",
+      "searchQuery": "Acemasiran Sazsemaisi Aksaksemai Misirli Udi İBrahim Efendi",
+      "searchUrl": "https://archive.org/advancedsearch.php?q=Misirli+Udi+%C4%B0brahim+Efendi+Acemasiran+Sazsemaisi+Aksaksemai&output=json&rows=3&fl%5B%5D=identifier&fl%5B%5D=title&fl%5B%5D=creator&fl%5B%5D=description&fl%5B%5D=mediatype&fl%5B%5D=collection&fl%5B%5D=date",
+      "resultCount": 0,
+      "networkRequest": true,
+      "best": null,
+      "candidates": [],
+      "catalog": {
+        "makam": "Acemasiran",
+        "form": "Sazsemaisi",
+        "usul": "Aksaksemai",
+        "title": "",
+        "composer": "Misirli Udi İbrahim Efendi",
+        "priorityGroup": "pdf-and-musicxml"
+      },
+      "safety": {
+        "directAutoAttach": false,
+        "mediaDownload": false,
+        "sourceContentCopied": false
+      }
+    },
+    "acemasiran--sazsemaisi--aksaksemai----serafettin_seref_cakar:internet-archive:acemasiran-sazsemaisi-aksaksemai-serafettin-seref-cakar": {
+      "cacheKey": "acemasiran--sazsemaisi--aksaksemai----serafettin_seref_cakar:internet-archive:acemasiran-sazsemaisi-aksaksemai-serafettin-seref-cakar",
+      "cacheHit": false,
+      "catalogId": "acemasiran--sazsemaisi--aksaksemai----serafettin_seref_cakar",
+      "providerProfileId": "internet-archive",
+      "connector": "internet-archive",
+      "status": "rejected",
+      "statusReason": "no-provider-result",
+      "checkedAt": "2026-06-01",
+      "searchQuery": "Acemasiran Sazsemaisi Aksaksemai Serafettin Seref Cakar",
+      "searchUrl": "https://archive.org/advancedsearch.php?q=Serafettin+Seref+Cakar+Acemasiran+Sazsemaisi+Aksaksemai&output=json&rows=3&fl%5B%5D=identifier&fl%5B%5D=title&fl%5B%5D=creator&fl%5B%5D=description&fl%5B%5D=mediatype&fl%5B%5D=collection&fl%5B%5D=date",
+      "resultCount": 0,
+      "networkRequest": true,
+      "best": null,
+      "candidates": [],
+      "catalog": {
+        "makam": "Acemasiran",
+        "form": "Sazsemaisi",
+        "usul": "Aksaksemai",
+        "title": "",
+        "composer": "Serafettin Seref Cakar",
+        "priorityGroup": "pdf-and-musicxml"
+      },
+      "safety": {
+        "directAutoAttach": false,
+        "mediaDownload": false,
+        "sourceContentCopied": false
+      }
+    },
+    "acemasiran--selam--agirduyek--her_ruz--huseyin_fahreddin_dede:internet-archive:acemasiran-selam-agirduyek-her-ruz-huseyin-fahreddin-dede": {
+      "cacheKey": "acemasiran--selam--agirduyek--her_ruz--huseyin_fahreddin_dede:internet-archive:acemasiran-selam-agirduyek-her-ruz-huseyin-fahreddin-dede",
+      "cacheHit": false,
+      "catalogId": "acemasiran--selam--agirduyek--her_ruz--huseyin_fahreddin_dede",
+      "providerProfileId": "internet-archive",
+      "connector": "internet-archive",
+      "status": "rejected",
+      "statusReason": "no-provider-result",
+      "checkedAt": "2026-06-01",
+      "searchQuery": "Acemasiran Selam Agirduyek Her Ruz Huseyin Fahreddin Dede",
+      "searchUrl": "https://archive.org/advancedsearch.php?q=Her+Ruz+Huseyin+Fahreddin+Dede+Acemasiran+Selam+Agirduyek&output=json&rows=3&fl%5B%5D=identifier&fl%5B%5D=title&fl%5B%5D=creator&fl%5B%5D=description&fl%5B%5D=mediatype&fl%5B%5D=collection&fl%5B%5D=date",
+      "resultCount": 0,
+      "networkRequest": true,
+      "best": null,
+      "candidates": [],
+      "catalog": {
+        "makam": "Acemasiran",
+        "form": "Selam",
+        "usul": "Agirduyek",
+        "title": "Her Ruz",
+        "composer": "Huseyin Fahreddin Dede",
+        "priorityGroup": "pdf-and-musicxml"
+      },
+      "safety": {
+        "directAutoAttach": false,
+        "mediaDownload": false,
+        "sourceContentCopied": false
+      }
+    },
+    "acemasiran--selam--mevlevievferi--bi_dil--huseyin_fahreddin_dede:internet-archive:acemasiran-selam-mevlevievferi-bi-dil-huseyin-fahreddin-dede": {
+      "cacheKey": "acemasiran--selam--mevlevievferi--bi_dil--huseyin_fahreddin_dede:internet-archive:acemasiran-selam-mevlevievferi-bi-dil-huseyin-fahreddin-dede",
+      "cacheHit": false,
+      "catalogId": "acemasiran--selam--mevlevievferi--bi_dil--huseyin_fahreddin_dede",
+      "providerProfileId": "internet-archive",
+      "connector": "internet-archive",
+      "status": "rejected",
+      "statusReason": "no-provider-result",
+      "checkedAt": "2026-06-01",
+      "searchQuery": "Acemasiran Selam Mevlevievferi Bi Dil Huseyin Fahreddin Dede",
+      "searchUrl": "https://archive.org/advancedsearch.php?q=Bi+Dil+Huseyin+Fahreddin+Dede+Acemasiran+Selam+Mevlevievferi&output=json&rows=3&fl%5B%5D=identifier&fl%5B%5D=title&fl%5B%5D=creator&fl%5B%5D=description&fl%5B%5D=mediatype&fl%5B%5D=collection&fl%5B%5D=date",
+      "resultCount": 0,
+      "networkRequest": true,
+      "best": null,
+      "candidates": [],
+      "catalog": {
+        "makam": "Acemasiran",
+        "form": "Selam",
+        "usul": "Mevlevievferi",
+        "title": "Bi Dil",
+        "composer": "Huseyin Fahreddin Dede",
+        "priorityGroup": "pdf-and-musicxml"
+      },
+      "safety": {
+        "directAutoAttach": false,
+        "mediaDownload": false,
+        "sourceContentCopied": false
+      }
+    },
+    "acemasiran--selam--mevlevievferi--sultan-i_meni--huseyin_fahreddin_dede:internet-archive:acemasiran-selam-mevlevievferi-sultan-i-meni-huseyin-fahreddin-dede": {
+      "cacheKey": "acemasiran--selam--mevlevievferi--sultan-i_meni--huseyin_fahreddin_dede:internet-archive:acemasiran-selam-mevlevievferi-sultan-i-meni-huseyin-fahreddin-dede",
+      "cacheHit": false,
+      "catalogId": "acemasiran--selam--mevlevievferi--sultan-i_meni--huseyin_fahreddin_dede",
+      "providerProfileId": "internet-archive",
+      "connector": "internet-archive",
+      "status": "rejected",
+      "statusReason": "no-provider-result",
+      "checkedAt": "2026-06-01",
+      "searchQuery": "Acemasiran Selam Mevlevievferi Sultan İ Meni Huseyin Fahreddin Dede",
+      "searchUrl": "https://archive.org/advancedsearch.php?q=Sultan+%C4%B0+Meni+Huseyin+Fahreddin+Dede+Acemasiran+Selam+Mevlevievferi&output=json&rows=3&fl%5B%5D=identifier&fl%5B%5D=title&fl%5B%5D=creator&fl%5B%5D=description&fl%5B%5D=mediatype&fl%5B%5D=collection&fl%5B%5D=date",
+      "resultCount": 0,
+      "networkRequest": true,
+      "best": null,
+      "candidates": [],
+      "catalog": {
+        "makam": "Acemasiran",
+        "form": "Selam",
+        "usul": "Mevlevievferi",
+        "title": "Sultan İ Meni",
+        "composer": "Huseyin Fahreddin Dede",
+        "priorityGroup": "pdf-and-musicxml"
+      },
+      "safety": {
+        "directAutoAttach": false,
+        "mediaDownload": false,
+        "sourceContentCopied": false
+      }
+    },
+    "acemasiran--seyir--semai--1--rauf_yekta:internet-archive:acemasiran-seyir-semai-1-rauf-yekta": {
+      "cacheKey": "acemasiran--seyir--semai--1--rauf_yekta:internet-archive:acemasiran-seyir-semai-1-rauf-yekta",
+      "cacheHit": false,
+      "catalogId": "acemasiran--seyir--semai--1--rauf_yekta",
+      "providerProfileId": "internet-archive",
+      "connector": "internet-archive",
+      "status": "rejected",
+      "statusReason": "no-provider-result",
+      "checkedAt": "2026-06-01",
+      "searchQuery": "Acemasiran Seyir Semai 1 Rauf Yekta",
+      "searchUrl": "https://archive.org/advancedsearch.php?q=1+Rauf+Yekta+Acemasiran+Seyir+Semai&output=json&rows=3&fl%5B%5D=identifier&fl%5B%5D=title&fl%5B%5D=creator&fl%5B%5D=description&fl%5B%5D=mediatype&fl%5B%5D=collection&fl%5B%5D=date",
+      "resultCount": 0,
+      "networkRequest": true,
+      "best": null,
+      "candidates": [],
+      "catalog": {
+        "makam": "Acemasiran",
+        "form": "Seyir",
+        "usul": "Semai",
+        "title": "1",
+        "composer": "Rauf Yekta",
+        "priorityGroup": "pdf-and-musicxml"
+      },
+      "safety": {
+        "directAutoAttach": false,
+        "mediaDownload": false,
+        "sourceContentCopied": false
+      }
+    },
+    "acemasiran--seyir--sofyan--1--erol_bingol:internet-archive:acemasiran-seyir-sofyan-1-erol-bingol": {
+      "cacheKey": "acemasiran--seyir--sofyan--1--erol_bingol:internet-archive:acemasiran-seyir-sofyan-1-erol-bingol",
+      "cacheHit": false,
+      "catalogId": "acemasiran--seyir--sofyan--1--erol_bingol",
+      "providerProfileId": "internet-archive",
+      "connector": "internet-archive",
+      "status": "rejected",
+      "statusReason": "no-provider-result",
+      "checkedAt": "2026-06-01",
+      "searchQuery": "Acemasiran Seyir Sofyan 1 Erol Bingol",
+      "searchUrl": "https://archive.org/advancedsearch.php?q=1+Erol+Bingol+Acemasiran+Seyir+Sofyan&output=json&rows=3&fl%5B%5D=identifier&fl%5B%5D=title&fl%5B%5D=creator&fl%5B%5D=description&fl%5B%5D=mediatype&fl%5B%5D=collection&fl%5B%5D=date",
+      "resultCount": 0,
+      "networkRequest": true,
+      "best": null,
+      "candidates": [],
+      "catalog": {
+        "makam": "Acemasiran",
+        "form": "Seyir",
+        "usul": "Sofyan",
+        "title": "1",
+        "composer": "Erol Bingol",
+        "priorityGroup": "pdf-and-musicxml"
+      },
+      "safety": {
+        "directAutoAttach": false,
+        "mediaDownload": false,
+        "sourceContentCopied": false
+      }
+    },
+    "acemasiran--seyir--sofyan--1--sefik_gurmeric:internet-archive:acemasiran-seyir-sofyan-1-sefik-gurmeric": {
+      "cacheKey": "acemasiran--seyir--sofyan--1--sefik_gurmeric:internet-archive:acemasiran-seyir-sofyan-1-sefik-gurmeric",
+      "cacheHit": false,
+      "catalogId": "acemasiran--seyir--sofyan--1--sefik_gurmeric",
+      "providerProfileId": "internet-archive",
+      "connector": "internet-archive",
+      "status": "rejected",
+      "statusReason": "no-provider-result",
+      "checkedAt": "2026-06-01",
+      "searchQuery": "Acemasiran Seyir Sofyan 1 Sefik Gurmeric",
+      "searchUrl": "https://archive.org/advancedsearch.php?q=1+Sefik+Gurmeric+Acemasiran+Seyir+Sofyan&output=json&rows=3&fl%5B%5D=identifier&fl%5B%5D=title&fl%5B%5D=creator&fl%5B%5D=description&fl%5B%5D=mediatype&fl%5B%5D=collection&fl%5B%5D=date",
+      "resultCount": 0,
+      "networkRequest": true,
+      "best": null,
+      "candidates": [],
+      "catalog": {
+        "makam": "Acemasiran",
+        "form": "Seyir",
+        "usul": "Sofyan",
+        "title": "1",
+        "composer": "Sefik Gurmeric",
+        "priorityGroup": "pdf-and-musicxml"
+      },
+      "safety": {
+        "directAutoAttach": false,
+        "mediaDownload": false,
+        "sourceContentCopied": false
+      }
+    },
+    "acemasiran--yuruksemai--yuruksemai_ii----huseyin_fahreddin_dede:internet-archive:acemasiran-yuruksemai-yuruksemai-ii-huseyin-fahreddin-dede": {
+      "cacheKey": "acemasiran--yuruksemai--yuruksemai_ii----huseyin_fahreddin_dede:internet-archive:acemasiran-yuruksemai-yuruksemai-ii-huseyin-fahreddin-dede",
+      "cacheHit": false,
+      "catalogId": "acemasiran--yuruksemai--yuruksemai_ii----huseyin_fahreddin_dede",
+      "providerProfileId": "internet-archive",
+      "connector": "internet-archive",
+      "status": "rejected",
+      "statusReason": "no-provider-result",
+      "checkedAt": "2026-06-01",
+      "searchQuery": "Acemasiran Yuruksemai Yuruksemai İİ Huseyin Fahreddin Dede",
+      "searchUrl": "https://archive.org/advancedsearch.php?q=Huseyin+Fahreddin+Dede+Acemasiran+Yuruksemai+Yuruksemai+%C4%B0i&output=json&rows=3&fl%5B%5D=identifier&fl%5B%5D=title&fl%5B%5D=creator&fl%5B%5D=description&fl%5B%5D=mediatype&fl%5B%5D=collection&fl%5B%5D=date",
+      "resultCount": 0,
+      "networkRequest": true,
+      "best": null,
+      "candidates": [],
+      "catalog": {
+        "makam": "Acemasiran",
+        "form": "Yuruksemai",
+        "usul": "Yuruksemai İi",
+        "title": "",
+        "composer": "Huseyin Fahreddin Dede",
+        "priorityGroup": "pdf-and-musicxml"
+      },
+      "safety": {
+        "directAutoAttach": false,
+        "mediaDownload": false,
+        "sourceContentCopied": false
+      }
+    },
+    "acemasiran--yuruksemai--yuruksemai--bileydi_dil--itri:internet-archive:acemasiran-yuruksemai-yuruksemai-bileydi-dil-itri": {
+      "cacheKey": "acemasiran--yuruksemai--yuruksemai--bileydi_dil--itri:internet-archive:acemasiran-yuruksemai-yuruksemai-bileydi-dil-itri",
+      "cacheHit": false,
+      "catalogId": "acemasiran--yuruksemai--yuruksemai--bileydi_dil--itri",
+      "providerProfileId": "internet-archive",
+      "connector": "internet-archive",
+      "status": "rejected",
+      "statusReason": "no-provider-result",
+      "checkedAt": "2026-06-01",
+      "searchQuery": "Acemasiran Yuruksemai Yuruksemai Bileydi Dil İTri",
+      "searchUrl": "https://archive.org/advancedsearch.php?q=Bileydi+Dil+%C4%B0tri+Acemasiran+Yuruksemai+Yuruksemai&output=json&rows=3&fl%5B%5D=identifier&fl%5B%5D=title&fl%5B%5D=creator&fl%5B%5D=description&fl%5B%5D=mediatype&fl%5B%5D=collection&fl%5B%5D=date",
+      "resultCount": 0,
+      "networkRequest": true,
+      "best": null,
+      "candidates": [],
+      "catalog": {
+        "makam": "Acemasiran",
+        "form": "Yuruksemai",
+        "usul": "Yuruksemai",
+        "title": "Bileydi Dil",
+        "composer": "İtri",
+        "priorityGroup": "pdf-and-musicxml"
+      },
+      "safety": {
+        "directAutoAttach": false,
+        "mediaDownload": false,
+        "sourceContentCopied": false
+      }
+    },
+    "acemasiran--zeybek--agiraksak--su_izmirin--tahsin_karakus:internet-archive:acemasiran-zeybek-agiraksak-su-izmirin-tahsin-karakus": {
+      "cacheKey": "acemasiran--zeybek--agiraksak--su_izmirin--tahsin_karakus:internet-archive:acemasiran-zeybek-agiraksak-su-izmirin-tahsin-karakus",
+      "cacheHit": false,
+      "catalogId": "acemasiran--zeybek--agiraksak--su_izmirin--tahsin_karakus",
+      "providerProfileId": "internet-archive",
+      "connector": "internet-archive",
+      "status": "rejected",
+      "statusReason": "no-provider-result",
+      "checkedAt": "2026-06-01",
+      "searchQuery": "Acemasiran Zeybek Agiraksak Su İZmirin Tahsin Karakus",
+      "searchUrl": "https://archive.org/advancedsearch.php?q=Su+%C4%B0zmirin+Tahsin+Karakus+Acemasiran+Zeybek+Agiraksak&output=json&rows=3&fl%5B%5D=identifier&fl%5B%5D=title&fl%5B%5D=creator&fl%5B%5D=description&fl%5B%5D=mediatype&fl%5B%5D=collection&fl%5B%5D=date",
+      "resultCount": 0,
+      "networkRequest": true,
+      "best": null,
+      "candidates": [],
+      "catalog": {
+        "makam": "Acemasiran",
+        "form": "Zeybek",
+        "usul": "Agiraksak",
+        "title": "Su İzmirin",
+        "composer": "Tahsin Karakus",
+        "priorityGroup": "pdf-and-musicxml"
+      },
+      "safety": {
+        "directAutoAttach": false,
+        "mediaDownload": false,
+        "sourceContentCopied": false
+      }
     }
   }
 }

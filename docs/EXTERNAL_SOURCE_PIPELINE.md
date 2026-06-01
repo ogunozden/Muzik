@@ -55,6 +55,7 @@ URLs as evidence:
 npm run discover:external-sources
 npm run verify:external-source-discovery
 npm run verify:external-source-providers
+npm run verify:external-source-providers:continue
 npm run import:external-references -- --input output/external-source-discovery/accepted-import-ready.json --dry-run
 npm run audit:prod-cycle
 ```
@@ -88,6 +89,16 @@ cache, while providers that require an operator-supplied validated URL are
 classified as deferred across the backlog instead of being probed from search
 URLs. The plan's `nextBatch.command` advances from the cumulative cache count,
 so rerunning the default batch cannot move the queue backwards.
+
+For unattended/resumable progress, use
+`npm run verify:external-source-providers:continue`. It reads
+`provider-verification-coverage.json`, starts Internet Archive from the current
+cumulative verified/classified count, runs the configured five-provider dry-run
+batch, and writes `provider-verification-batch-run.json`. The current phase has
+advanced Internet Archive coverage to 75/2978 backlog groups with 2903 network
+groups remaining. The continue runner remains dry-run only: direct product
+attachment, media download and source-content copy counts must stay `0`, and
+`npm run audit:prod-cycle` enforces the batch-run artifact before phase close.
 
 Provider research references used for the current connector policy:
 

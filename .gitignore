@@ -45,3 +45,7 @@ dist/
 
 # Local sample source archives
 all-samples/
+
+# Local agent/tooling caches and downloaded upstream corpora
+.agents/
+symb/

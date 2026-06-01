@@ -53,6 +53,8 @@ const SOURCE_PROVIDER_VERIFICATION_EVIDENCE_FILE = path.join(PROJECT_ROOT, "outp
 const SOURCE_PROVIDER_VERIFICATION_ACCEPTED_IMPORT_READY_FILE = path.join(PROJECT_ROOT, "output", "external-source-discovery", "provider-verification-accepted-import-ready.json");
 const SOURCE_PROVIDER_VERIFICATION_PLAN_FILE = path.join(PROJECT_ROOT, "output", "external-source-discovery", "provider-verification-plan.json");
 const SOURCE_PROVIDER_VERIFICATION_COVERAGE_FILE = path.join(PROJECT_ROOT, "output", "external-source-discovery", "provider-verification-coverage.json");
+const SOURCE_PROVIDER_VERIFICATION_BATCH_RUN_FILE = path.join(PROJECT_ROOT, "output", "external-source-discovery", "provider-verification-batch-run.json");
+const SOURCE_PROVIDER_VERIFICATION_CONTINUE_SCRIPT = "npm run verify:external-source-providers:continue";
 const AUTO_ATTACHED_FILE = path.join(PROJECT_ROOT, "src", "data", "references", "auto-attached-references.json");
 const FEEDBACK_FILE = path.join(PROJECT_ROOT, "src", "data", "references", "source-feedback-events.json");
 const MANUAL_CORRECTIONS_FILE = path.join(PROJECT_ROOT, "src", "data", "references", "manual-source-corrections.json");
@@ -739,6 +741,7 @@ async function getExternalReferenceState(request: Request) {
     sourceDiscoveryCoverageDelta,
     sourceProviderVerificationRun,
     sourceProviderVerificationCoverage,
+    sourceProviderVerificationBatchRun,
     candidateReviewQueue,
     candidateReviewGroups,
     fullBacklog,
@@ -786,6 +789,7 @@ async function getExternalReferenceState(request: Request) {
     readJsonOrNull<SourceDiscoveryCoverageDeltaManifest>(SOURCE_DISCOVERY_COVERAGE_DELTA_FILE),
     readJsonOrNull<SourceProviderVerificationRunManifest>(SOURCE_PROVIDER_VERIFICATION_RUN_FILE),
     readJsonOrNull<Record<string, unknown>>(SOURCE_PROVIDER_VERIFICATION_COVERAGE_FILE),
+    readJsonOrNull<Record<string, unknown>>(SOURCE_PROVIDER_VERIFICATION_BATCH_RUN_FILE),
     readJsonOrNull<CandidateReviewRow[]>(CANDIDATE_REVIEW_QUEUE_FILE),
     readJsonOrNull<CandidateReviewGroup[]>(CANDIDATE_REVIEW_GROUPS_FILE),
     readJsonOrNull<CurationBacklogRow[]>(BACKLOG_FILE),
@@ -1039,6 +1043,8 @@ async function getExternalReferenceState(request: Request) {
           acceptedImportReadyArtifactPath: toProjectRelativePath(SOURCE_PROVIDER_VERIFICATION_ACCEPTED_IMPORT_READY_FILE),
           planArtifactPath: toProjectRelativePath(SOURCE_PROVIDER_VERIFICATION_PLAN_FILE),
           coverageArtifactPath: toProjectRelativePath(SOURCE_PROVIDER_VERIFICATION_COVERAGE_FILE),
+          batchRunArtifactPath: toProjectRelativePath(SOURCE_PROVIDER_VERIFICATION_BATCH_RUN_FILE),
+          continueScript: SOURCE_PROVIDER_VERIFICATION_CONTINUE_SCRIPT,
           generatedAt: sourceProviderVerificationRun?.generatedAt ?? null,
           ok: sourceProviderVerificationRun?.ok === true,
           dryRun: sourceProviderVerificationRun?.dryRun === true,
@@ -1056,6 +1062,9 @@ async function getExternalReferenceState(request: Request) {
             ? sourceProviderVerificationCoverage.byProvider.reduce((sum: number, row: Record<string, unknown>) => sum + Number(row.verifiedOrClassifiedGroupCount ?? 0), 0)
             : 0,
           networkProviderRemainingGroupCount: Number(sourceProviderVerificationCoverage?.networkProviderRemainingGroupCount ?? 0),
+          batchRunCompletedCount: Number(sourceProviderVerificationBatchRun?.completedBatchCount ?? 0),
+          batchRunFinalVerifiedCount: Number(sourceProviderVerificationBatchRun?.finalInternetArchiveVerifiedCount ?? 0),
+          batchRunFinalRemainingCount: Number(sourceProviderVerificationBatchRun?.finalInternetArchiveRemainingCount ?? 0),
           nextBatchCommand: sourceProviderVerificationRun?.artifacts?.plan ? "see provider verification plan" : null,
           resultCount: sourceProviderVerificationRun?.resultCount ?? 0,
           acceptedReadyCount: sourceProviderVerificationRun?.acceptedReadyCount ?? 0,

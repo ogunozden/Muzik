@@ -14,15 +14,15 @@
   ],
   "providerCount": 5,
   "fullyClassifiedProviderCount": 4,
-  "networkProviderRemainingGroupCount": 2928,
+  "networkProviderRemainingGroupCount": 2903,
   "byProvider": [
     {
       "providerProfileId": "internet-archive",
       "connector": "internet-archive",
       "rateLimitPerSecond": 1,
       "totalEligibleGroupCount": 2978,
-      "verifiedOrClassifiedGroupCount": 50,
-      "remainingGroupCount": 2928,
+      "verifiedOrClassifiedGroupCount": 75,
+      "remainingGroupCount": 2903,
       "currentBatchPacketCount": 25,
       "currentBatchStatusCounts": [
         {
@@ -30,7 +30,7 @@
           "count": 25
         }
       ],
-      "cachedGroupCount": 50,
+      "cachedGroupCount": 75,
       "deterministicDeferredGroupCount": 0,
       "networkRequestCount": 0,
       "cacheHitCount": 25,

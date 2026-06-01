@@ -17,12 +17,14 @@ Validation evidence:
 - `npm run audit:prod-cycle`: `ok: true`, warnings `[]`, errors `[]`.
 - `npm run audit:references-curation-runtime`: `ok: true`, provider verification panel/artifact/command present.
 - Browser console evidence: `/references/curation` and `/studio/follow` each report 0 warnings and 0 errors.
+- Public-repo secret check: `.env.local` is ignored by `.gitignore` and not tracked; `.env.example` contains local placeholder values only; broad API key/token/private-key regex scan returned no hits.
 
 Reviewed controls:
 - Provider verification uses the fixed Internet Archive advancedsearch endpoint, not arbitrary user-provided server-side fetch targets.
 - Multi-provider verification covers the configured provider profile allowlist and records deferred packets when a provider has no validated source URL to probe.
 - `provider-verification-plan.json` accounts for the full 2978-group backlog and emits the next resumable batch command.
-- `provider-verification-coverage.json` records cumulative provider progress; the current Internet Archive network-backed cache covers 50 groups, while non-URL providers are classified without fetching arbitrary search results.
+- `provider-verification-coverage.json` records cumulative provider progress; the current Internet Archive network-backed cache covers 75 groups, while non-URL providers are classified without fetching arbitrary search results.
+- `provider-verification-batch-run.json` records the resumable continue runner evidence; the latest run completed 1 batch, moved Internet Archive from 50 to 75 groups, and left 2903 network groups.
 - Provider rate limits from `external-source-discovery-policy.json` are enforced for non-cached network requests.
 - The provider worker is dry-run by default and writes only project-local output artifacts.
 - No media, PDF, audio or video content is downloaded.

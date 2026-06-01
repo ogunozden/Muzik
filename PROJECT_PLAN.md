@@ -306,6 +306,12 @@ tek kurala bağlamaktır.
       runtime üzerinde de 200 döner. PostCSS, Next'in object/string plugin
       sözleşmesine uygun CJS UnoCSS adapter ile çalışır; tema `@import` kuralı
       CSS standardına uygun biçimde `@unocss all` öncesine alınmıştır.
+      2026-06-01 ek accepted import profile kapısı: bulk accepted kaynak import'u
+      artık `research-source-profiles.json` içindeki etkin profile host'una
+      eşleşmeyen URL'leri ve eşleşen profile provider'ıyla uyuşmayan source
+      provider değerlerini reddeder. Review/conflict/rejected adaylar yine
+      auto-attach edilmeyen güvenli queue verisi olarak source URL zorunluluğu
+      olmadan taşınabilir.
 - [ ] PDF vector ölçü adayları gerçek ölçü kutusuna terfi etmeden önce insan
       veya görsel regresyon doğrulaması bekliyor. Pipeline, review artifact'i,
       verification manifest'i ve Eser Takip UI yolu hazır; gerçek manifest şu

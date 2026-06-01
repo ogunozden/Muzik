@@ -9,6 +9,7 @@ function createImportPaths(root) {
   return {
     catalog: path.join(root, "src", "data", "symbtr", "catalog.generated.json"),
     bulkCandidates: path.join(root, "src", "data", "references", "external-reference-bulk-candidates.json"),
+    researchProfiles: path.join(root, "src", "data", "references", "research-source-profiles.json"),
   };
 }
 
@@ -62,6 +63,30 @@ function readCatalogIds(catalogPath) {
   return new Set((catalogData.entries ?? []).map((entry) => entry.id));
 }
 
+function normalizedHost(value) {
+  try {
+    return new URL(value).hostname.replace(/^www\./, "").toLocaleLowerCase("en-US");
+  } catch {
+    return "";
+  }
+}
+
+function readEnabledResearchProfiles(researchProfilesPath) {
+  const profileData = readJsonFile(researchProfilesPath, "research source profiles");
+  const profiles = Array.isArray(profileData.profiles) ? profileData.profiles : [];
+  return profiles.filter((profile) => profile.enabled !== false);
+}
+
+function profileForSourceUrl(source, profiles) {
+  const sourceHost = normalizedHost(source?.url);
+  if (!sourceHost) return null;
+
+  return profiles.find((profile) => {
+    const profileHost = normalizedHost(profile.baseUrl);
+    return profileHost && (sourceHost === profileHost || sourceHost.endsWith(`.${profileHost}`));
+  }) ?? null;
+}
+
 export function normalizeUrlForIdentity(value) {
   try {
     const url = new URL(value);
@@ -86,7 +111,7 @@ export function getReferenceIdentity(source) {
   return `${source.provider}:${normalizeUrlForIdentity(source.url) ?? String(source.url ?? "").trim().toLocaleLowerCase("en-US")}`;
 }
 
-export function validateCandidateSource(catalogId, source) {
+export function validateCandidateSource(catalogId, source, profiles = []) {
   const errors = [];
   const parsedRawUrl = (() => {
     try {
@@ -118,6 +143,13 @@ export function validateCandidateSource(catalogId, source) {
     errors.push(`${catalogId}: YouTube reference must be verified with oEmbed metadata`);
   }
 
+  const sourceProfile = profileForSourceUrl(source, profiles);
+  if (!sourceProfile) {
+    errors.push(`${catalogId}: accepted reference URL must match a research source profile`);
+  } else if (sourceProfile.provider !== source?.provider) {
+    errors.push(`${catalogId}: accepted reference provider ${source?.provider ?? "<missing>"} must match research profile ${sourceProfile.id} provider ${sourceProfile.provider}`);
+  }
+
   if (!/^\d{4}-\d{2}-\d{2}$/.test(String(source?.verifiedAt ?? ""))) {
     errors.push(`${catalogId}: reference verifiedAt must use YYYY-MM-DD`);
   }
@@ -131,7 +163,7 @@ export function normalizeCandidates(inputData) {
   throw new Error("Input must be an array of candidates or an object with a candidates array");
 }
 
-export function validateCandidates(candidates, catalogIds) {
+export function validateCandidates(candidates, catalogIds, profiles = []) {
   const seenCandidateIds = new Set();
   const seenAcceptedIdentities = new Set();
   const errors = [];
@@ -165,7 +197,7 @@ export function validateCandidates(candidates, catalogIds) {
     seenCandidateIds.add(candidateId);
 
     if (status === "accepted") {
-      errors.push(...validateCandidateSource(catalogId, source));
+      errors.push(...validateCandidateSource(catalogId, source, profiles));
 
       const identity = getReferenceIdentity(source);
       if (seenAcceptedIdentities.has(identity)) {
@@ -220,13 +252,14 @@ export function runImport({root = DEFAULT_ROOT, inputPath, dryRun}) {
   const paths = createImportPaths(root);
   const safeInputPath = assertInsideProject(inputPath, root, "input file");
   const catalogIds = readCatalogIds(paths.catalog);
+  const profiles = readEnabledResearchProfiles(paths.researchProfiles);
   const existingData = readJsonFile(paths.bulkCandidates, "bulk candidate manifest");
   const incomingData = readJsonFile(safeInputPath, "candidate import input");
   const existingCandidates = normalizeCandidates(existingData);
   const incomingCandidates = normalizeCandidates(incomingData);
 
-  validateCandidates(existingCandidates, catalogIds);
-  validateCandidates(incomingCandidates, catalogIds);
+  validateCandidates(existingCandidates, catalogIds, profiles);
+  validateCandidates(incomingCandidates, catalogIds, profiles);
 
   const {merged, added, skipped} = mergeCandidates(existingCandidates, incomingCandidates);
 

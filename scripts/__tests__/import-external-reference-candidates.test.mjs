@@ -37,6 +37,33 @@ function createImportRoot() {
       },
     ],
   });
+  writeJson(root, "src/data/references/research-source-profiles.json", {
+    version: 1,
+    profiles: [
+      {
+        id: "divanmakam",
+        label: "DîvânMakam",
+        baseUrl: "https://divanmakam.com",
+        searchUrlTemplate: "https://duckduckgo.com/?q=site%3Adivanmakam.com%2Fforum%2F+{query}",
+        provider: "score",
+        trustWeight: 0.85,
+        embedCapability: "iframe",
+        metadataStrategy: "og-title",
+        enabled: true,
+      },
+      {
+        id: "youtube",
+        label: "YouTube",
+        baseUrl: "https://www.youtube.com",
+        searchUrlTemplate: "https://www.youtube.com/results?search_query={query}",
+        provider: "youtube",
+        trustWeight: 0.65,
+        embedCapability: "youtube",
+        metadataStrategy: "oembed",
+        enabled: true,
+      },
+    ],
+  });
   return root;
 }
 
@@ -93,5 +120,57 @@ describe("import-external-reference-candidates", () => {
       outputCandidateCount: 1,
     }));
     expect(manifest.candidates).toHaveLength(1);
+  });
+
+  it("rejects accepted candidates outside the central research profiles", async () => {
+    const root = createImportRoot();
+    writeJson(root, "input/candidates.json", {
+      candidates: [
+        {
+          catalogId: "rast--sarki--sofyan--ikinci_eser--ikinci_besteci",
+          status: "accepted",
+          checkedAt: "2026-05-10",
+          source: {
+            id: "unknown-site-score",
+            label: "Unknown",
+            provider: "score",
+            url: "https://example.com/forum/example",
+            access: "external-link",
+            verification: "manual",
+            verifiedAt: "2026-05-10",
+          },
+        },
+      ],
+    });
+
+    expect(() => runImport({root, inputPath: "input/candidates.json", dryRun: true})).toThrow(
+      "accepted reference URL must match a research source profile",
+    );
+  });
+
+  it("rejects accepted candidates whose provider disagrees with the matched profile", async () => {
+    const root = createImportRoot();
+    writeJson(root, "input/candidates.json", {
+      candidates: [
+        {
+          catalogId: "rast--sarki--sofyan--ikinci_eser--ikinci_besteci",
+          status: "accepted",
+          checkedAt: "2026-05-10",
+          source: {
+            id: "youtube-score-mismatch",
+            label: "Mismatch",
+            provider: "score",
+            url: "https://www.youtube.com/watch?v=abc123",
+            access: "external-link",
+            verification: "oembed",
+            verifiedAt: "2026-05-10",
+          },
+        },
+      ],
+    });
+
+    expect(() => runImport({root, inputPath: "input/candidates.json", dryRun: true})).toThrow(
+      "accepted reference provider score must match research profile youtube provider youtube",
+    );
   });
 });

@@ -223,6 +223,13 @@ tek kurala bağlamaktır.
       2026-06-01 Faz 5: archive provider profili merkezi config'e alındı;
       candidate review queue büyümesi profile-count/summary-count validation
       kapılarıyla katalog-geneli doğrulanır.
+      2026-06-01 Faz 8: provider-profile candidate review queue üretimi,
+      confidence scoring, review group oluşturma ve güvenli grup karar önerileri
+      `scripts/lib/external-reference-candidate-review.mjs` modülüne ayrıldı.
+      `external-reference-audit.mjs` eski export yüzeyini korur ama audit
+      orkestrasyonu artık candidate review policy ayrıntılarını taşımak zorunda
+      değildir; yeni modül review-only adayların accepted source id/URL alanı
+      üretmediğini doğrudan test eder.
 - [ ] Yeni model için validation/test kapılarını ekle: auto-attached kaynak
       sözleşmesi, feedback event bütünlüğü, silme/geri alma akışı, embed
       allowlist/fallback, filtre sonuçları, ops token davranışı, büyük liste

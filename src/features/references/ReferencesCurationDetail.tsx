@@ -439,6 +439,7 @@ export function ReferencesCurationDetail({catalogId}: {catalogId: string}) {
               <Input
                 label="Ops token"
                 type="password"
+                autoComplete="new-password"
                 value={opsToken}
                 onChange={(event) => setOpsToken(event.target.value)}
                 className="sm:w-64"

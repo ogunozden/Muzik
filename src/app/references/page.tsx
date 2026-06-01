@@ -279,7 +279,7 @@ export default function ReferencesPage() {
                   value={opsToken}
                   onChange={(event) => setOpsToken(event.target.value)}
                   className={`rounded-md border ${tokens.colors.border.base} bg-white px-3 py-1.5 text-sm ${tokens.colors.text.primary}`}
-                  autoComplete="off"
+                  autoComplete="new-password"
                   placeholder="ops token"
                   maxLength={256}
                 />

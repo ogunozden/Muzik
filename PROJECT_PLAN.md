@@ -264,11 +264,11 @@ tek kurala bağlamaktır.
       bulk manifest ve review queue'ya karşı doğrulanır. Mevcut 14.897 satırlık
       batch kontrolünde 0 duplicate / 0 temizlenen duplicate raporlandı; duplicate
       accepted identity yine auto-attach öncesi fail-closed kalır.
-      2026-06-01 runtime takip notu: `/references/curation` production
-      `next start` üzerinde layout/browser/console kapılarından geçti; mevcut
-      `next dev --webpack` PostCSS/UnoCSS loader yolu aynı sayfada 500 üretiyor.
-      Bu dev-runtime uyumsuzluğu ayrı migration işi olarak açık tutulacak; prod
-      build/start kanıtı bu fazın browser doğrulamasında kullanıldı.
+      2026-06-01 dev-runtime kapanışı: `/references/curation` production
+      `next start` kanıtına ek olarak Node 24 + Next 16.2.6 Turbopack dev
+      runtime üzerinde de 200 döner. PostCSS, Next'in object/string plugin
+      sözleşmesine uygun CJS UnoCSS adapter ile çalışır; tema `@import` kuralı
+      CSS standardına uygun biçimde `@unocss all` öncesine alınmıştır.
 - [ ] PDF vector ölçü adayları gerçek ölçü kutusuna terfi etmeden önce insan
       veya görsel regresyon doğrulaması bekliyor. Pipeline, review artifact'i,
       verification manifest'i ve Eser Takip UI yolu hazır; gerçek manifest şu
@@ -545,9 +545,10 @@ tek kurala bağlamaktır.
         yalnız `@unocss/postcss` kullanır; `uno.config.mjs` Wind4 preset ile
         mevcut utility sınıflarını üretir ve tema gerçeğini CSS custom
         property tokenlarına bağlar. `tailwind.config.ts` kaldırıldı,
-        `src/app/globals.css` tek styling giriş noktası olarak `@unocss all`
-        ve merkezi theme import'unu taşır. Prod/dev Next scriptleri
-        `--webpack` ile çalışır; DEP0205 suppression gerekmez.
+        `src/app/globals.css` tek styling giriş noktası olarak merkezi theme
+        import'unu ve ardından `@unocss all` direktifini taşır. Prod build
+        webpack hattını korur; dev runtime Next 16 varsayılanına uygun
+        Turbopack ile çalışır.
 54. [x] Curation dashboard backlog yönetimi zenginleştirildi:
         `/api/external-references` auto-attached kayıtları SymbTr katalog
         metadata'sı, `source` lookup'ı ve `symbtr-curated-reference-next-batch`
@@ -846,6 +847,12 @@ tek kurala bağlamaktır.
   Node runtime `.node-version`, `.nvmrc`, `package.json#engines` ve
   `.npmrc engine-strict=true` ile Node 24 hattına sabitlendi; `@types/node`
   aynı hatta çekildi.
+- 2026-06-01 dev-runtime düzeltmesi: Context7 resmi Next PostCSS sözleşmesine
+  göre plugin instance yerine object/string PostCSS config kullanıldı.
+  `scripts/postcss-unocss.cjs`, UnoCSS PostCSS adapter'ını Next dev/build
+  loader'larının ortak okuyabileceği CJS module olarak dışa aktarır.
+  `npm run dev -- --port 4036` Node 24 üzerinde Turbopack ile
+  `/references/curation` için HTTP 200 döndürdü ve stderr boş kaldı.
 - 2026-05-31 ek doğrulama: `npm run typecheck` geçti.
 - 2026-06-01 tam kapı koşusu: `npm run guardrails:architecture`,
   `npm run lint`, `npm run typecheck`, `npm run test:run`,

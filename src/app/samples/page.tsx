@@ -257,7 +257,7 @@ export default function SeslerPage() {
             value={opsToken}
             onChange={(event) => setOpsToken(event.target.value)}
             className={`w-full rounded-md border ${tokens.colors.border.base} ${tokens.colors.background.base} px-3 py-2 text-sm ${tokens.colors.text.primary}`}
-            autoComplete="off"
+            autoComplete="new-password"
           />
         </div>
 

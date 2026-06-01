@@ -845,24 +845,40 @@ export function ReferencesCurationDashboard() {
                 {formatDate(state.curation?.summary?.statsGeneratedAt)}
               </p>
             </div>
-            <div className="flex flex-col gap-2 sm:flex-row sm:items-end">
+            <form
+              className="flex flex-col gap-2 sm:flex-row sm:items-end"
+              onSubmit={(event) => {
+                event.preventDefault();
+                void refresh();
+              }}
+            >
+              <input
+                type="text"
+                name="username"
+                value="external-reference-ops"
+                readOnly
+                autoComplete="username"
+                className="sr-only"
+                tabIndex={-1}
+              />
               <Input
                 label="Ops token"
                 type="password"
+                autoComplete="new-password"
                 value={opsToken}
                 onChange={(event) => setOpsToken(event.target.value)}
                 className="sm:w-64"
               />
-              <Button variant="outline" disabled={isBusy} onPress={() => void refresh()}>
+              <Button type="submit" variant="outline" disabled={isBusy}>
                 Yenile
               </Button>
-              <Button variant="primary" disabled={isBusy} onPress={() => void runOperation("curation-auto-attach")}>
+              <Button type="button" variant="primary" disabled={isBusy} onPress={() => void runOperation("curation-auto-attach")}>
                 Auto-attach
               </Button>
-              <Button variant="secondary" disabled={isBusy} onPress={() => void runOperation("curation-stats")}>
+              <Button type="button" variant="secondary" disabled={isBusy} onPress={() => void runOperation("curation-stats")}>
                 Stats
               </Button>
-            </div>
+            </form>
           </header>
 
           {message && (

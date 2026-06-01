@@ -5,8 +5,8 @@
  * Token reference: src/lib/design-system/theme.css
  */
 
-@unocss all;
 @import "../lib/design-system/theme.css";
+@unocss all;
 
 /* ============================================
    BASE STYLES

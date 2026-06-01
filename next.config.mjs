@@ -38,6 +38,7 @@ const nextConfig = {
   generateEtags: true,
   cleanDistDir: true,
   outputFileTracingRoot: __dirname,
+  allowedDevOrigins: ["127.0.0.1"],
 
   // SWC Compiler
   compiler: {

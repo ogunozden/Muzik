@@ -61,6 +61,31 @@ const stateFixture = {
       rejectedCount: 0,
       conflictCount: 0,
     },
+    candidateReviewGroups: [
+      {
+        groupId: `${catalogId}:review-group`,
+        catalogId,
+        status: "needs-review",
+        reviewAction: "review-provider-candidates",
+        candidateCount: 1,
+        profileCount: 1,
+        profiles: ["divanmakam"],
+        providers: ["score"],
+        confidenceLevels: ["medium"],
+        highestReviewConfidenceScore: 85,
+        makam: "Ussak",
+        form: "İlahi",
+        usul: "Duyek",
+        title: "Dostun Senden",
+        composer: "Ali Rifat Cagatay",
+        priorityGroup: "pdf-and-musicxml",
+      },
+    ],
+    candidateReviewGroupManifest: {
+      artifactPath: "output/external-reference-coverage/symbtr-curated-reference-candidate-review-groups.json",
+      groupCount: 2978,
+      visibleGroupCount: 1,
+    },
     candidateReviewQueue: [
       {
         candidateId: `${catalogId}:divanmakam:search`,
@@ -228,11 +253,14 @@ describe("ReferencesCurationPage", () => {
     expect(screen.getAllByText("Dostun Senden").length).toBeGreaterThan(0);
     expect(screen.getByRole("heading", {name: "Sıradaki kaynak backlog batch listesi"})).toBeDefined();
     expect(screen.getByRole("heading", {name: "Aday manifest import/export"})).toBeDefined();
+    expect(screen.getByRole("heading", {name: "Aday review grupları"})).toBeDefined();
     expect(screen.getByRole("heading", {name: "Aday review queue"})).toBeDefined();
     expect(screen.getByLabelText("Besteci")).toBeDefined();
     expect(screen.getByLabelText("Silme")).toBeDefined();
     expect(screen.getByText("src/data/references/external-reference-bulk-candidates.json")).toBeDefined();
     expect(screen.getAllByText("output/external-reference-coverage/symbtr-curated-reference-candidate-review-queue.json").length).toBeGreaterThan(0);
+    expect(screen.getByText("output/external-reference-coverage/symbtr-curated-reference-candidate-review-groups.json")).toBeDefined();
+    expect(screen.getByText("review-provider-candidates")).toBeDefined();
     expect(screen.getByRole("link", {name: "Aday ara"}).getAttribute("href")).toContain("duckduckgo.com");
     expect(screen.getByRole("link", {name: "YouTube"}).getAttribute("href")).toContain("youtube.com");
 

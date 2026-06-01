@@ -4,6 +4,7 @@ import path from "node:path";
 import {describe, expect, it} from "vitest";
 import {
   buildBacklogRows,
+  buildCandidateReviewGroups,
   buildCandidateReviewRows,
   normalizeUrlForIdentity,
   readBulkReferenceCandidates,
@@ -182,6 +183,7 @@ describe("external reference audit", () => {
         acceptedBulkCandidateEntries: 1,
         researchSourceProfileEntries: 3,
         candidateReviewQueueEntries: 3,
+        candidateReviewGroupEntries: 1,
         nextBatchSize: 0,
         deferredCatalogIds: ["hicaz--pesrev--devrikebir--ucuncu_eser--besteci"],
         batchReport: expect.objectContaining({
@@ -192,7 +194,8 @@ describe("external reference audit", () => {
           missingAfterBatch: 1,
           deferredMissingEntries: 1,
           generatedReviewCandidates: 3,
-          validationGates: expect.arrayContaining(["candidate-review-only", "summary-count-drift"]),
+          generatedReviewGroups: 1,
+          validationGates: expect.arrayContaining(["candidate-review-only", "summary-count-drift", "candidate-review-group-drift"]),
         }),
       }),
     );
@@ -206,9 +209,20 @@ describe("external reference audit", () => {
     const candidateReviewJson = JSON.parse(
       readFileSync(path.join(root, "output", "external-reference-coverage", "symbtr-curated-reference-candidate-review-queue.json"), "utf8"),
     );
+    const candidateReviewGroupJson = JSON.parse(
+      readFileSync(path.join(root, "output", "external-reference-coverage", "symbtr-curated-reference-candidate-review-groups.json"), "utf8"),
+    );
     expect(nextBatchJson).toEqual([]);
     expect(backlogJson).toHaveLength(3);
     expect(candidateReviewJson).toHaveLength(3);
+    expect(candidateReviewGroupJson).toEqual([
+      expect.objectContaining({
+        groupId: "hicaz--pesrev--devrikebir--ucuncu_eser--besteci:review-group",
+        candidateCount: 3,
+        profileCount: 3,
+        profiles: ["divanmakam", "internet-archive", "youtube"],
+      }),
+    ]);
     expect(candidateReviewJson[0]).toEqual(expect.objectContaining({
       catalogId: "hicaz--pesrev--devrikebir--ucuncu_eser--besteci",
       status: "needs-review",
@@ -216,6 +230,7 @@ describe("external reference audit", () => {
     }));
     expect(summary.backlogJson).toBe("output/external-reference-coverage/symbtr-curated-reference-backlog.json");
     expect(summary.candidateReviewQueueJson).toBe("output/external-reference-coverage/symbtr-curated-reference-candidate-review-queue.json");
+    expect(summary.candidateReviewGroupsJson).toBe("output/external-reference-coverage/symbtr-curated-reference-candidate-review-groups.json");
   });
 
   it("builds provider-profile search candidates as review-only queue rows", () => {
@@ -229,6 +244,13 @@ describe("external reference audit", () => {
     const candidates = buildCandidateReviewRows(rows, profiles);
 
     expect(candidates).toHaveLength(6);
+    expect(buildCandidateReviewGroups(candidates)).toEqual(expect.arrayContaining([
+      expect.objectContaining({
+        catalogId: "rast--sarki--sofyan--baska_eser--diger_besteci",
+        candidateCount: 3,
+        reviewAction: "review-provider-candidates",
+      }),
+    ]));
     expect(candidates).toEqual(expect.arrayContaining([
       expect.objectContaining({
         candidateId: "rast--sarki--sofyan--baska_eser--diger_besteci:divanmakam:search",

@@ -534,6 +534,50 @@ export function buildCandidateReviewRows(backlogRows, researchProfiles) {
   ));
 }
 
+export function buildCandidateReviewGroups(candidateReviewRows) {
+  const grouped = candidateReviewRows.reduce((groups, row) => {
+    const catalogId = row.catalogId ?? "";
+    if (!groups.has(catalogId)) {
+      groups.set(catalogId, []);
+    }
+    groups.get(catalogId).push(row);
+    return groups;
+  }, new Map());
+
+  return Array.from(grouped, ([catalogId, rows]) => {
+    const firstRow = rows[0] ?? {};
+    const profiles = Array.from(new Set(rows.map((row) => row.profileId).filter(Boolean))).sort((left, right) => left.localeCompare(right, "en"));
+    const providers = Array.from(new Set(rows.map((row) => row.provider).filter(Boolean))).sort((left, right) => left.localeCompare(right, "en"));
+    const confidenceLevels = Array.from(new Set(rows.map((row) => row.reviewConfidenceLevel).filter(Boolean))).sort((left, right) => left.localeCompare(right, "en"));
+    const status = rows.some((row) => row.status === "conflict") ? "conflict" : "needs-review";
+    const highestReviewConfidenceScore = Math.max(...rows.map((row) => Number(row.reviewConfidenceScore ?? 0)));
+
+    return {
+      groupId: `${catalogId}:review-group`,
+      catalogId,
+      status,
+      reviewAction: status === "conflict" ? "resolve-conflict-before-import" : "review-provider-candidates",
+      candidateCount: rows.length,
+      profileCount: profiles.length,
+      profiles,
+      providers,
+      confidenceLevels,
+      highestReviewConfidenceScore,
+      deferredFromNextBatch: rows.some((row) => row.deferredFromNextBatch === true),
+      makam: firstRow.makam,
+      form: firstRow.form,
+      usul: firstRow.usul,
+      title: firstRow.title,
+      composer: firstRow.composer,
+      priorityGroup: firstRow.priorityGroup,
+    };
+  }).sort((left, right) => (
+    left.status.localeCompare(right.status, "en") ||
+    right.highestReviewConfidenceScore - left.highestReviewConfidenceScore ||
+    left.catalogId.localeCompare(right.catalogId, "en")
+  ));
+}
+
 export function renderCsv(rows) {
   const columns = [
     "catalogId",
@@ -647,6 +691,32 @@ export function renderCandidateReviewCsv(rows) {
   return `${[header, ...lines].join("\n")}\n`;
 }
 
+export function renderCandidateReviewGroupCsv(rows) {
+  const columns = [
+    "groupId",
+    "catalogId",
+    "status",
+    "reviewAction",
+    "candidateCount",
+    "profileCount",
+    "profiles",
+    "providers",
+    "confidenceLevels",
+    "highestReviewConfidenceScore",
+    "deferredFromNextBatch",
+    "makam",
+    "form",
+    "usul",
+    "title",
+    "composer",
+    "priorityGroup",
+  ];
+  const header = columns.map(csvValue).join(",");
+  const lines = rows.map((row) => columns.map((column) => csvValue(Array.isArray(row[column]) ? row[column].join("|") : row[column])).join(","));
+
+  return `${[header, ...lines].join("\n")}\n`;
+}
+
 export function runExternalReferenceCoverageAudit({
   root = process.cwd(),
   outDir = DEFAULT_OUT_DIR,
@@ -674,6 +744,7 @@ export function runExternalReferenceCoverageAudit({
   const nextBatchRows = missingRows.filter((row) => !row.deferredFromNextBatch).slice(0, batchSize);
   const bulkCandidateRows = buildBulkCandidateRows(bulkCandidates);
   const candidateReviewRows = buildCandidateReviewRows(rows, researchProfiles);
+  const candidateReviewGroups = buildCandidateReviewGroups(candidateReviewRows);
   const safeOutDir = assertInsideProject(outDir, root);
   mkdirSync(safeOutDir, {recursive: true});
 
@@ -685,6 +756,8 @@ export function runExternalReferenceCoverageAudit({
   const bulkCandidatesJsonPath = path.join(safeOutDir, "symbtr-curated-reference-bulk-candidates.json");
   const candidateReviewCsvPath = path.join(safeOutDir, "symbtr-curated-reference-candidate-review-queue.csv");
   const candidateReviewJsonPath = path.join(safeOutDir, "symbtr-curated-reference-candidate-review-queue.json");
+  const candidateReviewGroupCsvPath = path.join(safeOutDir, "symbtr-curated-reference-candidate-review-groups.csv");
+  const candidateReviewGroupJsonPath = path.join(safeOutDir, "symbtr-curated-reference-candidate-review-groups.json");
   writeFileSync(csvPath, renderCsv(rows));
   writeFileSync(backlogJsonPath, `${JSON.stringify(rows, null, 2)}\n`);
   writeFileSync(nextBatchCsvPath, renderCsv(nextBatchRows));
@@ -693,6 +766,8 @@ export function runExternalReferenceCoverageAudit({
   writeFileSync(bulkCandidatesJsonPath, `${JSON.stringify(bulkCandidateRows, null, 2)}\n`);
   writeFileSync(candidateReviewCsvPath, renderCandidateReviewCsv(candidateReviewRows));
   writeFileSync(candidateReviewJsonPath, `${JSON.stringify(candidateReviewRows, null, 2)}\n`);
+  writeFileSync(candidateReviewGroupCsvPath, renderCandidateReviewGroupCsv(candidateReviewGroups));
+  writeFileSync(candidateReviewGroupJsonPath, `${JSON.stringify(candidateReviewGroups, null, 2)}\n`);
 
   const batchReport = {
     version: 1,
@@ -720,6 +795,7 @@ export function runExternalReferenceCoverageAudit({
     candidateReviewProfileCounts: summarizeCounts(candidateReviewRows, "profileId"),
     candidateReviewConfidenceLevelCounts: summarizeCounts(candidateReviewRows, "reviewConfidenceLevel"),
     generatedReviewCandidates: candidateReviewRows.length,
+    generatedReviewGroups: candidateReviewGroups.length,
     candidateReviewQueryFields: ["makam", "form", "usul", "title", "composer"],
     candidateReviewScoringSignals: ["profile-trust", "profile-metadata-strategy", "catalog-formats", "catalog-fields", "curation-decision"],
     duplicateAcceptedIdentityPolicy: "duplicate accepted URL identities fail validation before merge",
@@ -735,6 +811,7 @@ export function runExternalReferenceCoverageAudit({
       "profile-count-drift",
       "summary-count-drift",
       "metadata-strategy-profile-drift",
+      "candidate-review-group-drift",
     ],
   };
 
@@ -750,8 +827,10 @@ export function runExternalReferenceCoverageAudit({
     acceptedBulkCandidateCatalogIds: acceptedBulkCandidates.map((candidate) => candidate.catalogId),
     researchSourceProfileEntries: researchProfiles.length,
     candidateReviewQueueEntries: candidateReviewRows.length,
+    candidateReviewGroupEntries: candidateReviewGroups.length,
     candidateReviewQueueByStatus: summarizeCounts(candidateReviewRows, "status"),
     candidateReviewQueueByProfile: summarizeCounts(candidateReviewRows, "profileId"),
+    candidateReviewGroupsByStatus: summarizeCounts(candidateReviewGroups, "status"),
     batchReport,
     catalogFormatCoverage: countCatalogFormats(entries),
     missingByPriorityGroup: summarizeCounts(missingRows, "priorityGroup"),
@@ -769,6 +848,8 @@ export function runExternalReferenceCoverageAudit({
     bulkCandidatesJson: toProjectPath(path.relative(root, bulkCandidatesJsonPath)),
     candidateReviewQueueCsv: toProjectPath(path.relative(root, candidateReviewCsvPath)),
     candidateReviewQueueJson: toProjectPath(path.relative(root, candidateReviewJsonPath)),
+    candidateReviewGroupsCsv: toProjectPath(path.relative(root, candidateReviewGroupCsvPath)),
+    candidateReviewGroupsJson: toProjectPath(path.relative(root, candidateReviewGroupJsonPath)),
     policy:
       "No media is downloaded. Safe inline preview/embed is allowed only for validated HTTPS sources with provider-specific verification, sandbox, lazy loading and fallback links.",
     curationRule:

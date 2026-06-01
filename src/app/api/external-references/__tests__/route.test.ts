@@ -80,6 +80,8 @@ const coverageFixture = {
   acceptedBulkCandidateEntries: 7,
   candidateReviewQueueEntries: 14890,
   candidateReviewQueueJson: "output/external-reference-coverage/symbtr-curated-reference-candidate-review-queue.json",
+  candidateReviewGroupEntries: 2978,
+  candidateReviewGroupsJson: "output/external-reference-coverage/symbtr-curated-reference-candidate-review-groups.json",
 };
 const autoAttachedFixture = {
   version: 1,
@@ -254,6 +256,26 @@ const candidateReviewQueueFixture = [
     curationDecisionStatus: "source-mismatch",
   },
 ];
+const candidateReviewGroupsFixture = [
+  {
+    groupId: `${CATALOG_ID}:review-group`,
+    catalogId: CATALOG_ID,
+    status: "needs-review",
+    reviewAction: "review-provider-candidates",
+    candidateCount: 1,
+    profileCount: 1,
+    profiles: ["divanmakam"],
+    providers: ["score"],
+    confidenceLevels: ["medium"],
+    highestReviewConfidenceScore: 85,
+    makam: "Ussak",
+    form: "İlahi",
+    usul: "Duyek",
+    title: "Dostun Senden",
+    composer: "Ali Rifat Cagatay",
+    priorityGroup: "pdf-and-musicxml",
+  },
+];
 const OPS_TOKEN_HEADER = "x-external-reference-ops-token";
 
 function authedRequest(url: string, init: RequestInit = {}): Request {
@@ -318,6 +340,10 @@ function mockJsonFiles() {
       return JSON.stringify(candidateReviewQueueFixture);
     }
 
+    if (filePath.includes("symbtr-curated-reference-candidate-review-groups.json")) {
+      return JSON.stringify(candidateReviewGroupsFixture);
+    }
+
     if (filePath.includes("symbtr-curated-reference-next-batch.json")) {
       return JSON.stringify(nextBatchFixture);
     }
@@ -361,6 +387,15 @@ describe("/api/external-references route", () => {
     }));
     expect(body.curation.backlogNextBatch[0].catalogId).toBe(CATALOG_ID);
     expect(body.curation.candidateReviewQueue[0].candidateId).toBe(`${CATALOG_ID}:divanmakam:search`);
+    expect(body.curation.candidateReviewGroups[0]).toEqual(expect.objectContaining({
+      groupId: `${CATALOG_ID}:review-group`,
+      candidateCount: 1,
+      reviewAction: "review-provider-candidates",
+    }));
+    expect(body.curation.candidateReviewGroupManifest).toEqual(expect.objectContaining({
+      groupCount: 1,
+      artifactPath: "output/external-reference-coverage/symbtr-curated-reference-candidate-review-groups.json",
+    }));
     expect(body.curation.candidateReviewPage).toEqual(expect.objectContaining({
       returnedCount: 2,
       filteredTotal: 2,

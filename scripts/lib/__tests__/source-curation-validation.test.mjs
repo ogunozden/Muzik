@@ -121,6 +121,27 @@ function validRegistries() {
         deferredFromNextBatch: false,
       },
     ],
+    candidateReviewGroups: [
+      {
+        groupId: `${catalog[0].id}:review-group`,
+        catalogId: catalog[0].id,
+        status: "needs-review",
+        reviewAction: "review-provider-candidates",
+        candidateCount: 1,
+        profileCount: 1,
+        profiles: ["youtube"],
+        providers: ["youtube"],
+        confidenceLevels: ["low"],
+        highestReviewConfidenceScore: 64,
+        deferredFromNextBatch: false,
+        makam: "Hicazkar",
+        form: "Peşrev",
+        usul: "Düyek",
+        title: "Test Peşrev",
+        composer: "Besteci",
+        priorityGroup: "pdf-and-musicxml",
+      },
+    ],
     coverageSummary: {
       totalCatalogEntries: 2,
       curatedReferenceEntries: 1,
@@ -128,8 +149,10 @@ function validRegistries() {
       deferredMissingEntries: 0,
       nextBatchSize: 1,
       candidateReviewQueueEntries: 1,
+      candidateReviewGroupEntries: 1,
       candidateReviewQueueByStatus: [{value: "needs-review", count: 1}],
       candidateReviewQueueByProfile: [{value: "youtube", count: 1}],
+      candidateReviewGroupsByStatus: [{value: "needs-review", count: 1}],
       batchReport: {
         version: 1,
         flow: [
@@ -152,6 +175,7 @@ function validRegistries() {
         deferredMissingEntries: 0,
         nextBatchSize: 1,
         generatedReviewCandidates: 1,
+        generatedReviewGroups: 1,
         candidateReviewStatusCounts: [{value: "needs-review", count: 1}],
         duplicateAcceptedIdentityPolicy: "duplicate accepted URL identities fail validation before merge",
         autoAttachPolicy: "only accepted bulk candidates are counted as curated and eligible for auto-attach",
@@ -164,6 +188,7 @@ function validRegistries() {
           "profile-count-drift",
           "summary-count-drift",
           "metadata-strategy-profile-drift",
+          "candidate-review-group-drift",
         ],
       },
     },
@@ -181,6 +206,7 @@ describe("source curation validation", () => {
           feedbackEvents: 1,
           researchSourceProfiles: 1,
           candidateReviewQueueEntries: 1,
+          candidateReviewGroupEntries: 1,
         }),
       }),
     );
@@ -282,6 +308,7 @@ describe("source curation validation", () => {
     candidate.metadataStrategy = "none";
     candidate.queryFields = ["title"];
     registries.coverageSummary.candidateReviewQueueEntries = 2;
+    registries.coverageSummary.candidateReviewGroupEntries = 2;
 
     const result = validateSourceCurationRegistries(registries);
 
@@ -294,6 +321,35 @@ describe("source curation validation", () => {
         `candidate-review-queue: ${candidate.candidateId} metadataStrategy none does not match profile youtube`,
         `candidate-review-queue: ${candidate.candidateId} queryFields must include every available catalog query field`,
         "coverage-summary: candidateReviewQueueEntries 2 does not match candidate review queue rows 1",
+        "coverage-summary: candidateReviewGroupEntries 2 does not match candidate review queue rows 1",
+      ]),
+    );
+  });
+
+  it("rejects candidate review groups that drift from queue rows", () => {
+    const registries = validRegistries();
+    const group = registries.candidateReviewGroups[0];
+    group.status = "accepted";
+    group.sourceId = "youtube-test";
+    group.candidateCount = 2;
+    group.profileCount = 2;
+    group.profiles = ["divanmakam"];
+    group.highestReviewConfidenceScore = 120;
+    registries.coverageSummary.batchReport.generatedReviewGroups = 2;
+
+    const result = validateSourceCurationRegistries(registries);
+
+    expect(result.errors).toEqual(
+      expect.arrayContaining([
+        `candidate-review-groups: ${group.groupId} invalid status accepted`,
+        `candidate-review-groups: ${group.groupId} must not carry accepted source ids or source URLs`,
+        `candidate-review-groups: ${group.groupId} candidateCount must match review queue rows`,
+        `candidate-review-groups: ${group.groupId} profileCount must match unique review profiles`,
+        `candidate-review-groups: ${group.groupId} profiles must match review queue profiles`,
+        `candidate-review-groups: ${group.groupId} status must reflect review queue rows`,
+        `candidate-review-groups: ${group.groupId} highestReviewConfidenceScore must be between 0 and 100`,
+        "coverage-summary: batchReport.generatedReviewGroups must match candidate review group rows",
+        "coverage-summary: batchReport.generatedReviewGroups must equal missingAfterBatch",
       ]),
     );
   });

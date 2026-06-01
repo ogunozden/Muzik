@@ -18,6 +18,7 @@
   ],
   "researchSourceProfileEntries": 5,
   "candidateReviewQueueEntries": 14890,
+  "candidateReviewGroupEntries": 2978,
   "candidateReviewQueueByStatus": [
     {
       "value": "needs-review",
@@ -48,6 +49,16 @@
     {
       "value": "youtube",
       "count": 2978
+    }
+  ],
+  "candidateReviewGroupsByStatus": [
+    {
+      "value": "needs-review",
+      "count": 2977
+    },
+    {
+      "value": "conflict",
+      "count": 1
     }
   ],
   "batchReport": {
@@ -124,6 +135,7 @@
       }
     ],
     "generatedReviewCandidates": 14890,
+    "generatedReviewGroups": 2978,
     "candidateReviewQueryFields": [
       "makam",
       "form",
@@ -166,7 +178,8 @@
       "candidate-review-only",
       "profile-count-drift",
       "summary-count-drift",
-      "metadata-strategy-profile-drift"
+      "metadata-strategy-profile-drift",
+      "candidate-review-group-drift"
     ]
   },
   "catalogFormatCoverage": {
@@ -546,6 +559,8 @@
   "bulkCandidatesJson": "output/external-reference-coverage/symbtr-curated-reference-bulk-candidates.json",
   "candidateReviewQueueCsv": "output/external-reference-coverage/symbtr-curated-reference-candidate-review-queue.csv",
   "candidateReviewQueueJson": "output/external-reference-coverage/symbtr-curated-reference-candidate-review-queue.json",
+  "candidateReviewGroupsCsv": "output/external-reference-coverage/symbtr-curated-reference-candidate-review-groups.csv",
+  "candidateReviewGroupsJson": "output/external-reference-coverage/symbtr-curated-reference-candidate-review-groups.json",
   "policy": "No media is downloaded. Safe inline preview/embed is allowed only for validated HTTPS sources with provider-specific verification, sandbox, lazy loading and fallback links.",
   "curationRule": "Entries are prioritized by missing curated references, catalog-reported PDF/MusicXML/TXT source formats, named title/composer fields, and common form/usul groups. Search URLs are generated for review only; they are not evidence by themselves.",
   "nextBatchRule": "Rows with needs-disambiguation, source-mismatch, or deferred curation decisions remain in the backlog but are skipped from the next manual batch.",

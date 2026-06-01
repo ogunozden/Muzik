@@ -53,6 +53,7 @@ const REQUIRED_BATCH_VALIDATION_GATES = [
   "profile-count-drift",
   "summary-count-drift",
   "metadata-strategy-profile-drift",
+  "candidate-review-group-drift",
 ];
 
 function hasCatalogId(catalogIds, catalogId) {
@@ -174,7 +175,7 @@ function validateRequiredStrings(values, requiredValues, label, errors) {
   }
 }
 
-function validateBatchReport(summary, actualCandidateReviewCount, enabledProfileCount, errors) {
+function validateBatchReport(summary, actualCandidateReviewCount, actualCandidateReviewGroupCount, enabledProfileCount, errors) {
   const report = summary?.batchReport;
   if (report === undefined) return;
   if (!report || typeof report !== "object") {
@@ -191,6 +192,7 @@ function validateBatchReport(summary, actualCandidateReviewCount, enabledProfile
     "deferredMissingEntries",
     "nextBatchSize",
     "generatedReviewCandidates",
+    "generatedReviewGroups",
   ];
   for (const field of integerFields) {
     if (!Number.isInteger(report[field]) || report[field] < 0) {
@@ -216,8 +218,14 @@ function validateBatchReport(summary, actualCandidateReviewCount, enabledProfile
   if (report.generatedReviewCandidates !== actualCandidateReviewCount) {
     errors.push("coverage-summary: batchReport.generatedReviewCandidates must match candidate review queue rows");
   }
+  if (report.generatedReviewGroups !== actualCandidateReviewGroupCount) {
+    errors.push("coverage-summary: batchReport.generatedReviewGroups must match candidate review group rows");
+  }
   if (report.generatedReviewCandidates !== report.missingAfterBatch * enabledProfileCount) {
     errors.push("coverage-summary: batchReport.generatedReviewCandidates must equal missingAfterBatch times enabled profile count");
+  }
+  if (report.generatedReviewGroups !== report.missingAfterBatch) {
+    errors.push("coverage-summary: batchReport.generatedReviewGroups must equal missingAfterBatch");
   }
   if (report.newlyAcceptedCatalogEntries > summary?.acceptedBulkCandidateEntries) {
     errors.push("coverage-summary: batchReport.newlyAcceptedCatalogEntries cannot exceed acceptedBulkCandidateEntries");
@@ -253,6 +261,7 @@ export function validateSourceCurationRegistries({
   qualityStats,
   sources,
   candidateReviewQueue,
+  candidateReviewGroups,
   coverageSummary,
 }) {
   const errors = [];
@@ -494,11 +503,17 @@ export function validateSourceCurationRegistries({
 
       const candidateReviewStatusCounts = new Map();
       const candidateReviewProfileCounts = new Map();
+      const candidateRowsByCatalogId = new Map();
 
       for (const row of candidateReviewQueue) {
         const candidateLabel = row?.candidateId ?? "<missing-candidate-id>";
         incrementCount(candidateReviewStatusCounts, row?.status);
         incrementCount(candidateReviewProfileCounts, row?.profileId);
+        if (isNonEmptyString(row?.catalogId)) {
+          const rowsForCatalog = candidateRowsByCatalogId.get(row.catalogId) ?? [];
+          rowsForCatalog.push(row);
+          candidateRowsByCatalogId.set(row.catalogId, rowsForCatalog);
+        }
 
         if (!isNonEmptyString(row?.candidateId)) {
           errors.push("candidate-review-queue: candidateId is required");
@@ -580,9 +595,65 @@ export function validateSourceCurationRegistries({
         validateBatchReport(
           coverageSummary,
           candidateReviewQueue.length,
+          Array.isArray(candidateReviewGroups) ? candidateReviewGroups.length : 0,
           enabledResearchProfileIds.size,
           errors,
         );
+      }
+
+      if (candidateReviewGroups !== undefined) {
+        if (!Array.isArray(candidateReviewGroups)) {
+          errors.push("candidate-review-groups: rows must be an array");
+        } else {
+          validateUnique(candidateReviewGroups.map((row) => row.groupId), "candidate-review-groups", errors);
+
+          const candidateReviewGroupStatusCounts = new Map();
+          for (const group of candidateReviewGroups) {
+            const groupLabel = group?.groupId ?? "<missing-group-id>";
+            const rowsForCatalog = candidateRowsByCatalogId.get(group?.catalogId) ?? [];
+            const expectedProfiles = Array.from(new Set(rowsForCatalog.map((row) => row.profileId).filter(Boolean))).sort();
+            const expectedStatus = rowsForCatalog.some((row) => row.status === "conflict") ? "conflict" : "needs-review";
+            incrementCount(candidateReviewGroupStatusCounts, group?.status);
+
+            if (!isNonEmptyString(group?.groupId)) {
+              errors.push("candidate-review-groups: groupId is required");
+            } else if (group.groupId !== `${group.catalogId}:review-group`) {
+              errors.push(`candidate-review-groups: ${groupLabel} groupId must match catalogId:review-group`);
+            }
+            if (!hasCatalogId(catalogIds, group?.catalogId)) {
+              errors.push(`candidate-review-groups: ${groupLabel} unknown catalogId ${group?.catalogId}`);
+            }
+            if (!CANDIDATE_REVIEW_STATUSES.has(group?.status)) {
+              errors.push(`candidate-review-groups: ${groupLabel} invalid status ${group?.status}`);
+            }
+            if (group?.sourceId !== undefined || group?.sourceUrl !== undefined || group?.url !== undefined) {
+              errors.push(`candidate-review-groups: ${groupLabel} must not carry accepted source ids or source URLs`);
+            }
+            if (!Number.isInteger(group?.candidateCount) || group.candidateCount !== rowsForCatalog.length) {
+              errors.push(`candidate-review-groups: ${groupLabel} candidateCount must match review queue rows`);
+            }
+            if (!Number.isInteger(group?.profileCount) || group.profileCount !== expectedProfiles.length) {
+              errors.push(`candidate-review-groups: ${groupLabel} profileCount must match unique review profiles`);
+            }
+            if (!Array.isArray(group?.profiles) || group.profiles.join("|") !== expectedProfiles.join("|")) {
+              errors.push(`candidate-review-groups: ${groupLabel} profiles must match review queue profiles`);
+            }
+            if (group.status !== expectedStatus) {
+              errors.push(`candidate-review-groups: ${groupLabel} status must reflect review queue rows`);
+            }
+            if (!isNonEmptyString(group?.reviewAction)) {
+              errors.push(`candidate-review-groups: ${groupLabel} reviewAction is required`);
+            }
+            if (typeof group?.highestReviewConfidenceScore !== "number" || group.highestReviewConfidenceScore < 0 || group.highestReviewConfidenceScore > 100) {
+              errors.push(`candidate-review-groups: ${groupLabel} highestReviewConfidenceScore must be between 0 and 100`);
+            }
+          }
+
+          if (coverageSummary !== undefined) {
+            validateCoverageCount(coverageSummary, "candidateReviewGroupEntries", candidateReviewGroups.length, errors);
+            validateCoverageBreakdown(coverageSummary.candidateReviewGroupsByStatus, "candidateReviewGroupsByStatus", candidateReviewGroupStatusCounts, errors);
+          }
+        }
       }
     }
   }
@@ -599,6 +670,7 @@ export function validateSourceCurationRegistries({
       embedStates: embedStates?.states?.length ?? 0,
       sourceQualityStats: qualityStats?.stats?.length ?? 0,
       candidateReviewQueueEntries: Array.isArray(candidateReviewQueue) ? candidateReviewQueue.length : 0,
+      candidateReviewGroupEntries: Array.isArray(candidateReviewGroups) ? candidateReviewGroups.length : 0,
     },
   };
 }

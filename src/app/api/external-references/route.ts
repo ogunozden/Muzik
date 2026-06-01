@@ -33,6 +33,12 @@ const CANDIDATE_REVIEW_QUEUE_FILE = path.join(
   "external-reference-coverage",
   "symbtr-curated-reference-candidate-review-queue.json",
 );
+const CANDIDATE_REVIEW_GROUPS_FILE = path.join(
+  PROJECT_ROOT,
+  "output",
+  "external-reference-coverage",
+  "symbtr-curated-reference-candidate-review-groups.json",
+);
 const TEMP_INPUT_DIR = path.join(PROJECT_ROOT, "output", "external-reference-coverage", "ui-input");
 const JSON_MAX_BUFFER_BYTES = 1024 * 1024 * 12;
 const MAX_BULK_TEXT_CHARS = 100_000;
@@ -236,6 +242,26 @@ interface CandidateReviewRow {
   priorityGroup?: string;
   deferredFromNextBatch?: boolean;
   curationDecisionStatus?: string;
+}
+
+interface CandidateReviewGroup {
+  groupId?: string;
+  catalogId?: string;
+  status?: string;
+  reviewAction?: string;
+  candidateCount?: number;
+  profileCount?: number;
+  profiles?: string[];
+  providers?: string[];
+  confidenceLevels?: string[];
+  highestReviewConfidenceScore?: number;
+  deferredFromNextBatch?: boolean;
+  makam?: string;
+  form?: string;
+  usul?: string;
+  title?: string;
+  composer?: string;
+  priorityGroup?: string;
 }
 
 interface CurationStat {
@@ -600,6 +626,7 @@ async function getExternalReferenceState(request: Request) {
     qualityStats,
     bulkCandidateManifest,
     candidateReviewQueue,
+    candidateReviewGroups,
     fullBacklog,
     nextBatch,
   ] = await Promise.all([
@@ -630,6 +657,7 @@ async function getExternalReferenceState(request: Request) {
     readJsonOrNull<{generatedAt?: string | null; stats?: CurationStat[]}>(QUALITY_STATS_FILE),
     readJsonOrNull<BulkCandidateManifest>(BULK_CANDIDATES_FILE),
     readJsonOrNull<CandidateReviewRow[]>(CANDIDATE_REVIEW_QUEUE_FILE),
+    readJsonOrNull<CandidateReviewGroup[]>(CANDIDATE_REVIEW_GROUPS_FILE),
     readJsonOrNull<CurationBacklogRow[]>(BACKLOG_FILE),
     readJsonOrNull<CurationBacklogRow[]>(NEXT_BATCH_FILE),
   ]);
@@ -642,6 +670,7 @@ async function getExternalReferenceState(request: Request) {
   const stats = qualityStats?.stats ?? [];
   const sourceLookup = buildSourceLookup(mapping);
   const candidateReviewRows = candidateReviewQueue ?? [];
+  const candidateReviewGroupRows = candidateReviewGroups ?? [];
   const filteredCandidateReviewRows = applyCandidateReviewQuery(candidateReviewRows, candidateReviewQuery);
   const candidateReviewOffset = clampBacklogOffset(
     candidateReviewQuery.offset,
@@ -722,6 +751,14 @@ async function getExternalReferenceState(request: Request) {
       },
       autoAttachedReferences: referenceViews.slice(0, 160),
       candidateManifest: summarizeBulkCandidateManifest(bulkCandidateManifest),
+      candidateReviewGroups: candidateReviewGroupRows.slice(0, 80),
+      candidateReviewGroupManifest: {
+        artifactPath: typeof coverage?.candidateReviewGroupsJson === "string"
+          ? coverage.candidateReviewGroupsJson
+          : toProjectRelativePath(CANDIDATE_REVIEW_GROUPS_FILE),
+        groupCount: candidateReviewGroupRows.length,
+        visibleGroupCount: Math.min(candidateReviewGroupRows.length, 80),
+      },
       candidateReviewQueue: candidateReviewPageRows,
       candidateReviewPage: {
         offset: candidateReviewOffset,

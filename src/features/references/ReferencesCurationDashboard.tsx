@@ -136,6 +136,26 @@ interface CandidateReviewPage {
   artifactPath?: string;
 }
 
+interface CandidateReviewGroup {
+  groupId?: string;
+  catalogId?: string;
+  status?: string;
+  reviewAction?: string;
+  candidateCount?: number;
+  profileCount?: number;
+  profiles?: string[];
+  providers?: string[];
+  confidenceLevels?: string[];
+  highestReviewConfidenceScore?: number;
+  deferredFromNextBatch?: boolean;
+  makam?: string;
+  form?: string;
+  usul?: string;
+  title?: string;
+  composer?: string;
+  priorityGroup?: string;
+}
+
 interface ExternalReferenceState {
   coverage?: {
     totalCatalogEntries?: number;
@@ -179,6 +199,12 @@ interface ExternalReferenceState {
       rejectedCount?: number;
       conflictCount?: number;
       statusCounts?: Record<string, number>;
+    };
+    candidateReviewGroups?: CandidateReviewGroup[];
+    candidateReviewGroupManifest?: {
+      artifactPath?: string;
+      groupCount?: number;
+      visibleGroupCount?: number;
     };
     candidateReviewQueue?: CandidateReviewRow[];
     candidateReviewPage?: CandidateReviewPage;
@@ -657,6 +683,8 @@ export function ReferencesCurationDashboard() {
   const isBusy = activeOperation !== null;
   const backlogPage = state.curation?.backlogPage;
   const candidateManifest = state.curation?.candidateManifest;
+  const candidateReviewGroupManifest = state.curation?.candidateReviewGroupManifest;
+  const candidateReviewGroups = state.curation?.candidateReviewGroups ?? [];
   const candidateReviewPage = state.curation?.candidateReviewPage;
   const candidateReviewRows = state.curation?.candidateReviewQueue ?? [];
   const batchReport = state.coverage?.batchReport;
@@ -758,6 +786,67 @@ export function ReferencesCurationDashboard() {
                   className={`min-h-40 w-full rounded-md border ${tokens.colors.border.base} bg-white px-3 py-2 font-mono text-xs ${tokens.colors.text.primary}`}
                 />
               </label>
+            </div>
+          </section>
+
+          <section className={`min-w-0 overflow-hidden border ${tokens.colors.border.base} ${tokens.radius.lg} ${tokens.colors.background.surface}`}>
+            <div className="flex flex-col gap-2 border-b border-[var(--color-border)] px-4 py-3">
+              <h2 className={`text-lg font-semibold ${tokens.colors.text.primary}`}>Aday review grupları</h2>
+              <p className={`text-xs ${tokens.colors.text.secondary}`}>
+                {formatNumber(candidateReviewGroupManifest?.visibleGroupCount ?? candidateReviewGroups.length)} gösteriliyor · {formatNumber(candidateReviewGroupManifest?.groupCount)} grup
+              </p>
+              {candidateReviewGroupManifest?.artifactPath && (
+                <code className="block break-all text-xs text-[var(--color-text-primary)]">{candidateReviewGroupManifest.artifactPath}</code>
+              )}
+            </div>
+            <div className="w-full overflow-x-auto">
+              <table className="w-full min-w-[980px] border-collapse text-sm">
+                <thead>
+                  <tr className={`border-b border-[var(--color-border)] text-left ${tokens.colors.text.secondary}`}>
+                    <th className="px-4 py-3 font-medium">Durum</th>
+                    <th className="px-4 py-3 font-medium">Eser</th>
+                    <th className="px-4 py-3 font-medium">Profil seti</th>
+                    <th className="px-4 py-3 font-medium">Aksiyon</th>
+                    <th className="px-4 py-3 font-medium">Skor</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {candidateReviewGroups.length === 0 ? (
+                    <tr>
+                      <td colSpan={5} className={`px-4 py-8 ${tokens.colors.text.secondary}`}>
+                        Kayıt yok.
+                      </td>
+                    </tr>
+                  ) : (
+                    candidateReviewGroups.slice(0, 20).map((group) => (
+                      <tr key={group.groupId ?? group.catalogId} className="border-b border-[var(--color-border)] last:border-b-0">
+                        <td className="px-4 py-3">
+                          <span className={`rounded-sm px-2 py-1 text-xs ${statusClasses(group.status)}`}>
+                            {group.status ?? "-"}
+                          </span>
+                          {group.deferredFromNextBatch && <div className={`mt-1 text-xs ${tokens.colors.text.secondary}`}>deferred</div>}
+                        </td>
+                        <td className="px-4 py-3">
+                          <div className={`font-medium ${tokens.colors.text.primary}`}>{group.title ?? "-"}</div>
+                          <div className={`mt-1 text-xs ${tokens.colors.text.secondary}`}>{[group.makam, group.form, group.usul].filter(Boolean).join(" / ") || "-"}</div>
+                          {group.catalogId && <code className="mt-1 block break-all text-xs text-[var(--color-text-primary)]">{group.catalogId}</code>}
+                        </td>
+                        <td className={`px-4 py-3 ${tokens.colors.text.secondary}`}>
+                          <div>{formatNumber(group.candidateCount)} aday · {formatNumber(group.profileCount)} profil</div>
+                          <div className="mt-1 text-xs">{group.profiles?.join(" / ") || "-"}</div>
+                        </td>
+                        <td className={`px-4 py-3 ${tokens.colors.text.secondary}`}>{group.reviewAction ?? "-"}</td>
+                        <td className={`px-4 py-3 ${tokens.colors.text.secondary}`}>
+                          {formatNumber(group.highestReviewConfidenceScore)}
+                          {group.confidenceLevels && group.confidenceLevels.length > 0 && (
+                            <div className="mt-1 text-xs">{group.confidenceLevels.join(" / ")}</div>
+                          )}
+                        </td>
+                      </tr>
+                    ))
+                  )}
+                </tbody>
+              </table>
             </div>
           </section>
 

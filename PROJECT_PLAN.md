@@ -208,6 +208,12 @@ tek kurala bağlamaktır.
       `src/app/api/external-references/curation-state.ts` içinde tek API state
       modülü olarak toplandı; route artık dosya okuma, batch pagination/export
       ve operasyon orkestrasyonu sınırında kalır.
+      2026-06-01 Faz 7: aynı API'nin backlog/candidate review query, offset
+      clamp ve facet üretimi `src/app/api/external-references/curation-query.ts`
+      içine ayrıldı. `candidate-review-export`, review group export, karar
+      önerisi ve karar şablonu yolları aynı merkezi filtre modülünü kullanır;
+      route testlerine ek olarak modülün missing scope, provider/profile/status,
+      composer, text query, facet ve pagination davranışı doğrudan testlenir.
       2026-06-01 Faz 4: curation registry I/O ve validation ortak sözleşmesi
       `scripts/lib/source-curation-registry.mjs`, append-only feedback/manual
       correction/embed-state/stats operasyonları ise

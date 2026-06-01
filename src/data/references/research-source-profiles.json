@@ -44,6 +44,17 @@
       "embedCapability": "iframe",
       "metadataStrategy": "html-title",
       "enabled": true
+    },
+    {
+      "id": "internet-archive",
+      "label": "Internet Archive",
+      "baseUrl": "https://archive.org",
+      "searchUrlTemplate": "https://archive.org/search?query={query}",
+      "provider": "archive",
+      "trustWeight": 0.55,
+      "embedCapability": "iframe",
+      "metadataStrategy": "html-title",
+      "enabled": true
     }
   ]
 }

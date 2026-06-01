@@ -27,6 +27,7 @@ export const SOURCE_FEEDBACK_EVENT_TYPES = new Set([
 ]);
 
 const CONFIDENCE_LEVELS = new Set(["high", "medium", "low", "conflict"]);
+const CANDIDATE_REVIEW_CONFIDENCE_LEVELS = new Set(["high", "medium", "low", "conflict", "needs-context"]);
 const CANDIDATE_REVIEW_STATUSES = new Set(["needs-review", "conflict"]);
 const PROVIDERS = new Set(["score", "symbtr", "youtube", "archive", "github"]);
 const EMBED_CAPABILITIES = new Set(["none", "iframe", "pdf", "youtube"]);
@@ -533,7 +534,7 @@ export function validateSourceCurationRegistries({
         if (typeof row?.reviewConfidenceScore !== "number" || row.reviewConfidenceScore < 0 || row.reviewConfidenceScore > 100) {
           errors.push(`candidate-review-queue: ${candidateLabel} reviewConfidenceScore must be between 0 and 100`);
         }
-        if (!CONFIDENCE_LEVELS.has(row?.reviewConfidenceLevel)) {
+        if (!CANDIDATE_REVIEW_CONFIDENCE_LEVELS.has(row?.reviewConfidenceLevel)) {
           errors.push(`candidate-review-queue: ${candidateLabel} has invalid reviewConfidenceLevel`);
         }
         if (!Array.isArray(row?.scoreReasons) || row.scoreReasons.length === 0 || row.scoreReasons.some((reason) => !isNonEmptyString(reason))) {

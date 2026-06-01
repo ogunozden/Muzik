@@ -78,7 +78,7 @@ const coverageFixture = {
   curatedReferenceEntries: 22,
   missingCuratedEntries: 2978,
   acceptedBulkCandidateEntries: 7,
-  candidateReviewQueueEntries: 11912,
+  candidateReviewQueueEntries: 14890,
   candidateReviewQueueJson: "output/external-reference-coverage/symbtr-curated-reference-candidate-review-queue.json",
 };
 const autoAttachedFixture = {

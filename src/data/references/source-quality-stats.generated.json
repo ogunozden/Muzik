@@ -1,10 +1,20 @@
 {
   "version": 1,
-  "generatedAt": "2026-06-01T01:33:27.422Z",
+  "generatedAt": "2026-06-01T01:56:52.562Z",
   "stats": [
     {
       "profileId": "divanmakam",
       "acceptedCount": 5,
+      "removedCount": 0,
+      "deletedCount": 0,
+      "correctedCount": 0,
+      "mismatchCount": 0,
+      "embedSuccessCount": 0,
+      "embedFailureCount": 0
+    },
+    {
+      "profileId": "internet-archive",
+      "acceptedCount": 0,
       "removedCount": 0,
       "deletedCount": 0,
       "correctedCount": 0,

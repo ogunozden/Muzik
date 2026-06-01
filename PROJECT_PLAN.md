@@ -104,6 +104,10 @@ tek kurala bağlamaktır.
       `profile-metadata-strategy` scoring sinyalini doğrulanabilir kapı olarak
       raporlar. PDF içi metadata parse ve doğrulanmış otomatik terfi hâlâ
       review/validation işi olarak açık kalır.
+      2026-06-01 archive coverage dalgası: merkezi
+      `research-source-profiles.json` içine `internet-archive` profili eklendi.
+      Eksik 2978 eser için archive provider arama adayları da review-only queue'ya
+      girer; auto-attach hâlâ yalnız accepted kaynaklarla sınırlıdır.
 - [x] Otomatik iliştirilen kaynaklar için kalıcı feedback/event log ekle.
       Kullanıcının `user-removed`, `delete-requested`, `deleted`,
       `user-prioritized`, `user-demoted`, `user-corrected`, `manual-entry`
@@ -198,6 +202,9 @@ tek kurala bağlamaktır.
       `scripts/lib/source-curation-events.mjs` içine ayrıldı. Eski
       `source-curation-operations.mjs` import yüzeyi korunur ama auto-attach
       üretimi ile event/stat mutasyonları artık ayrı modül sınırlarında testlenir.
+      2026-06-01 Faz 5: archive provider profili merkezi config'e alındı;
+      candidate review queue büyümesi profile-count/summary-count validation
+      kapılarıyla katalog-geneli doğrulanır.
 - [ ] Yeni model için validation/test kapılarını ekle: auto-attached kaynak
       sözleşmesi, feedback event bütünlüğü, silme/geri alma akışı, embed
       allowlist/fallback, filtre sonuçları, ops token davranışı, büyük liste
@@ -558,8 +565,8 @@ tek kurala bağlamaktır.
         toggle'ı, dışa/içe aktar butonları ve aday/status özetini gösterir.
 58. [x] Provider-profile candidate review queue batch artifact'i eklendi:
         `audit:external-references` artık merkezi
-        `research-source-profiles.json` üzerinden 2978 eksik eser x 4 etkin
-        profil için 11912 adet search-candidate review satırı üretir. Çıktılar
+        `research-source-profiles.json` üzerinden 2978 eksik eser x 5 etkin
+        profil için 14890 adet search-candidate review satırı üretir. Çıktılar
         `output/external-reference-coverage/symbtr-curated-reference-candidate-review-queue.json`
         ve `.csv` dosyalarıdır. Satırlar `needs-review` veya `conflict`
         statüsündedir; bunlar kaynak kanıtı değildir ve accepted URL manifestine
@@ -568,12 +575,12 @@ tek kurala bağlamaktır.
 59. [x] Candidate review queue UI/API sayfalama eklendi:
         `/api/external-references` artık
         `candidateLimit`/`candidateOffset`/`candidateStatus`/`candidateProfile`
-        query parametreleriyle 11912 satırlık candidate review queue'yu bounded
+        query parametreleriyle 14890 satırlık candidate review queue'yu bounded
         ve facet'li döndürür. `/references/curation` `Aday review queue`
         tablosu, durum/profil filtreleri, 100/250/500 sayfa boyutu, önceki/
         sonraki gezinme, arama linki ve review confidence bilgisini gösterir.
 60. [x] Candidate review queue validation kapısı eklendi:
-        `scripts/lib/source-curation-validation.mjs` artık 11912 review-only
+        `scripts/lib/source-curation-validation.mjs` artık 14890 review-only
         candidate satırını merkezi profil/policy kurallarıyla doğrular.
         `accepted` statü, source id/source URL taşıyan review adayı, profile
         provider/trust drift'i, confidence sınır dışı değeri ve `summary.json`
@@ -593,7 +600,7 @@ tek kurala bağlamaktır.
         coverage-report akışını, 3000 işlenen eser sayısını, önceki curated
         sayısını, yeni accepted katalog id'lerini, missing/deferred/next batch
         sayısını, status/profile kırılımlarını ve validation gate listesini
-        yazar. `curation:validate` bu batch raporunun summary ve 11912 review
+        yazar. `curation:validate` bu batch raporunun summary ve 14890 review
         queue satırıyla drift etmediğini doğrular; dashboard üst metriklerde
         batch raporunu gösterir.
 
@@ -710,22 +717,22 @@ tek kurala bağlamaktır.
 - 2026-06-01 provider-profile candidate review queue doğrulaması:
   `node node_modules/vitest/vitest.mjs run scripts/lib/__tests__/external-reference-audit.test.mjs src/app/api/external-references/__tests__/route.test.ts src/app/references/curation/__tests__/page.test.tsx`
   geçti: 3 dosya, 29 test. `npm run typecheck` temiz. `npm run audit:external-references`
-  11912 candidate review queue satırı üretti: 11908 needs-review, 4 conflict;
-  her research profile için 2978 satır var (`divanmakam`, `ogm-materyal`,
-  `salihbora`, `youtube`).
+  14890 candidate review queue satırı üretti: 14885 needs-review, 5 conflict;
+  her research profile için 2978 satır var (`divanmakam`, `internet-archive`,
+  `ogm-materyal`, `salihbora`, `youtube`).
 - 2026-06-01 candidate review queue Browser QA:
-  Yeni build ile prod server yeniden başlatıldı. API smoke `candidateReviewQueueEntries=11912`,
+  Yeni build ile prod server yeniden başlatıldı. API smoke `candidateReviewQueueEntries=14890`,
   `candidateReviewQueueJson=output/external-reference-coverage/symbtr-curated-reference-candidate-review-queue.json`
   ve 2978 backlog sonucunu döndürdü. Browser QA `/references/curation`
-  üzerinde `11.912 queue` metnini, candidate review queue JSON artifact yolunu,
+  üzerinde `14.890 queue` metnini, candidate review queue JSON artifact yolunu,
   7 accepted özetini ve 2978 filtreli backlog bilgisini doğruladı; console
   warning/error yok ve yatay overflow yok. Screenshot:
   `C:/Users/OGUNOZ~1/AppData/Local/Temp/muzik-curation-candidate-review-queue-panel-qa.png`.
 - 2026-06-01 candidate review queue pagination QA:
   `GET /api/external-references?candidateLimit=100&candidateOffset=100&candidateProfile=youtube&candidateStatus=needs-review`
-  100 satır, 2977 filtreli YouTube needs-review, toplam 11912 queue ve
+  100 satır, 2977 filtreli YouTube needs-review, toplam 14890 queue ve
   `nextOffset=200` döndürdü. Browser QA `/references/curation` üzerinde `Aday
-  review queue` tablosunu, `100 gösteriliyor · 11.912 filtreli · 11.912 toplam`
+  review queue` tablosunu, `100 gösteriliyor · 2.977 filtreli · 14.890 toplam`
   metnini, durum/profil filtrelerini, `Aday ara` linklerini ve `Aday sonraki`
   etkileşimini doğruladı; console warning/error yok ve yatay overflow yok.
   Screenshot:
@@ -740,7 +747,7 @@ tek kurala bağlamaktır.
 - 2026-06-01 candidate review queue validation hardening:
   `node node_modules/vitest/vitest.mjs run scripts/lib/__tests__/source-curation-validation.test.mjs`
   geçti: 1 dosya, 6 test. `npm run curation:validate` 3000 katalog, 7
-  auto-attached, 4 research profile, 4 quality stat ve 11912 candidate review
+  auto-attached, 5 research profile, 5 quality stat ve 14890 candidate review
   queue satırını 0 hata ile doğruladı.
 - 2026-06-01 filtered candidate review queue export:
   `node node_modules/vitest/vitest.mjs run src/app/api/external-references/__tests__/route.test.ts src/app/references/curation/__tests__/page.test.tsx`
@@ -751,7 +758,7 @@ tek kurala bağlamaktır.
 - 2026-06-01 filtered candidate review queue export QA:
   Production server 4012 yeni build ve token-required local ops ayarıyla
   yeniden başlatıldı. API smoke `candidate-review-export` için `status=conflict`
-  ve `profileId=youtube` filtrelerinde 1 satır / toplam 11912 döndürdü; manifest
+  ve `profileId=youtube` filtrelerinde 1 satır / toplam 14890 döndürdü; manifest
   tipi `candidate-review-queue-export`, ilk satır `youtube/conflict`. Browser QA
   `Queue dışa aktar` sonrası `Filtreli review queue JSON` alanını doğruladı:
   JSON içinde `candidate-review-queue-export` ve `profileId: youtube` var,
@@ -917,8 +924,8 @@ tek kurala bağlamaktır.
   409 yolu doğrulandı.
 - `npm run curation:auto-attach`, `npm run curation:stats` ve
   `npm run curation:validate` başarılı: 3000 katalog entry, 7 auto-attached
-  reference, 0 feedback event, 0 manual correction, 4 research source profile,
-  0 embed state ve 4 source quality stats için registry bütünlüğü doğrulandı.
+  reference, 0 feedback event, 0 manual correction, 5 research source profile,
+  0 embed state ve 5 source quality stats için registry bütünlüğü doğrulandı.
 - `npx vitest run src/app/api/external-references/__tests__/route.test.ts src/app/references/curation/__tests__/page.test.tsx scripts/lib/__tests__/source-curation-operations.test.mjs scripts/lib/__tests__/source-curation-validation.test.mjs`
   başarılı: 4 dosya, 20 test; API curation state/action sözleşmesi, temp JSON
   payload cleanup, dashboard refresh ve satır feedback akışı doğrulandı.

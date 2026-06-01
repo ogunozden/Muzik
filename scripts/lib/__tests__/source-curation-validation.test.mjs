@@ -298,6 +298,21 @@ describe("source curation validation", () => {
     );
   });
 
+  it("allows review-only candidates to carry needs-context confidence without widening auto-attached confidence", () => {
+    const registries = validRegistries();
+    const candidate = registries.candidateReviewQueue[0];
+    candidate.reviewConfidenceLevel = "needs-context";
+
+    expect(validateSourceCurationRegistries(registries).errors).not.toContain(
+      `candidate-review-queue: ${candidate.candidateId} has invalid reviewConfidenceLevel`,
+    );
+
+    registries.autoAttached.references[0].confidenceLevel = "needs-context";
+    expect(validateSourceCurationRegistries(registries).errors).toContain(
+      "auto-attached-references: youtube-test has invalid confidenceLevel",
+    );
+  });
+
   it("rejects batch report drift from coverage and review queue counts", () => {
     const registries = validRegistries();
     registries.coverageSummary.batchReport.generatedReviewCandidates = 2;

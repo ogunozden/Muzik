@@ -16,21 +16,25 @@
     "ussak--ilahi--duyek--allah_emrin--zekai_dede",
     "ussak--ilahi--sofyan--askinla_cak--haci_nafiz_bey"
   ],
-  "researchSourceProfileEntries": 4,
-  "candidateReviewQueueEntries": 11912,
+  "researchSourceProfileEntries": 5,
+  "candidateReviewQueueEntries": 14890,
   "candidateReviewQueueByStatus": [
     {
       "value": "needs-review",
-      "count": 11908
+      "count": 14885
     },
     {
       "value": "conflict",
-      "count": 4
+      "count": 5
     }
   ],
   "candidateReviewQueueByProfile": [
     {
       "value": "divanmakam",
+      "count": 2978
+    },
+    {
+      "value": "internet-archive",
       "count": 2978
     },
     {
@@ -76,16 +80,20 @@
     "candidateReviewStatusCounts": [
       {
         "value": "needs-review",
-        "count": 11908
+        "count": 14885
       },
       {
         "value": "conflict",
-        "count": 4
+        "count": 5
       }
     ],
     "candidateReviewProfileCounts": [
       {
         "value": "divanmakam",
+        "count": 2978
+      },
+      {
+        "value": "internet-archive",
         "count": 2978
       },
       {
@@ -108,10 +116,14 @@
       },
       {
         "value": "low",
-        "count": 1070
+        "count": 4043
+      },
+      {
+        "value": "needs-context",
+        "count": 5
       }
     ],
-    "generatedReviewCandidates": 11912,
+    "generatedReviewCandidates": 14890,
     "candidateReviewQueryFields": [
       "makam",
       "form",

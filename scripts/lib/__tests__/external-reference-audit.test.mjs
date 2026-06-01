@@ -115,6 +115,14 @@ function createAuditRoot() {
         trustWeight: 0.65,
         enabled: true,
       },
+      {
+        id: "internet-archive",
+        label: "Internet Archive",
+        searchUrlTemplate: "https://archive.org/search?query={query}",
+        provider: "archive",
+        trustWeight: 0.55,
+        enabled: true,
+      },
     ],
   });
   return root;
@@ -172,8 +180,8 @@ describe("external reference audit", () => {
         curationDecisionEntries: 1,
         bulkCandidateEntries: 1,
         acceptedBulkCandidateEntries: 1,
-        researchSourceProfileEntries: 2,
-        candidateReviewQueueEntries: 2,
+        researchSourceProfileEntries: 3,
+        candidateReviewQueueEntries: 3,
         nextBatchSize: 0,
         deferredCatalogIds: ["hicaz--pesrev--devrikebir--ucuncu_eser--besteci"],
         batchReport: expect.objectContaining({
@@ -183,7 +191,7 @@ describe("external reference audit", () => {
           curatedAfterBatch: 2,
           missingAfterBatch: 1,
           deferredMissingEntries: 1,
-          generatedReviewCandidates: 2,
+          generatedReviewCandidates: 3,
           validationGates: expect.arrayContaining(["candidate-review-only", "summary-count-drift"]),
         }),
       }),
@@ -200,7 +208,7 @@ describe("external reference audit", () => {
     );
     expect(nextBatchJson).toEqual([]);
     expect(backlogJson).toHaveLength(3);
-    expect(candidateReviewJson).toHaveLength(2);
+    expect(candidateReviewJson).toHaveLength(3);
     expect(candidateReviewJson[0]).toEqual(expect.objectContaining({
       catalogId: "hicaz--pesrev--devrikebir--ucuncu_eser--besteci",
       status: "needs-review",
@@ -220,7 +228,7 @@ describe("external reference audit", () => {
     const profiles = readResearchSourceProfiles(path.join(root, "src/data/references/research-source-profiles.json"));
     const candidates = buildCandidateReviewRows(rows, profiles);
 
-    expect(candidates).toHaveLength(4);
+    expect(candidates).toHaveLength(6);
     expect(candidates).toEqual(expect.arrayContaining([
       expect.objectContaining({
         candidateId: "rast--sarki--sofyan--baska_eser--diger_besteci:divanmakam:search",
@@ -235,6 +243,12 @@ describe("external reference audit", () => {
         candidateId: "hicaz--pesrev--devrikebir--ucuncu_eser--besteci:youtube:search",
         status: "needs-review",
         provider: "youtube",
+      }),
+      expect.objectContaining({
+        candidateId: "hicaz--pesrev--devrikebir--ucuncu_eser--besteci:internet-archive:search",
+        status: "needs-review",
+        provider: "archive",
+        searchUrl: expect.stringContaining("archive.org/search"),
       }),
     ]));
   });
@@ -300,6 +314,6 @@ describe("external reference audit", () => {
     expect(summary.bulkCandidateEntries).toBe(1);
     expect(summary.acceptedBulkCandidateEntries).toBe(0);
     expect(summary.missingCuratedEntries).toBe(2);
-    expect(summary.candidateReviewQueueEntries).toBe(4);
+    expect(summary.candidateReviewQueueEntries).toBe(6);
   });
 });

@@ -1333,13 +1333,19 @@ calisma agacindaki bu guncelleme oncesi genis degisiklikleri de kapsadigindan
   güfteci, güfte ve icracı sinyallerini çıkarır; intake/mapping/accepted
   metadata sözleşmesi bu alanları korur ve matcher bunları açıklanabilir
   `schema-*` skor gerekçeleriyle batch confidence hesabına katar.
+- 2026-06-01 metadata evidence template kapısı: source intake template satırları
+  artık HTML, oEmbed ve schema.org metadata kanıt alanlarını da boş üretir.
+  `metadata-evidence-normalization` import gate'i zorunlu hale geldi;
+  validator generated template içinde kaynak, evidence veya metadata prefill'i
+  görürse fail-closed hata verir. Doldurulmuş gerçek kaynaklar hâlâ yalnız ayrı
+  accepted bulk candidate input'u olarak import/validation hattından geçebilir.
 
 ### Kanıt
 
 - `npm run audit:external-references`: `sourceIntakeTemplatePacketEntries=119`,
   `sourceIntakeTemplateRowEntries=2973`, duplicate 0.
 - `npm run curation:validate`: ok true, 0 error.
-- Targeted tests: 4 dosya, 59 test geçti.
+- Targeted tests: 4 dosya, 60 test geçti.
 
 ### Sıradaki işler
 

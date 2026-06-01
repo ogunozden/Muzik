@@ -124,8 +124,31 @@ Bulk inputs are accepted as:
 - CSV: header columns such as `url,title,makam,form,usul,composer,checked_at`.
   Metadata columns are also preserved: `html_title`, `html_description`,
   `html_author`, `oembed_title`, `oembed_author`, `oembed_provider`,
-  `metadata_signals`, `oembed_verified`, `author`, and `thumbnail_url`.
+  `schema_name`, `schema_composer`, `schema_lyricist`, `schema_lyrics`,
+  `schema_by_artist`, `metadata_signals`, `oembed_verified`, `author`, and
+  `thumbnail_url`.
 - Markdown/TXT: every HTTPS URL in the document is extracted and staged.
+
+## Source Intake Template
+
+`npm run audit:external-references` writes
+`output/external-reference-coverage/symbtr-curated-reference-source-intake-template.json`
+as a blank operator worklist for the full candidate review queue. It is not an
+accepted-source manifest and must not prefill source URLs, provider decisions or
+metadata evidence. Each row carries empty source/evidence fields, including
+HTML, oEmbed and schema.org metadata fields, so a filled worklist can later be
+converted into a real bulk candidate import without losing provenance.
+
+`npm run curation:validate` enforces the template contract:
+
+- `importContract.acceptedOnlyAfterValidation` must be `true`.
+- Required gates include `catalog-id`, `https-url-policy`,
+  `research-profile-match`, `accepted-identity-dedupe`, `checked-at-date` and
+  `metadata-evidence-normalization`.
+- Every generated source, evidence and metadata field must remain blank in the
+  template. Filled evidence belongs in a separate accepted bulk candidate input
+  and must pass `npm run import:external-references -- --input <json>` before it
+  can affect attached sources.
 
 ## Acceptance Rules
 

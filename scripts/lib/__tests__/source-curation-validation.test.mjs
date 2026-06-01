@@ -249,7 +249,14 @@ function validRegistries() {
         targetManifestType: "external-reference-bulk-candidates",
         targetScript: "npm run import:external-references -- --input <json>",
         acceptedOnlyAfterValidation: true,
-        requiredValidation: ["catalog-id", "https-url-policy"],
+        requiredValidation: [
+          "catalog-id",
+          "https-url-policy",
+          "research-profile-match",
+          "accepted-identity-dedupe",
+          "checked-at-date",
+          "metadata-evidence-normalization",
+        ],
       },
       packets: [
         {
@@ -306,6 +313,18 @@ function validRegistries() {
                 evidenceUsul: "",
                 evidenceComposer: "",
                 evidenceSourceProvider: "",
+                htmlTitle: "",
+                htmlDescription: "",
+                htmlAuthor: "",
+                oembedTitle: "",
+                oembedAuthor: "",
+                oembedProvider: "",
+                schemaName: "",
+                schemaComposer: "",
+                schemaLyricist: "",
+                schemaLyrics: "",
+                schemaByArtist: "",
+                metadataSignals: "",
               },
               candidates: [
                 {
@@ -783,6 +802,20 @@ describe("source curation validation", () => {
         "coverage-summary: batchReport.duplicateAcceptedIdentityPolicy must document duplicate accepted URL protection",
       ]),
     );
+  });
+
+  it("rejects source intake templates that prefill metadata evidence fields", () => {
+    const registries = validRegistries();
+    const row = registries.sourceIntakeTemplate.packets[0].rows[0];
+    row.sourceFields.schemaName = "Prefilled title";
+    row.sourceFields.oembedTitle = "Prefilled oEmbed title";
+
+    const result = validateSourceCurationRegistries(registries);
+
+    expect(result.errors).toEqual(expect.arrayContaining([
+      `source-intake-template: source-intake-packet-0001 ${catalog[0].id} sourceFields.schemaName must be blank`,
+      `source-intake-template: source-intake-packet-0001 ${catalog[0].id} sourceFields.oembedTitle must be blank`,
+    ]));
   });
 
   it("rejects dedupe report drift from generated queues and summary", () => {

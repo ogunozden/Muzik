@@ -1,0 +1,9 @@
+{"path":"scripts/lib/external-reference-candidate-review.mjs","phase":"finding-discovery","status":"completed","evidence":"Adds metadata field blanks and required metadata-evidence-normalization gate to generated review-only source intake template; no source URL, source id or provider is generated."}
+{"path":"scripts/lib/source-curation-validation.mjs","phase":"finding-discovery","status":"completed","evidence":"Validator requires acceptedOnlyAfterValidation, required import gates and blank source/evidence/metadata fields; fail-closed on generated template prefill."}
+{"path":"src/app/api/external-references/__tests__/route.test.ts","phase":"finding-discovery","status":"completed","evidence":"Fixture expanded to match blank generated template contract; no API behavior or auth/token control changed."}
+{"path":"scripts/lib/__tests__/external-reference-audit.test.mjs","phase":"finding-discovery","status":"completed","evidence":"Audit test asserts metadata normalization gate and blank metadata fields in generated template."}
+{"path":"scripts/lib/__tests__/source-curation-validation.test.mjs","phase":"finding-discovery","status":"completed","evidence":"Validator test asserts metadata prefill is rejected; no unsafe acceptance path introduced."}
+{"path":"docs/EXTERNAL_SOURCE_PIPELINE.md","phase":"finding-discovery","status":"completed","evidence":"Documents generated template as non-accepted worklist and records required gates; documentation only."}
+{"path":"PROJECT_PLAN.md","phase":"finding-discovery","status":"completed","evidence":"Documents phase evidence; documentation only."}
+{"path":"output/external-reference-coverage/symbtr-curated-reference-source-intake-template.json","phase":"finding-discovery","status":"completed","evidence":"Generated artifact contains blank metadata fields and metadata-evidence-normalization gate; curation validation passed with zero errors."}
+

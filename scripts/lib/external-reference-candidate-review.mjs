@@ -4,6 +4,20 @@ export const CANDIDATE_REVIEW_GROUP_DECISION_RECOMMENDATION_VERSION = "candidate
 export const CANDIDATE_REVIEW_BATCH_PLAN_VERSION = "candidate-review-batch-plan-v1";
 export const CANDIDATE_REVIEW_SOURCE_INTAKE_TEMPLATE_VERSION = "candidate-review-source-intake-template-v1";
 export const DEFAULT_CANDIDATE_REVIEW_PACKET_SIZE = 25;
+export const SOURCE_INTAKE_METADATA_FIELDS = [
+  "htmlTitle",
+  "htmlDescription",
+  "htmlAuthor",
+  "oembedTitle",
+  "oembedAuthor",
+  "oembedProvider",
+  "schemaName",
+  "schemaComposer",
+  "schemaLyricist",
+  "schemaLyrics",
+  "schemaByArtist",
+  "metadataSignals",
+];
 
 function buildProfileSearchQuery(row, profile) {
   const suffix = profile.provider === "youtube" ? "icra kayıt" : "nota";
@@ -402,6 +416,7 @@ export function buildCandidateReviewSourceIntakeTemplate(candidateReviewGroups, 
           evidenceUsul: "",
           evidenceComposer: "",
           evidenceSourceProvider: "",
+          ...Object.fromEntries(SOURCE_INTAKE_METADATA_FIELDS.map((field) => [field, ""])),
         },
         candidates,
       };
@@ -444,6 +459,7 @@ export function buildCandidateReviewSourceIntakeTemplate(candidateReviewGroups, 
         "research-profile-match",
         "accepted-identity-dedupe",
         "checked-at-date",
+        "metadata-evidence-normalization",
       ],
     },
     packets,

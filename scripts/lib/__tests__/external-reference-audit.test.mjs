@@ -473,6 +473,7 @@ describe("external reference audit", () => {
     expect(template.importContract).toEqual(expect.objectContaining({
       targetScript: "npm run import:external-references -- --input <json>",
       acceptedOnlyAfterValidation: true,
+      requiredValidation: expect.arrayContaining(["metadata-evidence-normalization"]),
     }));
     expect(template.packets[0].rows[0]).toEqual(expect.objectContaining({
       status: "needs-source-url",
@@ -481,6 +482,11 @@ describe("external reference audit", () => {
         sourceId: "",
         httpsUrl: "",
         provider: "",
+        htmlTitle: "",
+        oembedTitle: "",
+        schemaName: "",
+        schemaComposer: "",
+        metadataSignals: "",
       }),
     }));
     expect(JSON.stringify(template)).not.toMatch(/"accepted"|sourceUrl/);

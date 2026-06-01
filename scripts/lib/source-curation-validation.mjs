@@ -71,6 +71,40 @@ const REQUIRED_BATCH_VALIDATION_GATES = [
   "coverage-matrix-drift",
   "dedupe-report-drift",
 ];
+const SOURCE_INTAKE_BLANK_FIELDS = [
+  "sourceId",
+  "provider",
+  "label",
+  "title",
+  "httpsUrl",
+  "verification",
+  "evidenceTitle",
+  "evidenceMakam",
+  "evidenceForm",
+  "evidenceUsul",
+  "evidenceComposer",
+  "evidenceSourceProvider",
+  "htmlTitle",
+  "htmlDescription",
+  "htmlAuthor",
+  "oembedTitle",
+  "oembedAuthor",
+  "oembedProvider",
+  "schemaName",
+  "schemaComposer",
+  "schemaLyricist",
+  "schemaLyrics",
+  "schemaByArtist",
+  "metadataSignals",
+];
+const REQUIRED_SOURCE_INTAKE_IMPORT_GATES = [
+  "catalog-id",
+  "https-url-policy",
+  "research-profile-match",
+  "accepted-identity-dedupe",
+  "checked-at-date",
+  "metadata-evidence-normalization",
+];
 
 function hasCatalogId(catalogIds, catalogId) {
   return typeof catalogId === "string" && catalogIds.has(catalogId);
@@ -198,6 +232,19 @@ function validateRequiredStrings(values, requiredValues, label, errors) {
   for (const requiredValue of requiredValues) {
     if (!values.includes(requiredValue)) {
       errors.push(`coverage-summary: ${label} must include ${requiredValue}`);
+    }
+  }
+}
+
+function validateRequiredImportGates(values, requiredValues, label, errors) {
+  if (!Array.isArray(values) || values.some((value) => !isNonEmptyString(value))) {
+    errors.push(`${label} must be a non-empty string array`);
+    return;
+  }
+
+  for (const requiredValue of requiredValues) {
+    if (!values.includes(requiredValue)) {
+      errors.push(`${label} must include ${requiredValue}`);
     }
   }
 }
@@ -1292,6 +1339,15 @@ export function validateSourceCurationRegistries({
           if (sourceIntakeTemplate.type !== SOURCE_INTAKE_TEMPLATE_TYPE) {
             errors.push(`source-intake-template: type must be ${SOURCE_INTAKE_TEMPLATE_TYPE}`);
           }
+          if (sourceIntakeTemplate.importContract?.acceptedOnlyAfterValidation !== true) {
+            errors.push("source-intake-template: importContract.acceptedOnlyAfterValidation must be true");
+          }
+          validateRequiredImportGates(
+            sourceIntakeTemplate.importContract?.requiredValidation,
+            REQUIRED_SOURCE_INTAKE_IMPORT_GATES,
+            "sourceIntakeTemplate.importContract.requiredValidation",
+            errors,
+          );
           if (!Array.isArray(sourceIntakeTemplate.packets)) {
             errors.push("source-intake-template: packets must be an array");
           } else {
@@ -1354,7 +1410,7 @@ export function validateSourceCurationRegistries({
                   errors.push(`source-intake-template: ${packetLabel} row status must be needs-source-url`);
                 }
                 const sourceFields = row.sourceFields ?? {};
-                for (const field of ["sourceId", "provider", "label", "title", "httpsUrl", "verification"]) {
+                for (const field of SOURCE_INTAKE_BLANK_FIELDS) {
                   if (sourceFields[field] !== "") {
                     errors.push(`source-intake-template: ${packetLabel} ${catalogId} sourceFields.${field} must be blank`);
                   }

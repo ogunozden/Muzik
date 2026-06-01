@@ -1,0 +1,19 @@
+{
+  "candidateEntries": 1,
+  "verificationEntries": 0,
+  "verifiedEntries": 0,
+  "verifiedMeasureBoxes": 0,
+  "promotionPolicy": "Only human-reviewed or visual-regression-approved PDF measure boxes may be promoted from pdf-vector-candidate to verified.",
+  "candidateStatus": "unreviewed-candidates-only",
+  "unresolvedCandidateEntries": 1,
+  "scoreMeasureSummaries": [
+    {
+      "catalogId": "hicazkar--pesrev--devrikebir----tanburi_buyuk_osman_bey",
+      "pdfMeasureCandidateCount": 49,
+      "symbtrMeasureCount": 28,
+      "symbtrMaxMeasureIndex": 28,
+      "missingSymbtrMeasureIndexes": []
+    }
+  ],
+  "errors": []
+}

@@ -1,4 +1,4 @@
-import { readFileSync } from "node:fs";
+import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import path from "node:path";
 import { getSymbTrMeasureIndexSummary } from "./lib/symbtr-score-measures.mjs";
 
@@ -22,6 +22,21 @@ const TXT_ZIP_PATH = path.join(PROJECT_ROOT, "symb", "txt_v3.zip");
 const ALLOWED_METHODS = new Set(["human-reviewed", "visual-regression"]);
 const PERCENT_EPSILON = 0.01;
 
+function parseCliOptions(argv) {
+  const options = new Map();
+
+  for (let index = 0; index < argv.length; index += 1) {
+    const arg = argv[index];
+    if (!arg.startsWith("--")) continue;
+    const [rawKey, inlineValue] = arg.slice(2).split("=", 2);
+    const nextValue = inlineValue ?? (argv[index + 1]?.startsWith("--") ? "true" : argv[index + 1]);
+    if (inlineValue === undefined && nextValue !== "true") index += 1;
+    options.set(rawKey, nextValue ?? "true");
+  }
+
+  return options;
+}
+
 function readJson(filePath) {
   return JSON.parse(readFileSync(filePath, "utf8"));
 }
@@ -36,6 +51,18 @@ function isNonEmptyString(value) {
 
 function isFiniteNumber(value) {
   return typeof value === "number" && Number.isFinite(value);
+}
+
+function assertInsideProject(targetPath, root = PROJECT_ROOT) {
+  const resolvedRoot = path.resolve(root);
+  const resolvedTarget = path.resolve(root, targetPath);
+  const relativePath = path.relative(resolvedRoot, resolvedTarget);
+
+  if (relativePath.startsWith("..") || path.isAbsolute(relativePath)) {
+    throw new Error(`Refusing to write outside project: ${resolvedTarget}`);
+  }
+
+  return resolvedTarget;
 }
 
 function isPercent(value) {
@@ -318,6 +345,8 @@ const summary = {
   verificationEntries: Object.keys(verificationEntries).length,
   verifiedEntries,
   verifiedMeasureBoxes,
+  promotionPolicy: "Only human-reviewed or visual-regression-approved PDF measure boxes may be promoted from pdf-vector-candidate to verified.",
+  candidateStatus: verifiedMeasureBoxes > 0 ? "verified-measure-boxes-present" : "unreviewed-candidates-only",
   unresolvedCandidateEntries: candidateEntryIds.filter(
     (catalogId) => !verificationEntries[catalogId],
   ).length,
@@ -335,6 +364,14 @@ const summary = {
   }),
   errors,
 };
+
+const options = parseCliOptions(process.argv.slice(2));
+const summaryOutput = options.get("summary-output");
+if (summaryOutput) {
+  const outputPath = assertInsideProject(summaryOutput);
+  mkdirSync(path.dirname(outputPath), { recursive: true });
+  writeFileSync(outputPath, `${JSON.stringify(summary, null, 2)}\n`);
+}
 
 if (errors.length > 0) {
   console.error(JSON.stringify(summary, null, 2));

@@ -246,6 +246,11 @@ tek kurala bağlamaktır.
       veya görsel regresyon doğrulaması bekliyor. Pipeline, review artifact'i,
       verification manifest'i ve Eser Takip UI yolu hazır; gerçek manifest şu
       an 0 doğrulanmış kutu içerir.
+      2026-06-01 ek batch verification raporu: `npm run verify:symbtr-measures`
+      artık terminal çıktısına ek olarak
+      `output/symbtr-layout-review/layout-verification-summary.json` üretir;
+      `promotionPolicy`, `candidateStatus`, unresolved candidate entry ve
+      verified box sayıları kalıcı makine-okunur artifact olarak saklanır.
 
 ### Tamamlanan Otomasyon ve Altyapı Kanıtları (TODO Dışı)
 

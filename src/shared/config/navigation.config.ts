@@ -24,16 +24,10 @@ export interface NavItem {
 }
 
 /**
- * Navigasyon yapılandırması
+ * Primary navigation renders only product surfaces. Legacy aliases stay in
+ * routes.config and redirect pages, but are not shown as separate pages.
  */
 export const navigation: NavItem[] = [
-  {
-    id: "home",
-    label: "nav.home",
-    href: routes.home,
-    type: "link",
-    icon: "🏠",
-  },
   {
     id: "studio",
     label: "nav.studio",
@@ -47,6 +41,20 @@ export const navigation: NavItem[] = [
     href: routes.studioFollow,
     type: "link",
     icon: "🎧",
+  },
+  {
+    id: "rhythm",
+    label: "nav.rhythm",
+    href: routes.rhythm,
+    type: "link",
+    icon: "🥁",
+  },
+  {
+    id: "samples",
+    label: "nav.samples",
+    href: routes.samples,
+    type: "link",
+    icon: "🎹",
   },
   {
     id: "references",
@@ -63,26 +71,15 @@ export const navigation: NavItem[] = [
     icon: "🧭",
   },
   {
-    id: "rhythm",
-    label: "nav.rhythm",
-    href: routes.rhythm,
-    type: "link",
-    icon: "🥁",
-  },
-  {
     id: "archive",
     label: "nav.archive",
     href: routes.archive,
     type: "link",
     icon: "📚",
   },
-  {
-    id: "samples",
-    label: "nav.samples",
-    href: routes.samples,
-    type: "link",
-    icon: "🎹",
-  },
+];
+
+export const legacyNavigationAliases: NavItem[] = [
   {
     id: "makam",
     label: "nav.makam",
@@ -138,12 +135,13 @@ export const navigation: NavItem[] = [
  * Footer linkleri
  */
 export const footerLinks = [
+  { id: "studio", label: "Studio", href: routes.studio },
+  { id: "studioFollow", label: "Eser Takip", href: routes.studioFollow },
+  { id: "rhythm", label: "Ritim", href: routes.rhythm },
+  { id: "samples", label: "Sesler", href: routes.samples },
   { id: "references", label: "Kaynaklar", href: routes.references },
   { id: "referencesCuration", label: "Kürasyon", href: routes.referencesCuration },
   { id: "archive", label: "Arşiv", href: routes.archive },
-  { id: "studio", label: "Studio", href: routes.studio },
-  { id: "rhythm", label: "Ritim", href: routes.rhythm },
-  { id: "samples", label: "Sesler", href: routes.samples },
 ];
 
 export type NavigationConfig = typeof navigation;

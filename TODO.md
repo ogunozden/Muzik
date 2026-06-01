@@ -18,6 +18,7 @@ This is the live remaining-work list for the batch-first production-near close. 
 
 ## Done Evidence
 
+- [x] Frontend information architecture cleanup completed: visible navigation is limited to 7 real product surfaces, legacy redirect aliases remain route-compatible but are not exposed as duplicate pages, browser evidence on `http://127.0.0.1:4015/` reports navCount 7, navRows 1, zero visible legacy alias links, zero main legacy alias links and no horizontal overflow; `npm run guardrails:architecture`, `npm run guardrails:layout -- --base-url http://127.0.0.1:4015 --routes /,/studio,/studio/follow,/references,/references/curation,/rhythm,/samples,/archive`, `npm run lint`, `npm run typecheck`, `npm run test:run`, `npm run build` and `npm run audit:security` passed.
 - [x] Batch-first discovery dry-run v1 exists and is pushed: `npm run discover:external-sources`, `npm run verify:external-source-discovery`, `output/external-source-discovery/*`.
 - [x] Prod-cycle gate exists and reports accepted-only attach, 3000 catalog entries, 2978 missing curated entries, duplicate-after-dedupe 0, PDF verified 0 and browser/security gates.
 - [x] `/references/curation` shows discovery, backlog, intake, PDF and prod-cycle artifacts without hydrating the raw 14890+ review queue.

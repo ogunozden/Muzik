@@ -85,8 +85,13 @@ for (const relativePath of legacyRedirectRoutes) {
 const navigationConfigPath = "src/shared/config/navigation.config.ts";
 if (exists(navigationConfigPath)) {
   const navigationConfig = fs.readFileSync(path.join(root, navigationConfigPath), "utf8");
+  const primaryNavigationBlock = navigationConfig.match(
+    /export const navigation:\s*NavItem\[\]\s*=\s*\[([\s\S]*?)\n\];/
+  )?.[1] ?? "";
+  const legacyAliasBlock = navigationConfig.match(
+    /export const legacyNavigationAliases:\s*NavItem\[\]\s*=\s*\[([\s\S]*?)\n\];/
+  )?.[1] ?? "";
   const requiredVisibleRouteKeys = [
-    "home",
     "studio",
     "studioFollow",
     "references",
@@ -94,6 +99,8 @@ if (exists(navigationConfigPath)) {
     "archive",
     "rhythm",
     "samples",
+  ];
+  const requiredLegacyAliasKeys = [
     "makam",
     "usul",
     "nota",
@@ -106,9 +113,28 @@ if (exists(navigationConfigPath)) {
   for (const routeKey of requiredVisibleRouteKeys) {
     const idPattern = new RegExp(`id:\\s*["']${routeKey}["']`);
     const hrefPattern = new RegExp(`href:\\s*routes\\.${routeKey}\\b`);
-    if (!idPattern.test(navigationConfig) || !hrefPattern.test(navigationConfig)) {
+    if (!idPattern.test(primaryNavigationBlock) || !hrefPattern.test(primaryNavigationBlock)) {
       failures.push(`Static app route must be visible in main navigation: ${routeKey}`);
     }
+  }
+
+  for (const routeKey of requiredLegacyAliasKeys) {
+    const idPattern = new RegExp(`id:\\s*["']${routeKey}["']`);
+    const hrefPattern = new RegExp(`href:\\s*routes\\.${routeKey}\\b`);
+    if (idPattern.test(primaryNavigationBlock) || hrefPattern.test(primaryNavigationBlock)) {
+      failures.push(`Legacy redirect route must not be visible in main navigation: ${routeKey}`);
+    }
+    if (!idPattern.test(legacyAliasBlock) || !hrefPattern.test(legacyAliasBlock)) {
+      failures.push(`Legacy redirect route must remain centrally tracked: ${routeKey}`);
+    }
+  }
+}
+
+const unifiedLayoutPath = "src/components/layout/UnifiedLayout.tsx";
+if (exists(unifiedLayoutPath)) {
+  const unifiedLayout = fs.readFileSync(path.join(root, unifiedLayoutPath), "utf8");
+  if (!unifiedLayout.includes('href="/"')) {
+    failures.push("Home route must remain reachable from the app header brand link");
   }
 }
 

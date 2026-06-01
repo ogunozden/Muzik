@@ -36,13 +36,12 @@ export function UnifiedLayout({children}: UnifiedLayoutProps) {
         }}
         role="banner"
       >
-        <div 
-          className="max-w-7xl mx-auto px-4 py-3 flex flex-col gap-3 sm:px-6 md:flex-row md:items-center md:justify-between"
-        >
+        <div className="max-w-7xl mx-auto px-4 py-3 sm:px-6">
+          <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
           {/* Logo */}
           <Link 
             href="/" 
-            className="flex items-center gap-3 hover:opacity-90 transition-opacity"
+            className="flex shrink-0 items-center gap-3 hover:opacity-90 transition-opacity"
             aria-label={appConfig.fullName}
           >
             <span className="text-2xl" aria-hidden="true">🎵</span>
@@ -51,7 +50,7 @@ export function UnifiedLayout({children}: UnifiedLayoutProps) {
 
           {/* Navigation */}
           <nav 
-            className="flex min-w-0 flex-1 flex-wrap items-center gap-1 md:w-auto md:justify-end"
+            className="-mx-1 flex min-w-0 items-center gap-1 overflow-x-auto px-1 pb-1 lg:mx-0 lg:justify-end lg:overflow-visible lg:pb-0"
             role="navigation" 
             aria-label="Main navigation"
           >
@@ -62,7 +61,7 @@ export function UnifiedLayout({children}: UnifiedLayoutProps) {
                   key={item.id}
                   href={item.href ?? "/"}
                   className={`
-                    min-w-0 px-2.5 py-1.5 text-xs rounded-md transition-all duration-150 sm:px-3 sm:text-sm
+                    shrink-0 px-3 py-1.5 text-sm rounded-md transition-all duration-150
                     ${isActive
                       ? "bg-white/20 font-medium text-white"
                       : "text-white/80 hover:bg-white/10 hover:text-white"
@@ -78,6 +77,7 @@ export function UnifiedLayout({children}: UnifiedLayoutProps) {
               );
             })}
           </nav>
+          </div>
         </div>
       </header>
 

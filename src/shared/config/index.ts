@@ -5,6 +5,7 @@ export {
 
 export {
   footerLinks,
+  legacyNavigationAliases,
   navigation,
   type NavItem,
   type NavItemType,

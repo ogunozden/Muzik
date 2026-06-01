@@ -3,7 +3,13 @@ import {randomUUID} from "node:crypto";
 import {mkdir, readFile, unlink, writeFile} from "node:fs/promises";
 import path from "node:path";
 import {NextResponse} from "next/server";
-import {SYMBTR_CATALOG, type SymbTrCatalogEntry, type SymbTrFormat} from "@/data/symbtr/catalog";
+import {
+  buildCurationState,
+  getCatalogMetadata,
+  type CurationReference,
+  type CurationStat,
+  type ExternalReferenceSource,
+} from "./curation-state";
 import {getLocalOperationAccessError} from "@/shared/security";
 
 export const runtime = "nodejs";
@@ -157,50 +163,6 @@ interface OperationBody {
   embedState?: unknown;
 }
 
-interface CurationReference {
-  catalogId?: string;
-  sourceId?: string;
-  profileId?: string;
-  status?: string;
-  rank?: number;
-  confidenceScore?: number;
-  confidenceLevel?: string;
-  matchReasons?: string[];
-  conflicts?: string[];
-  attachedAt?: string;
-  matcherVersion?: string;
-}
-
-interface CatalogMetadata {
-  id: string;
-  makam: string;
-  form: string;
-  usul: string;
-  title: string;
-  composer: string;
-  formats: SymbTrFormat[];
-}
-
-interface ExternalReferenceSource {
-  id?: string;
-  label?: string;
-  provider?: string;
-  url?: string;
-  title?: string;
-  access?: string;
-  verification?: string;
-  verifiedAt?: string;
-  notes?: string;
-}
-
-interface CurationReferenceView extends CurationReference {
-  catalog?: CatalogMetadata | null;
-  source?: ExternalReferenceSource | null;
-  feedbackEvents?: unknown[];
-  manualCorrection?: unknown | null;
-  embedState?: unknown | null;
-}
-
 interface CurationBacklogRow {
   catalogId?: string;
   makam?: string;
@@ -339,17 +301,6 @@ interface CandidateReviewGroupDecisionRecommendationManifest {
   decisions?: CandidateReviewGroupDecisionRecommendation[];
 }
 
-interface CurationStat {
-  profileId?: string;
-  acceptedCount?: number;
-  removedCount?: number;
-  deletedCount?: number;
-  correctedCount?: number;
-  mismatchCount?: number;
-  embedSuccessCount?: number;
-  embedFailureCount?: number;
-}
-
 interface BulkCandidateManifest {
   version?: number;
   candidates?: Array<{
@@ -402,41 +353,6 @@ async function readJsonOrNull<T>(filePath: string): Promise<T | null> {
 
 function getCountByStatus(mappings: Array<{status?: string}> | undefined, status: string): number {
   return mappings?.filter((mapping) => mapping.status === status).length ?? 0;
-}
-
-function getReferenceCountByStatus(references: CurationReference[], status: string): number {
-  return references.filter((reference) => reference.status === status).length;
-}
-
-function formatCatalogValue(value: string): string {
-  return value
-    .trim()
-    .replace(/[_-]+/g, " ")
-    .replace(/\s+/g, " ")
-    .split(" ")
-    .filter(Boolean)
-    .map((part) => part.charAt(0).toLocaleUpperCase("tr-TR") + part.slice(1))
-    .join(" ");
-}
-
-function toCatalogMetadata(entry: SymbTrCatalogEntry): CatalogMetadata {
-  return {
-    id: entry.id,
-    makam: formatCatalogValue(entry.makam),
-    form: formatCatalogValue(entry.form),
-    usul: formatCatalogValue(entry.usul),
-    title: formatCatalogValue(entry.title),
-    composer: formatCatalogValue(entry.composer),
-    formats: entry.formats,
-  };
-}
-
-const CATALOG_LOOKUP = new Map<string, CatalogMetadata>(
-  SYMBTR_CATALOG.map((entry) => [entry.id, toCatalogMetadata(entry)]),
-);
-
-function getCatalogMetadata(catalogId: string | undefined): CatalogMetadata | null {
-  return catalogId ? CATALOG_LOOKUP.get(catalogId) ?? null : null;
 }
 
 function enrichBacklogRow(row: CurationBacklogRow): CurationBacklogRow {
@@ -760,27 +676,6 @@ function isExternalReferenceAction(action: unknown): action is ExternalReference
   return typeof action === "string" && EXTERNAL_REFERENCE_ACTIONS.has(action as ExternalReferenceAction);
 }
 
-function buildSourceLookup(
-  mapping: {
-    mappings?: Array<{candidate?: {source?: ExternalReferenceSource}}>;
-    candidates?: Array<{source?: ExternalReferenceSource}>;
-  } | null,
-): Map<string, ExternalReferenceSource> {
-  const sources = new Map<string, ExternalReferenceSource>();
-
-  for (const mappingItem of mapping?.mappings ?? []) {
-    const source = mappingItem.candidate?.source;
-    if (source?.id) sources.set(source.id, source);
-  }
-
-  for (const candidate of mapping?.candidates ?? []) {
-    const source = candidate.source;
-    if (source?.id) sources.set(source.id, source);
-  }
-
-  return sources;
-}
-
 async function getExternalReferenceState(request: Request) {
   const backlogQuery = readBacklogQuery(request);
   const candidateReviewQuery = readCandidateReviewQuery(request);
@@ -838,12 +733,15 @@ async function getExternalReferenceState(request: Request) {
   ]);
   const sources = inbox?.sources ?? [];
   const mappings = mapping?.mappings ?? [];
-  const references = autoAttached?.references ?? [];
-  const feedbackEvents = feedback?.events ?? [];
-  const corrections = manualCorrections?.corrections ?? [];
-  const states = embedStates?.states ?? [];
-  const stats = qualityStats?.stats ?? [];
-  const sourceLookup = buildSourceLookup(mapping);
+  const curationState = buildCurationState({
+    mapping,
+    autoAttached,
+    feedback,
+    manualCorrections,
+    researchProfiles,
+    embedStates,
+    qualityStats,
+  });
   const candidateReviewRows = candidateReviewQueue ?? [];
   const candidateReviewGroupRows = candidateReviewGroups ?? [];
   const filteredCandidateReviewGroupRows = applyCandidateReviewGroupQuery(
@@ -878,34 +776,6 @@ async function getExternalReferenceState(request: Request) {
   const filteredBacklogRows = applyBacklogQuery(fullBacklogRows, backlogQuery);
   const backlogOffset = clampBacklogOffset(backlogQuery.offset, filteredBacklogRows.length, backlogQuery.limit);
   const backlogNextBatch = filteredBacklogRows.slice(backlogOffset, backlogOffset + backlogQuery.limit);
-  const referenceViews: CurationReferenceView[] = references.map((reference) => ({
-    ...reference,
-    catalog: getCatalogMetadata(reference.catalogId),
-    source: reference.sourceId ? sourceLookup.get(reference.sourceId) ?? null : null,
-    feedbackEvents: feedbackEvents.filter((event) => (
-      typeof event === "object" &&
-      event !== null &&
-      "catalogId" in event &&
-      "sourceId" in event &&
-      event.catalogId === reference.catalogId &&
-      event.sourceId === reference.sourceId
-    )),
-    manualCorrection: corrections.find((correction) => (
-      typeof correction === "object" &&
-      correction !== null &&
-      "catalogId" in correction &&
-      "sourceId" in correction &&
-      correction.catalogId === reference.catalogId &&
-      correction.sourceId === reference.sourceId
-    )) ?? null,
-    embedState: states.find((state) => (
-      typeof state === "object" &&
-      state !== null &&
-      "sourceId" in state &&
-      state.sourceId === reference.sourceId
-    )) ?? null,
-  }));
-
   return {
     inbox: {
       sourceCount: sources.length,
@@ -923,21 +793,7 @@ async function getExternalReferenceState(request: Request) {
     },
     coverage: coverage ?? null,
     curation: {
-      summary: {
-        autoAttachedCount: references.length,
-        removedCount: getReferenceCountByStatus(references, "user-removed"),
-        deleteRequestedCount: getReferenceCountByStatus(references, "delete-requested"),
-        deletedCount: getReferenceCountByStatus(references, "deleted"),
-        conflictCount: references.filter((reference) => reference.confidenceLevel === "conflict" || (reference.conflicts?.length ?? 0) > 0).length,
-        feedbackEventCount: feedbackEvents.length,
-        manualCorrectionCount: corrections.length,
-        researchSourceProfileCount: researchProfiles?.profiles?.length ?? 0,
-        embedStateCount: states.length,
-        sourceQualityStatCount: stats.length,
-        matcherVersion: autoAttached?.matcherVersion ?? null,
-        statsGeneratedAt: qualityStats?.generatedAt ?? null,
-      },
-      autoAttachedReferences: referenceViews.slice(0, 160),
+      ...curationState,
       candidateManifest: summarizeBulkCandidateManifest(bulkCandidateManifest),
       candidateReviewGroups: candidateReviewGroupPageRows,
       candidateReviewGroupManifest: {
@@ -1011,11 +867,6 @@ async function getExternalReferenceState(request: Request) {
         },
       },
       backlogFacets: buildBacklogFacets(scopedBacklogRows),
-      feedbackEvents: feedbackEvents.slice(-80).reverse(),
-      manualCorrections: corrections.slice(0, 160),
-      researchSourceProfiles: researchProfiles?.profiles ?? [],
-      embedStates: states.slice(0, 160),
-      sourceQualityStats: stats,
     },
   };
 }

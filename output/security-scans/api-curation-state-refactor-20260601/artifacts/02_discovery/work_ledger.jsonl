@@ -1,0 +1,3 @@
+{"path":"src/app/api/external-references/route.ts","risk_area":"local curation API state response","outcome":"No issue found","notes":"Access gate remains before state read; extraction only delegates in-memory curation state assembly."}
+{"path":"src/app/api/external-references/curation-state.ts","risk_area":"manifest join and catalog enrichment","outcome":"No issue found","notes":"Pure in-memory transformation; no new sink, no external fetch, no filesystem write, no auto-attach policy change."}
+{"path":"PROJECT_PLAN.md","risk_area":"documentation","outcome":"Not applicable","notes":"Documentation-only update."}

@@ -202,6 +202,12 @@ tek kurala bağlamaktır.
       `source-curation-operations.mjs` artık bu state modülünü re-export eden
       ince operasyon katmanı olarak kalır; testler `summarizeCurationState`
       sözleşmesini de kapsar.
+      2026-06-01 Faz 6: `/api/external-references` içindeki curation state
+      assembly de route gövdesinden çıkarıldı. Katalog metadata zenginleştirme,
+      source lookup, feedback/manual/embed-state join ve source quality summary
+      `src/app/api/external-references/curation-state.ts` içinde tek API state
+      modülü olarak toplandı; route artık dosya okuma, batch pagination/export
+      ve operasyon orkestrasyonu sınırında kalır.
       2026-06-01 Faz 4: curation registry I/O ve validation ortak sözleşmesi
       `scripts/lib/source-curation-registry.mjs`, append-only feedback/manual
       correction/embed-state/stats operasyonları ise

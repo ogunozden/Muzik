@@ -1,0 +1,4 @@
+path,change_type,reason
+src/app/api/external-references/route.ts,modified,API route now delegates curation state assembly
+src/app/api/external-references/curation-state.ts,added,New curation state assembly module joins catalog/source/feedback/manual/embed/stat data
+PROJECT_PLAN.md,modified,Documents API state extraction phase

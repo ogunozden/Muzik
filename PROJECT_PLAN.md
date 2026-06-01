@@ -202,6 +202,11 @@ tek kurala bağlamaktır.
       `source-curation-operations.mjs` artık bu state modülünü re-export eden
       ince operasyon katmanı olarak kalır; testler `summarizeCurationState`
       sözleşmesini de kapsar.
+      2026-06-01 Faz 10: kaynak kalite istatistik üretimi event mutasyonlarından
+      ayrılıp `scripts/lib/source-curation-stats.mjs` içine taşındı.
+      `source-curation-events.mjs` sadece feedback/manual correction/embed-state
+      append/upsert işlerini, `source-curation-operations.mjs` ise geriye dönük
+      CLI import yüzeyini taşır.
       2026-06-01 Faz 6: `/api/external-references` içindeki curation state
       assembly de route gövdesinden çıkarıldı. Katalog metadata zenginleştirme,
       source lookup, feedback/manual/embed-state join ve source quality summary

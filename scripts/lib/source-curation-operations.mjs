@@ -10,12 +10,12 @@ import {
 export {getCurationState, summarizeCurationState} from "./source-curation-state.mjs";
 
 export {
-  generateSourceQualityStats,
   recordSourceFeedback,
   recordSourceFeedbackBatch,
   upsertEmbedState,
   upsertManualSourceCorrection,
 } from "./source-curation-events.mjs";
+export {generateSourceQualityStats} from "./source-curation-stats.mjs";
 
 const DEFAULT_MATCHER_VERSION = "external-source-map-v1";
 

@@ -117,6 +117,7 @@ const detailViews: Array<{id: DetailView; label: string}> = [
   {id: "manual", label: "Manuel Düzeltme"},
 ];
 const deleteStatuses = new Set(["delete-requested", "deleted", "user-removed"]);
+const manualNoteScopes = new Set(["manual-correction", "manual-notes", "manual-tags"]);
 
 function emptyCorrectionForm(): CorrectionFormState {
   return {
@@ -192,6 +193,53 @@ function getReferenceLyricist(reference: CurationReference): string {
   return normalizeFacet(reference.manualCorrection?.correctLyricist ?? reference.source?.author);
 }
 
+function getReferenceProvider(reference: CurationReference): string {
+  return normalizeFacet(reference.source?.provider);
+}
+
+function getReferenceHostname(reference: CurationReference): string {
+  const url = reference.source?.url;
+  if (!url) return "";
+
+  try {
+    return new URL(url).hostname.replace(/^www\./, "");
+  } catch {
+    return "";
+  }
+}
+
+function getReferenceConfidence(reference: CurationReference): string {
+  return normalizeFacet(reference.confidenceLevel);
+}
+
+function hasManualNotes(reference: CurationReference): boolean {
+  const correction = reference.manualCorrection;
+  return Boolean(
+    correction &&
+    (
+      normalizeFacet(correction.notes) ||
+      normalizeFacet(correction.correctTitle) ||
+      normalizeFacet(correction.correctMakam) ||
+      normalizeFacet(correction.correctUsul) ||
+      normalizeFacet(correction.correctForm) ||
+      normalizeFacet(correction.correctComposer) ||
+      normalizeFacet(correction.correctLyricist) ||
+      normalizeFacet(correction.alternativeUrl) ||
+      (correction.tags?.length ?? 0) > 0
+    ),
+  );
+}
+
+function matchesManualNoteScope(reference: CurationReference, scope: string): boolean {
+  if (!scope) return true;
+  const correction = reference.manualCorrection;
+  if (!correction) return false;
+  if (scope === "manual-correction") return hasManualNotes(reference);
+  if (scope === "manual-notes") return Boolean(normalizeFacet(correction.notes));
+  if (scope === "manual-tags") return (correction.tags?.length ?? 0) > 0;
+  return !manualNoteScopes.has(scope);
+}
+
 function matchesDeleteScope(reference: CurationReference, scope: string): boolean {
   if (!scope) return true;
   if (scope === "pending-delete") return reference.status === "delete-requested";
@@ -246,6 +294,10 @@ export function ReferencesCurationDetail({catalogId}: {catalogId: string}) {
   const [selectedSourceId, setSelectedSourceId] = useState("");
   const [composerFilter, setComposerFilter] = useState("");
   const [lyricistFilter, setLyricistFilter] = useState("");
+  const [providerFilter, setProviderFilter] = useState("");
+  const [siteFilter, setSiteFilter] = useState("");
+  const [confidenceFilter, setConfidenceFilter] = useState("");
+  const [manualNoteFilter, setManualNoteFilter] = useState("");
   const [statusFilter, setStatusFilter] = useState("");
   const [deleteScopeFilter, setDeleteScopeFilter] = useState("");
   const [previewVisible, setPreviewVisible] = useState(true);
@@ -256,17 +308,25 @@ export function ReferencesCurationDetail({catalogId}: {catalogId: string}) {
   ), [catalogId, state]);
   const composerFacets = useMemo(() => uniqueSorted(references.map(getReferenceComposer)), [references]);
   const lyricistFacets = useMemo(() => uniqueSorted(references.map(getReferenceLyricist)), [references]);
+  const providerFacets = useMemo(() => uniqueSorted(references.map(getReferenceProvider)), [references]);
+  const siteFacets = useMemo(() => uniqueSorted(references.map(getReferenceHostname)), [references]);
+  const confidenceFacets = useMemo(() => uniqueSorted(references.map(getReferenceConfidence)), [references]);
   const statusFacets = useMemo(() => uniqueSorted(references.map((reference) => reference.status ?? "")), [references]);
   const filteredReferences = useMemo(() => (
     references.filter((reference) => {
       if (composerFilter && getReferenceComposer(reference) !== composerFilter) return false;
       if (lyricistFilter && getReferenceLyricist(reference) !== lyricistFilter) return false;
+      if (providerFilter && getReferenceProvider(reference) !== providerFilter) return false;
+      if (siteFilter && getReferenceHostname(reference) !== siteFilter) return false;
+      if (confidenceFilter && getReferenceConfidence(reference) !== confidenceFilter) return false;
+      if (!matchesManualNoteScope(reference, manualNoteFilter)) return false;
       if (statusFilter && reference.status !== statusFilter) return false;
       return matchesDeleteScope(reference, deleteScopeFilter);
     })
-  ), [composerFilter, deleteScopeFilter, lyricistFilter, references, statusFilter]);
+  ), [composerFilter, confidenceFilter, deleteScopeFilter, lyricistFilter, manualNoteFilter, providerFilter, references, siteFilter, statusFilter]);
   const deleteQueueCount = references.filter((reference) => reference.status === "delete-requested").length;
   const deletedCount = references.filter((reference) => reference.status === "deleted").length;
+  const manualNoteCount = references.filter(hasManualNotes).length;
   const currentReference =
     filteredReferences.find((reference) => reference.sourceId === selectedSourceId) ??
     filteredReferences[0] ??
@@ -461,8 +521,54 @@ export function ReferencesCurationDetail({catalogId}: {catalogId: string}) {
                 <option value="removed">Kaldırıldı</option>
               </select>
             </label>
+            <label className={`flex flex-col gap-1 text-sm ${tokens.colors.text.secondary}`}>
+              Kaynak tipi
+              <select
+                value={providerFilter}
+                onChange={(event) => setProviderFilter(event.target.value)}
+                className={`rounded-md border ${tokens.colors.border.base} bg-white px-3 py-2 text-sm ${tokens.colors.text.primary}`}
+              >
+                <option value="">Tümü</option>
+                {providerFacets.map((provider) => <option key={provider} value={provider}>{provider}</option>)}
+              </select>
+            </label>
+            <label className={`flex flex-col gap-1 text-sm ${tokens.colors.text.secondary}`}>
+              Site
+              <select
+                value={siteFilter}
+                onChange={(event) => setSiteFilter(event.target.value)}
+                className={`rounded-md border ${tokens.colors.border.base} bg-white px-3 py-2 text-sm ${tokens.colors.text.primary}`}
+              >
+                <option value="">Tümü</option>
+                {siteFacets.map((site) => <option key={site} value={site}>{site}</option>)}
+              </select>
+            </label>
+            <label className={`flex flex-col gap-1 text-sm ${tokens.colors.text.secondary}`}>
+              Güven
+              <select
+                value={confidenceFilter}
+                onChange={(event) => setConfidenceFilter(event.target.value)}
+                className={`rounded-md border ${tokens.colors.border.base} bg-white px-3 py-2 text-sm ${tokens.colors.text.primary}`}
+              >
+                <option value="">Tümü</option>
+                {confidenceFacets.map((confidence) => <option key={confidence} value={confidence}>{confidence}</option>)}
+              </select>
+            </label>
+            <label className={`flex flex-col gap-1 text-sm ${tokens.colors.text.secondary}`}>
+              Manuel not
+              <select
+                value={manualNoteFilter}
+                onChange={(event) => setManualNoteFilter(event.target.value)}
+                className={`rounded-md border ${tokens.colors.border.base} bg-white px-3 py-2 text-sm ${tokens.colors.text.primary}`}
+              >
+                <option value="">Tümü</option>
+                <option value="manual-correction">Manuel düzeltmeli</option>
+                <option value="manual-notes">Notlu</option>
+                <option value="manual-tags">Etiketli</option>
+              </select>
+            </label>
             <div className={`md:col-span-4 text-xs ${tokens.colors.text.secondary}`}>
-              {visibleReferences.length} / {references.length} kaynak görünür · silme bekleyen {deleteQueueCount} · silindi {deletedCount}
+              {visibleReferences.length} / {references.length} kaynak görünür · silme bekleyen {deleteQueueCount} · silindi {deletedCount} · manuel notlu {manualNoteCount}
             </div>
           </section>
 
@@ -550,6 +656,10 @@ export function ReferencesCurationDetail({catalogId}: {catalogId: string}) {
                 <dl className={`mt-5 grid grid-cols-[8rem_minmax(0,1fr)] gap-2 text-sm ${tokens.colors.text.secondary}`}>
                   <dt>Status</dt>
                   <dd className="break-words text-[var(--color-text-primary)]">{currentReference?.status ?? "-"}</dd>
+                  <dt>Site</dt>
+                  <dd className="break-words text-[var(--color-text-primary)]">{currentReference ? getReferenceHostname(currentReference) || "-" : "-"}</dd>
+                  <dt>Güven</dt>
+                  <dd className="break-words text-[var(--color-text-primary)]">{currentReference?.confidenceLevel ?? "-"} · {currentReference?.confidenceScore ?? "-"}</dd>
                   <dt>Access</dt>
                   <dd className="break-words text-[var(--color-text-primary)]">{currentReference?.source?.access ?? "-"}</dd>
                   <dt>Embed</dt>

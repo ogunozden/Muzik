@@ -1,0 +1,3 @@
+path,area
+src/app/references/curation/[catalogId]/__tests__/page.test.tsx,diff
+src/features/references/ReferencesCurationDetail.tsx,diff

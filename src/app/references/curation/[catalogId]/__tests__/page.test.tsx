@@ -133,13 +133,26 @@ describe("ReferencesCurationDetailPage", () => {
     expect(screen.getAllByRole("link", {name: "https://divanmakam.com/forum/example.1/"}).length).toBeGreaterThan(0);
     expect(screen.getByLabelText("Besteci")).toBeDefined();
     expect(screen.getByLabelText("Güfteci")).toBeDefined();
+    expect(screen.getByLabelText("Kaynak tipi")).toBeDefined();
+    expect(screen.getByLabelText("Site")).toBeDefined();
+    expect(screen.getByLabelText("Güven")).toBeDefined();
+    expect(screen.getByLabelText("Manuel not")).toBeDefined();
     fireEvent.change(screen.getByLabelText("Besteci"), {
       target: {value: "Zekai Dede"},
     });
     fireEvent.change(screen.getByLabelText("Güfteci"), {
       target: {value: "Yunus Emre"},
     });
-    expect(screen.getByText(/1 \/ 1 kaynak görünür/)).toBeDefined();
+    fireEvent.change(screen.getByLabelText("Kaynak tipi"), {
+      target: {value: "score"},
+    });
+    fireEvent.change(screen.getByLabelText("Site"), {
+      target: {value: "divanmakam.com"},
+    });
+    fireEvent.change(screen.getByLabelText("Güven"), {
+      target: {value: "high"},
+    });
+    expect(screen.getByText(/1 \/ 1 kaynak görünür .* manuel notlu 0/)).toBeDefined();
 
     fireEvent.click(screen.getByRole("button", {name: "Manuel Düzeltme"}));
     fireEvent.change(screen.getByLabelText("Doğru başlık"), {

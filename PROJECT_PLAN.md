@@ -99,7 +99,7 @@ tek kurala bağlamaktır.
       `source-feedback-events.json`, `manage-source-curation feedback`,
       `/api/external-references` curation action'ları ve `/references/curation`
       satır aksiyonları bu append-only akışı taşır.
-- [ ] Parça merkezli kaynak yönetim UI'ını tasarla ve uygula. Her eserin ana
+- [x] Parça merkezli kaynak yönetim UI'ını tasarla ve uygula. Her eserin ana
       başlığı altında Notalar, Videolar, PDF/Arşiv, Metadata, Log ve Manuel
       Düzeltme görünümleri olmalı; filtreler makam/usul/form/besteci/güfteci,
       kaynak tipi, site, güven skoru, auto-attached, kullanıcı kaldırdığı,
@@ -127,6 +127,12 @@ tek kurala bağlamaktır.
       ve geri alma mevcut merkezi `source-feedback-events.json` event akışına
       token'lı şekilde yazılır. Kaynak tipi/site/güven skoru ve manuel notlu
       kayıt facet'lerini aynı detay yüzeyinde tamamlama işi açık kalır.
+      2026-06-01 tamamlayıcı detay facet dalgası: aynı detay yüzeyi kaynak
+      tipi/provider, site hostname, güven seviyesi ve manuel düzeltme/not/tag
+      kapsamlarını da facet olarak destekler; sayaçlar görünür kaynak, silme
+      kuyruğu ve manuel notlu kayıt adetlerini birlikte gösterir. Makam/usul/form
+      toplu daraltması katalog-geneli `/references/curation` queue facet'lerinde,
+      tek parça metadata bağlamı ise detay başlığı ve kaynak metadata'sında korunur.
 - [x] Inline medya deneyimini ekle. YouTube videoları, PDF'ler ve iframe'e izin
       veren kaynak sayfaları parça ekranında yeni sekme açmadan görüntülenmeli;
       embed sandbox, lazy load, erişilebilir `title`, klavye odağı, bozuk embed

@@ -1,0 +1,6 @@
+path,area
+output/external-reference-coverage/mapped-external-reference-candidates.json,diff
+scripts/map-external-source-inbox.mjs,diff
+scripts/lib/external-source-mapping-pipeline.mjs,diff-untracked
+scripts/lib/__tests__/external-source-mapping-pipeline.test.mjs,diff-untracked
+output/playwright/references-curation-mapping-pipeline-module-20260601.png,evidence

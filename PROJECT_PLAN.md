@@ -185,6 +185,13 @@ tek kurala bağlamaktır.
       `scripts/lib/external-reference-audit.mjs` içine taşındı; audit CLI ince
       kabuk olarak kaldı. Source profile/event log sınırlarını daha da
       inceltecek sonraki dalga kaldığı için ana iş açık tutulur.
+      2026-06-01 Faz 3: `map-external-source-inbox.mjs` artık yalnız CLI
+      argümanlarını çözen ince kabuk; HTML/oEmbed enrichment, accepted-only
+      merge, CSV render ve batch run sözleşmesi
+      `scripts/lib/external-source-mapping-pipeline.mjs` modülüne taşındı.
+      Merge fonksiyonu yanlışlıkla gelen `needs-review` adayları da fail-closed
+      skip eder; testler bu davranışı doğrudan doğrular. Event log/stats
+      sınırlarını ayrı modüle inceltecek sonraki dalga açık kalır.
 - [ ] Yeni model için validation/test kapılarını ekle: auto-attached kaynak
       sözleşmesi, feedback event bütünlüğü, silme/geri alma akışı, embed
       allowlist/fallback, filtre sonuçları, ops token davranışı, büyük liste

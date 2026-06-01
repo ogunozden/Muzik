@@ -69,13 +69,27 @@ operator-supplied YouTube URLs. YouTube Data API search remains optional because
 it needs credentials and quota management.
 
 Provider verification is the next evidence layer after search-lead discovery.
-`npm run verify:external-source-providers` currently implements the Internet
-Archive structured metadata pass with the official item search API documented at
-https://doc-tools.readthedocs.io/en/ia-test-gsod/item-search-apis.html. It
-writes `provider-verification-run.json`, `provider-verification-evidence.json`,
-`provider-verification-cache.json` and
-`provider-verification-accepted-import-ready.json`; it never downloads media,
-copies source content or attaches directly.
+`npm run verify:external-source-providers` runs the configured provider set
+(`internet-archive`, `divanmakam`, `ogm-materyal`, `salihbora`,
+`youtube-oembed`) against a resumable backlog slice. It accepts `--offset`,
+`--limit <n|all>`, `--provider <id|all>` and `--statuses <csv>`. The default
+phase command processes 25 backlog groups and writes 125 provider packets while
+accounting for all 2978 groups. Internet Archive uses its structured
+advancedsearch metadata endpoint; DivanMakam, OGM Materyal, Salih Bora and
+YouTube oEmbed stay `deferred` until a validated source URL exists, so search
+URLs are never promoted as evidence. The command writes
+`provider-verification-run.json`, `provider-verification-evidence.json`,
+`provider-verification-cache.json`,
+`provider-verification-accepted-import-ready.json` and
+`provider-verification-plan.json`; it never downloads media, copies source
+content or attaches directly.
+
+Provider research references used for the current connector policy:
+
+- Internet Archive item search API: https://doc-tools.readthedocs.io/en/ia-test-gsod/item-search-apis.html
+- DivanMakam public site: https://divanmakam.com/
+- OGM Materyal public portal: https://ogmmateryal.eba.gov.tr/etkilesimli-kitap/guzel-sanatlar-lisesi/muzik
+- Salih Bora public archive site: https://www.salihbora.com/
 
 Examples:
 

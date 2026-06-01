@@ -11,7 +11,13 @@
   "summary": {
     "acceptedReadyCount": 0,
     "directAutoAttachCount": 0,
-    "providerProfileId": "internet-archive"
+    "providerProfileIds": [
+      "internet-archive",
+      "divanmakam",
+      "ogm-materyal",
+      "salihbora",
+      "youtube-oembed"
+    ]
   },
   "candidates": []
 }

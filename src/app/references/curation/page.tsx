@@ -243,9 +243,13 @@ interface SourceProviderVerificationRunManifest {
   ok?: boolean;
   dryRun?: boolean;
   providerProfileId?: string;
+  providerProfileIds?: string[];
   connector?: string;
   processedGroupCount?: number;
+  verificationPacketCount?: number;
   totalEligibleGroupCount?: number;
+  totalBacklogGroupCount?: number;
+  providerCount?: number;
   resultCount?: number;
   acceptedReadyCount?: number;
   needsReviewCount?: number;
@@ -392,6 +396,7 @@ async function buildReadOnlyInitialState(): Promise<ExternalReferenceState> {
   const sourceProviderVerificationRunPath = path.join(SOURCE_DISCOVERY_ROOT, "provider-verification-run.json");
   const sourceProviderVerificationEvidencePath = path.join(SOURCE_DISCOVERY_ROOT, "provider-verification-evidence.json");
   const sourceProviderVerificationAcceptedImportReadyPath = path.join(SOURCE_DISCOVERY_ROOT, "provider-verification-accepted-import-ready.json");
+  const sourceProviderVerificationPlanPath = path.join(SOURCE_DISCOVERY_ROOT, "provider-verification-plan.json");
   const mappingPath = path.join(COVERAGE_ROOT, "mapped-external-reference-candidates.json");
   const [
     coverage,
@@ -638,13 +643,20 @@ async function buildReadOnlyInitialState(): Promise<ExternalReferenceState> {
           artifactPath: toProjectPath(sourceProviderVerificationRunPath),
           evidenceArtifactPath: toProjectPath(sourceProviderVerificationEvidencePath),
           acceptedImportReadyArtifactPath: toProjectPath(sourceProviderVerificationAcceptedImportReadyPath),
+          planArtifactPath: toProjectPath(sourceProviderVerificationPlanPath),
           generatedAt: sourceProviderVerificationRun?.generatedAt ?? null,
           ok: sourceProviderVerificationRun?.ok === true,
           dryRun: sourceProviderVerificationRun?.dryRun === true,
           providerProfileId: sourceProviderVerificationRun?.providerProfileId ?? null,
+          providerProfileIds: Array.isArray(sourceProviderVerificationRun?.providerProfileIds)
+            ? sourceProviderVerificationRun.providerProfileIds
+            : [],
           connector: sourceProviderVerificationRun?.connector ?? null,
           processedGroupCount: Number(sourceProviderVerificationRun?.processedGroupCount ?? 0),
+          verificationPacketCount: Number(sourceProviderVerificationRun?.verificationPacketCount ?? 0),
           totalEligibleGroupCount: Number(sourceProviderVerificationRun?.totalEligibleGroupCount ?? 0),
+          totalBacklogGroupCount: Number(sourceProviderVerificationRun?.totalBacklogGroupCount ?? 0),
+          providerCount: Number(sourceProviderVerificationRun?.providerCount ?? 0),
           resultCount: Number(sourceProviderVerificationRun?.resultCount ?? 0),
           acceptedReadyCount: Number(sourceProviderVerificationRun?.acceptedReadyCount ?? 0),
           needsReviewCount: Number(sourceProviderVerificationRun?.needsReviewCount ?? 0),

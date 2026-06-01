@@ -380,13 +380,18 @@ export interface ExternalReferenceState {
         artifactPath?: string;
         evidenceArtifactPath?: string;
         acceptedImportReadyArtifactPath?: string;
+        planArtifactPath?: string;
         generatedAt?: string | null;
         ok?: boolean;
         dryRun?: boolean;
         providerProfileId?: string | null;
+        providerProfileIds?: string[];
         connector?: string | null;
         processedGroupCount?: number;
+        verificationPacketCount?: number;
         totalEligibleGroupCount?: number;
+        totalBacklogGroupCount?: number;
+        providerCount?: number;
         resultCount?: number;
         acceptedReadyCount?: number;
         needsReviewCount?: number;
@@ -780,7 +785,7 @@ function buildArtifactInventory(state: ExternalReferenceState): ArtifactInventor
     path: providerVerification.artifactPath,
     metrics: [
       `${formatNumber(providerVerification.processedGroupCount)} grup işlendi`,
-      `${formatNumber(providerVerification.resultCount)} sonuç`,
+      `${formatNumber(providerVerification.verificationPacketCount ?? providerVerification.resultCount)} packet`,
       `${formatNumber(providerVerification.acceptedReadyCount)} accepted-ready`,
       `${formatNumber(providerVerification.directAutoAttachCount)} direct attach`,
     ],
@@ -798,6 +803,20 @@ function buildArtifactInventory(state: ExternalReferenceState): ArtifactInventor
       `${formatNumber(providerVerification.rejectedCount)} rejected`,
       `${formatNumber(providerVerification.cacheHitCount)} cache hit`,
     ],
+  } : null);
+
+  addItem(providerVerification?.planArtifactPath ? {
+    id: "provider-verification-plan",
+    label: "Provider verification plan",
+    category: "Verification",
+    status: "dry-run",
+    path: providerVerification.planArtifactPath,
+    metrics: [
+      `${formatNumber(providerVerification.providerCount)} provider`,
+      `${formatNumber(providerVerification.totalBacklogGroupCount)} backlog`,
+      `${formatNumber(providerVerification.totalEligibleGroupCount)} eligible`,
+    ],
+    command: providerVerification.targetScript,
   } : null);
 
   addItem(symbtrLayoutVerificationManifest?.summaryPath ? {
@@ -1585,7 +1604,7 @@ export function ReferencesCurationDashboard({
                     <div>
                       <h3 className={`text-sm font-semibold ${tokens.colors.text.primary}`}>Provider verification</h3>
                       <p className={`mt-1 text-xs ${tokens.colors.text.secondary}`}>
-                        {sourceDiscovery.providerVerification.ok ? "Dry-run OK" : "Review"} · {sourceDiscovery.providerVerification.providerProfileId ?? "-"} · {formatNumber(sourceDiscovery.providerVerification.warningCount)} uyarı · {formatDate(sourceDiscovery.providerVerification.generatedAt)}
+                        {sourceDiscovery.providerVerification.ok ? "Dry-run OK" : "Review"} · {sourceDiscovery.providerVerification.providerProfileId ?? "-"} · {formatNumber(sourceDiscovery.providerVerification.providerCount)} provider · {formatNumber(sourceDiscovery.providerVerification.warningCount)} uyarı · {formatDate(sourceDiscovery.providerVerification.generatedAt)}
                       </p>
                       {sourceDiscovery.providerVerification.artifactPath && (
                         <code className="mt-1 block break-all text-xs text-[var(--color-text-primary)]">{sourceDiscovery.providerVerification.artifactPath}</code>
@@ -1593,15 +1612,18 @@ export function ReferencesCurationDashboard({
                       {sourceDiscovery.providerVerification.evidenceArtifactPath && (
                         <code className="mt-1 block break-all text-xs text-[var(--color-text-primary)]">{sourceDiscovery.providerVerification.evidenceArtifactPath}</code>
                       )}
+                      {sourceDiscovery.providerVerification.planArtifactPath && (
+                        <code className="mt-1 block break-all text-xs text-[var(--color-text-primary)]">{sourceDiscovery.providerVerification.planArtifactPath}</code>
+                      )}
                     </div>
                     <div className="grid w-full gap-2 text-sm sm:grid-cols-2 lg:max-w-4xl lg:grid-cols-4">
                       <div>
                         <div className={`text-xs uppercase ${tokens.colors.text.secondary}`}>Processed</div>
-                        <div className={tokens.colors.text.primary}>{formatNumber(sourceDiscovery.providerVerification.processedGroupCount)} / {formatNumber(sourceDiscovery.providerVerification.totalEligibleGroupCount)}</div>
+                        <div className={tokens.colors.text.primary}>{formatNumber(sourceDiscovery.providerVerification.processedGroupCount)} / {formatNumber(sourceDiscovery.providerVerification.totalBacklogGroupCount ?? sourceDiscovery.providerVerification.totalEligibleGroupCount)}</div>
                       </div>
                       <div>
                         <div className={`text-xs uppercase ${tokens.colors.text.secondary}`}>Evidence</div>
-                        <div className={tokens.colors.text.primary}>{formatNumber(sourceDiscovery.providerVerification.resultCount)} sonuç · {formatNumber(sourceDiscovery.providerVerification.cacheHitCount)} cache</div>
+                        <div className={tokens.colors.text.primary}>{formatNumber(sourceDiscovery.providerVerification.verificationPacketCount ?? sourceDiscovery.providerVerification.resultCount)} packet · {formatNumber(sourceDiscovery.providerVerification.cacheHitCount)} cache</div>
                       </div>
                       <div>
                         <div className={`text-xs uppercase ${tokens.colors.text.secondary}`}>Decision</div>

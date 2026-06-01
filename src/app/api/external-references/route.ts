@@ -51,6 +51,7 @@ const SOURCE_DISCOVERY_COVERAGE_DELTA_FILE = path.join(PROJECT_ROOT, "output", "
 const SOURCE_PROVIDER_VERIFICATION_RUN_FILE = path.join(PROJECT_ROOT, "output", "external-source-discovery", "provider-verification-run.json");
 const SOURCE_PROVIDER_VERIFICATION_EVIDENCE_FILE = path.join(PROJECT_ROOT, "output", "external-source-discovery", "provider-verification-evidence.json");
 const SOURCE_PROVIDER_VERIFICATION_ACCEPTED_IMPORT_READY_FILE = path.join(PROJECT_ROOT, "output", "external-source-discovery", "provider-verification-accepted-import-ready.json");
+const SOURCE_PROVIDER_VERIFICATION_PLAN_FILE = path.join(PROJECT_ROOT, "output", "external-source-discovery", "provider-verification-plan.json");
 const AUTO_ATTACHED_FILE = path.join(PROJECT_ROOT, "src", "data", "references", "auto-attached-references.json");
 const FEEDBACK_FILE = path.join(PROJECT_ROOT, "src", "data", "references", "source-feedback-events.json");
 const MANUAL_CORRECTIONS_FILE = path.join(PROJECT_ROOT, "src", "data", "references", "manual-source-corrections.json");
@@ -442,9 +443,13 @@ interface SourceProviderVerificationRunManifest {
   ok?: boolean;
   dryRun?: boolean;
   providerProfileId?: string;
+  providerProfileIds?: string[];
   connector?: string;
   processedGroupCount?: number;
+  verificationPacketCount?: number;
   totalEligibleGroupCount?: number;
+  totalBacklogGroupCount?: number;
+  providerCount?: number;
   resultCount?: number;
   acceptedReadyCount?: number;
   needsReviewCount?: number;
@@ -461,6 +466,9 @@ interface SourceProviderVerificationRunManifest {
     skippedDuplicateCount?: number;
     outputCandidateCount?: number;
   } | null;
+  artifacts?: {
+    plan?: string;
+  };
 }
 
 interface SymbTrLayoutVerificationSummary {
@@ -1026,13 +1034,21 @@ async function getExternalReferenceState(request: Request) {
           artifactPath: toProjectRelativePath(SOURCE_PROVIDER_VERIFICATION_RUN_FILE),
           evidenceArtifactPath: toProjectRelativePath(SOURCE_PROVIDER_VERIFICATION_EVIDENCE_FILE),
           acceptedImportReadyArtifactPath: toProjectRelativePath(SOURCE_PROVIDER_VERIFICATION_ACCEPTED_IMPORT_READY_FILE),
+          planArtifactPath: toProjectRelativePath(SOURCE_PROVIDER_VERIFICATION_PLAN_FILE),
           generatedAt: sourceProviderVerificationRun?.generatedAt ?? null,
           ok: sourceProviderVerificationRun?.ok === true,
           dryRun: sourceProviderVerificationRun?.dryRun === true,
           providerProfileId: sourceProviderVerificationRun?.providerProfileId ?? null,
+          providerProfileIds: Array.isArray(sourceProviderVerificationRun?.providerProfileIds)
+            ? sourceProviderVerificationRun.providerProfileIds
+            : [],
           connector: sourceProviderVerificationRun?.connector ?? null,
           processedGroupCount: sourceProviderVerificationRun?.processedGroupCount ?? 0,
+          verificationPacketCount: sourceProviderVerificationRun?.verificationPacketCount ?? 0,
           totalEligibleGroupCount: sourceProviderVerificationRun?.totalEligibleGroupCount ?? 0,
+          totalBacklogGroupCount: sourceProviderVerificationRun?.totalBacklogGroupCount ?? 0,
+          providerCount: sourceProviderVerificationRun?.providerCount ?? 0,
+          nextBatchCommand: sourceProviderVerificationRun?.artifacts?.plan ? "see provider verification plan" : null,
           resultCount: sourceProviderVerificationRun?.resultCount ?? 0,
           acceptedReadyCount: sourceProviderVerificationRun?.acceptedReadyCount ?? 0,
           needsReviewCount: sourceProviderVerificationRun?.needsReviewCount ?? 0,

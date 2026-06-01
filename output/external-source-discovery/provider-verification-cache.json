@@ -700,6 +700,314 @@
         "mediaDownload": false,
         "sourceContentCopied": false
       }
+    },
+    "acem--seyir--sofyan----sefik_gurmeric:internet-archive:acem-seyir-sofyan-sefik-gurmeric": {
+      "cacheKey": "acem--seyir--sofyan----sefik_gurmeric:internet-archive:acem-seyir-sofyan-sefik-gurmeric",
+      "cacheHit": false,
+      "catalogId": "acem--seyir--sofyan----sefik_gurmeric",
+      "providerProfileId": "internet-archive",
+      "connector": "internet-archive",
+      "status": "rejected",
+      "statusReason": "no-provider-result",
+      "checkedAt": "2026-06-01",
+      "searchQuery": "Acem Seyir Sofyan Sefik Gurmeric",
+      "searchUrl": "https://archive.org/advancedsearch.php?q=Sefik+Gurmeric+Acem+Seyir+Sofyan&output=json&rows=3&fl%5B%5D=identifier&fl%5B%5D=title&fl%5B%5D=creator&fl%5B%5D=description&fl%5B%5D=mediatype&fl%5B%5D=collection&fl%5B%5D=date",
+      "resultCount": 0,
+      "best": null,
+      "candidates": [],
+      "catalog": {
+        "makam": "Acem",
+        "form": "Seyir",
+        "usul": "Sofyan",
+        "title": "",
+        "composer": "Sefik Gurmeric",
+        "priorityGroup": "pdf-and-musicxml"
+      },
+      "safety": {
+        "directAutoAttach": false,
+        "mediaDownload": false,
+        "sourceContentCopied": false
+      }
+    },
+    "acemasiran--aranagme--agiraksak--1--:internet-archive:acemasiran-aranagme-agiraksak-1": {
+      "cacheKey": "acemasiran--aranagme--agiraksak--1--:internet-archive:acemasiran-aranagme-agiraksak-1",
+      "cacheHit": false,
+      "catalogId": "acemasiran--aranagme--agiraksak--1--",
+      "providerProfileId": "internet-archive",
+      "connector": "internet-archive",
+      "status": "rejected",
+      "statusReason": "no-provider-result",
+      "checkedAt": "2026-06-01",
+      "searchQuery": "Acemasiran Aranagme Agiraksak 1",
+      "searchUrl": "https://archive.org/advancedsearch.php?q=1+Acemasiran+Aranagme+Agiraksak&output=json&rows=3&fl%5B%5D=identifier&fl%5B%5D=title&fl%5B%5D=creator&fl%5B%5D=description&fl%5B%5D=mediatype&fl%5B%5D=collection&fl%5B%5D=date",
+      "resultCount": 0,
+      "best": null,
+      "candidates": [],
+      "catalog": {
+        "makam": "Acemasiran",
+        "form": "Aranagme",
+        "usul": "Agiraksak",
+        "title": "1",
+        "composer": "",
+        "priorityGroup": "pdf-and-musicxml"
+      },
+      "safety": {
+        "directAutoAttach": false,
+        "mediaDownload": false,
+        "sourceContentCopied": false
+      }
+    },
+    "acemasiran--aranagme--aksak--1--:internet-archive:acemasiran-aranagme-aksak-1": {
+      "cacheKey": "acemasiran--aranagme--aksak--1--:internet-archive:acemasiran-aranagme-aksak-1",
+      "cacheHit": false,
+      "catalogId": "acemasiran--aranagme--aksak--1--",
+      "providerProfileId": "internet-archive",
+      "connector": "internet-archive",
+      "status": "rejected",
+      "statusReason": "no-provider-result",
+      "checkedAt": "2026-06-01",
+      "searchQuery": "Acemasiran Aranagme Aksak 1",
+      "searchUrl": "https://archive.org/advancedsearch.php?q=1+Acemasiran+Aranagme+Aksak&output=json&rows=3&fl%5B%5D=identifier&fl%5B%5D=title&fl%5B%5D=creator&fl%5B%5D=description&fl%5B%5D=mediatype&fl%5B%5D=collection&fl%5B%5D=date",
+      "resultCount": 0,
+      "best": null,
+      "candidates": [],
+      "catalog": {
+        "makam": "Acemasiran",
+        "form": "Aranagme",
+        "usul": "Aksak",
+        "title": "1",
+        "composer": "",
+        "priorityGroup": "pdf-and-musicxml"
+      },
+      "safety": {
+        "directAutoAttach": false,
+        "mediaDownload": false,
+        "sourceContentCopied": false
+      }
+    },
+    "acemasiran--aranagme--curcuna--1--:internet-archive:acemasiran-aranagme-curcuna-1": {
+      "cacheKey": "acemasiran--aranagme--curcuna--1--:internet-archive:acemasiran-aranagme-curcuna-1",
+      "cacheHit": false,
+      "catalogId": "acemasiran--aranagme--curcuna--1--",
+      "providerProfileId": "internet-archive",
+      "connector": "internet-archive",
+      "status": "rejected",
+      "statusReason": "no-provider-result",
+      "checkedAt": "2026-06-01",
+      "searchQuery": "Acemasiran Aranagme Curcuna 1",
+      "searchUrl": "https://archive.org/advancedsearch.php?q=1+Acemasiran+Aranagme+Curcuna&output=json&rows=3&fl%5B%5D=identifier&fl%5B%5D=title&fl%5B%5D=creator&fl%5B%5D=description&fl%5B%5D=mediatype&fl%5B%5D=collection&fl%5B%5D=date",
+      "resultCount": 0,
+      "best": null,
+      "candidates": [],
+      "catalog": {
+        "makam": "Acemasiran",
+        "form": "Aranagme",
+        "usul": "Curcuna",
+        "title": "1",
+        "composer": "",
+        "priorityGroup": "pdf-and-musicxml"
+      },
+      "safety": {
+        "directAutoAttach": false,
+        "mediaDownload": false,
+        "sourceContentCopied": false
+      }
+    },
+    "acemasiran--aranagme--semai--1--:internet-archive:acemasiran-aranagme-semai-1": {
+      "cacheKey": "acemasiran--aranagme--semai--1--:internet-archive:acemasiran-aranagme-semai-1",
+      "cacheHit": false,
+      "catalogId": "acemasiran--aranagme--semai--1--",
+      "providerProfileId": "internet-archive",
+      "connector": "internet-archive",
+      "status": "rejected",
+      "statusReason": "no-provider-result",
+      "checkedAt": "2026-06-01",
+      "searchQuery": "Acemasiran Aranagme Semai 1",
+      "searchUrl": "https://archive.org/advancedsearch.php?q=1+Acemasiran+Aranagme+Semai&output=json&rows=3&fl%5B%5D=identifier&fl%5B%5D=title&fl%5B%5D=creator&fl%5B%5D=description&fl%5B%5D=mediatype&fl%5B%5D=collection&fl%5B%5D=date",
+      "resultCount": 0,
+      "best": null,
+      "candidates": [],
+      "catalog": {
+        "makam": "Acemasiran",
+        "form": "Aranagme",
+        "usul": "Semai",
+        "title": "1",
+        "composer": "",
+        "priorityGroup": "pdf-and-musicxml"
+      },
+      "safety": {
+        "directAutoAttach": false,
+        "mediaDownload": false,
+        "sourceContentCopied": false
+      }
+    },
+    "acemasiran--aranagme--senginsemai--1--:internet-archive:acemasiran-aranagme-senginsemai-1": {
+      "cacheKey": "acemasiran--aranagme--senginsemai--1--:internet-archive:acemasiran-aranagme-senginsemai-1",
+      "cacheHit": false,
+      "catalogId": "acemasiran--aranagme--senginsemai--1--",
+      "providerProfileId": "internet-archive",
+      "connector": "internet-archive",
+      "status": "rejected",
+      "statusReason": "no-provider-result",
+      "checkedAt": "2026-06-01",
+      "searchQuery": "Acemasiran Aranagme Senginsemai 1",
+      "searchUrl": "https://archive.org/advancedsearch.php?q=1+Acemasiran+Aranagme+Senginsemai&output=json&rows=3&fl%5B%5D=identifier&fl%5B%5D=title&fl%5B%5D=creator&fl%5B%5D=description&fl%5B%5D=mediatype&fl%5B%5D=collection&fl%5B%5D=date",
+      "resultCount": 0,
+      "best": null,
+      "candidates": [],
+      "catalog": {
+        "makam": "Acemasiran",
+        "form": "Aranagme",
+        "usul": "Senginsemai",
+        "title": "1",
+        "composer": "",
+        "priorityGroup": "pdf-and-musicxml"
+      },
+      "safety": {
+        "directAutoAttach": false,
+        "mediaDownload": false,
+        "sourceContentCopied": false
+      }
+    },
+    "acemasiran--aranagme--sofyan--1--:internet-archive:acemasiran-aranagme-sofyan-1": {
+      "cacheKey": "acemasiran--aranagme--sofyan--1--:internet-archive:acemasiran-aranagme-sofyan-1",
+      "cacheHit": false,
+      "catalogId": "acemasiran--aranagme--sofyan--1--",
+      "providerProfileId": "internet-archive",
+      "connector": "internet-archive",
+      "status": "rejected",
+      "statusReason": "no-provider-result",
+      "checkedAt": "2026-06-01",
+      "searchQuery": "Acemasiran Aranagme Sofyan 1",
+      "searchUrl": "https://archive.org/advancedsearch.php?q=1+Acemasiran+Aranagme+Sofyan&output=json&rows=3&fl%5B%5D=identifier&fl%5B%5D=title&fl%5B%5D=creator&fl%5B%5D=description&fl%5B%5D=mediatype&fl%5B%5D=collection&fl%5B%5D=date",
+      "resultCount": 0,
+      "best": null,
+      "candidates": [],
+      "catalog": {
+        "makam": "Acemasiran",
+        "form": "Aranagme",
+        "usul": "Sofyan",
+        "title": "1",
+        "composer": "",
+        "priorityGroup": "pdf-and-musicxml"
+      },
+      "safety": {
+        "directAutoAttach": false,
+        "mediaDownload": false,
+        "sourceContentCopied": false
+      }
+    },
+    "acemasiran--aranagme--yuruksemai--1--:internet-archive:acemasiran-aranagme-yuruksemai-1": {
+      "cacheKey": "acemasiran--aranagme--yuruksemai--1--:internet-archive:acemasiran-aranagme-yuruksemai-1",
+      "cacheHit": false,
+      "catalogId": "acemasiran--aranagme--yuruksemai--1--",
+      "providerProfileId": "internet-archive",
+      "connector": "internet-archive",
+      "status": "rejected",
+      "statusReason": "no-provider-result",
+      "checkedAt": "2026-06-01",
+      "searchQuery": "Acemasiran Aranagme Yuruksemai 1",
+      "searchUrl": "https://archive.org/advancedsearch.php?q=1+Acemasiran+Aranagme+Yuruksemai&output=json&rows=3&fl%5B%5D=identifier&fl%5B%5D=title&fl%5B%5D=creator&fl%5B%5D=description&fl%5B%5D=mediatype&fl%5B%5D=collection&fl%5B%5D=date",
+      "resultCount": 0,
+      "best": null,
+      "candidates": [],
+      "catalog": {
+        "makam": "Acemasiran",
+        "form": "Aranagme",
+        "usul": "Yuruksemai",
+        "title": "1",
+        "composer": "",
+        "priorityGroup": "pdf-and-musicxml"
+      },
+      "safety": {
+        "directAutoAttach": false,
+        "mediaDownload": false,
+        "sourceContentCopied": false
+      }
+    },
+    "acemasiran--pesrev--devrikebir----dede_salih_efendi:internet-archive:acemasiran-pesrev-devrikebir-dede-salih-efendi": {
+      "cacheKey": "acemasiran--pesrev--devrikebir----dede_salih_efendi:internet-archive:acemasiran-pesrev-devrikebir-dede-salih-efendi",
+      "cacheHit": false,
+      "catalogId": "acemasiran--pesrev--devrikebir----dede_salih_efendi",
+      "providerProfileId": "internet-archive",
+      "connector": "internet-archive",
+      "status": "rejected",
+      "statusReason": "no-provider-result",
+      "checkedAt": "2026-06-01",
+      "searchQuery": "Acemasiran Pesrev Devrikebir Dede Salih Efendi",
+      "searchUrl": "https://archive.org/advancedsearch.php?q=Dede+Salih+Efendi+Acemasiran+Pesrev+Devrikebir&output=json&rows=3&fl%5B%5D=identifier&fl%5B%5D=title&fl%5B%5D=creator&fl%5B%5D=description&fl%5B%5D=mediatype&fl%5B%5D=collection&fl%5B%5D=date",
+      "resultCount": 0,
+      "best": null,
+      "candidates": [],
+      "catalog": {
+        "makam": "Acemasiran",
+        "form": "Pesrev",
+        "usul": "Devrikebir",
+        "title": "",
+        "composer": "Dede Salih Efendi",
+        "priorityGroup": "pdf-and-musicxml"
+      },
+      "safety": {
+        "directAutoAttach": false,
+        "mediaDownload": false,
+        "sourceContentCopied": false
+      }
+    },
+    "acemasiran--pesrev--frenkcin----nuri_halil_poyraz:internet-archive:acemasiran-pesrev-frenkcin-nuri-halil-poyraz": {
+      "cacheKey": "acemasiran--pesrev--frenkcin----nuri_halil_poyraz:internet-archive:acemasiran-pesrev-frenkcin-nuri-halil-poyraz",
+      "cacheHit": false,
+      "catalogId": "acemasiran--pesrev--frenkcin----nuri_halil_poyraz",
+      "providerProfileId": "internet-archive",
+      "connector": "internet-archive",
+      "status": "rejected",
+      "statusReason": "no-provider-result",
+      "checkedAt": "2026-06-01",
+      "searchQuery": "Acemasiran Pesrev Frenkcin Nuri Halil Poyraz",
+      "searchUrl": "https://archive.org/advancedsearch.php?q=Nuri+Halil+Poyraz+Acemasiran+Pesrev+Frenkcin&output=json&rows=3&fl%5B%5D=identifier&fl%5B%5D=title&fl%5B%5D=creator&fl%5B%5D=description&fl%5B%5D=mediatype&fl%5B%5D=collection&fl%5B%5D=date",
+      "resultCount": 0,
+      "best": null,
+      "candidates": [],
+      "catalog": {
+        "makam": "Acemasiran",
+        "form": "Pesrev",
+        "usul": "Frenkcin",
+        "title": "",
+        "composer": "Nuri Halil Poyraz",
+        "priorityGroup": "pdf-and-musicxml"
+      },
+      "safety": {
+        "directAutoAttach": false,
+        "mediaDownload": false,
+        "sourceContentCopied": false
+      }
+    },
+    "acemasiran--pesrev--muhammes----gazi_giray_han:internet-archive:acemasiran-pesrev-muhammes-gazi-giray-han": {
+      "cacheKey": "acemasiran--pesrev--muhammes----gazi_giray_han:internet-archive:acemasiran-pesrev-muhammes-gazi-giray-han",
+      "cacheHit": false,
+      "catalogId": "acemasiran--pesrev--muhammes----gazi_giray_han",
+      "providerProfileId": "internet-archive",
+      "connector": "internet-archive",
+      "status": "rejected",
+      "statusReason": "no-provider-result",
+      "checkedAt": "2026-06-01",
+      "searchQuery": "Acemasiran Pesrev Muhammes Gazi Giray Han",
+      "searchUrl": "https://archive.org/advancedsearch.php?q=Gazi+Giray+Han+Acemasiran+Pesrev+Muhammes&output=json&rows=3&fl%5B%5D=identifier&fl%5B%5D=title&fl%5B%5D=creator&fl%5B%5D=description&fl%5B%5D=mediatype&fl%5B%5D=collection&fl%5B%5D=date",
+      "resultCount": 0,
+      "best": null,
+      "candidates": [],
+      "catalog": {
+        "makam": "Acemasiran",
+        "form": "Pesrev",
+        "usul": "Muhammes",
+        "title": "",
+        "composer": "Gazi Giray Han",
+        "priorityGroup": "pdf-and-musicxml"
+      },
+      "safety": {
+        "directAutoAttach": false,
+        "mediaDownload": false,
+        "sourceContentCopied": false
+      }
     }
   }
 }

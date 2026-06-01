@@ -117,6 +117,7 @@ function collectErrors({
   sourceIntakeDryRun,
   sourceDiscoveryVerification,
   sourceProviderVerificationRun,
+  sourceProviderVerificationPlan,
   pdfSummary,
   studioFollowAudit,
   referencesRuntimeAudit,
@@ -224,6 +225,15 @@ function collectErrors({
     if ((sourceProviderVerificationRun.processedGroupCount ?? 0) <= 0) {
       errors.push("external source provider verification must process at least one backlog group");
     }
+    if ((sourceProviderVerificationRun.totalBacklogGroupCount ?? 0) !== 2978) {
+      errors.push(`external source provider verification must account for 2978 backlog groups, got ${sourceProviderVerificationRun.totalBacklogGroupCount}`);
+    }
+    if ((sourceProviderVerificationRun.providerCount ?? 0) < 5) {
+      errors.push("external source provider verification must include the configured provider set");
+    }
+    if ((sourceProviderVerificationRun.verificationPacketCount ?? 0) < (sourceProviderVerificationRun.processedGroupCount ?? 0)) {
+      errors.push("external source provider verification packet count cannot be lower than processed group count");
+    }
     if ((sourceProviderVerificationRun.directAutoAttachCount ?? -1) !== 0) {
       errors.push("external source provider verification directAutoAttachCount must be 0");
     }
@@ -232,6 +242,19 @@ function collectErrors({
     }
     if ((sourceProviderVerificationRun.sourceContentCopiedCount ?? -1) !== 0) {
       errors.push("external source provider verification must not copy source content");
+    }
+  }
+  if (!sourceProviderVerificationPlan) {
+    errors.push("external source provider verification plan could not be read");
+  } else {
+    if ((sourceProviderVerificationPlan.totalBacklogGroupCount ?? 0) !== 2978) {
+      errors.push("external source provider verification plan must cover the 2978 backlog groups");
+    }
+    if ((sourceProviderVerificationPlan.safety?.directAutoAttachCount ?? -1) !== 0) {
+      errors.push("external source provider verification plan directAutoAttachCount must be 0");
+    }
+    if ((sourceProviderVerificationPlan.safety?.searchOnlyCandidatesAccepted ?? -1) !== 0) {
+      errors.push("external source provider verification plan must not accept search-only candidates");
     }
   }
 
@@ -335,6 +358,7 @@ function buildSummary({
   sourceDiscoveryRun,
   sourceDiscoveryVerification,
   sourceProviderVerificationRun,
+  sourceProviderVerificationPlan,
   pdfSummary,
   studioFollowAudit,
   referencesRuntimeAudit,
@@ -346,6 +370,7 @@ function buildSummary({
     sourceIntakeDryRun,
     sourceDiscoveryVerification,
     sourceProviderVerificationRun,
+    sourceProviderVerificationPlan,
     pdfSummary,
     studioFollowAudit,
     referencesRuntimeAudit,
@@ -401,11 +426,16 @@ function buildSummary({
         artifactPath: "output/external-source-discovery/provider-verification-run.json",
         evidenceArtifactPath: "output/external-source-discovery/provider-verification-evidence.json",
         acceptedImportReadyArtifactPath: "output/external-source-discovery/provider-verification-accepted-import-ready.json",
+        planArtifactPath: "output/external-source-discovery/provider-verification-plan.json",
         lastRunOk: sourceProviderVerificationRun?.ok === true,
         dryRun: sourceProviderVerificationRun?.dryRun === true,
         providerProfileId: sourceProviderVerificationRun?.providerProfileId ?? null,
+        providerProfileIds: sourceProviderVerificationRun?.providerProfileIds ?? [],
         processedGroupCount: sourceProviderVerificationRun?.processedGroupCount ?? 0,
+        verificationPacketCount: sourceProviderVerificationRun?.verificationPacketCount ?? 0,
         totalEligibleGroupCount: sourceProviderVerificationRun?.totalEligibleGroupCount ?? 0,
+        totalBacklogGroupCount: sourceProviderVerificationRun?.totalBacklogGroupCount ?? 0,
+        providerCount: sourceProviderVerificationRun?.providerCount ?? 0,
         resultCount: sourceProviderVerificationRun?.resultCount ?? 0,
         acceptedReadyCount: sourceProviderVerificationRun?.acceptedReadyCount ?? 0,
         needsReviewCount: sourceProviderVerificationRun?.needsReviewCount ?? 0,
@@ -416,6 +446,7 @@ function buildSummary({
         mediaDownloadCount: sourceProviderVerificationRun?.mediaDownloadCount ?? null,
         sourceContentCopiedCount: sourceProviderVerificationRun?.sourceContentCopiedCount ?? null,
         warningCount: sourceProviderVerificationRun?.warnings?.length ?? 0,
+        nextBatch: sourceProviderVerificationPlan?.nextBatch ?? null,
         targetScript: "npm run verify:external-source-providers",
       },
     },
@@ -467,6 +498,7 @@ function buildSummary({
       sourceDiscoveryRun: "output/external-source-discovery/discovery-run.json",
       sourceDiscoveryVerification: "output/external-source-discovery/discovery-verification.json",
       sourceProviderVerificationRun: "output/external-source-discovery/provider-verification-run.json",
+      sourceProviderVerificationPlan: "output/external-source-discovery/provider-verification-plan.json",
       sourceIntakeDryRun: "output/external-reference-coverage/source-intake-accepted-import-dry-run.json",
       pdfLayoutVerificationSummary: "output/symbtr-layout-review/layout-verification-summary.json",
       referencesRuntimeAudit: "output/playwright/references-curation-batch-runtime-audit-20260601.json",
@@ -541,6 +573,11 @@ export async function runProdCycleAudit({
     "external source provider verification run",
     readErrors,
   );
+  const sourceProviderVerificationPlan = readJson(
+    "output/external-source-discovery/provider-verification-plan.json",
+    "external source provider verification plan",
+    readErrors,
+  );
   const pdfSummary = readJson(
     "output/symbtr-layout-review/layout-verification-summary.json",
     "PDF layout verification summary",
@@ -565,6 +602,7 @@ export async function runProdCycleAudit({
     sourceDiscoveryRun,
     sourceDiscoveryVerification,
     sourceProviderVerificationRun,
+    sourceProviderVerificationPlan,
     pdfSummary,
     studioFollowAudit,
     referencesRuntimeAudit,

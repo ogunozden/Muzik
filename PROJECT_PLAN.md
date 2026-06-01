@@ -325,6 +325,13 @@ tek kurala bağlamaktır.
       mevcut batch artifact'lerinden okunur ve browser kanıtı
       `output/playwright/references-curation-readonly-snapshot-20260601.png`
       olarak saklanır.
+      2026-06-01 read-only detail snapshot kapısı:
+      `/references/curation/[catalogId]` artık kabul edilmiş kaynakları ilk
+      render'da server-side snapshot ile gösterir; feedback/manual correction
+      payload'ları token korumalı API arkasında kalır. Snapshot yalnız ilgili
+      katalog id'sinin auto-attached accepted view'ını hydrate eder ve kaynak
+      notları, feedback logu, manuel düzeltme içeriği gibi operatör alanlarını
+      client HTML'ine taşımaz.
       2026-06-01 ek accepted import profile kapısı: bulk accepted kaynak import'u
       artık `research-source-profiles.json` içindeki etkin profile host'una
       eşleşmeyen URL'leri ve eşleşen profile provider'ıyla uyuşmayan source

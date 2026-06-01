@@ -1,6 +1,7 @@
 import {fireEvent, render, screen, waitFor} from "@testing-library/react";
 import type {ReactNode} from "react";
 import {afterEach, beforeEach, describe, expect, it, vi} from "vitest";
+import {ReferencesCurationDetail} from "@/features/references/ReferencesCurationDetail";
 import ReferencesCurationDetailPage from "../page";
 
 vi.mock("@/components/layout/UnifiedLayout", () => ({
@@ -253,5 +254,25 @@ describe("ReferencesCurationDetailPage", () => {
 
     fireEvent.click(screen.getByRole("button", {name: "Gizle"}));
     expect(screen.getByText("Önizleme gizli.")).toBeDefined();
+  });
+
+  it("renders a read-only accepted source snapshot before an ops token is entered", async () => {
+    const fetchMock = mockFetch();
+    vi.stubGlobal("fetch", fetchMock);
+
+    render(
+      <ReferencesCurationDetail
+        catalogId={catalogId}
+        initialState={stateFixture}
+        initialMessage="Read-only kabul edilmiş kaynak snapshot yüklendi. Feedback ve manuel düzeltme operasyonları ops token ister."
+      />,
+    );
+
+    await screen.findByRole("heading", {name: catalogId});
+    expect(screen.getByText(/Read-only kabul edilmiş kaynak snapshot/)).toBeDefined();
+    expect(screen.getByRole("heading", {name: "Example Source"})).toBeDefined();
+    expect(screen.getAllByRole("link", {name: "https://divanmakam.com/forum/example.1/"}).length).toBeGreaterThan(0);
+    expect(screen.getByText(/1 \/ 1 kaynak görünür/)).toBeDefined();
+    expect(fetchMock).not.toHaveBeenCalled();
   });
 });

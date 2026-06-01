@@ -85,7 +85,7 @@ interface ManualCorrection {
   updatedAt?: string;
 }
 
-interface ExternalReferenceState {
+export interface ExternalReferenceState {
   curation?: {
     autoAttachedReferences?: CurationReference[];
     feedbackEvents?: SourceFeedbackEvent[];
@@ -284,11 +284,19 @@ function getInlinePreviewUrl(reference: CurationReference | null): string | null
   return null;
 }
 
-export function ReferencesCurationDetail({catalogId}: {catalogId: string}) {
-  const [state, setState] = useState<ExternalReferenceState>(emptyState);
+export function ReferencesCurationDetail({
+  catalogId,
+  initialState = emptyState,
+  initialMessage = "",
+}: {
+  catalogId: string;
+  initialState?: ExternalReferenceState;
+  initialMessage?: string;
+}) {
+  const [state, setState] = useState<ExternalReferenceState>(initialState);
   const [opsToken, setOpsToken] = useState("");
   const [activeOperation, setActiveOperation] = useState<CurationAction | "refresh" | null>(null);
-  const [message, setMessage] = useState("");
+  const [message, setMessage] = useState(initialMessage);
   const [activeView, setActiveView] = useState<DetailView>("scores");
   const [selectedSourceId, setSelectedSourceId] = useState("");
   const [composerFilter, setComposerFilter] = useState("");

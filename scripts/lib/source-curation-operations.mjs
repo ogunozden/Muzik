@@ -7,6 +7,7 @@ import {
   validateCurrent,
   writeJson,
 } from "./source-curation-registry.mjs";
+export {getCurationState, summarizeCurationState} from "./source-curation-state.mjs";
 
 export {
   generateSourceQualityStats,
@@ -28,22 +29,6 @@ function confidenceLevel(status, normalizedScore, conflicts) {
   if (normalizedScore >= 0.75) return "high";
   if (normalizedScore >= 0.45) return "medium";
   return "low";
-}
-
-function buildSourceLookup(mappingData, bulkCandidateData) {
-  const sources = new Map();
-
-  for (const mapping of mappingData?.mappings ?? []) {
-    const source = mapping?.candidate?.source;
-    if (source?.id) sources.set(source.id, source);
-  }
-
-  for (const candidate of bulkCandidateData?.candidates ?? []) {
-    const source = candidate?.source;
-    if (source?.id) sources.set(source.id, source);
-  }
-
-  return sources;
 }
 
 function attachableMappings(mappingData) {
@@ -74,42 +59,6 @@ function buildAutoAttachedReference(mapping, rank, profiles) {
     conflicts,
     attachedAt: today(),
     matcherVersion: DEFAULT_MATCHER_VERSION,
-  };
-}
-
-export function getCurationState(root = process.cwd()) {
-  const registries = readCurationRegistries(root);
-  const mappingData = readJson(root, CURATION_PATHS.mapping, {mappings: []});
-  const bulkCandidateData = readJson(root, CURATION_PATHS.bulkCandidates, {candidates: []});
-  const sourceLookup = buildSourceLookup(mappingData, bulkCandidateData);
-  const references = registries.autoAttached.references ?? [];
-  const feedbackEvents = registries.feedback.events ?? [];
-  const manualCorrections = registries.manualCorrections.corrections ?? [];
-  const embedStates = registries.embedStates.states ?? [];
-
-  return {
-    summary: {
-      autoAttachedCount: references.length,
-      removedCount: references.filter((reference) => reference.status === "user-removed").length,
-      deleteRequestedCount: references.filter((reference) => reference.status === "delete-requested").length,
-      deletedCount: references.filter((reference) => reference.status === "deleted").length,
-      feedbackEventCount: feedbackEvents.length,
-      manualCorrectionCount: manualCorrections.length,
-      researchSourceProfileCount: registries.researchProfiles.profiles?.length ?? 0,
-      embedStateCount: embedStates.length,
-    },
-    autoAttachedReferences: references.map((reference) => ({
-      ...reference,
-      source: sourceLookup.get(reference.sourceId) ?? null,
-      feedbackEvents: feedbackEvents.filter((event) => event.catalogId === reference.catalogId && event.sourceId === reference.sourceId),
-      manualCorrection: manualCorrections.find((correction) => correction.catalogId === reference.catalogId && correction.sourceId === reference.sourceId) ?? null,
-      embedState: embedStates.find((state) => state.sourceId === reference.sourceId) ?? null,
-    })),
-    feedbackEvents: feedbackEvents.slice(-160).reverse(),
-    manualCorrections,
-    researchSourceProfiles: registries.researchProfiles.profiles ?? [],
-    embedStates,
-    sourceQualityStats: registries.qualityStats.stats ?? [],
   };
 }
 

@@ -1,0 +1,5 @@
+"path","area"
+"PROJECT_PLAN.md","diff-doc"
+"scripts/lib/__tests__/source-curation-operations.test.mjs","diff"
+"scripts/lib/source-curation-operations.mjs","diff"
+"scripts/lib/source-curation-state.mjs","diff-untracked"

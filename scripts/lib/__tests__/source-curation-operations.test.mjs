@@ -8,6 +8,7 @@ import {
   getCurationState,
   recordSourceFeedback,
   recordSourceFeedbackBatch,
+  summarizeCurationState,
   upsertEmbedState,
   upsertManualSourceCorrection,
 } from "../source-curation-operations.mjs";
@@ -93,6 +94,11 @@ describe("source curation operations", () => {
 
     expect(summary.generatedCount).toBe(1);
     expect(state.summary.autoAttachedCount).toBe(1);
+    expect(summarizeCurationState(root)).toEqual(expect.objectContaining({
+      autoAttachedCount: 1,
+      autoAttachedReferences: 1,
+      sourceQualityStats: 0,
+    }));
     expect(state.autoAttachedReferences[0]).toEqual(
       expect.objectContaining({
         catalogId,

@@ -196,6 +196,12 @@ tek kurala bağlamaktır.
       Merge fonksiyonu yanlışlıkla gelen `needs-review` adayları da fail-closed
       skip eder; testler bu davranışı doğrudan doğrular. Event log/stats
       sınırlarını ayrı modüle inceltecek sonraki dalga açık kalır.
+      2026-06-01 Faz 5: curation state assembly, feedback event log okuma,
+      manual correction/embed state bağlama ve source quality stats özetleme
+      `scripts/lib/source-curation-state.mjs` içine çıkarıldı.
+      `source-curation-operations.mjs` artık bu state modülünü re-export eden
+      ince operasyon katmanı olarak kalır; testler `summarizeCurationState`
+      sözleşmesini de kapsar.
       2026-06-01 Faz 4: curation registry I/O ve validation ortak sözleşmesi
       `scripts/lib/source-curation-registry.mjs`, append-only feedback/manual
       correction/embed-state/stats operasyonları ise

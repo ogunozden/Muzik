@@ -236,6 +236,12 @@ tek kurala bağlamaktır.
       değerini research profile ile birebir hizalı taşımak zorunda; stratejisi
       `none` olmayan profillerde scoring evidence içinde
       `metadata-strategy:*` gerekçesi bulunmazsa validation kırılır.
+      2026-06-01 ek batch lifecycle kapısı: coverage `batchReport.flow`
+      artık ingest, normalize, dedupe, provider-profile-classify,
+      candidate-generate, confidence-score, status-assign,
+      safe-auto-attach-accepted-only, validate ve coverage-report adımlarını
+      taşımak zorunda; accepted-only auto-attach ve duplicate accepted URL
+      identity policy metinleri validation tarafından doğrulanır.
 - [ ] PDF vector ölçü adayları gerçek ölçü kutusuna terfi etmeden önce insan
       veya görsel regresyon doğrulaması bekliyor. Pipeline, review artifact'i,
       verification manifest'i ve Eser Takip UI yolu hazır; gerçek manifest şu

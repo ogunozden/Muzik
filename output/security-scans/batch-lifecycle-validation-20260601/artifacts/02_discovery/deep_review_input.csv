@@ -1,0 +1,5 @@
+path,area
+scripts/lib/source-curation-validation.mjs,diff
+scripts/lib/__tests__/source-curation-validation.test.mjs,diff
+PROJECT_PLAN.md,docs
+output/playwright/references-curation-batch-lifecycle-validation-20260601.png,evidence

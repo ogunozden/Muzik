@@ -32,6 +32,27 @@ const PROVIDERS = new Set(["score", "symbtr", "youtube", "archive", "github"]);
 const EMBED_CAPABILITIES = new Set(["none", "iframe", "pdf", "youtube"]);
 const EMBED_TYPES = new Set(["none", "iframe", "pdf", "youtube"]);
 const METADATA_STRATEGIES = new Set(["none", "html-title", "og-title", "oembed", "site-specific"]);
+const REQUIRED_BATCH_FLOW_STEPS = [
+  "ingest",
+  "normalize",
+  "dedupe",
+  "provider-profile-classify",
+  "candidate-generate",
+  "confidence-score",
+  "status-assign",
+  "safe-auto-attach-accepted-only",
+  "validate",
+  "coverage-report",
+];
+const REQUIRED_BATCH_VALIDATION_GATES = [
+  "catalog-id",
+  "accepted-identity-dedupe",
+  "status-contract",
+  "candidate-review-only",
+  "profile-count-drift",
+  "summary-count-drift",
+  "metadata-strategy-profile-drift",
+];
 
 function hasCatalogId(catalogIds, catalogId) {
   return typeof catalogId === "string" && catalogIds.has(catalogId);
@@ -139,6 +160,19 @@ function getCountFromSummaryRows(summaryRows, value) {
   return Number.isInteger(row?.count) ? row.count : 0;
 }
 
+function validateRequiredStrings(values, requiredValues, label, errors) {
+  if (!Array.isArray(values) || values.some((value) => !isNonEmptyString(value))) {
+    errors.push(`coverage-summary: ${label} must be a non-empty string array`);
+    return;
+  }
+
+  for (const requiredValue of requiredValues) {
+    if (!values.includes(requiredValue)) {
+      errors.push(`coverage-summary: ${label} must include ${requiredValue}`);
+    }
+  }
+}
+
 function validateBatchReport(summary, actualCandidateReviewCount, enabledProfileCount, errors) {
   const report = summary?.batchReport;
   if (report === undefined) return;
@@ -196,6 +230,15 @@ function validateBatchReport(summary, actualCandidateReviewCount, enabledProfile
   }
   if (!Array.isArray(report.validationGates) || report.validationGates.length === 0) {
     errors.push("coverage-summary: batchReport.validationGates must list validation gates");
+  }
+
+  validateRequiredStrings(report.flow, REQUIRED_BATCH_FLOW_STEPS, "batchReport.flow", errors);
+  validateRequiredStrings(report.validationGates, REQUIRED_BATCH_VALIDATION_GATES, "batchReport.validationGates", errors);
+  if (report.autoAttachPolicy !== "only accepted bulk candidates are counted as curated and eligible for auto-attach") {
+    errors.push("coverage-summary: batchReport.autoAttachPolicy must document accepted-only auto-attach");
+  }
+  if (report.duplicateAcceptedIdentityPolicy !== "duplicate accepted URL identities fail validation before merge") {
+    errors.push("coverage-summary: batchReport.duplicateAcceptedIdentityPolicy must document duplicate accepted URL protection");
   }
 }
 

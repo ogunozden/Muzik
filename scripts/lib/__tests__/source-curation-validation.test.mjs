@@ -132,6 +132,18 @@ function validRegistries() {
       candidateReviewQueueByProfile: [{value: "youtube", count: 1}],
       batchReport: {
         version: 1,
+        flow: [
+          "ingest",
+          "normalize",
+          "dedupe",
+          "provider-profile-classify",
+          "candidate-generate",
+          "confidence-score",
+          "status-assign",
+          "safe-auto-attach-accepted-only",
+          "validate",
+          "coverage-report",
+        ],
         processedCatalogEntries: 2,
         curatedBeforeBulkCandidates: 1,
         newlyAcceptedCatalogEntries: 0,
@@ -141,7 +153,18 @@ function validRegistries() {
         nextBatchSize: 1,
         generatedReviewCandidates: 1,
         candidateReviewStatusCounts: [{value: "needs-review", count: 1}],
-        validationGates: ["catalog-id", "candidate-review-only", "summary-count-drift"],
+        duplicateAcceptedIdentityPolicy: "duplicate accepted URL identities fail validation before merge",
+        autoAttachPolicy: "only accepted bulk candidates are counted as curated and eligible for auto-attach",
+        validationGates: [
+          "catalog-id",
+          "https-url-policy",
+          "accepted-identity-dedupe",
+          "status-contract",
+          "candidate-review-only",
+          "profile-count-drift",
+          "summary-count-drift",
+          "metadata-strategy-profile-drift",
+        ],
       },
     },
   };
@@ -289,6 +312,29 @@ describe("source curation validation", () => {
         "coverage-summary: batchReport.generatedReviewCandidates must equal missingAfterBatch times enabled profile count",
         "coverage-summary: batchReport candidateReviewStatusCounts must contain only review-only rows",
         "coverage-summary: batchReport.validationGates must list validation gates",
+        "coverage-summary: batchReport.validationGates must include catalog-id",
+        "coverage-summary: batchReport.validationGates must include accepted-identity-dedupe",
+      ]),
+    );
+  });
+
+  it("rejects batch reports that do not declare the full batch-first lifecycle and accepted-only policy", () => {
+    const registries = validRegistries();
+    registries.coverageSummary.batchReport.flow = ["ingest", "validate"];
+    registries.coverageSummary.batchReport.autoAttachPolicy = "attach confident candidates";
+    registries.coverageSummary.batchReport.duplicateAcceptedIdentityPolicy = "best effort";
+    registries.coverageSummary.batchReport.validationGates = ["catalog-id", "candidate-review-only"];
+
+    const result = validateSourceCurationRegistries(registries);
+
+    expect(result.errors).toEqual(
+      expect.arrayContaining([
+        "coverage-summary: batchReport.flow must include normalize",
+        "coverage-summary: batchReport.flow must include safe-auto-attach-accepted-only",
+        "coverage-summary: batchReport.validationGates must include accepted-identity-dedupe",
+        "coverage-summary: batchReport.validationGates must include metadata-strategy-profile-drift",
+        "coverage-summary: batchReport.autoAttachPolicy must document accepted-only auto-attach",
+        "coverage-summary: batchReport.duplicateAcceptedIdentityPolicy must document duplicate accepted URL protection",
       ]),
     );
   });

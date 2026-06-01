@@ -1,0 +1,9 @@
+path,area,preview
+PROJECT_PLAN.md,diff,"Project plan update documenting the sample coverage audit gate and evidence for this phase."
+package.json,diff,"{   ""name"": ""muzik"",   ""version"": ""0.1.0"",   ""private"": true,   ""engines"": {     ""node"": "">=24 <25"",     ""npm"": "">=10""   },   ""scripts"": {     ""dev"": ""next dev --turbopack"",     ""build"": ""next build -"
+src/app/api/samples/__tests__/route.test.ts,diff,"Route tests now assert the new coverage summary returned from GET /api/samples while preserving token-protected mutation behavior."
+src/app/api/samples/route.ts,diff,"GET /api/samples adds summarizeSampleCoverage(validSlots) to the JSON response; POST and DELETE token and file path controls are unchanged."
+src/app/samples/page.tsx,diff,"Samples page stores and renders numeric coverage cards and wraps the operation token input in a non-submitting form."
+src/engines/ses/__tests__/sample-coverage.test.ts,diff,"import {describe, expect, it} from ""vitest""; import {INSTRUMENTS, MELODIC_INSTRUMENTS, PERCUSSION_INSTRUMENTS} from ""@/lib/app-constants""; import {SAMPLE_SLOTS} from ""../sample-library""; import {summa"
+src/engines/ses/sample-coverage.ts,diff,"export interface SampleSlotStatusLike {   category: ""melodic"" | ""percussion"";   instrumentId: string;   instrumentName: string;   installed?: boolean; }  export interface InstrumentSampleCoverage {   "
+src/engines/ses/sample-library.ts,diff,"import {formatSolfegePitch} from ""@/core/domain/note-naming""; import {   INSTRUMENTS,   MELODIC_INSTRUMENTS as MELODIC_INSTRUMENT_IDS,   PERCUSSION_INSTRUMENTS as PERCUSSION_INSTRUMENT_IDS, } from ""@/"

@@ -22,9 +22,21 @@ interface SampleSlotStatus {
   updatedAt: string | null;
 }
 
+interface SampleCoverageSummary {
+  totalSlots: number;
+  installedSlots: number;
+  missingSlots: number;
+  instrumentCount: number;
+  playableInstrumentCount: number;
+  synthFallbackInstrumentCount: number;
+  melodicInstrumentCount: number;
+  percussionInstrumentCount: number;
+}
+
 interface SamplesResponse {
   total: number;
   installed: number;
+  coverage?: SampleCoverageSummary;
   slots: SampleSlotStatus[];
 }
 
@@ -52,6 +64,7 @@ function formatDate(value: string | null): string {
 
 export default function SeslerPage() {
   const [slots, setSlots] = useState<SampleSlotStatus[]>([]);
+  const [coverage, setCoverage] = useState<SampleCoverageSummary | null>(null);
   const [activeGroup, setActiveGroup] = useState<string>("");
   const [isLoading, setIsLoading] = useState(true);
   const [uploadingKey, setUploadingKey] = useState<string | null>(null);
@@ -66,6 +79,7 @@ export default function SeslerPage() {
 
   const applySlots = useCallback((data: SamplesResponse) => {
     setSlots(data.slots);
+    setCoverage(data.coverage ?? null);
     setActiveGroup((current) => current || data.slots[0]?.groupLabel || "");
     setIsLoading(false);
   }, []);
@@ -247,7 +261,20 @@ export default function SeslerPage() {
           </div>
         </div>
 
-        <div className={`mb-4 grid gap-2 border ${tokens.colors.border.base} ${tokens.radius.md} ${tokens.colors.background.surface} p-3 md:max-w-md`}>
+        <form
+          className={`mb-4 grid gap-2 border ${tokens.colors.border.base} ${tokens.radius.md} ${tokens.colors.background.surface} p-3 md:max-w-md`}
+          onSubmit={(event) => event.preventDefault()}
+        >
+          <input
+            type="text"
+            name="username"
+            value="local-sample-ops"
+            className="hidden"
+            readOnly
+            autoComplete="username"
+            aria-hidden="true"
+            tabIndex={-1}
+          />
           <label className={`text-xs font-medium ${tokens.colors.text.secondary}`} htmlFor="sample-ops-token">
             Operasyon token
           </label>
@@ -259,7 +286,36 @@ export default function SeslerPage() {
             className={`w-full rounded-md border ${tokens.colors.border.base} ${tokens.colors.background.base} px-3 py-2 text-sm ${tokens.colors.text.primary}`}
             autoComplete="new-password"
           />
-        </div>
+        </form>
+
+        {coverage && (
+          <section className="mb-6 grid gap-3 md:grid-cols-4" aria-label="Sample coverage">
+            <div className={`border ${tokens.colors.border.base} ${tokens.radius.md} ${tokens.colors.background.surface} p-3`}>
+              <div className={`text-xs ${tokens.colors.text.secondary}`}>Çalınabilir enstrüman</div>
+              <div className={`mt-1 text-xl font-semibold ${tokens.colors.text.primary}`}>
+                {coverage.playableInstrumentCount} / {coverage.instrumentCount}
+              </div>
+            </div>
+            <div className={`border ${tokens.colors.border.base} ${tokens.radius.md} ${tokens.colors.background.surface} p-3`}>
+              <div className={`text-xs ${tokens.colors.text.secondary}`}>Sample slot</div>
+              <div className={`mt-1 text-xl font-semibold ${tokens.colors.text.primary}`}>
+                {coverage.installedSlots} / {coverage.totalSlots}
+              </div>
+            </div>
+            <div className={`border ${tokens.colors.border.base} ${tokens.radius.md} ${tokens.colors.background.surface} p-3`}>
+              <div className={`text-xs ${tokens.colors.text.secondary}`}>Synth fallback</div>
+              <div className={`mt-1 text-xl font-semibold ${tokens.colors.text.primary}`}>
+                {coverage.synthFallbackInstrumentCount}
+              </div>
+            </div>
+            <div className={`border ${tokens.colors.border.base} ${tokens.radius.md} ${tokens.colors.background.surface} p-3`}>
+              <div className={`text-xs ${tokens.colors.text.secondary}`}>Aileler</div>
+              <div className={`mt-1 text-xl font-semibold ${tokens.colors.text.primary}`}>
+                {coverage.melodicInstrumentCount} ezgi · {coverage.percussionInstrumentCount} vurmalı
+              </div>
+            </div>
+          </section>
+        )}
 
         {message && (
           <div className={`mb-4 border ${tokens.colors.border.base} ${tokens.radius.md} ${tokens.colors.background.surface} px-4 py-3 text-sm ${tokens.colors.text.primary}`}>

@@ -360,6 +360,12 @@ tek kurala bağlamaktır.
        `/rhythm`, `/samples`, `/archive` için masaüstü ve mobil kontrol et.
 10. [x] Yeni davranışları test, typecheck, lint, build ve GitNexus
         `detect_changes` ile doğrula.
+        2026-06-01 ek enstrüman/sample coverage kapısı: `npm run
+        audit:samples` merkezi enstrüman listesindeki 20 enstrümanın sample
+        slot kapsamını, beklenmeyen/boş WAV dosyalarını ve tüm enstrümanların
+        sample veya synth fallback ile çalınabilir kalmasını batch olarak
+        doğrular. `/api/samples` artık makine-okunur coverage summary döndürür;
+        `/samples` bu özeti operatör UI'ında gösterir.
 11. [x] SymbTr katalog aramasını eser takip seçim akışına bağla; kullanıcı
         yerel katalogdan aynı eserin `txt`, `mid`, `xml`, `mu2`, `pdf`
         kaynaklarını tek kayıt olarak seçebilsin.

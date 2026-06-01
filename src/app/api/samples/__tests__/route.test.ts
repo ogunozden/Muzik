@@ -38,6 +38,11 @@ vi.mock("@/engines/ses/sample-library", () => {
   };
 });
 
+vi.mock("@/engines/ses/sample-coverage", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("@/engines/ses/sample-coverage")>();
+  return actual;
+});
+
 const SAMPLE_OPS_TOKEN_HEADER = "x-sample-operations-token";
 
 function makeUploadRequest(fileName: string, type: string, slotKey = "ney:C4", token = "secret-token") {
@@ -96,6 +101,12 @@ describe("/api/samples route", () => {
     expect(response.status).toBe(200);
     expect(body.total).toBe(1);
     expect(body.installed).toBe(1);
+    expect(body.coverage).toEqual(expect.objectContaining({
+      totalSlots: 1,
+      installedSlots: 1,
+      instrumentCount: 1,
+      playableInstrumentCount: 1,
+    }));
     expect(body.slots[0]).toEqual(
       expect.objectContaining({
         key: "ney:C4",

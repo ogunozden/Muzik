@@ -1,4 +1,9 @@
 import {formatSolfegePitch} from "@/core/domain/note-naming";
+import {
+  INSTRUMENTS,
+  MELODIC_INSTRUMENTS as MELODIC_INSTRUMENT_IDS,
+  PERCUSSION_INSTRUMENTS as PERCUSSION_INSTRUMENT_IDS,
+} from "@/lib/app-constants";
 
 export type SampleCategory = "melodic" | "percussion";
 
@@ -28,31 +33,41 @@ export interface PercussionSampleSet {
   accentUrls: string[];
 }
 
-const MELODIC_INSTRUMENTS = [
-  {id: "ney", name: "Ney", folder: "ney"},
-  {id: "ud", name: "Ud", folder: "ud"},
-  {id: "kemençe", name: "Kemençe", folder: "kemence"},
-  {id: "tanpura", name: "Tanpura", folder: "tanpura"},
-  {id: "kanun", name: "Kanun", folder: "kanun"},
-  {id: "bağlama", name: "Bağlama", folder: "baglama"},
-  {id: "tambur", name: "Tambur", folder: "tambur"},
-  {id: "santur", name: "Santur", folder: "santur"},
-  {id: "lavta", name: "Lavta", folder: "lavta"},
-  {id: "rebab", name: "Rebab", folder: "rebab"},
-  {id: "miskal", name: "Miskal", folder: "miskal"},
-] as const;
+const SAMPLE_FOLDER_BY_INSTRUMENT_ID = {
+  ney: "ney",
+  ud: "ud",
+  kemençe: "kemence",
+  tanpura: "tanpura",
+  kanun: "kanun",
+  bağlama: "baglama",
+  tambur: "tambur",
+  santur: "santur",
+  lavta: "lavta",
+  rebab: "rebab",
+  miskal: "miskal",
+  kudum: "kudum",
+  bendir: "bendir",
+  davul: "davul",
+  def: "def",
+  darbuka: "darbuka",
+  zilli_def: "zilli-def",
+  kaşık: "kasik",
+  zil: "zil",
+  nakkare: "nakkare",
+} as const;
 
-const PERCUSSION_INSTRUMENTS = [
-  {id: "kudum", name: "Kudüm", folder: "kudum"},
-  {id: "bendir", name: "Bendir", folder: "bendir"},
-  {id: "davul", name: "Davul", folder: "davul"},
-  {id: "def", name: "Def", folder: "def"},
-  {id: "darbuka", name: "Darbuka", folder: "darbuka"},
-  {id: "zilli_def", name: "Zilli Def", folder: "zilli-def"},
-  {id: "kaşık", name: "Kaşık", folder: "kasik"},
-  {id: "zil", name: "Zil", folder: "zil"},
-  {id: "nakkare", name: "Nakkare", folder: "nakkare"},
-] as const;
+const INSTRUMENT_LABEL_BY_ID = new Map(INSTRUMENTS.map((instrument) => [instrument.id, instrument.nameTr]));
+
+function makeSampleInstrument(id: keyof typeof SAMPLE_FOLDER_BY_INSTRUMENT_ID) {
+  return {
+    id,
+    name: INSTRUMENT_LABEL_BY_ID.get(id) ?? id,
+    folder: SAMPLE_FOLDER_BY_INSTRUMENT_ID[id],
+  };
+}
+
+const MELODIC_SAMPLE_INSTRUMENTS = MELODIC_INSTRUMENT_IDS.map(makeSampleInstrument);
+const PERCUSSION_SAMPLE_INSTRUMENTS = PERCUSSION_INSTRUMENT_IDS.map(makeSampleInstrument);
 
 const PERCUSSION_SYMBOLS = [
   {symbol: "dum", name: "Dum"},
@@ -78,7 +93,7 @@ function makeUrl(relativePath: string): string {
 function makeMelodicSlots(): SampleSlot[] {
   const slots: SampleSlot[] = [];
 
-  for (const instrument of MELODIC_INSTRUMENTS) {
+  for (const instrument of MELODIC_SAMPLE_INSTRUMENTS) {
     for (let midiNumber = 48; midiNumber <= 83; midiNumber++) {
       const noteName = midiToSlotNoteName(midiNumber);
       const fileName = noteNameToFileName(noteName);
@@ -106,7 +121,7 @@ function makeMelodicSlots(): SampleSlot[] {
 function makePercussionSlots(): SampleSlot[] {
   const slots: SampleSlot[] = [];
 
-  for (const instrument of PERCUSSION_INSTRUMENTS) {
+  for (const instrument of PERCUSSION_SAMPLE_INSTRUMENTS) {
     for (const {symbol, name} of PERCUSSION_SYMBOLS) {
       for (const isAccent of [false, true]) {
         const suffix = isAccent ? "-accent" : "";

@@ -17,6 +17,7 @@
     "guardrails:layout": "node scripts/validate-route-layout.mjs",
     "audit:symbtr-layout": "node scripts/audit-symbtr-layout-sources.mjs",
     "audit:symbtr-pdf-measures": "node scripts/extract-symbtr-pdf-measures.mjs --all --summary-output output/symbtr-layout-review/pdf-measure-extraction-summary.json",
+    "audit:samples": "vitest run src/engines/ses/__tests__/sample-library.test.ts src/engines/ses/__tests__/sample-coverage.test.ts src/app/api/samples/__tests__/route.test.ts",
     "audit:external-references": "node scripts/audit-external-reference-coverage.mjs",
     "stage:external-source": "node scripts/stage-external-sources.mjs",
     "stage:external-sources": "node scripts/stage-external-sources.mjs",

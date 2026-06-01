@@ -1,0 +1,8 @@
+{"path":"PROJECT_PLAN.md","area":"diff","status":"completed","outcome":"not_applicable","notes":"Documentation-only phase evidence; no executable code, secret, or runtime control changed."}
+{"path":"package.json","area":"diff","status":"completed","outcome":"no_issue_found","notes":"Added audit:samples Vitest command only; no shell interpolation, dependency, install hook, or network behavior."}
+{"path":"src/app/api/samples/__tests__/route.test.ts","area":"diff","status":"completed","outcome":"no_issue_found","notes":"Test update asserts coverage summary while preserving token authorization tests for POST/DELETE."}
+{"path":"src/app/api/samples/route.ts","area":"diff","status":"completed","outcome":"no_issue_found","notes":"GET now returns pure coverage summary; mutation authorization, upload policy, and path containment are unchanged."}
+{"path":"src/app/samples/page.tsx","area":"diff","status":"completed","outcome":"no_issue_found","notes":"UI renders numeric coverage through React text nodes and does not add dangerous HTML, navigation, or privileged state mutation."}
+{"path":"src/engines/ses/__tests__/sample-coverage.test.ts","area":"diff","status":"completed","outcome":"no_issue_found","notes":"Test-only coverage for central instrument slots and fallback behavior."}
+{"path":"src/engines/ses/sample-coverage.ts","area":"diff","status":"completed","outcome":"no_issue_found","notes":"Pure aggregation helper with no I/O, network, eval, secret handling, or filesystem path sink."}
+{"path":"src/engines/ses/sample-library.ts","area":"diff","status":"completed","outcome":"no_issue_found","notes":"Centralizes deterministic instrument folder mapping from trusted app constants; no attacker-controlled path segment is introduced."}

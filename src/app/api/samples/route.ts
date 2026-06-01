@@ -1,6 +1,7 @@
 import {mkdir, stat, unlink, writeFile} from "node:fs/promises";
 import path from "node:path";
 import {SAMPLE_SLOT_BY_KEY, SAMPLE_SLOTS} from "@/engines/ses/sample-library";
+import {summarizeSampleCoverage} from "@/engines/ses/sample-coverage";
 import {
   getLocalOperationAccessError,
   isAllowedSampleUpload,
@@ -92,6 +93,7 @@ export async function GET() {
   return Response.json({
     total: validSlots.length,
     installed: validSlots.filter((slot) => slot.installed).length,
+    coverage: summarizeSampleCoverage(validSlots),
     slots: validSlots,
   });
 }

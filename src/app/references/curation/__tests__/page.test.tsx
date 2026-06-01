@@ -234,6 +234,24 @@ function mockFetch() {
               }
           : body.action === "candidate-review-group-decision-import"
             ? {dryRun: body.dryRun, outputDecisionCount: 1, addedDecisionCount: 1}
+          : body.action === "candidate-review-group-decision-template-export"
+            ? {
+                summary: {exportedCount: 1},
+                manifest: {
+                  version: 1,
+                  type: "candidate-review-group-decision-template",
+                  decisions: [
+                    {
+                      groupId: `${catalogId}:review-group`,
+                      catalogId,
+                      status: body.candidateReviewGroupDecisionTemplate.status,
+                      reason: body.candidateReviewGroupDecisionTemplate.reason,
+                      reviewedAt: body.candidateReviewGroupDecisionTemplate.reviewedAt,
+                      reviewedBy: "local-operator",
+                    },
+                  ],
+                },
+              }
           : body.action === "candidate-import"
             ? {dryRun: true, addedCandidateCount: 1, skippedDuplicateCount: 0}
             : {feedbackEvents: 1};
@@ -292,6 +310,9 @@ describe("ReferencesCurationPage", () => {
     expect(screen.getByText(/candidate-review-group-decisions\.json/)).toBeDefined();
     expect(screen.getByText("review-provider-candidates")).toBeDefined();
     expect(screen.getByLabelText("Grup durum")).toBeDefined();
+    expect(screen.getByLabelText("Karar durum")).toBeDefined();
+    expect(screen.getByLabelText("Karar tarihi")).toBeDefined();
+    expect(screen.getByLabelText("Review grup karar nedeni")).toBeDefined();
     expect(screen.getByRole("link", {name: "Aday ara"}).getAttribute("href")).toContain("duckduckgo.com");
     expect(screen.getByRole("link", {name: "YouTube"}).getAttribute("href")).toContain("youtube.com");
 
@@ -309,6 +330,25 @@ describe("ReferencesCurationPage", () => {
         candidateReviewGroupQuery: expect.objectContaining({
           status: "conflict",
           composer: "Ali Rifat Cagatay",
+        }),
+      }),
+    );
+
+    fireEvent.change(screen.getByLabelText("Karar durum"), {target: {value: "deferred"}});
+    fireEvent.change(screen.getByLabelText("Review grup karar nedeni"), {target: {value: "batch-defer-low-confidence-provider-set"}});
+    fireEvent.click(screen.getByRole("button", {name: "Karar şablonu"}));
+    await screen.findByDisplayValue(/candidate-review-group-decision-template/);
+    const groupDecisionTemplateCall = fetchMock.mock.calls.find(([, init]) => (
+      init?.method === "POST" &&
+      JSON.parse(String(init.body)).action === "candidate-review-group-decision-template-export"
+    ));
+    expect(JSON.parse(String(groupDecisionTemplateCall?.[1]?.body))).toEqual(
+      expect.objectContaining({
+        action: "candidate-review-group-decision-template-export",
+        candidateReviewGroupDecisionTemplate: expect.objectContaining({
+          status: "deferred",
+          reason: "batch-defer-low-confidence-provider-set",
+          reviewedAt: "2026-06-01",
         }),
       }),
     );

@@ -1,0 +1,5 @@
+path,area
+src/app/api/external-references/__tests__/route.test.ts,diff
+src/app/api/external-references/route.ts,diff
+src/app/references/curation/__tests__/page.test.tsx,diff
+src/features/references/ReferencesCurationDashboard.tsx,diff

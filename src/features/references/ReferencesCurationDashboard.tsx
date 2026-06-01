@@ -10,6 +10,7 @@ type CurationAction =
   | "candidate-import"
   | "candidate-review-export"
   | "candidate-review-group-export"
+  | "candidate-review-group-decision-template-export"
   | "candidate-review-group-decision-import"
   | "curation-auto-attach"
   | "curation-stats"
@@ -254,7 +255,12 @@ interface ExternalReferenceState {
 const OPS_TOKEN_HEADER = "x-external-reference-ops-token";
 const emptyState: ExternalReferenceState = {};
 const ALL_FILTER_VALUE = "all";
+const candidateGroupDecisionStatusOptions = ["rejected", "conflict", "deferred"];
 const deletionFilterOptions = ["Silme yok", "Silme bekleyenler", "Silinenler"];
+
+function getTodayIsoDate(): string {
+  return new Date().toISOString().slice(0, 10);
+}
 
 function formatNumber(value: unknown): string {
   return typeof value === "number" ? new Intl.NumberFormat("tr-TR").format(value) : "-";
@@ -404,6 +410,9 @@ export function ReferencesCurationDashboard() {
   const [candidateGroupExportText, setCandidateGroupExportText] = useState("");
   const [candidateGroupDecisionText, setCandidateGroupDecisionText] = useState("");
   const [candidateGroupDecisionDryRun, setCandidateGroupDecisionDryRun] = useState(true);
+  const [candidateGroupDecisionStatus, setCandidateGroupDecisionStatus] = useState("rejected");
+  const [candidateGroupDecisionReason, setCandidateGroupDecisionReason] = useState("batch-reviewed-no-safe-source");
+  const [candidateGroupDecisionReviewedAt, setCandidateGroupDecisionReviewedAt] = useState(getTodayIsoDate);
   const [candidateGroupOffset, setCandidateGroupOffset] = useState(0);
   const [candidateGroupLimit, setCandidateGroupLimit] = useState(80);
   const [candidateGroupStatusFilter, setCandidateGroupStatusFilter] = useState(ALL_FILTER_VALUE);
@@ -654,6 +663,36 @@ export function ReferencesCurationDashboard() {
       setCandidateGroupExportText(JSON.stringify(result.manifest, null, 2));
     }
   }, [candidateGroupStatusFilter, composerFilter, priorityGroupFilter, query, runOperation]);
+
+  const exportCandidateReviewGroupDecisionTemplate = useCallback(async () => {
+    const result = await runOperation("candidate-review-group-decision-template-export", {
+      candidateReviewGroupQuery: {
+        query,
+        status: candidateGroupStatusFilter,
+        composer: composerFilter,
+        priorityGroup: priorityGroupFilter,
+      },
+      candidateReviewGroupDecisionTemplate: {
+        status: candidateGroupDecisionStatus,
+        reason: candidateGroupDecisionReason,
+        reviewedAt: candidateGroupDecisionReviewedAt,
+        reviewedBy: "local-operator",
+      },
+    });
+
+    if (result && typeof result === "object" && "manifest" in result) {
+      setCandidateGroupDecisionText(JSON.stringify(result.manifest, null, 2));
+    }
+  }, [
+    candidateGroupDecisionReason,
+    candidateGroupDecisionReviewedAt,
+    candidateGroupDecisionStatus,
+    candidateGroupStatusFilter,
+    composerFilter,
+    priorityGroupFilter,
+    query,
+    runOperation,
+  ]);
 
   const importCandidateManifest = useCallback(() => {
     if (!candidateManifestText.trim()) {
@@ -910,6 +949,28 @@ export function ReferencesCurationDashboard() {
                 <Button variant="secondary" disabled={isBusy} onPress={() => void exportCandidateReviewGroups()}>
                   Grup dışa aktar
                 </Button>
+                <FilterSelect
+                  label="Karar durum"
+                  value={candidateGroupDecisionStatus}
+                  options={candidateGroupDecisionStatusOptions}
+                  onChange={setCandidateGroupDecisionStatus}
+                />
+                <label className={`flex flex-col gap-1 text-sm ${tokens.colors.text.secondary}`}>
+                  Karar tarihi
+                  <input
+                    type="date"
+                    value={candidateGroupDecisionReviewedAt}
+                    onChange={(event) => setCandidateGroupDecisionReviewedAt(event.target.value)}
+                    className={`rounded-md border ${tokens.colors.border.base} bg-white px-3 py-2 text-sm ${tokens.colors.text.primary}`}
+                  />
+                </label>
+                <Button
+                  variant="secondary"
+                  disabled={isBusy || !candidateGroupDecisionReason.trim() || !candidateGroupDecisionReviewedAt.trim()}
+                  onPress={() => void exportCandidateReviewGroupDecisionTemplate()}
+                >
+                  Karar şablonu
+                </Button>
                 <label className={`flex items-center gap-2 text-sm ${tokens.colors.text.secondary}`}>
                   <input
                     type="checkbox"
@@ -942,6 +1003,15 @@ export function ReferencesCurationDashboard() {
               </div>
             )}
             <div className="border-b border-[var(--color-border)] px-4 py-3">
+              <label htmlFor="candidate-review-group-decision-reason" className={`mb-3 flex flex-col gap-1 text-sm ${tokens.colors.text.secondary}`}>
+                Review grup karar nedeni
+                <input
+                  id="candidate-review-group-decision-reason"
+                  value={candidateGroupDecisionReason}
+                  onChange={(event) => setCandidateGroupDecisionReason(event.target.value)}
+                  className={`rounded-md border ${tokens.colors.border.base} bg-white px-3 py-2 text-sm ${tokens.colors.text.primary}`}
+                />
+              </label>
               <label htmlFor="candidate-review-group-decision-json" className={`flex flex-col gap-1 text-sm ${tokens.colors.text.secondary}`}>
                 Review grup karar JSON
                 <textarea
@@ -1507,6 +1577,11 @@ function getOperationMessage(action: CurationAction, result: unknown): string {
   if (action === "candidate-review-group-export") {
     const exportSummary = (summary.summary ?? {}) as Record<string, unknown>;
     return `Review grupları dışa aktarıldı: ${formatNumber(exportSummary.exportedCount)} grup.`;
+  }
+
+  if (action === "candidate-review-group-decision-template-export") {
+    const exportSummary = (summary.summary ?? {}) as Record<string, unknown>;
+    return `Review grup karar şablonu üretildi: ${formatNumber(exportSummary.exportedCount)} karar.`;
   }
 
   if (action === "candidate-review-group-decision-import") {

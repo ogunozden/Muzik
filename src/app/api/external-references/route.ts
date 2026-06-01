@@ -54,6 +54,8 @@ const DEFAULT_CANDIDATE_GROUP_LIMIT = 80;
 const MAX_CANDIDATE_GROUP_LIMIT = 500;
 const MAX_CANDIDATE_REVIEW_EXPORT_ROWS = 20_000;
 const MAX_CANDIDATE_REVIEW_GROUP_EXPORT_ROWS = 5_000;
+const MAX_CANDIDATE_REVIEW_GROUP_DECISION_TEMPLATE_ROWS = 5_000;
+const CANDIDATE_REVIEW_GROUP_DECISION_STATUSES = new Set(["rejected", "conflict", "deferred"]);
 const OPS_TOKEN_HEADER = "x-external-reference-ops-token";
 const UNSAFE_LOCAL_FLAG = "EXTERNAL_REFERENCE_OPERATIONS_ALLOW_UNSAFE_LOCAL";
 let operationInFlight = false;
@@ -67,6 +69,7 @@ type ExternalReferenceAction =
   | "candidate-import"
   | "candidate-review-export"
   | "candidate-review-group-export"
+  | "candidate-review-group-decision-template-export"
   | "candidate-review-group-decision-import"
   | "curation-auto-attach"
   | "curation-stats"
@@ -85,6 +88,7 @@ const EXTERNAL_REFERENCE_ACTIONS = new Set<ExternalReferenceAction>([
   "candidate-import",
   "candidate-review-export",
   "candidate-review-group-export",
+  "candidate-review-group-decision-template-export",
   "candidate-review-group-decision-import",
   "curation-auto-attach",
   "curation-stats",
@@ -132,6 +136,12 @@ interface OperationBody {
     status?: string;
     composer?: string;
     priorityGroup?: string;
+  };
+  candidateReviewGroupDecisionTemplate?: {
+    status?: string;
+    reason?: string;
+    reviewedAt?: string;
+    reviewedBy?: string;
   };
   feedback?: unknown;
   feedbackEvents?: unknown;
@@ -509,6 +519,25 @@ function readCandidateReviewGroupExportQuery(body: OperationBody): CandidateRevi
     composer: normalizeBodyFilterValue(query.composer),
     priorityGroup: normalizeBodyFilterValue(query.priorityGroup),
   };
+}
+
+function normalizeDecisionTemplateValue(value: unknown): string {
+  return typeof value === "string" ? value.trim() : "";
+}
+
+function readCandidateReviewGroupDecisionTemplate(body: OperationBody): {
+  status: string;
+  reason: string;
+  reviewedAt: string;
+  reviewedBy: string;
+} {
+  const template = body.candidateReviewGroupDecisionTemplate ?? {};
+  const status = normalizeDecisionTemplateValue(template.status);
+  const reason = normalizeDecisionTemplateValue(template.reason);
+  const reviewedAt = normalizeDecisionTemplateValue(template.reviewedAt);
+  const reviewedBy = normalizeDecisionTemplateValue(template.reviewedBy) || "local-operator";
+
+  return {status, reason, reviewedAt, reviewedBy};
 }
 
 function normalizeSearchText(value: unknown): string {
@@ -1218,6 +1247,71 @@ async function exportCandidateReviewGroups(body: OperationBody): Promise<unknown
   };
 }
 
+async function exportCandidateReviewGroupDecisionTemplate(body: OperationBody): Promise<unknown> {
+  const rows = await readJsonOrNull<CandidateReviewGroup[]>(CANDIDATE_REVIEW_GROUPS_FILE) ?? [];
+  const query = readCandidateReviewGroupExportQuery(body);
+  const template = readCandidateReviewGroupDecisionTemplate(body);
+  const filteredRows = applyCandidateReviewGroupQuery(rows, query);
+
+  if (!CANDIDATE_REVIEW_GROUP_DECISION_STATUSES.has(template.status)) {
+    return NextResponse.json(
+      {error: "Review grup karar durumu rejected, conflict veya deferred olmalı."},
+      {status: 400},
+    );
+  }
+
+  if (!template.reason) {
+    return NextResponse.json({error: "Review grup karar nedeni gerekli."}, {status: 400});
+  }
+
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(template.reviewedAt)) {
+    return NextResponse.json({error: "Review grup karar tarihi YYYY-MM-DD olmalı."}, {status: 400});
+  }
+
+  if (filteredRows.length > MAX_CANDIDATE_REVIEW_GROUP_DECISION_TEMPLATE_ROWS) {
+    return NextResponse.json(
+      {error: `Review grup karar şablonu ${MAX_CANDIDATE_REVIEW_GROUP_DECISION_TEMPLATE_ROWS} satır ile sınırlıdır. Filtreleri daraltın.`},
+      {status: 413},
+    );
+  }
+
+  const decisions = filteredRows.map((group) => ({
+    groupId: group.groupId,
+    catalogId: group.catalogId,
+    status: template.status,
+    reason: template.reason,
+    reviewedAt: template.reviewedAt,
+    reviewedBy: template.reviewedBy,
+  }));
+
+  return {
+    summary: {
+      artifactPath: toProjectRelativePath(CANDIDATE_REVIEW_GROUP_DECISIONS_FILE),
+      sourceArtifactPath: toProjectRelativePath(CANDIDATE_REVIEW_GROUPS_FILE),
+      totalRows: rows.length,
+      exportedCount: decisions.length,
+      filters: {
+        query: query.query,
+        status: query.status,
+        composer: query.composer,
+        priorityGroup: query.priorityGroup,
+      },
+      decisionStatus: template.status,
+    },
+    manifest: {
+      version: 1,
+      type: "candidate-review-group-decision-template",
+      filters: {
+        query: query.query,
+        status: query.status,
+        composer: query.composer,
+        priorityGroup: query.priorityGroup,
+      },
+      decisions,
+    },
+  };
+}
+
 async function importCandidateManifest(body: OperationBody): Promise<unknown> {
   const candidateManifestText = typeof body.candidateManifestText === "string"
     ? body.candidateManifestText
@@ -1425,6 +1519,8 @@ export async function POST(request: Request) {
         result = await exportCandidateReviewQueue(body);
       } else if (body.action === "candidate-review-group-export") {
         result = await exportCandidateReviewGroups(body);
+      } else if (body.action === "candidate-review-group-decision-template-export") {
+        result = await exportCandidateReviewGroupDecisionTemplate(body);
       } else if (body.action === "candidate-review-group-decision-import") {
         result = await importCandidateReviewGroupDecisionManifest(body);
       } else {

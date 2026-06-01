@@ -675,6 +675,79 @@ describe("/api/external-references route", () => {
     expect(execFile).not.toHaveBeenCalled();
   });
 
+  it("exports filtered candidate review group decision templates without accepted source data", async () => {
+    const request = authedRequest("http://localhost/api/external-references", {
+      method: "POST",
+      body: JSON.stringify({
+        action: "candidate-review-group-decision-template-export",
+        candidateReviewGroupQuery: {
+          status: "conflict",
+          composer: "İkinci Besteci",
+        },
+        candidateReviewGroupDecisionTemplate: {
+          status: "rejected",
+          reason: "batch-reviewed-no-safe-source",
+          reviewedAt: "2026-06-01",
+          reviewedBy: "local-operator",
+        },
+      }),
+    });
+
+    const response = await POST(request);
+    const body = await response.json();
+
+    expect(response.status).toBe(200);
+    expect(body.result.summary).toEqual(expect.objectContaining({
+      totalRows: 2,
+      exportedCount: 1,
+      decisionStatus: "rejected",
+      filters: expect.objectContaining({
+        status: "conflict",
+        composer: "İkinci Besteci",
+      }),
+    }));
+    expect(body.result.manifest).toEqual(expect.objectContaining({
+      type: "candidate-review-group-decision-template",
+      decisions: [
+        expect.not.objectContaining({
+          sourceId: expect.anything(),
+          sourceUrl: expect.anything(),
+          url: expect.anything(),
+        }),
+      ],
+    }));
+    expect(body.result.manifest.decisions[0]).toEqual(expect.objectContaining({
+      groupId: "rast--sarki--sofyan--ikinci_eser--ikinci_besteci:review-group",
+      catalogId: "rast--sarki--sofyan--ikinci_eser--ikinci_besteci",
+      status: "rejected",
+      reason: "batch-reviewed-no-safe-source",
+      reviewedAt: "2026-06-01",
+      reviewedBy: "local-operator",
+    }));
+    expect(execFile).not.toHaveBeenCalled();
+  });
+
+  it("rejects unsafe candidate review group decision template statuses", async () => {
+    const request = authedRequest("http://localhost/api/external-references", {
+      method: "POST",
+      body: JSON.stringify({
+        action: "candidate-review-group-decision-template-export",
+        candidateReviewGroupDecisionTemplate: {
+          status: "accepted",
+          reason: "unsafe",
+          reviewedAt: "2026-06-01",
+        },
+      }),
+    });
+
+    const response = await POST(request);
+    const body = await response.json();
+
+    expect(response.status).toBe(400);
+    expect(body.error).toContain("rejected");
+    expect(execFile).not.toHaveBeenCalled();
+  });
+
   it("imports a candidate manifest through a temporary project file", async () => {
     const request = authedRequest("http://localhost/api/external-references", {
       method: "POST",

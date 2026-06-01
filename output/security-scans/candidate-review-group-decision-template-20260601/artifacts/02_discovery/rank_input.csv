@@ -1,0 +1,5 @@
+path,area,preview
+src/app/api/external-references/__tests__/route.test.ts,diff,"import {afterEach, beforeEach, describe, expect, it, vi} from ""vitest""; import {execFile} from ""node:child_process""; import {mkdir, readFile, unlink, writeFile} from ""node:fs/promises""; import {GET, P"
+src/app/api/external-references/route.ts,diff,"import {execFile} from ""node:child_process""; import {randomUUID} from ""node:crypto""; import {mkdir, readFile, unlink, writeFile} from ""node:fs/promises""; import path from ""node:path""; import {NextResp"
+src/app/references/curation/__tests__/page.test.tsx,diff,"import {fireEvent, render, screen, waitFor} from ""@testing-library/react""; import type {ReactNode} from ""react""; import {afterEach, beforeEach, describe, expect, it, vi} from ""vitest""; import Referenc"
+src/features/references/ReferencesCurationDashboard.tsx,diff,"""use client"";  import {useCallback, useMemo, useState} from ""react""; import Link from ""next/link""; import {Button, Input, UnifiedLayout} from ""@/shared/ui""; import {tokens} from ""@/shared/tokens"";  ty"

@@ -10,6 +10,7 @@
     "entryCount": 1,
     "candidateReviewRows": 49
   },
+  "fingerprintAlgorithm": "sha256:symbtr-layout-candidate-geometry-v1",
   "unresolvedCandidateEntries": 1,
   "scoreMeasureSummaries": [
     {

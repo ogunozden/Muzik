@@ -4,6 +4,7 @@
   "generatedAt": "2026-06-01",
   "policy": "This file is a batch review template only. Do not copy rows into layout-verification.generated.json until every selected candidate is human-reviewed or visual-regression-approved and converted into measureBoxes with confidence verified.",
   "reviewer": "local-reviewer",
+  "fingerprintAlgorithm": "sha256:symbtr-layout-candidate-geometry-v1",
   "entryCount": 1,
   "entries": {
     "hicazkar--pesrev--devrikebir----tanburi_buyuk_osman_bey": {
@@ -11,6 +12,7 @@
       "sourceLayoutGeneratedAt": "2026-05-10",
       "sourceArchiveMemberPath": "pdf_v3/hicazkar--pesrev--devrikebir----tanburi_buyuk_osman_bey.PDF",
       "sourceMeasureCandidateCount": 49,
+      "candidateGeometryFingerprint": "d0d17418435e737dcad9c95082bbfc0d445b5b9504fd950650f82f8dfafb8ed6",
       "reviewer": "local-reviewer",
       "method": "human-reviewed",
       "scoreMeasureSummary": {
@@ -602,6 +604,7 @@
       "pdf": "output/symbtr-layout-review/hicazkar--pesrev--devrikebir----tanburi_buyuk_osman_bey-layout-review.pdf",
       "sourceLayoutGeneratedAt": "2026-05-10",
       "sourceMeasureCandidateCount": 49,
+      "candidateGeometryFingerprint": "d0d17418435e737dcad9c95082bbfc0d445b5b9504fd950650f82f8dfafb8ed6",
       "scoreMeasureCount": 28
     }
   ]

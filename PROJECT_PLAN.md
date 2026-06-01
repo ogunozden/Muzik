@@ -348,6 +348,13 @@ tek kurala bağlamaktır.
       ve her verified box'ın generated PDF candidate satır-indeks çiftiyle
       eşleşmesini fail-closed doğrular; final yazımdan önce mevcut
       `verify:symbtr-measures` validator'ını otorite kabul eder.
+      2026-06-01 ek stale-proof fingerprint kapısı:
+      `review:symbtr-measures` artık her candidate entry için
+      `sha256:symbtr-layout-candidate-geometry-v1` fingerprint'i üretir;
+      `verify:symbtr-measures` review template, artifact index ve verified
+      manifest entry'lerinin güncel PDF candidate geometry fingerprint'iyle
+      eşleşmesini zorunlu tutar; import hattı stale/elle uydurulmuş manifest'i
+      gerçek verification manifest'e yazmadan önce reddeder.
 
 ### Tamamlanan Otomasyon ve Altyapı Kanıtları (TODO Dışı)
 

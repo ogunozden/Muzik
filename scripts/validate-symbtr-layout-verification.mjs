@@ -1,5 +1,9 @@
 import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import path from "node:path";
+import {
+  SYMBTR_LAYOUT_CANDIDATE_FINGERPRINT_ALGORITHM,
+  getSymbTrLayoutCandidateFingerprint,
+} from "./lib/symbtr-layout-fingerprint.mjs";
 import { getSymbTrMeasureIndexSummary } from "./lib/symbtr-score-measures.mjs";
 
 const PROJECT_ROOT = process.cwd();
@@ -136,6 +140,11 @@ function validateVerificationEntry({
   const prefix = `entries.${catalogId}`;
   const measureCandidates = getMeasureCandidates(layoutEntry);
   const candidateKeys = getCandidateKeys(layoutEntry);
+  const expectedCandidateGeometryFingerprint = getSymbTrLayoutCandidateFingerprint({
+    catalogId,
+    layoutData,
+    layoutEntry,
+  });
 
   if (verificationEntry.catalogId !== catalogId) {
     errors.push(`${prefix}.catalogId must match the entry key`);
@@ -161,6 +170,12 @@ function validateVerificationEntry({
   ) {
     errors.push(
       `${prefix}.sourceMeasureCandidateCount must equal ${measureCandidates.length}`,
+    );
+  }
+
+  if (verificationEntry.candidateGeometryFingerprint !== expectedCandidateGeometryFingerprint) {
+    errors.push(
+      `${prefix}.candidateGeometryFingerprint must match the generated PDF candidate geometry fingerprint`,
     );
   }
 
@@ -320,6 +335,11 @@ function validateReviewTemplateEntry({
 }) {
   const prefix = `reviewTemplate.entries.${catalogId}`;
   const measureCandidates = getMeasureCandidates(layoutEntry);
+  const expectedCandidateGeometryFingerprint = getSymbTrLayoutCandidateFingerprint({
+    catalogId,
+    layoutData,
+    layoutEntry,
+  });
 
   if (!isPlainObject(reviewEntry)) {
     errors.push(`${prefix} must be an object`);
@@ -340,6 +360,10 @@ function validateReviewTemplateEntry({
 
   if (reviewEntry.sourceMeasureCandidateCount !== measureCandidates.length) {
     errors.push(`${prefix}.sourceMeasureCandidateCount must equal ${measureCandidates.length}`);
+  }
+
+  if (reviewEntry.candidateGeometryFingerprint !== expectedCandidateGeometryFingerprint) {
+    errors.push(`${prefix}.candidateGeometryFingerprint must match the generated PDF candidate geometry fingerprint`);
   }
 
   if (!isNonEmptyString(reviewEntry.reviewer)) {
@@ -440,6 +464,12 @@ function validateReviewTemplate({
     errors.push("layout-verification-review-template.json reviewer must be a non-empty string");
   }
 
+  if (reviewTemplateData.fingerprintAlgorithm !== SYMBTR_LAYOUT_CANDIDATE_FINGERPRINT_ALGORITHM) {
+    errors.push(
+      `layout-verification-review-template.json fingerprintAlgorithm must be ${SYMBTR_LAYOUT_CANDIDATE_FINGERPRINT_ALGORITHM}`,
+    );
+  }
+
   const reviewEntries = getEntries(
     reviewTemplateData,
     "layout-verification-review-template",
@@ -469,6 +499,30 @@ function validateReviewTemplate({
     errors.push("layout-verification-review-template.json artifactIndex must be an array");
   } else if (reviewTemplateData.artifactIndex.length !== reviewEntryIds.length) {
     errors.push("layout-verification-review-template.json artifactIndex length must match entries");
+  } else {
+    const artifactByCatalogId = new Map(reviewTemplateData.artifactIndex.map((artifact) => [artifact?.catalogId, artifact]));
+    for (const catalogId of reviewEntryIds) {
+      const artifact = artifactByCatalogId.get(catalogId);
+      const reviewEntry = reviewEntries[catalogId];
+      const artifactPrefix = `layout-verification-review-template.json artifactIndex ${catalogId}`;
+
+      if (!isPlainObject(artifact)) {
+        errors.push(`${artifactPrefix} must be an object`);
+        continue;
+      }
+
+      if (artifact.sourceLayoutGeneratedAt !== layoutData.generatedAt) {
+        errors.push(`${artifactPrefix}.sourceLayoutGeneratedAt must equal layout.generatedAt (${layoutData.generatedAt})`);
+      }
+
+      if (artifact.sourceMeasureCandidateCount !== reviewEntry?.sourceMeasureCandidateCount) {
+        errors.push(`${artifactPrefix}.sourceMeasureCandidateCount must match review entry`);
+      }
+
+      if (artifact.candidateGeometryFingerprint !== reviewEntry?.candidateGeometryFingerprint) {
+        errors.push(`${artifactPrefix}.candidateGeometryFingerprint must match review entry`);
+      }
+    }
   }
 
   let reviewCandidateRows = 0;
@@ -588,6 +642,7 @@ const summary = {
   promotionPolicy: "Only human-reviewed or visual-regression-approved PDF measure boxes may be promoted from pdf-vector-candidate to verified.",
   candidateStatus: verifiedMeasureBoxes > 0 ? "verified-measure-boxes-present" : "unreviewed-candidates-only",
   reviewTemplate: reviewTemplateSummary,
+  fingerprintAlgorithm: SYMBTR_LAYOUT_CANDIDATE_FINGERPRINT_ALGORITHM,
   unresolvedCandidateEntries: candidateEntryIds.filter(
     (catalogId) => !verificationEntries[catalogId],
   ).length,

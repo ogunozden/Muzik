@@ -1,0 +1,12 @@
+file,reason,disposition
+PROJECT_PLAN.md,Documentation-only update for PDF fingerprint gate,not_applicable
+output/symbtr-layout-review/hicazkar--pesrev--devrikebir----tanburi_buyuk_osman_bey-layout-review.html,Generated browser review artifact; checked for active script and console errors,reviewed_no_finding
+output/symbtr-layout-review/layout-verification-review-template.json,Generated review template now carries deterministic candidate geometry fingerprint,reviewed_no_finding
+output/symbtr-layout-review/layout-verification-summary.json,Generated validation summary,not_applicable
+scripts/lib/symbtr-layout-fingerprint.mjs,New deterministic SHA-256 helper over generated layout data,reviewed_no_finding
+scripts/import-symbtr-layout-verification.mjs,Import validation now rejects missing/mismatched candidateGeometryFingerprint,reviewed_no_finding
+scripts/render-symbtr-pdf-layout-review.mjs,Review template/HTML generation now emits fingerprint and self-contained favicon,reviewed_no_finding
+scripts/validate-symbtr-layout-verification.mjs,Validator now enforces fingerprint on review artifacts and verified manifest entries,reviewed_no_finding
+scripts/__tests__/import-symbtr-layout-verification.test.mjs,Test-only stale import regression coverage,not_applicable
+scripts/__tests__/render-symbtr-pdf-layout-review.test.mjs,Test-only template fingerprint regression coverage,not_applicable
+src/data/symbtr/layout-verification.generated.json,Policy text update for verified manifest fingerprint requirement,reviewed_no_finding

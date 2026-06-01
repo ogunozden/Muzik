@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 import {existsSync, mkdirSync, readFileSync, rmSync, writeFileSync} from "node:fs";
 import path from "node:path";
+import {getSymbTrLayoutCandidateFingerprint} from "./lib/symbtr-layout-fingerprint.mjs";
 
 const root = process.cwd();
 const outputPath = path.join(root, "src", "data", "symbtr", "layout-verification.generated.json");
@@ -101,6 +102,15 @@ function validateIncomingEntries({incomingEntries, layoutData}) {
     const measureCandidates = Array.isArray(layoutEntry.measureCandidates) ? layoutEntry.measureCandidates : [];
     if (entry.sourceMeasureCandidateCount !== measureCandidates.length) {
       errors.push(`${prefix}.sourceMeasureCandidateCount must equal ${measureCandidates.length}`);
+    }
+
+    const expectedCandidateGeometryFingerprint = getSymbTrLayoutCandidateFingerprint({
+      catalogId,
+      layoutData,
+      layoutEntry,
+    });
+    if (entry.candidateGeometryFingerprint !== expectedCandidateGeometryFingerprint) {
+      errors.push(`${prefix}.candidateGeometryFingerprint must match the generated PDF candidate geometry fingerprint`);
     }
 
     if (!allowedMethods.has(entry.method)) {

@@ -33,12 +33,18 @@ describe("render-symbtr-pdf-layout-review", () => {
     expect(template).toEqual(expect.objectContaining({
       schemaVersion: 1,
       type: "symbtr-pdf-layout-verification-review-template",
+      fingerprintAlgorithm: "sha256:symbtr-layout-candidate-geometry-v1",
       entryCount: 1,
     }));
     expect(template.entries[HICAZKAR_CATALOG_ID]).toEqual(expect.objectContaining({
       sourceMeasureCandidateCount: 49,
+      candidateGeometryFingerprint: expect.stringMatching(/^[a-f0-9]{64}$/),
       reviewer: "test-reviewer",
       measureBoxes: [],
+    }));
+    expect(template.artifactIndex[0]).toEqual(expect.objectContaining({
+      catalogId: HICAZKAR_CATALOG_ID,
+      candidateGeometryFingerprint: template.entries[HICAZKAR_CATALOG_ID].candidateGeometryFingerprint,
     }));
     expect(template.entries[HICAZKAR_CATALOG_ID].candidateReviewRows).toHaveLength(49);
     expect(template.entries[HICAZKAR_CATALOG_ID].scoreMeasureSummary).toEqual(expect.objectContaining({

@@ -3,6 +3,7 @@ import {mkdtempSync, mkdirSync, readFileSync, writeFileSync} from "node:fs";
 import {tmpdir} from "node:os";
 import path from "node:path";
 import {describe, expect, it} from "vitest";
+import {getSymbTrLayoutCandidateFingerprint} from "../lib/symbtr-layout-fingerprint.mjs";
 
 const scriptPath = path.resolve("scripts/import-symbtr-layout-verification.mjs");
 const catalogId = "hicazkar--pesrev--devrikebir----tanburi_buyuk_osman_bey";
@@ -43,11 +44,30 @@ function createRoot() {
 }
 
 function validEntry() {
+  const layoutData = {
+    schemaVersion: 1,
+    generatedAt: "2026-05-10",
+  };
+  const layoutEntry = {
+    source: {archiveMemberPath: `pdf_v3/${catalogId}.PDF`},
+    measureCandidates: [
+      {
+        rowIndex: 0,
+        candidateIndexInRow: 0,
+      },
+    ],
+  };
+
   return {
     catalogId,
     sourceLayoutGeneratedAt: "2026-05-10",
     sourceArchiveMemberPath: `pdf_v3/${catalogId}.PDF`,
     sourceMeasureCandidateCount: 1,
+    candidateGeometryFingerprint: getSymbTrLayoutCandidateFingerprint({
+      catalogId,
+      layoutData,
+      layoutEntry,
+    }),
     verifiedAt: "2026-06-01",
     reviewer: "visual-regression-batch",
     method: "visual-regression",
@@ -122,6 +142,20 @@ describe("import-symbtr-layout-verification", () => {
 
     expect(() => runScript(root, "input/verification.json", true)).toThrow(
       "confidence must be verified",
+    );
+  });
+
+  it("rejects stale verification manifests with mismatched candidate fingerprints", () => {
+    const root = createRoot();
+    const entry = validEntry();
+    entry.candidateGeometryFingerprint = "0".repeat(64);
+    writeJson(root, "input/verification.json", {
+      generatedAt: "2026-06-01",
+      entries: {[catalogId]: entry},
+    });
+
+    expect(() => runScript(root, "input/verification.json", true)).toThrow(
+      "candidateGeometryFingerprint must match the generated PDF candidate geometry fingerprint",
     );
   });
 });

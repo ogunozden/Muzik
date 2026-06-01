@@ -1,6 +1,10 @@
 import {mkdirSync, readFileSync, writeFileSync} from "node:fs";
 import path from "node:path";
 import {fileURLToPath} from "node:url";
+import {
+  SYMBTR_LAYOUT_CANDIDATE_FINGERPRINT_ALGORITHM,
+  getSymbTrLayoutCandidateFingerprint,
+} from "./lib/symbtr-layout-fingerprint.mjs";
 import {getSymbTrMeasureIndexSummary} from "./lib/symbtr-score-measures.mjs";
 import {readZipEntry} from "./lib/zip-entry-reader.mjs";
 
@@ -138,6 +142,7 @@ function renderHtml(entry, svgFileName, pdfFileName) {
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' rx='3' fill='%23b45309'/%3E%3Cpath d='M5 11V4h6v2H7v1.5h3.5v2H7V11H5Z' fill='white'/%3E%3C/svg%3E" />
   <title>SymbTr PDF layout review - ${escapeHtml(entry.catalogId)}</title>
   <style>
     :root {
@@ -319,11 +324,18 @@ function buildCandidateReviewRows(entry) {
 }
 
 function buildVerificationTemplateEntry({entry, layoutData, reviewer, scoreMeasureSummary}) {
+  const candidateGeometryFingerprint = getSymbTrLayoutCandidateFingerprint({
+    catalogId: entry.catalogId,
+    layoutData,
+    layoutEntry: entry,
+  });
+
   return {
     catalogId: entry.catalogId,
     sourceLayoutGeneratedAt: layoutData.generatedAt,
     sourceArchiveMemberPath: entry.source.archiveMemberPath,
     sourceMeasureCandidateCount: entry.measureCandidates.length,
+    candidateGeometryFingerprint,
     reviewer,
     method: "human-reviewed",
     scoreMeasureSummary: {
@@ -346,6 +358,7 @@ function buildVerificationReviewTemplate({layoutData, artifacts, generatedAt, re
     generatedAt,
     policy: verificationTemplatePolicy,
     reviewer,
+    fingerprintAlgorithm: SYMBTR_LAYOUT_CANDIDATE_FINGERPRINT_ALGORITHM,
     entryCount: artifacts.length,
     entries: Object.fromEntries(
       artifacts.map((artifact) => [artifact.catalogId, artifact.verificationTemplateEntry]),
@@ -357,6 +370,7 @@ function buildVerificationReviewTemplate({layoutData, artifacts, generatedAt, re
       pdf: artifact.pdf,
       sourceLayoutGeneratedAt: layoutData.generatedAt,
       sourceMeasureCandidateCount: artifact.measureCandidateCount,
+      candidateGeometryFingerprint: artifact.verificationTemplateEntry.candidateGeometryFingerprint,
       scoreMeasureCount: artifact.verificationTemplateEntry.scoreMeasureSummary.measureCount,
     })),
   };

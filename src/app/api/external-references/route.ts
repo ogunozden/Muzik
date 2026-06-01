@@ -92,6 +92,8 @@ interface StageSourceBody {
   form?: string;
   usul?: string;
   composer?: string;
+  lyricist?: string;
+  lyrics?: string;
 }
 
 interface OperationBody {
@@ -106,6 +108,7 @@ interface OperationBody {
     status?: string;
     profileId?: string;
     provider?: string;
+    composer?: string;
   };
   feedback?: unknown;
   feedbackEvents?: unknown;
@@ -192,6 +195,7 @@ interface BacklogQuery {
   makam: string;
   form: string;
   usul: string;
+  composer: string;
   priorityGroup: string;
 }
 
@@ -207,6 +211,7 @@ interface CandidateReviewQuery {
   status: string;
   profileId: string;
   provider: string;
+  composer: string;
 }
 
 interface CandidateReviewRow {
@@ -422,6 +427,7 @@ function readBacklogQuery(request: Request): BacklogQuery {
     makam: normalizeFilterValue(params.get("makam")),
     form: normalizeFilterValue(params.get("form")),
     usul: normalizeFilterValue(params.get("usul")),
+    composer: normalizeFilterValue(params.get("composer")),
     priorityGroup: normalizeFilterValue(params.get("priorityGroup")),
   };
 }
@@ -436,6 +442,7 @@ function readCandidateReviewQuery(request: Request): CandidateReviewQuery {
     status: normalizeFilterValue(params.get("candidateStatus")),
     profileId: normalizeFilterValue(params.get("candidateProfile")),
     provider: normalizeFilterValue(params.get("candidateProvider")),
+    composer: normalizeFilterValue(params.get("candidateComposer") ?? params.get("composer")),
   };
 }
 
@@ -449,6 +456,7 @@ function readCandidateReviewExportQuery(body: OperationBody): CandidateReviewQue
     status: normalizeBodyFilterValue(query.status),
     profileId: normalizeBodyFilterValue(query.profileId),
     provider: normalizeBodyFilterValue(query.provider),
+    composer: normalizeBodyFilterValue(query.composer),
   };
 }
 
@@ -487,6 +495,7 @@ function applyBacklogQuery(rows: CurationBacklogRow[], query: BacklogQuery): Cur
     if (query.makam && row.makam !== query.makam) return false;
     if (query.form && row.form !== query.form) return false;
     if (query.usul && row.usul !== query.usul) return false;
+    if (query.composer && row.composer !== query.composer) return false;
     if (query.priorityGroup && row.priorityGroup !== query.priorityGroup) return false;
     return rowMatchesQuery(row, query.query);
   });
@@ -514,6 +523,7 @@ function buildBacklogFacets(rows: CurationBacklogRow[]) {
     makams: summarizeBacklogFacet(rows, "makam"),
     forms: summarizeBacklogFacet(rows, "form"),
     usuls: summarizeBacklogFacet(rows, "usul"),
+    composers: summarizeBacklogFacet(rows, "composer"),
     priorityGroups: summarizeBacklogFacet(rows, "priorityGroup"),
     decisionStatuses: summarizeBacklogFacet(rows, "curationDecisionStatus"),
   };
@@ -545,6 +555,7 @@ function applyCandidateReviewQuery(rows: CandidateReviewRow[], query: CandidateR
     if (query.status && row.status !== query.status) return false;
     if (query.profileId && row.profileId !== query.profileId) return false;
     if (query.provider && row.provider !== query.provider) return false;
+    if (query.composer && row.composer !== query.composer) return false;
     return candidateReviewMatchesQuery(row, query.query);
   });
 }
@@ -567,6 +578,7 @@ function buildCandidateReviewFacets(rows: CandidateReviewRow[]) {
     profileIds: summarizeCandidateReviewFacet(rows, "profileId"),
     providers: summarizeCandidateReviewFacet(rows, "provider"),
     confidenceLevels: summarizeCandidateReviewFacet(rows, "reviewConfidenceLevel"),
+    composers: summarizeCandidateReviewFacet(rows, "composer"),
   };
 }
 
@@ -930,6 +942,8 @@ async function stageSources(body: OperationBody): Promise<unknown> {
     pushArg(args, "--form", source.form);
     pushArg(args, "--usul", source.usul);
     pushArg(args, "--composer", source.composer);
+    pushArg(args, "--lyricist", source.lyricist);
+    pushArg(args, "--lyrics", source.lyrics);
   }
 
   if (body.dryRun) args.push("--dry-run");

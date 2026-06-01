@@ -116,6 +116,11 @@ tek kurala bağlamaktır.
       queue üstünden server-side sayfalama, query/makam/usul/form/priority
       filtresi ve facet sayıları döndürür; dashboard 100/250/500 satır
       sayfalama ve önceki/sonraki batch gezinmesini kullanır.
+      2026-06-01 besteci/silme dalgası: `/api/external-references` backlog ve
+      candidate review queue için server-side `composer`/`candidateComposer`
+      filtresi ve besteci facet'i döndürür; dashboard dedicated Besteci ve
+      Silme filtreleriyle besteciye göre queue daraltmayı ve `delete-requested`
+      / `deleted` durumlarını tek tek manuel dolaşmadan ayırmayı destekler.
 - [x] Inline medya deneyimini ekle. YouTube videoları, PDF'ler ve iframe'e izin
       veren kaynak sayfaları parça ekranında yeni sekme açmadan görüntülenmeli;
       embed sandbox, lazy load, erişilebilir `title`, klavye odağı, bozuk embed

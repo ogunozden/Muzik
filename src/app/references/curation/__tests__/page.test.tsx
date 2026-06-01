@@ -72,6 +72,8 @@ const stateFixture = {
         provider: "score",
         reviewConfidenceScore: 85,
         reviewConfidenceLevel: "medium",
+        scoreReasons: ["profile-trust:0.85", "catalog-field:usul"],
+        queryFields: ["makam", "form", "usul", "title", "composer"],
         searchQuery: "Ussak İlahi Dostun Senden Ali Rifat Cagatay nota",
         searchUrl: "https://duckduckgo.com/?q=Dostun",
         makam: "Ussak",
@@ -96,6 +98,7 @@ const stateFixture = {
       profileIds: [{value: "divanmakam", count: 2978}, {value: "youtube", count: 2978}],
       providers: [{value: "score", count: 8934}, {value: "youtube", count: 2978}],
       confidenceLevels: [{value: "medium", count: 2978}],
+      composers: [{value: "Ali Rifat Cagatay", count: 2978}],
     },
     backlogNextBatch: [
       {
@@ -130,6 +133,7 @@ const stateFixture = {
       makams: [{value: "Ussak", count: 1}],
       forms: [{value: "İlahi", count: 1}],
       usuls: [{value: "Duyek", count: 1}],
+      composers: [{value: "Ali Rifat Cagatay", count: 1}],
       priorityGroups: [{value: "pdf-and-musicxml", count: 1}],
     },
     feedbackEvents: [],
@@ -225,11 +229,14 @@ describe("ReferencesCurationPage", () => {
     expect(screen.getByRole("heading", {name: "Sıradaki kaynak backlog batch listesi"})).toBeDefined();
     expect(screen.getByRole("heading", {name: "Aday manifest import/export"})).toBeDefined();
     expect(screen.getByRole("heading", {name: "Aday review queue"})).toBeDefined();
+    expect(screen.getByLabelText("Besteci")).toBeDefined();
+    expect(screen.getByLabelText("Silme")).toBeDefined();
     expect(screen.getByText("src/data/references/external-reference-bulk-candidates.json")).toBeDefined();
     expect(screen.getAllByText("output/external-reference-coverage/symbtr-curated-reference-candidate-review-queue.json").length).toBeGreaterThan(0);
     expect(screen.getByRole("link", {name: "Aday ara"}).getAttribute("href")).toContain("duckduckgo.com");
     expect(screen.getByRole("link", {name: "YouTube"}).getAttribute("href")).toContain("youtube.com");
 
+    fireEvent.change(screen.getByLabelText("Besteci"), {target: {value: "Ali Rifat Cagatay"}});
     fireEvent.change(screen.getByLabelText("Aday profil"), {target: {value: "youtube"}});
     fireEvent.click(screen.getByRole("button", {name: "Queue dışa aktar"}));
     await screen.findByDisplayValue(/candidate-review-queue-export/);
@@ -242,6 +249,7 @@ describe("ReferencesCurationPage", () => {
         action: "candidate-review-export",
         candidateReviewQuery: expect.objectContaining({
           profileId: "youtube",
+          composer: "Ali Rifat Cagatay",
         }),
       }),
     );

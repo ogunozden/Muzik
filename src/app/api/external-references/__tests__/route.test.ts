@@ -370,12 +370,19 @@ describe("/api/external-references route", () => {
       expect.objectContaining({value: "divanmakam", count: 1}),
       expect.objectContaining({value: "youtube", count: 1}),
     ]));
+    expect(body.curation.candidateReviewFacets.composers).toEqual(expect.arrayContaining([
+      expect.objectContaining({value: "Ali Rifat Cagatay", count: 1}),
+      expect.objectContaining({value: "İkinci Besteci", count: 1}),
+    ]));
     expect(body.curation.backlogNextBatch[0].priorityGroup).toBe("pdf-and-musicxml");
     expect(body.curation.backlogPage.filteredTotal).toBe(3);
     expect(body.curation.backlogPage.totalMissing).toBe(3);
     expect(body.curation.backlogFacets.makams).toEqual(expect.arrayContaining([
       expect.objectContaining({value: "Ussak", count: 1}),
       expect.objectContaining({value: "Rast", count: 1}),
+    ]));
+    expect(body.curation.backlogFacets.composers).toEqual(expect.arrayContaining([
+      expect.objectContaining({value: "Ali Rifat Cagatay", count: 1}),
     ]));
   });
 
@@ -412,6 +419,15 @@ describe("/api/external-references route", () => {
       previousOffset: null,
       nextOffset: null,
     }));
+  });
+
+  it("filters backlog and candidate review queues by composer facet", async () => {
+    const response = await GET(authedRequest("http://localhost/api/external-references?composer=İkinci%20Besteci&candidateComposer=İkinci%20Besteci"));
+    const body = await response.json();
+
+    expect(response.status).toBe(200);
+    expect(body.curation.backlogNextBatch.map((row: {composer?: string}) => row.composer)).toEqual(["İkinci Besteci"]);
+    expect(body.curation.candidateReviewQueue.map((row: {composer?: string}) => row.composer)).toEqual(["İkinci Besteci"]);
   });
 
   it("stages a single source through the fixed stage script", async () => {

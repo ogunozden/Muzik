@@ -188,6 +188,7 @@ interface ExternalReferenceState {
       profileIds?: BacklogFacet[];
       providers?: BacklogFacet[];
       confidenceLevels?: BacklogFacet[];
+      composers?: BacklogFacet[];
     };
     backlogNextBatch?: CurationBacklogRow[];
     backlogPage?: BacklogPage;
@@ -195,6 +196,7 @@ interface ExternalReferenceState {
       makams?: BacklogFacet[];
       forms?: BacklogFacet[];
       usuls?: BacklogFacet[];
+      composers?: BacklogFacet[];
       priorityGroups?: BacklogFacet[];
       decisionStatuses?: BacklogFacet[];
     };
@@ -213,6 +215,7 @@ interface ExternalReferenceState {
 const OPS_TOKEN_HEADER = "x-external-reference-ops-token";
 const emptyState: ExternalReferenceState = {};
 const ALL_FILTER_VALUE = "all";
+const deletionFilterOptions = ["Silme yok", "Silme bekleyenler", "Silinenler"];
 
 function formatNumber(value: unknown): string {
   return typeof value === "number" ? new Intl.NumberFormat("tr-TR").format(value) : "-";
@@ -350,6 +353,8 @@ export function ReferencesCurationDashboard() {
   const [makamFilter, setMakamFilter] = useState(ALL_FILTER_VALUE);
   const [formFilter, setFormFilter] = useState(ALL_FILTER_VALUE);
   const [usulFilter, setUsulFilter] = useState(ALL_FILTER_VALUE);
+  const [composerFilter, setComposerFilter] = useState(ALL_FILTER_VALUE);
+  const [deletionFilter, setDeletionFilter] = useState(ALL_FILTER_VALUE);
   const [priorityGroupFilter, setPriorityGroupFilter] = useState(ALL_FILTER_VALUE);
   const [backlogOffset, setBacklogOffset] = useState(0);
   const [backlogLimit, setBacklogLimit] = useState(100);
@@ -378,6 +383,7 @@ export function ReferencesCurationDashboard() {
     if (makamFilter !== ALL_FILTER_VALUE) params.set("makam", makamFilter);
     if (formFilter !== ALL_FILTER_VALUE) params.set("form", formFilter);
     if (usulFilter !== ALL_FILTER_VALUE) params.set("usul", usulFilter);
+    if (composerFilter !== ALL_FILTER_VALUE) params.set("composer", composerFilter);
     if (priorityGroupFilter !== ALL_FILTER_VALUE) params.set("priorityGroup", priorityGroupFilter);
 
     const response = await fetch(`/api/external-references?${params.toString()}`, {
@@ -401,6 +407,7 @@ export function ReferencesCurationDashboard() {
     candidateOffset,
     candidateProfileFilter,
     candidateStatusFilter,
+    composerFilter,
     formFilter,
     makamFilter,
     opsToken,
@@ -475,6 +482,10 @@ export function ReferencesCurationDashboard() {
       if (makamFilter !== ALL_FILTER_VALUE && reference.catalog?.makam !== makamFilter) return false;
       if (formFilter !== ALL_FILTER_VALUE && reference.catalog?.form !== formFilter) return false;
       if (usulFilter !== ALL_FILTER_VALUE && reference.catalog?.usul !== usulFilter) return false;
+      if (composerFilter !== ALL_FILTER_VALUE && reference.catalog?.composer !== composerFilter) return false;
+      if (deletionFilter === "Silme yok" && (reference.status === "delete-requested" || reference.status === "deleted")) return false;
+      if (deletionFilter === "Silme bekleyenler" && reference.status !== "delete-requested") return false;
+      if (deletionFilter === "Silinenler" && reference.status !== "deleted") return false;
 
       return matchesQuery([
         reference.catalogId,
@@ -492,7 +503,7 @@ export function ReferencesCurationDashboard() {
         reference.catalog?.composer,
       ], normalizedQuery);
     });
-  }, [formFilter, makamFilter, providerFilter, query, state, statusFilter, usulFilter]);
+  }, [composerFilter, deletionFilter, formFilter, makamFilter, providerFilter, query, state, statusFilter, usulFilter]);
 
   const selectedReferences = useMemo(() => {
     const selectedKeySet = new Set(selectedReferenceKeys);
@@ -560,13 +571,14 @@ export function ReferencesCurationDashboard() {
         query,
         status: candidateStatusFilter,
         profileId: candidateProfileFilter,
+        composer: composerFilter,
       },
     });
 
     if (result && typeof result === "object" && "manifest" in result) {
       setCandidateReviewExportText(JSON.stringify(result.manifest, null, 2));
     }
-  }, [candidateProfileFilter, candidateStatusFilter, query, runOperation]);
+  }, [candidateProfileFilter, candidateStatusFilter, composerFilter, query, runOperation]);
 
   const importCandidateManifest = useCallback(() => {
     if (!candidateManifestText.trim()) {
@@ -587,6 +599,7 @@ export function ReferencesCurationDashboard() {
       if (makamFilter !== ALL_FILTER_VALUE && row.makam !== makamFilter) return false;
       if (formFilter !== ALL_FILTER_VALUE && row.form !== formFilter) return false;
       if (usulFilter !== ALL_FILTER_VALUE && row.usul !== usulFilter) return false;
+      if (composerFilter !== ALL_FILTER_VALUE && row.composer !== composerFilter) return false;
       if (priorityGroupFilter !== ALL_FILTER_VALUE && row.priorityGroup !== priorityGroupFilter) return false;
 
       return matchesQuery([
@@ -600,7 +613,7 @@ export function ReferencesCurationDashboard() {
         row.curationDecisionStatus,
       ], normalizedQuery);
     });
-  }, [formFilter, makamFilter, priorityGroupFilter, query, state, usulFilter]);
+  }, [composerFilter, formFilter, makamFilter, priorityGroupFilter, query, state, usulFilter]);
 
   const filterOptions = useMemo(() => {
     const references = state.curation?.autoAttachedReferences ?? [];
@@ -625,6 +638,12 @@ export function ReferencesCurationDashboard() {
         ...references.map((reference) => reference.catalog?.usul),
         ...backlog.map((row) => row.usul),
         ...getFacetValues(backlogFacets.usuls),
+      ]),
+      composers: getUniqueOptions([
+        ...references.map((reference) => reference.catalog?.composer),
+        ...backlog.map((row) => row.composer),
+        ...getFacetValues(backlogFacets.composers),
+        ...getFacetValues(candidateFacets.composers),
       ]),
       priorityGroups: getUniqueOptions([
         ...backlog.map((row) => row.priorityGroup),
@@ -909,6 +928,8 @@ export function ReferencesCurationDashboard() {
                 <FilterSelect label="Makam" value={makamFilter} options={filterOptions.makams} onChange={setMakamFilter} />
                 <FilterSelect label="Usul" value={usulFilter} options={filterOptions.usuls} onChange={setUsulFilter} />
                 <FilterSelect label="Form" value={formFilter} options={filterOptions.forms} onChange={setFormFilter} />
+                <FilterSelect label="Besteci" value={composerFilter} options={filterOptions.composers} onChange={setComposerFilter} />
+                <FilterSelect label="Silme" value={deletionFilter} options={deletionFilterOptions} onChange={setDeletionFilter} />
                 <FilterSelect label="Öncelik" value={priorityGroupFilter} options={filterOptions.priorityGroups} onChange={setPriorityGroupFilter} />
                 <div className="flex items-end">
                   <Button variant="outline" disabled={isBusy} onPress={() => void refresh(0)}>

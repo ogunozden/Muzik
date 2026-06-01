@@ -49,7 +49,10 @@ const DEFAULT_BACKLOG_LIMIT = 100;
 const MAX_BACKLOG_LIMIT = 500;
 const DEFAULT_CANDIDATE_LIMIT = 100;
 const MAX_CANDIDATE_LIMIT = 500;
+const DEFAULT_CANDIDATE_GROUP_LIMIT = 80;
+const MAX_CANDIDATE_GROUP_LIMIT = 500;
 const MAX_CANDIDATE_REVIEW_EXPORT_ROWS = 20_000;
+const MAX_CANDIDATE_REVIEW_GROUP_EXPORT_ROWS = 5_000;
 const OPS_TOKEN_HEADER = "x-external-reference-ops-token";
 const UNSAFE_LOCAL_FLAG = "EXTERNAL_REFERENCE_OPERATIONS_ALLOW_UNSAFE_LOCAL";
 let operationInFlight = false;
@@ -62,6 +65,7 @@ type ExternalReferenceAction =
   | "candidate-export"
   | "candidate-import"
   | "candidate-review-export"
+  | "candidate-review-group-export"
   | "curation-auto-attach"
   | "curation-stats"
   | "curation-validate"
@@ -78,6 +82,7 @@ const EXTERNAL_REFERENCE_ACTIONS = new Set<ExternalReferenceAction>([
   "candidate-export",
   "candidate-import",
   "candidate-review-export",
+  "candidate-review-group-export",
   "curation-auto-attach",
   "curation-stats",
   "curation-validate",
@@ -116,6 +121,12 @@ interface OperationBody {
     profileId?: string;
     provider?: string;
     composer?: string;
+  };
+  candidateReviewGroupQuery?: {
+    query?: string;
+    status?: string;
+    composer?: string;
+    priorityGroup?: string;
   };
   feedback?: unknown;
   feedbackEvents?: unknown;
@@ -219,6 +230,15 @@ interface CandidateReviewQuery {
   profileId: string;
   provider: string;
   composer: string;
+}
+
+interface CandidateReviewGroupQuery {
+  limit: number;
+  offset: number;
+  query: string;
+  status: string;
+  composer: string;
+  priorityGroup: string;
 }
 
 interface CandidateReviewRow {
@@ -431,6 +451,19 @@ function readCandidateReviewQuery(request: Request): CandidateReviewQuery {
   };
 }
 
+function readCandidateReviewGroupQuery(request: Request): CandidateReviewGroupQuery {
+  const params = new URL(request.url).searchParams;
+
+  return {
+    limit: parseBoundedInteger(params.get("groupLimit"), DEFAULT_CANDIDATE_GROUP_LIMIT, MAX_CANDIDATE_GROUP_LIMIT),
+    offset: parseNonNegativeInteger(params.get("groupOffset"), 0),
+    query: normalizeFilterValue(params.get("groupQ") ?? params.get("q")),
+    status: normalizeFilterValue(params.get("groupStatus")),
+    composer: normalizeFilterValue(params.get("groupComposer") ?? params.get("composer")),
+    priorityGroup: normalizeFilterValue(params.get("groupPriorityGroup") ?? params.get("priorityGroup")),
+  };
+}
+
 function readCandidateReviewExportQuery(body: OperationBody): CandidateReviewQuery {
   const query = body.candidateReviewQuery ?? {};
 
@@ -442,6 +475,19 @@ function readCandidateReviewExportQuery(body: OperationBody): CandidateReviewQue
     profileId: normalizeBodyFilterValue(query.profileId),
     provider: normalizeBodyFilterValue(query.provider),
     composer: normalizeBodyFilterValue(query.composer),
+  };
+}
+
+function readCandidateReviewGroupExportQuery(body: OperationBody): CandidateReviewGroupQuery {
+  const query = body.candidateReviewGroupQuery ?? {};
+
+  return {
+    limit: MAX_CANDIDATE_REVIEW_GROUP_EXPORT_ROWS,
+    offset: 0,
+    query: normalizeBodyFilterValue(query.query),
+    status: normalizeBodyFilterValue(query.status),
+    composer: normalizeBodyFilterValue(query.composer),
+    priorityGroup: normalizeBodyFilterValue(query.priorityGroup),
   };
 }
 
@@ -545,7 +591,49 @@ function applyCandidateReviewQuery(rows: CandidateReviewRow[], query: CandidateR
   });
 }
 
+function candidateReviewGroupMatchesQuery(row: CandidateReviewGroup, query: string): boolean {
+  if (!query) return true;
+  const normalizedQuery = normalizeSearchText(query);
+
+  return [
+    row.groupId,
+    row.catalogId,
+    row.status,
+    row.reviewAction,
+    row.makam,
+    row.form,
+    row.usul,
+    row.title,
+    row.composer,
+    row.priorityGroup,
+    row.profiles?.join(" "),
+    row.providers?.join(" "),
+    row.confidenceLevels?.join(" "),
+  ].some((value) => normalizeSearchText(value).includes(normalizedQuery));
+}
+
+function applyCandidateReviewGroupQuery(rows: CandidateReviewGroup[], query: CandidateReviewGroupQuery): CandidateReviewGroup[] {
+  return rows.filter((row) => {
+    if (query.status && row.status !== query.status) return false;
+    if (query.composer && row.composer !== query.composer) return false;
+    if (query.priorityGroup && row.priorityGroup !== query.priorityGroup) return false;
+    return candidateReviewGroupMatchesQuery(row, query.query);
+  });
+}
+
 function summarizeCandidateReviewFacet(rows: CandidateReviewRow[], field: keyof CandidateReviewRow): BacklogFacet[] {
+  const counts = rows.reduce((accumulator, row) => {
+    const value = String(row[field] ?? "").trim();
+    if (!value) return accumulator;
+    accumulator.set(value, (accumulator.get(value) ?? 0) + 1);
+    return accumulator;
+  }, new Map<string, number>());
+
+  return Array.from(counts, ([value, count]) => ({value, count}))
+    .sort((left, right) => right.count - left.count || left.value.localeCompare(right.value, "tr-TR"));
+}
+
+function summarizeCandidateReviewGroupFacet(rows: CandidateReviewGroup[], field: keyof CandidateReviewGroup): BacklogFacet[] {
   const counts = rows.reduce((accumulator, row) => {
     const value = String(row[field] ?? "").trim();
     if (!value) return accumulator;
@@ -564,6 +652,14 @@ function buildCandidateReviewFacets(rows: CandidateReviewRow[]) {
     providers: summarizeCandidateReviewFacet(rows, "provider"),
     confidenceLevels: summarizeCandidateReviewFacet(rows, "reviewConfidenceLevel"),
     composers: summarizeCandidateReviewFacet(rows, "composer"),
+  };
+}
+
+function buildCandidateReviewGroupFacets(rows: CandidateReviewGroup[]) {
+  return {
+    statuses: summarizeCandidateReviewGroupFacet(rows, "status"),
+    composers: summarizeCandidateReviewGroupFacet(rows, "composer"),
+    priorityGroups: summarizeCandidateReviewGroupFacet(rows, "priorityGroup"),
   };
 }
 
@@ -614,6 +710,7 @@ function buildSourceLookup(
 async function getExternalReferenceState(request: Request) {
   const backlogQuery = readBacklogQuery(request);
   const candidateReviewQuery = readCandidateReviewQuery(request);
+  const candidateReviewGroupQuery = readCandidateReviewGroupQuery(request);
   const [
     inbox,
     mapping,
@@ -671,6 +768,19 @@ async function getExternalReferenceState(request: Request) {
   const sourceLookup = buildSourceLookup(mapping);
   const candidateReviewRows = candidateReviewQueue ?? [];
   const candidateReviewGroupRows = candidateReviewGroups ?? [];
+  const filteredCandidateReviewGroupRows = applyCandidateReviewGroupQuery(
+    candidateReviewGroupRows,
+    candidateReviewGroupQuery,
+  );
+  const candidateReviewGroupOffset = clampBacklogOffset(
+    candidateReviewGroupQuery.offset,
+    filteredCandidateReviewGroupRows.length,
+    candidateReviewGroupQuery.limit,
+  );
+  const candidateReviewGroupPageRows = filteredCandidateReviewGroupRows.slice(
+    candidateReviewGroupOffset,
+    candidateReviewGroupOffset + candidateReviewGroupQuery.limit,
+  );
   const filteredCandidateReviewRows = applyCandidateReviewQuery(candidateReviewRows, candidateReviewQuery);
   const candidateReviewOffset = clampBacklogOffset(
     candidateReviewQuery.offset,
@@ -751,14 +861,28 @@ async function getExternalReferenceState(request: Request) {
       },
       autoAttachedReferences: referenceViews.slice(0, 160),
       candidateManifest: summarizeBulkCandidateManifest(bulkCandidateManifest),
-      candidateReviewGroups: candidateReviewGroupRows.slice(0, 80),
+      candidateReviewGroups: candidateReviewGroupPageRows,
       candidateReviewGroupManifest: {
         artifactPath: typeof coverage?.candidateReviewGroupsJson === "string"
           ? coverage.candidateReviewGroupsJson
           : toProjectRelativePath(CANDIDATE_REVIEW_GROUPS_FILE),
         groupCount: candidateReviewGroupRows.length,
-        visibleGroupCount: Math.min(candidateReviewGroupRows.length, 80),
+        visibleGroupCount: candidateReviewGroupPageRows.length,
       },
+      candidateReviewGroupPage: {
+        offset: candidateReviewGroupOffset,
+        limit: candidateReviewGroupQuery.limit,
+        returnedCount: candidateReviewGroupPageRows.length,
+        filteredTotal: filteredCandidateReviewGroupRows.length,
+        totalRows: candidateReviewGroupRows.length,
+        previousOffset: candidateReviewGroupOffset > 0
+          ? Math.max(0, candidateReviewGroupOffset - candidateReviewGroupQuery.limit)
+          : null,
+        nextOffset: candidateReviewGroupOffset + candidateReviewGroupQuery.limit < filteredCandidateReviewGroupRows.length
+          ? candidateReviewGroupOffset + candidateReviewGroupQuery.limit
+          : null,
+      },
+      candidateReviewGroupFacets: buildCandidateReviewGroupFacets(candidateReviewGroupRows),
       candidateReviewQueue: candidateReviewPageRows,
       candidateReviewPage: {
         offset: candidateReviewOffset,
@@ -1000,6 +1124,44 @@ async function exportCandidateReviewQueue(body: OperationBody): Promise<unknown>
   };
 }
 
+async function exportCandidateReviewGroups(body: OperationBody): Promise<unknown> {
+  const rows = await readJsonOrNull<CandidateReviewGroup[]>(CANDIDATE_REVIEW_GROUPS_FILE) ?? [];
+  const query = readCandidateReviewGroupExportQuery(body);
+  const filteredRows = applyCandidateReviewGroupQuery(rows, query);
+
+  if (filteredRows.length > MAX_CANDIDATE_REVIEW_GROUP_EXPORT_ROWS) {
+    return NextResponse.json(
+      {error: `Aday group export ${MAX_CANDIDATE_REVIEW_GROUP_EXPORT_ROWS} satır ile sınırlıdır. Filtreleri daraltın.`},
+      {status: 413},
+    );
+  }
+
+  return {
+    summary: {
+      artifactPath: toProjectRelativePath(CANDIDATE_REVIEW_GROUPS_FILE),
+      totalRows: rows.length,
+      exportedCount: filteredRows.length,
+      filters: {
+        query: query.query,
+        status: query.status,
+        composer: query.composer,
+        priorityGroup: query.priorityGroup,
+      },
+    },
+    manifest: {
+      version: 1,
+      type: "candidate-review-group-export",
+      filters: {
+        query: query.query,
+        status: query.status,
+        composer: query.composer,
+        priorityGroup: query.priorityGroup,
+      },
+      groups: filteredRows,
+    },
+  };
+}
+
 async function importCandidateManifest(body: OperationBody): Promise<unknown> {
   const candidateManifestText = typeof body.candidateManifestText === "string"
     ? body.candidateManifestText
@@ -1177,6 +1339,8 @@ export async function POST(request: Request) {
         result = await importCandidateManifest(body);
       } else if (body.action === "candidate-review-export") {
         result = await exportCandidateReviewQueue(body);
+      } else if (body.action === "candidate-review-group-export") {
+        result = await exportCandidateReviewGroups(body);
       } else {
         result = await runCurationOperation(body);
       }

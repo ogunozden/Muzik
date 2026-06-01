@@ -86,6 +86,20 @@ const stateFixture = {
       groupCount: 2978,
       visibleGroupCount: 1,
     },
+    candidateReviewGroupPage: {
+      offset: 0,
+      limit: 1,
+      returnedCount: 1,
+      filteredTotal: 2978,
+      totalRows: 2978,
+      previousOffset: null,
+      nextOffset: 1,
+    },
+    candidateReviewGroupFacets: {
+      statuses: [{value: "needs-review", count: 2977}, {value: "conflict", count: 1}],
+      composers: [{value: "Ali Rifat Cagatay", count: 1}],
+      priorityGroups: [{value: "pdf-and-musicxml", count: 2978}],
+    },
     candidateReviewQueue: [
       {
         candidateId: `${catalogId}:divanmakam:search`,
@@ -205,6 +219,15 @@ function mockFetch() {
                 candidates: stateFixture.curation.candidateReviewQueue,
               },
             }
+          : body.action === "candidate-review-group-export"
+            ? {
+                summary: {exportedCount: 1},
+                manifest: {
+                  version: 1,
+                  type: "candidate-review-group-export",
+                  groups: stateFixture.curation.candidateReviewGroups,
+                },
+              }
           : body.action === "candidate-import"
             ? {dryRun: true, addedCandidateCount: 1, skippedDuplicateCount: 0}
             : {feedbackEvents: 1};
@@ -261,10 +284,28 @@ describe("ReferencesCurationPage", () => {
     expect(screen.getAllByText("output/external-reference-coverage/symbtr-curated-reference-candidate-review-queue.json").length).toBeGreaterThan(0);
     expect(screen.getByText("output/external-reference-coverage/symbtr-curated-reference-candidate-review-groups.json")).toBeDefined();
     expect(screen.getByText("review-provider-candidates")).toBeDefined();
+    expect(screen.getByLabelText("Grup durum")).toBeDefined();
     expect(screen.getByRole("link", {name: "Aday ara"}).getAttribute("href")).toContain("duckduckgo.com");
     expect(screen.getByRole("link", {name: "YouTube"}).getAttribute("href")).toContain("youtube.com");
 
     fireEvent.change(screen.getByLabelText("Besteci"), {target: {value: "Ali Rifat Cagatay"}});
+    fireEvent.change(screen.getByLabelText("Grup durum"), {target: {value: "conflict"}});
+    fireEvent.click(screen.getByRole("button", {name: "Grup dışa aktar"}));
+    await screen.findByDisplayValue(/candidate-review-group-export/);
+    const groupExportCall = fetchMock.mock.calls.find(([, init]) => (
+      init?.method === "POST" &&
+      JSON.parse(String(init.body)).action === "candidate-review-group-export"
+    ));
+    expect(JSON.parse(String(groupExportCall?.[1]?.body))).toEqual(
+      expect.objectContaining({
+        action: "candidate-review-group-export",
+        candidateReviewGroupQuery: expect.objectContaining({
+          status: "conflict",
+          composer: "Ali Rifat Cagatay",
+        }),
+      }),
+    );
+
     fireEvent.change(screen.getByLabelText("Aday profil"), {target: {value: "youtube"}});
     fireEvent.click(screen.getByRole("button", {name: "Queue dışa aktar"}));
     await screen.findByDisplayValue(/candidate-review-queue-export/);
@@ -321,6 +362,14 @@ describe("ReferencesCurationPage", () => {
     fireEvent.click(screen.getByRole("button", {name: "Aday sonraki"}));
     await waitFor(() => expect(fetchMock).toHaveBeenCalledWith(
       expect.stringContaining("candidateOffset=1"),
+      expect.objectContaining({
+        headers: {"x-external-reference-ops-token": "secret-token"},
+      }),
+    ));
+
+    fireEvent.click(screen.getByRole("button", {name: "Grup sonraki"}));
+    await waitFor(() => expect(fetchMock).toHaveBeenCalledWith(
+      expect.stringContaining("groupOffset=1"),
       expect.objectContaining({
         headers: {"x-external-reference-ops-token": "secret-token"},
       }),

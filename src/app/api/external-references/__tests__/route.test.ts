@@ -275,6 +275,24 @@ const candidateReviewGroupsFixture = [
     composer: "Ali Rifat Cagatay",
     priorityGroup: "pdf-and-musicxml",
   },
+  {
+    groupId: "rast--sarki--sofyan--ikinci_eser--ikinci_besteci:review-group",
+    catalogId: "rast--sarki--sofyan--ikinci_eser--ikinci_besteci",
+    status: "conflict",
+    reviewAction: "resolve-conflict-before-import",
+    candidateCount: 1,
+    profileCount: 1,
+    profiles: ["youtube"],
+    providers: ["youtube"],
+    confidenceLevels: ["needs-context"],
+    highestReviewConfidenceScore: 45,
+    makam: "Rast",
+    form: "Şarkı",
+    usul: "Sofyan",
+    title: "İkinci Eser",
+    composer: "İkinci Besteci",
+    priorityGroup: "pdf-and-musicxml",
+  },
 ];
 const OPS_TOKEN_HEADER = "x-external-reference-ops-token";
 
@@ -393,9 +411,19 @@ describe("/api/external-references route", () => {
       reviewAction: "review-provider-candidates",
     }));
     expect(body.curation.candidateReviewGroupManifest).toEqual(expect.objectContaining({
-      groupCount: 1,
+      groupCount: 2,
+      visibleGroupCount: 2,
       artifactPath: "output/external-reference-coverage/symbtr-curated-reference-candidate-review-groups.json",
     }));
+    expect(body.curation.candidateReviewGroupPage).toEqual(expect.objectContaining({
+      returnedCount: 2,
+      filteredTotal: 2,
+      totalRows: 2,
+    }));
+    expect(body.curation.candidateReviewGroupFacets.statuses).toEqual(expect.arrayContaining([
+      expect.objectContaining({value: "needs-review", count: 1}),
+      expect.objectContaining({value: "conflict", count: 1}),
+    ]));
     expect(body.curation.candidateReviewPage).toEqual(expect.objectContaining({
       returnedCount: 2,
       filteredTotal: 2,
@@ -446,6 +474,27 @@ describe("/api/external-references route", () => {
     expect(body.curation.candidateReviewQueue).toHaveLength(1);
     expect(body.curation.candidateReviewQueue[0].profileId).toBe("youtube");
     expect(body.curation.candidateReviewPage).toEqual(expect.objectContaining({
+      offset: 0,
+      limit: 1,
+      returnedCount: 1,
+      filteredTotal: 1,
+      totalRows: 2,
+      previousOffset: null,
+      nextOffset: null,
+    }));
+  });
+
+  it("paginates and filters candidate review groups from query params", async () => {
+    const response = await GET(authedRequest("http://localhost/api/external-references?groupLimit=1&groupOffset=1&groupStatus=conflict"));
+    const body = await response.json();
+
+    expect(response.status).toBe(200);
+    expect(body.curation.candidateReviewGroups).toHaveLength(1);
+    expect(body.curation.candidateReviewGroups[0]).toEqual(expect.objectContaining({
+      status: "conflict",
+      reviewAction: "resolve-conflict-before-import",
+    }));
+    expect(body.curation.candidateReviewGroupPage).toEqual(expect.objectContaining({
       offset: 0,
       limit: 1,
       returnedCount: 1,
@@ -570,6 +619,37 @@ describe("/api/external-references route", () => {
     expect(body.result.manifest).toEqual(expect.objectContaining({
       type: "candidate-review-queue-export",
       candidates: [expect.objectContaining({profileId: "youtube", status: "conflict"})],
+    }));
+    expect(execFile).not.toHaveBeenCalled();
+  });
+
+  it("exports filtered candidate review groups without shelling out", async () => {
+    const request = authedRequest("http://localhost/api/external-references", {
+      method: "POST",
+      body: JSON.stringify({
+        action: "candidate-review-group-export",
+        candidateReviewGroupQuery: {
+          status: "conflict",
+          composer: "İkinci Besteci",
+        },
+      }),
+    });
+
+    const response = await POST(request);
+    const body = await response.json();
+
+    expect(response.status).toBe(200);
+    expect(body.result.summary).toEqual(expect.objectContaining({
+      totalRows: 2,
+      exportedCount: 1,
+      filters: expect.objectContaining({
+        status: "conflict",
+        composer: "İkinci Besteci",
+      }),
+    }));
+    expect(body.result.manifest).toEqual(expect.objectContaining({
+      type: "candidate-review-group-export",
+      groups: [expect.objectContaining({status: "conflict", composer: "İkinci Besteci"})],
     }));
     expect(execFile).not.toHaveBeenCalled();
   });

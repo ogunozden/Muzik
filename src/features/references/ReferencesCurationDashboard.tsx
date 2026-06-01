@@ -9,6 +9,7 @@ type CurationAction =
   | "candidate-export"
   | "candidate-import"
   | "candidate-review-export"
+  | "candidate-review-group-export"
   | "curation-auto-attach"
   | "curation-stats"
   | "curation-validate"
@@ -136,6 +137,8 @@ interface CandidateReviewPage {
   artifactPath?: string;
 }
 
+type CandidateReviewGroupPage = CandidateReviewPage;
+
 interface CandidateReviewGroup {
   groupId?: string;
   catalogId?: string;
@@ -205,6 +208,12 @@ interface ExternalReferenceState {
       artifactPath?: string;
       groupCount?: number;
       visibleGroupCount?: number;
+    };
+    candidateReviewGroupPage?: CandidateReviewGroupPage;
+    candidateReviewGroupFacets?: {
+      statuses?: BacklogFacet[];
+      composers?: BacklogFacet[];
+      priorityGroups?: BacklogFacet[];
     };
     candidateReviewQueue?: CandidateReviewRow[];
     candidateReviewPage?: CandidateReviewPage;
@@ -387,22 +396,33 @@ export function ReferencesCurationDashboard() {
   const [candidateManifestText, setCandidateManifestText] = useState("");
   const [candidateReviewExportText, setCandidateReviewExportText] = useState("");
   const [candidateImportDryRun, setCandidateImportDryRun] = useState(true);
+  const [candidateGroupExportText, setCandidateGroupExportText] = useState("");
+  const [candidateGroupOffset, setCandidateGroupOffset] = useState(0);
+  const [candidateGroupLimit, setCandidateGroupLimit] = useState(80);
+  const [candidateGroupStatusFilter, setCandidateGroupStatusFilter] = useState(ALL_FILTER_VALUE);
   const [candidateOffset, setCandidateOffset] = useState(0);
   const [candidateLimit, setCandidateLimit] = useState(100);
   const [candidateStatusFilter, setCandidateStatusFilter] = useState(ALL_FILTER_VALUE);
   const [candidateProfileFilter, setCandidateProfileFilter] = useState(ALL_FILTER_VALUE);
   const [query, setQuery] = useState("");
 
-  const loadState = useCallback(async (requestedBacklogOffset = backlogOffset, requestedCandidateOffset = candidateOffset) => {
+  const loadState = useCallback(async (
+    requestedBacklogOffset = backlogOffset,
+    requestedCandidateOffset = candidateOffset,
+    requestedCandidateGroupOffset = candidateGroupOffset,
+  ) => {
     const params = new URLSearchParams({
       backlogLimit: String(backlogLimit),
       backlogOffset: String(requestedBacklogOffset),
       backlogScope: "missing",
       candidateLimit: String(candidateLimit),
       candidateOffset: String(requestedCandidateOffset),
+      groupLimit: String(candidateGroupLimit),
+      groupOffset: String(requestedCandidateGroupOffset),
     });
 
     if (query.trim()) params.set("q", query.trim());
+    if (candidateGroupStatusFilter !== ALL_FILTER_VALUE) params.set("groupStatus", candidateGroupStatusFilter);
     if (candidateStatusFilter !== ALL_FILTER_VALUE) params.set("candidateStatus", candidateStatusFilter);
     if (candidateProfileFilter !== ALL_FILTER_VALUE) params.set("candidateProfile", candidateProfileFilter);
     if (makamFilter !== ALL_FILTER_VALUE) params.set("makam", makamFilter);
@@ -425,9 +445,13 @@ export function ReferencesCurationDashboard() {
     setState(nextState);
     setBacklogOffset(nextState.curation?.backlogPage?.offset ?? requestedBacklogOffset);
     setCandidateOffset(nextState.curation?.candidateReviewPage?.offset ?? requestedCandidateOffset);
+    setCandidateGroupOffset(nextState.curation?.candidateReviewGroupPage?.offset ?? requestedCandidateGroupOffset);
   }, [
     backlogLimit,
     backlogOffset,
+    candidateGroupLimit,
+    candidateGroupOffset,
+    candidateGroupStatusFilter,
     candidateLimit,
     candidateOffset,
     candidateProfileFilter,
@@ -471,19 +495,23 @@ export function ReferencesCurationDashboard() {
     }
   }, [opsToken]);
 
-  const refresh = useCallback(async (requestedBacklogOffset = backlogOffset, requestedCandidateOffset = candidateOffset) => {
+  const refresh = useCallback(async (
+    requestedBacklogOffset = backlogOffset,
+    requestedCandidateOffset = candidateOffset,
+    requestedCandidateGroupOffset = candidateGroupOffset,
+  ) => {
     setActiveOperation("refresh");
     setMessage("");
 
     try {
-      await loadState(requestedBacklogOffset, requestedCandidateOffset);
+      await loadState(requestedBacklogOffset, requestedCandidateOffset, requestedCandidateGroupOffset);
       setMessage("Kürasyon durumu yenilendi.");
     } catch (error) {
       setMessage(error instanceof Error ? error.message : "Kürasyon durumu okunamadı.");
     } finally {
       setActiveOperation(null);
     }
-  }, [backlogOffset, candidateOffset, loadState]);
+  }, [backlogOffset, candidateGroupOffset, candidateOffset, loadState]);
 
   const recordFeedback = useCallback((reference: CurationReference, eventType: "user-approved" | "user-prioritized" | "user-removed") => {
     if (!reference.catalogId || !reference.sourceId) return;
@@ -605,6 +633,21 @@ export function ReferencesCurationDashboard() {
     }
   }, [candidateProfileFilter, candidateStatusFilter, composerFilter, query, runOperation]);
 
+  const exportCandidateReviewGroups = useCallback(async () => {
+    const result = await runOperation("candidate-review-group-export", {
+      candidateReviewGroupQuery: {
+        query,
+        status: candidateGroupStatusFilter,
+        composer: composerFilter,
+        priorityGroup: priorityGroupFilter,
+      },
+    });
+
+    if (result && typeof result === "object" && "manifest" in result) {
+      setCandidateGroupExportText(JSON.stringify(result.manifest, null, 2));
+    }
+  }, [candidateGroupStatusFilter, composerFilter, priorityGroupFilter, query, runOperation]);
+
   const importCandidateManifest = useCallback(() => {
     if (!candidateManifestText.trim()) {
       setMessage("Aday manifest JSON girdisi gerekli.");
@@ -645,6 +688,7 @@ export function ReferencesCurationDashboard() {
     const backlog = state.curation?.backlogNextBatch ?? [];
     const backlogFacets = state.curation?.backlogFacets ?? {};
     const candidateFacets = state.curation?.candidateReviewFacets ?? {};
+    const candidateGroupFacets = state.curation?.candidateReviewGroupFacets ?? {};
 
     return {
       statuses: getUniqueOptions(references.map((reference) => reference.status)),
@@ -669,13 +713,16 @@ export function ReferencesCurationDashboard() {
         ...backlog.map((row) => row.composer),
         ...getFacetValues(backlogFacets.composers),
         ...getFacetValues(candidateFacets.composers),
+        ...getFacetValues(candidateGroupFacets.composers),
       ]),
       priorityGroups: getUniqueOptions([
         ...backlog.map((row) => row.priorityGroup),
         ...getFacetValues(backlogFacets.priorityGroups),
+        ...getFacetValues(candidateGroupFacets.priorityGroups),
       ]),
       candidateStatuses: getUniqueOptions(getFacetValues(candidateFacets.statuses)),
       candidateProfiles: getUniqueOptions(getFacetValues(candidateFacets.profileIds)),
+      candidateGroupStatuses: getUniqueOptions(getFacetValues(candidateGroupFacets.statuses)),
     };
   }, [state]);
 
@@ -684,6 +731,7 @@ export function ReferencesCurationDashboard() {
   const backlogPage = state.curation?.backlogPage;
   const candidateManifest = state.curation?.candidateManifest;
   const candidateReviewGroupManifest = state.curation?.candidateReviewGroupManifest;
+  const candidateReviewGroupPage = state.curation?.candidateReviewGroupPage;
   const candidateReviewGroups = state.curation?.candidateReviewGroups ?? [];
   const candidateReviewPage = state.curation?.candidateReviewPage;
   const candidateReviewRows = state.curation?.candidateReviewQueue ?? [];
@@ -790,15 +838,68 @@ export function ReferencesCurationDashboard() {
           </section>
 
           <section className={`min-w-0 overflow-hidden border ${tokens.colors.border.base} ${tokens.radius.lg} ${tokens.colors.background.surface}`}>
-            <div className="flex flex-col gap-2 border-b border-[var(--color-border)] px-4 py-3">
-              <h2 className={`text-lg font-semibold ${tokens.colors.text.primary}`}>Aday review grupları</h2>
-              <p className={`text-xs ${tokens.colors.text.secondary}`}>
-                {formatNumber(candidateReviewGroupManifest?.visibleGroupCount ?? candidateReviewGroups.length)} gösteriliyor · {formatNumber(candidateReviewGroupManifest?.groupCount)} grup
-              </p>
-              {candidateReviewGroupManifest?.artifactPath && (
-                <code className="block break-all text-xs text-[var(--color-text-primary)]">{candidateReviewGroupManifest.artifactPath}</code>
-              )}
+            <div className="flex flex-col gap-3 border-b border-[var(--color-border)] px-4 py-3 lg:flex-row lg:items-end lg:justify-between">
+              <div>
+                <h2 className={`text-lg font-semibold ${tokens.colors.text.primary}`}>Aday review grupları</h2>
+                <p className={`text-xs ${tokens.colors.text.secondary}`}>
+                  {formatNumber(candidateReviewGroupPage?.returnedCount ?? candidateReviewGroupManifest?.visibleGroupCount ?? candidateReviewGroups.length)} gösteriliyor · {formatNumber(candidateReviewGroupPage?.filteredTotal ?? candidateReviewGroupManifest?.groupCount)} filtreli · {formatNumber(candidateReviewGroupManifest?.groupCount)} grup
+                </p>
+                {candidateReviewGroupManifest?.artifactPath && (
+                  <code className="block break-all text-xs text-[var(--color-text-primary)]">{candidateReviewGroupManifest.artifactPath}</code>
+                )}
+              </div>
+              <div className="grid w-full gap-2 sm:grid-cols-2 lg:max-w-5xl lg:grid-cols-6">
+                <FilterSelect label="Grup durum" value={candidateGroupStatusFilter} options={filterOptions.candidateGroupStatuses} onChange={(value) => {
+                  setCandidateGroupStatusFilter(value);
+                  setCandidateGroupOffset(0);
+                }} />
+                <label className={`flex flex-col gap-1 text-sm ${tokens.colors.text.secondary}`}>
+                  Grup sayfa
+                  <select
+                    value={candidateGroupLimit}
+                    onChange={(event) => {
+                      setCandidateGroupLimit(Number(event.target.value));
+                      setCandidateGroupOffset(0);
+                    }}
+                    className={`rounded-md border ${tokens.colors.border.base} bg-white px-3 py-2 text-sm ${tokens.colors.text.primary}`}
+                  >
+                    <option value={80}>80</option>
+                    <option value={160}>160</option>
+                    <option value={320}>320</option>
+                  </select>
+                </label>
+                <Button
+                  variant="outline"
+                  disabled={isBusy || candidateReviewGroupPage?.previousOffset == null}
+                  onPress={() => void refresh(backlogOffset, candidateOffset, candidateReviewGroupPage?.previousOffset ?? 0)}
+                >
+                  Grup önceki
+                </Button>
+                <Button
+                  variant="outline"
+                  disabled={isBusy || candidateReviewGroupPage?.nextOffset == null}
+                  onPress={() => void refresh(backlogOffset, candidateOffset, candidateReviewGroupPage?.nextOffset ?? candidateGroupOffset + candidateGroupLimit)}
+                >
+                  Grup sonraki
+                </Button>
+                <Button variant="secondary" disabled={isBusy} onPress={() => void exportCandidateReviewGroups()}>
+                  Grup dışa aktar
+                </Button>
+              </div>
             </div>
+            {candidateGroupExportText && (
+              <div className="border-b border-[var(--color-border)] px-4 py-3">
+                <label htmlFor="candidate-review-group-export-json" className={`flex flex-col gap-1 text-sm ${tokens.colors.text.secondary}`}>
+                  Filtreli review grup JSON
+                  <textarea
+                    id="candidate-review-group-export-json"
+                    value={candidateGroupExportText}
+                    readOnly
+                    className={`min-h-32 w-full rounded-md border ${tokens.colors.border.base} bg-white px-3 py-2 font-mono text-xs ${tokens.colors.text.primary}`}
+                  />
+                </label>
+              </div>
+            )}
             <div className="w-full overflow-x-auto">
               <table className="w-full min-w-[980px] border-collapse text-sm">
                 <thead>
@@ -1348,6 +1449,11 @@ function getOperationMessage(action: CurationAction, result: unknown): string {
   if (action === "candidate-review-export") {
     const exportSummary = (summary.summary ?? {}) as Record<string, unknown>;
     return `Review queue dışa aktarıldı: ${formatNumber(exportSummary.exportedCount)} aday.`;
+  }
+
+  if (action === "candidate-review-group-export") {
+    const exportSummary = (summary.summary ?? {}) as Record<string, unknown>;
+    return `Review grupları dışa aktarıldı: ${formatNumber(exportSummary.exportedCount)} grup.`;
   }
 
   if (action === "candidate-import") {

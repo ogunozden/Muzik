@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>References Curation Artifact Inventory Security Diff Scan</title>
+  <style>
+    body { font-family: Arial, sans-serif; line-height: 1.5; margin: 32px; color: #1f2933; }
+    code { background: #f4f4f5; padding: 2px 4px; border-radius: 4px; }
+    h1, h2 { color: #111827; }
+    .result { padding: 12px 16px; background: #ecfdf3; border: 1px solid #b7ebc6; border-radius: 6px; }
+  </style>
+</head>
+<body>
+  <h1>References Curation Artifact Inventory Security Diff Scan</h1>
+  <p><strong>Date:</strong> 2026-06-01<br><strong>Branch:</strong> codex/batch-curation-pipeline<br><strong>Scope:</strong> local diff for <code>/references/curation</code> artifact inventory UI, render tests, and project-plan update.</p>
+  <h2>Threat Model</h2>
+  <p>The relevant assets are real curation manifests, accepted source state, operator review decisions, validation reports, and browser trust in local admin UI output. The changed surface is read-only rendering of already-loaded artifact metadata. It must not add a new write path, shell execution path, filesystem access path, unsafe navigation behavior, or HTML/script injection vector.</p>
+  <h2>Discovery</h2>
+  <p>Reviewed <code>src/features/references/ReferencesCurationDashboard.tsx</code>, <code>src/app/references/curation/__tests__/page.test.tsx</code>, and <code>PROJECT_PLAN.md</code>. Sink search covered HTML injection APIs, eval-like APIs, child process usage, filesystem reads/writes, fetch calls, and links. The diff adds a client-side artifact inventory derived from existing state and renders artifact metadata as React text.</p>
+  <h2>Candidate Findings</h2>
+  <p>No technically plausible security finding was discovered in this diff.</p>
+  <h2>Validation</h2>
+  <ul>
+    <li>Targeted curation page test: 2 tests passed.</li>
+    <li>Full test suite: 50 files, 357 tests passed.</li>
+    <li><code>npm run lint</code>, <code>npm run typecheck</code>, <code>npm run build</code>, <code>npm run curation:validate</code>, and <code>npm run audit:security</code>: passed.</li>
+    <li>Layout guard and browser artifact-filter evidence passed on <code>http://localhost:4015/references/curation</code>.</li>
+    <li><code>git diff --check</code>: passed.</li>
+  </ul>
+  <h2>Attack Path Analysis</h2>
+  <p>No surviving candidate reached attack-path analysis. A plausible injection path would require artifact metadata to be interpreted as HTML or executable code; the UI renders plain React text. A state-changing or data-exfiltration path would require a new endpoint, mutation fetch, filesystem operation, or shell execution; the diff adds none.</p>
+  <h2>Result</h2>
+  <p class="result"><strong>Final decision:</strong> no findings.</p>
+  <p><strong>Residual risk:</strong> future artifact download/open actions would require a separate review before adding direct file serving or mutation capabilities.</p>
+</body>
+</html>

@@ -1354,8 +1354,12 @@ calisma agacindaki bu guncelleme oncesi genis degisiklikleri de kapsadigindan
        `verified` confidence veya measure box varsa hata verir, verified manifest
        değişmeden 0 kalır ve `/references/curation` operatöre dry-run artifact,
        boş import template, 0 import girişi ve 0 verified kanıtını gösterir.
-3. [ ] `/references/curation` üzerinde tüm arka plan artifactlerini daha
-       görünür ve filtrelenebilir hale getir.
+3. [x] `/references/curation` üzerinde tüm arka plan artifactlerini daha
+       görünür ve filtrelenebilir hale getir. 2026-06-01 ek UI kapısı:
+       dashboard mevcut read-only state'ten tekilleştirilmiş `Artifact izleme`
+       envanteri üretir; coverage, backlog, candidate, review, decision, batch,
+       intake, validation, PDF, runtime data, policy ve quality artifactleri
+       kategori/durum/arama filtreleriyle görünür olur.
 4. [ ] `/studio/follow`, enstrüman, usul timing ve kaynak görüntüleme akışlarını
        full browser audit ile doğrula.
 

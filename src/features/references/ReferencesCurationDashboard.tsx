@@ -107,6 +107,16 @@ interface BacklogPage {
   };
 }
 
+interface ArtifactInventoryItem {
+  id: string;
+  label: string;
+  category: string;
+  status: string;
+  path: string;
+  metrics: string[];
+  command?: string | null;
+}
+
 interface CandidateReviewRow {
   candidateId?: string;
   catalogId?: string;
@@ -420,6 +430,310 @@ function formatBacklogFormats(row: CurationBacklogRow): string {
   ].filter(Boolean).join(" / ") || "-";
 }
 
+function getArtifactStatusLabel(status: string): string {
+  if (status === "ok") return "OK";
+  if (status === "needs-review") return "Review";
+  if (status === "dry-run") return "Dry-run";
+  if (status === "empty-template") return "Boş template";
+  if (status === "candidate-only") return "Aday";
+  return status || "-";
+}
+
+function buildArtifactInventory(state: ExternalReferenceState): ArtifactInventoryItem[] {
+  const items = new Map<string, ArtifactInventoryItem>();
+
+  const addItem = (item: ArtifactInventoryItem | null | undefined) => {
+    if (!item?.path) return;
+    const existing = items.get(item.path);
+    if (!existing) {
+      items.set(item.path, item);
+      return;
+    }
+
+    items.set(item.path, {
+      ...existing,
+      metrics: Array.from(new Set([...existing.metrics, ...item.metrics])),
+      command: existing.command ?? item.command,
+    });
+  };
+
+  const coverage = state.coverage;
+  const curation = state.curation;
+  const summary = curation?.summary;
+  const candidateManifest = curation?.candidateManifest;
+  const candidateReviewGroupManifest = curation?.candidateReviewGroupManifest;
+  const candidateReviewGroupDecisionManifest = curation?.candidateReviewGroupDecisionManifest;
+  const candidateReviewGroupDecisionRecommendationManifest = curation?.candidateReviewGroupDecisionRecommendationManifest;
+  const candidateReviewBatchPlanManifest = curation?.candidateReviewBatchPlanManifest;
+  const sourceIntakeTemplateManifest = curation?.sourceIntakeTemplateManifest;
+  const sourceIntakeAcceptedImportDryRunManifest = curation?.sourceIntakeAcceptedImportDryRunManifest;
+  const symbtrLayoutVerificationManifest = curation?.symbtrLayoutVerificationManifest;
+
+  if (coverage) {
+    addItem({
+      id: "coverage-summary",
+      label: "Coverage summary",
+      category: "Coverage",
+      status: "ok",
+      path: "output/external-reference-coverage/summary.json",
+      metrics: [
+        `${formatNumber(coverage.totalCatalogEntries)} eser`,
+        `${formatNumber(coverage.missingCuratedEntries)} eksik`,
+        `${formatNumber(coverage.candidateReviewQueueEntries)} aday`,
+      ],
+      command: "npm run audit:external-references",
+    });
+  }
+
+  addItem(candidateManifest?.artifactPath ? {
+    id: "bulk-candidates",
+    label: "Bulk candidate manifest",
+    category: "Candidate",
+    status: (candidateManifest.needsReviewCount ?? 0) > 0 ? "needs-review" : "ok",
+    path: candidateManifest.artifactPath,
+    metrics: [
+      `${formatNumber(candidateManifest.candidateCount)} aday`,
+      `${formatNumber(candidateManifest.acceptedCount)} accepted`,
+      `${formatNumber(candidateManifest.needsReviewCount)} review`,
+      `${formatNumber(candidateManifest.conflictCount)} conflict`,
+    ],
+    command: "npm run import:external-references -- --input <json>",
+  } : null);
+
+  addItem(coverage?.candidateReviewQueueJson ? {
+    id: "candidate-review-queue",
+    label: "Candidate review queue",
+    category: "Review",
+    status: "needs-review",
+    path: coverage.candidateReviewQueueJson,
+    metrics: [`${formatNumber(coverage.candidateReviewQueueEntries)} aday`],
+  } : null);
+
+  addItem(coverage?.coverageMatrixJson ? {
+    id: "coverage-matrix",
+    label: "Coverage matrix",
+    category: "Coverage",
+    status: "ok",
+    path: coverage.coverageMatrixJson,
+    metrics: [`${formatNumber(coverage.coverageMatrixEntries)} kırılım`],
+  } : null);
+
+  addItem(coverage?.dedupeReportJson ? {
+    id: "dedupe-report",
+    label: "Dedupe report",
+    category: "Dedupe",
+    status: (coverage.duplicateRowsAfterDedupe ?? 0) > 0 ? "needs-review" : "ok",
+    path: coverage.dedupeReportJson,
+    metrics: [
+      `${formatNumber(coverage.duplicateRowsAfterDedupe)} duplicate`,
+      `${formatNumber(coverage.cleanedDuplicateRows)} temizlenen`,
+    ],
+  } : null);
+
+  addItem(curation?.backlogPage?.artifactPaths?.backlogJson ? {
+    id: "backlog",
+    label: "Missing source backlog",
+    category: "Backlog",
+    status: "needs-review",
+    path: curation.backlogPage.artifactPaths.backlogJson,
+    metrics: [
+      `${formatNumber(curation.backlogPage.totalMissing)} eksik`,
+      `${formatNumber(curation.backlogPage.activeQueueCount)} aktif`,
+      `${formatNumber(curation.backlogPage.deferredCount)} deferred`,
+    ],
+  } : null);
+
+  addItem(curation?.backlogPage?.artifactPaths?.nextBatchJson ? {
+    id: "next-batch",
+    label: "Next backlog batch",
+    category: "Backlog",
+    status: "needs-review",
+    path: curation.backlogPage.artifactPaths.nextBatchJson,
+    metrics: [`${formatNumber(curation.backlogPage.returnedCount)} gösterilen`],
+  } : null);
+
+  addItem(candidateReviewGroupManifest?.artifactPath ? {
+    id: "candidate-review-groups",
+    label: "Candidate review groups",
+    category: "Review",
+    status: "needs-review",
+    path: candidateReviewGroupManifest.artifactPath,
+    metrics: [`${formatNumber(candidateReviewGroupManifest.groupCount)} grup`],
+  } : null);
+
+  addItem(candidateReviewGroupDecisionManifest?.artifactPath ? {
+    id: "candidate-review-decisions",
+    label: "Review group decisions",
+    category: "Decision",
+    status: "ok",
+    path: candidateReviewGroupDecisionManifest.artifactPath,
+    metrics: [`${formatNumber(candidateReviewGroupDecisionManifest.decisionCount)} karar`],
+    command: "npm run import:candidate-review-decisions -- --input <json>",
+  } : null);
+
+  addItem(candidateReviewGroupDecisionRecommendationManifest?.artifactPath ? {
+    id: "candidate-review-recommendations",
+    label: "Decision recommendations",
+    category: "Decision",
+    status: "needs-review",
+    path: candidateReviewGroupDecisionRecommendationManifest.artifactPath,
+    metrics: [`${formatNumber(candidateReviewGroupDecisionRecommendationManifest.decisionCount)} öneri`],
+  } : null);
+
+  addItem(candidateReviewBatchPlanManifest?.artifactPath ? {
+    id: "candidate-review-batch-plan",
+    label: "Review batch plan",
+    category: "Batch",
+    status: "needs-review",
+    path: candidateReviewBatchPlanManifest.artifactPath,
+    metrics: [
+      `${formatNumber(candidateReviewBatchPlanManifest.packetCount)} paket`,
+      `${formatNumber(candidateReviewBatchPlanManifest.plannedGroupCount)} grup`,
+      `${formatNumber(candidateReviewBatchPlanManifest.plannedCandidateCount)} aday`,
+    ],
+  } : null);
+
+  addItem(sourceIntakeTemplateManifest?.artifactPath ? {
+    id: "source-intake-template",
+    label: "Source intake template",
+    category: "Intake",
+    status: "empty-template",
+    path: sourceIntakeTemplateManifest.artifactPath,
+    metrics: [
+      `${formatNumber(sourceIntakeTemplateManifest.packetCount)} paket`,
+      `${formatNumber(sourceIntakeTemplateManifest.templateRowCount)} boş satır`,
+    ],
+    command: sourceIntakeTemplateManifest.targetScript,
+  } : null);
+
+  addItem(sourceIntakeAcceptedImportDryRunManifest?.artifactPath ? {
+    id: "source-intake-accepted-dry-run",
+    label: "Accepted source dry-run",
+    category: "Validation",
+    status: sourceIntakeAcceptedImportDryRunManifest.dryRun ? "dry-run" : "needs-review",
+    path: sourceIntakeAcceptedImportDryRunManifest.artifactPath,
+    metrics: [
+      `${formatNumber(sourceIntakeAcceptedImportDryRunManifest.acceptedCandidateCount)} accepted`,
+      `${formatNumber(sourceIntakeAcceptedImportDryRunManifest.validationErrorCount)} hata`,
+    ],
+    command: sourceIntakeAcceptedImportDryRunManifest.targetScript,
+  } : null);
+
+  addItem(symbtrLayoutVerificationManifest?.summaryPath ? {
+    id: "symbtr-layout-summary",
+    label: "SymbTr layout validation summary",
+    category: "PDF",
+    status: (symbtrLayoutVerificationManifest.validationErrorCount ?? 0) > 0 ? "needs-review" : "candidate-only",
+    path: symbtrLayoutVerificationManifest.summaryPath,
+    metrics: [
+      `${formatNumber(symbtrLayoutVerificationManifest.candidateEntries)} aday eser`,
+      `${formatNumber(symbtrLayoutVerificationManifest.verifiedMeasureBoxes)} verified`,
+    ],
+    command: "npm run verify:symbtr-measures",
+  } : null);
+
+  addItem(symbtrLayoutVerificationManifest?.reviewTemplatePath ? {
+    id: "symbtr-layout-review-template",
+    label: "PDF layout review template",
+    category: "PDF",
+    status: "candidate-only",
+    path: symbtrLayoutVerificationManifest.reviewTemplatePath,
+    metrics: [
+      `${formatNumber(symbtrLayoutVerificationManifest.reviewTemplateEntryCount)} eser`,
+      `${formatNumber(symbtrLayoutVerificationManifest.reviewTemplateCandidateRows)} aday satır`,
+    ],
+  } : null);
+
+  addItem(symbtrLayoutVerificationManifest?.reviewBatchPlanPath ? {
+    id: "symbtr-layout-review-batch",
+    label: "PDF layout review batch",
+    category: "PDF",
+    status: "candidate-only",
+    path: symbtrLayoutVerificationManifest.reviewBatchPlanPath,
+    metrics: [
+      `${formatNumber(symbtrLayoutVerificationManifest.reviewBatchPacketCount)} paket`,
+      `${formatNumber(symbtrLayoutVerificationManifest.reviewBatchCandidateRows)} aday satır`,
+    ],
+  } : null);
+
+  addItem(symbtrLayoutVerificationManifest?.emptyImportDryRunPath ? {
+    id: "symbtr-layout-empty-dry-run",
+    label: "PDF empty import dry-run",
+    category: "Validation",
+    status: "dry-run",
+    path: symbtrLayoutVerificationManifest.emptyImportDryRunPath,
+    metrics: [
+      `${formatNumber(symbtrLayoutVerificationManifest.emptyImportDryRunInputEntries)} import`,
+      `${formatNumber(symbtrLayoutVerificationManifest.emptyImportDryRunVerifiedMeasureBoxes)} verified`,
+    ],
+    command: symbtrLayoutVerificationManifest.emptyImportDryRunScript,
+  } : null);
+
+  addItem(symbtrLayoutVerificationManifest?.emptyImportTemplatePath ? {
+    id: "symbtr-layout-empty-template",
+    label: "PDF empty import template",
+    category: "PDF",
+    status: "empty-template",
+    path: symbtrLayoutVerificationManifest.emptyImportTemplatePath,
+    metrics: ["0 import"],
+  } : null);
+
+  addItem({
+    id: "auto-attached",
+    label: "Auto-attached references",
+    category: "Runtime data",
+    status: (summary?.conflictCount ?? 0) > 0 ? "needs-review" : "ok",
+    path: "src/data/references/auto-attached-references.json",
+    metrics: [
+      `${formatNumber(summary?.autoAttachedCount)} auto`,
+      `${formatNumber(summary?.conflictCount)} conflict`,
+    ],
+    command: "npm run curation:auto-attach",
+  });
+
+  addItem({
+    id: "source-feedback",
+    label: "Source feedback events",
+    category: "Runtime data",
+    status: "ok",
+    path: "src/data/references/source-feedback-events.json",
+    metrics: [`${formatNumber(summary?.feedbackEventCount)} event`],
+  });
+
+  addItem({
+    id: "manual-corrections",
+    label: "Manual source corrections",
+    category: "Runtime data",
+    status: "ok",
+    path: "src/data/references/manual-source-corrections.json",
+    metrics: [`${formatNumber(summary?.manualCorrectionCount)} düzeltme`],
+  });
+
+  addItem({
+    id: "research-profiles",
+    label: "Research source profiles",
+    category: "Policy",
+    status: "ok",
+    path: "src/data/references/research-source-profiles.json",
+    metrics: [`${formatNumber(summary?.researchSourceProfileCount)} profil`],
+  });
+
+  addItem({
+    id: "source-quality-stats",
+    label: "Source quality stats",
+    category: "Quality",
+    status: "ok",
+    path: "src/data/references/source-quality-stats.generated.json",
+    metrics: [`${formatNumber(summary?.sourceQualityStatCount)} site`],
+    command: "npm run curation:stats",
+  });
+
+  return Array.from(items.values()).sort((left, right) => (
+    left.category.localeCompare(right.category, "tr-TR") ||
+    left.label.localeCompare(right.label, "tr-TR")
+  ));
+}
+
 function FilterSelect({
   label,
   value,
@@ -509,6 +823,9 @@ export function ReferencesCurationDashboard({
   const [candidateLimit, setCandidateLimit] = useState(100);
   const [candidateStatusFilter, setCandidateStatusFilter] = useState(ALL_FILTER_VALUE);
   const [candidateProfileFilter, setCandidateProfileFilter] = useState(ALL_FILTER_VALUE);
+  const [artifactCategoryFilter, setArtifactCategoryFilter] = useState(ALL_FILTER_VALUE);
+  const [artifactStatusFilter, setArtifactStatusFilter] = useState(ALL_FILTER_VALUE);
+  const [artifactQuery, setArtifactQuery] = useState("");
   const [query, setQuery] = useState("");
 
   const loadState = useCallback(async (
@@ -889,6 +1206,27 @@ export function ReferencesCurationDashboard({
   }, [state]);
 
   const metrics = useMemo(() => metricCards(state), [state]);
+  const artifactInventory = useMemo(() => buildArtifactInventory(state), [state]);
+  const filteredArtifactInventory = useMemo(() => {
+    const normalizedQuery = normalizeFilterText(artifactQuery);
+
+    return artifactInventory.filter((artifact) => {
+      if (artifactCategoryFilter !== ALL_FILTER_VALUE && artifact.category !== artifactCategoryFilter) return false;
+      if (artifactStatusFilter !== ALL_FILTER_VALUE && artifact.status !== artifactStatusFilter) return false;
+      return matchesQuery([
+        artifact.label,
+        artifact.category,
+        artifact.status,
+        artifact.path,
+        artifact.command,
+        ...artifact.metrics,
+      ], normalizedQuery);
+    });
+  }, [artifactCategoryFilter, artifactInventory, artifactQuery, artifactStatusFilter]);
+  const artifactFilterOptions = useMemo(() => ({
+    categories: getUniqueOptions(artifactInventory.map((artifact) => artifact.category)),
+    statuses: getUniqueOptions(artifactInventory.map((artifact) => artifact.status)),
+  }), [artifactInventory]);
   const isBusy = activeOperation !== null;
   const backlogPage = state.curation?.backlogPage;
   const candidateManifest = state.curation?.candidateManifest;
@@ -969,6 +1307,56 @@ export function ReferencesCurationDashboard({
                 <div className={`mt-1 truncate text-xs ${tokens.colors.text.secondary}`}>{metric.meta}</div>
               </article>
             ))}
+          </section>
+
+          <section className={`min-w-0 overflow-hidden border ${tokens.colors.border.base} ${tokens.radius.lg} ${tokens.colors.background.surface}`}>
+            <div className="flex flex-col gap-3 border-b border-[var(--color-border)] px-4 py-3 lg:flex-row lg:items-end lg:justify-between">
+              <div>
+                <h2 className={`text-lg font-semibold ${tokens.colors.text.primary}`}>Artifact izleme</h2>
+                <p className={`text-xs ${tokens.colors.text.secondary}`}>
+                  {formatNumber(filteredArtifactInventory.length)} gösteriliyor · {formatNumber(artifactInventory.length)} artifact · batch pipeline kanıtları, manifestler ve runtime veri dosyaları
+                </p>
+              </div>
+              <div className="grid w-full gap-2 sm:grid-cols-3 lg:max-w-3xl">
+                <label htmlFor="artifact-search" className={`flex flex-col gap-1 text-sm ${tokens.colors.text.secondary}`}>
+                  Artifact ara
+                  <input
+                    id="artifact-search"
+                    value={artifactQuery}
+                    onChange={(event) => setArtifactQuery(event.target.value)}
+                    className={`rounded-md border ${tokens.colors.border.base} bg-white px-3 py-2 text-sm ${tokens.colors.text.primary}`}
+                  />
+                </label>
+                <FilterSelect label="Artifact kategori" value={artifactCategoryFilter} options={artifactFilterOptions.categories} onChange={setArtifactCategoryFilter} />
+                <FilterSelect label="Artifact durum" value={artifactStatusFilter} options={artifactFilterOptions.statuses} onChange={setArtifactStatusFilter} />
+              </div>
+            </div>
+            <div className="grid gap-3 p-4 md:grid-cols-2 xl:grid-cols-3">
+              {filteredArtifactInventory.length === 0 ? (
+                <div className={`col-span-full py-6 text-sm ${tokens.colors.text.secondary}`}>Artifact yok.</div>
+              ) : (
+                filteredArtifactInventory.map((artifact) => (
+                  <article key={artifact.id} className={`min-w-0 border ${tokens.colors.border.base} ${tokens.radius.md} p-3`}>
+                    <div className="flex flex-wrap items-center gap-2">
+                      <span className={`rounded-sm border border-[var(--color-border)] px-2 py-1 text-xs ${tokens.colors.text.secondary}`}>{artifact.category}</span>
+                      <span className={`rounded-sm px-2 py-1 text-xs ${artifact.status === "ok" || artifact.status === "dry-run" ? "bg-[var(--color-success)] text-white" : "bg-[var(--color-warning)] text-[var(--color-text-primary)]"}`}>
+                        {getArtifactStatusLabel(artifact.status)}
+                      </span>
+                    </div>
+                    <h3 className={`mt-2 text-sm font-semibold ${tokens.colors.text.primary}`}>{artifact.label}</h3>
+                    <code className="mt-2 block break-all text-xs text-[var(--color-text-primary)]">{artifact.path}</code>
+                    <div className={`mt-2 flex flex-wrap gap-2 text-xs ${tokens.colors.text.secondary}`}>
+                      {artifact.metrics.map((metric) => (
+                        <span key={metric} className="rounded-sm bg-[var(--color-background-muted)] px-2 py-1">{metric}</span>
+                      ))}
+                    </div>
+                    {artifact.command && (
+                      <code className="mt-2 block break-all text-xs text-[var(--color-text-primary)]">{artifact.command}</code>
+                    )}
+                  </article>
+                ))
+              )}
+            </div>
           </section>
 
           <section className={`min-w-0 overflow-hidden border ${tokens.colors.border.base} ${tokens.radius.lg} ${tokens.colors.background.surface}`}>

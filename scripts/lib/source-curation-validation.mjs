@@ -483,6 +483,9 @@ export function validateSourceCurationRegistries({
           if (profile?.trustWeight !== row.trustWeight) {
             errors.push(`candidate-review-queue: ${candidateLabel} trustWeight ${row.trustWeight} does not match profile ${row.profileId}`);
           }
+          if ((profile?.metadataStrategy ?? "none") !== row.metadataStrategy) {
+            errors.push(`candidate-review-queue: ${candidateLabel} metadataStrategy ${row.metadataStrategy} does not match profile ${row.profileId}`);
+          }
         }
         if (typeof row?.reviewConfidenceScore !== "number" || row.reviewConfidenceScore < 0 || row.reviewConfidenceScore > 100) {
           errors.push(`candidate-review-queue: ${candidateLabel} reviewConfidenceScore must be between 0 and 100`);
@@ -492,6 +495,9 @@ export function validateSourceCurationRegistries({
         }
         if (!Array.isArray(row?.scoreReasons) || row.scoreReasons.length === 0 || row.scoreReasons.some((reason) => !isNonEmptyString(reason))) {
           errors.push(`candidate-review-queue: ${candidateLabel} scoreReasons must list scoring evidence`);
+        }
+        if (row?.metadataStrategy && row.metadataStrategy !== "none" && !row.scoreReasons?.includes(`metadata-strategy:${row.metadataStrategy}`)) {
+          errors.push(`candidate-review-queue: ${candidateLabel} scoreReasons must include metadata strategy evidence`);
         }
         const requiredQueryFields = [];
         if (isNonEmptyString(row?.makam) && row.makam !== "-") requiredQueryFields.push("makam");

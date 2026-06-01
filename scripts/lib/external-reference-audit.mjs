@@ -340,6 +340,10 @@ function getCandidateReviewScoreDetails(row, profile) {
   const trustWeight = Number(profile.trustWeight ?? 0.5);
   let score = Math.round(trustWeight * 70);
   const reasons = [`profile-trust:${trustWeight.toFixed(2)}`];
+  if (profile.metadataStrategy && profile.metadataStrategy !== "none") {
+    score += profile.metadataStrategy === "oembed" ? 6 : 4;
+    reasons.push(`metadata-strategy:${profile.metadataStrategy}`);
+  }
   if (row.hasPdf) {
     score += 8;
     reasons.push("catalog-format:pdf");
@@ -503,6 +507,7 @@ export function buildCandidateReviewRows(backlogRows, researchProfiles) {
         profileLabel: profile.label,
         provider: profile.provider ?? "score",
         trustWeight: profile.trustWeight ?? 0,
+        metadataStrategy: profile.metadataStrategy ?? "none",
         reviewConfidenceScore: scoreDetails.score,
         reviewConfidenceLevel: getCandidateReviewLevel(scoreDetails.score),
         scoreReasons: scoreDetails.reasons,
@@ -620,6 +625,7 @@ export function renderCandidateReviewCsv(rows) {
     "profileLabel",
     "provider",
     "trustWeight",
+    "metadataStrategy",
     "reviewConfidenceScore",
     "reviewConfidenceLevel",
     "scoreReasons",
@@ -715,7 +721,7 @@ export function runExternalReferenceCoverageAudit({
     candidateReviewConfidenceLevelCounts: summarizeCounts(candidateReviewRows, "reviewConfidenceLevel"),
     generatedReviewCandidates: candidateReviewRows.length,
     candidateReviewQueryFields: ["makam", "form", "usul", "title", "composer"],
-    candidateReviewScoringSignals: ["profile-trust", "catalog-formats", "catalog-fields", "curation-decision"],
+    candidateReviewScoringSignals: ["profile-trust", "profile-metadata-strategy", "catalog-formats", "catalog-fields", "curation-decision"],
     duplicateAcceptedIdentityPolicy: "duplicate accepted URL identities fail validation before merge",
     autoAttachPolicy: "only accepted bulk candidates are counted as curated and eligible for auto-attach",
     acceptedCatalogIds: acceptedBulkCandidates.map((candidate) => candidate.catalogId),
@@ -728,6 +734,7 @@ export function runExternalReferenceCoverageAudit({
       "candidate-review-only",
       "profile-count-drift",
       "summary-count-drift",
+      "metadata-strategy-profile-drift",
     ],
   };
 

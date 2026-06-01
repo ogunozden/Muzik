@@ -36,6 +36,22 @@ function canonicalEntryText(entry) {
   return normalizeText(`${entry.makam} ${entry.form} ${entry.usul} ${entry.title} ${entry.composer} ${entry.lyricist ?? ""} ${entry.id}`);
 }
 
+function metadataText(source) {
+  const metadata = source.metadata ?? {};
+  return [
+    metadata.htmlTitle,
+    metadata.htmlDescription,
+    metadata.htmlAuthor,
+    metadata.oembedTitle,
+    metadata.oembedAuthor,
+    metadata.oembedProvider,
+  ].join(" ");
+}
+
+function metadataSignals(source) {
+  return Array.isArray(source.metadata?.signals) ? source.metadata.signals.filter(Boolean) : [];
+}
+
 function compareCatalogField(sourceValue, catalogValue) {
   const normalizedSource = normalizeText(sourceValue);
   const normalizedCatalog = normalizeText(catalogValue);
@@ -60,6 +76,7 @@ export function scoreCatalogEntry(source, entry) {
       observed.lyricist,
       observed.lyrics,
       source.sourceProvider,
+      metadataText(source),
     ].join(" "),
   );
   const entryText = canonicalEntryText(entry);
@@ -91,15 +108,30 @@ export function scoreCatalogEntry(source, entry) {
   const composerCoverage = Math.max(tokenCoverage(entry.composer, sourceText), tokenCoverage(observed.composer, entryText));
   const lyricistCoverage = Math.max(tokenCoverage(entry.lyricist, sourceText), tokenCoverage(observed.lyricist, entryText));
   const lyricsCoverage = tokenCoverage(entry.title, observed.lyrics);
+  const metadataTitleCoverage = Math.max(
+    tokenCoverage(entry.title, source.metadata?.htmlTitle),
+    tokenCoverage(entry.title, source.metadata?.oembedTitle),
+  );
+  const metadataAuthorCoverage = Math.max(
+    tokenCoverage(entry.composer, source.metadata?.htmlAuthor),
+    tokenCoverage(entry.composer, source.metadata?.oembedAuthor),
+  );
   score += Math.round(titleCoverage * 60);
   score += Math.round(composerCoverage * 45);
   score += Math.round(lyricistCoverage * 25);
   score += Math.round(lyricsCoverage * 15);
+  score += Math.round(metadataTitleCoverage * 20);
+  score += Math.round(metadataAuthorCoverage * 12);
 
   if (titleCoverage >= 0.7) reasons.push("title:token-match");
   if (composerCoverage >= 0.6) reasons.push("composer:token-match");
   if (lyricistCoverage >= 0.6) reasons.push("lyricist:token-match");
   if (lyricsCoverage >= 0.5) reasons.push("lyrics:title-token-match");
+  if (metadataTitleCoverage >= 0.7) reasons.push("metadata-title:token-match");
+  if (metadataAuthorCoverage >= 0.6) reasons.push("metadata-author:token-match");
+  for (const signal of metadataSignals(source)) {
+    reasons.push(`metadata-signal:${signal}`);
+  }
 
   return {
     entry,
@@ -161,6 +193,7 @@ export function buildSource(source, provider, status) {
     title: source.title ?? source.observed?.title,
     author: source.author,
     thumbnailUrl: source.thumbnailUrl,
+    metadata: source.metadata,
     access: source.access ?? "external-link",
     verification,
     verifiedAt: source.checkedAt,
@@ -243,6 +276,7 @@ export function mapInboxSource(source, catalogEntries) {
       lyricist: source.observed?.lyricist ?? "",
       lyrics: source.observed?.lyrics ?? "",
       sourceProvider: inferSourceProvider(source),
+      metadataSignals: metadataSignals(source),
     },
     alternatives: ranked.slice(0, 5).map((candidate) => ({
       catalogId: candidate.entry.id,
@@ -263,6 +297,7 @@ export function mapInboxSource(source, catalogEntries) {
         lyricist: source.observed?.lyricist ?? "",
         lyrics: source.observed?.lyrics ?? "",
         sourceProvider: inferSourceProvider(source),
+        metadataSignals: metadataSignals(source),
       },
       source: referenceSource,
     },

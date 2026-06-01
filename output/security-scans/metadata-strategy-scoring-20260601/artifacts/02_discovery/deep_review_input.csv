@@ -1,0 +1,10 @@
+path,area
+output/external-reference-coverage/summary.json,diff
+output/external-reference-coverage/symbtr-curated-reference-candidate-review-queue.json,diff
+scripts/lib/__tests__/external-source-matcher.test.mjs,diff
+scripts/lib/__tests__/source-curation-validation.test.mjs,diff
+scripts/lib/external-metadata-fetch.mjs,diff
+scripts/lib/external-reference-audit.mjs,diff
+scripts/lib/external-source-matcher.mjs,diff
+scripts/lib/source-curation-validation.mjs,diff
+scripts/map-external-source-inbox.mjs,diff

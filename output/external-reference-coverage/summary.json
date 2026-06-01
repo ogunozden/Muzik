@@ -103,12 +103,12 @@
     ],
     "candidateReviewConfidenceLevelCounts": [
       {
-        "value": "low",
-        "count": 6496
+        "value": "medium",
+        "count": 10842
       },
       {
-        "value": "medium",
-        "count": 5416
+        "value": "low",
+        "count": 1070
       }
     ],
     "generatedReviewCandidates": 11912,
@@ -121,6 +121,7 @@
     ],
     "candidateReviewScoringSignals": [
       "profile-trust",
+      "profile-metadata-strategy",
       "catalog-formats",
       "catalog-fields",
       "curation-decision"
@@ -152,7 +153,8 @@
       "status-contract",
       "candidate-review-only",
       "profile-count-drift",
-      "summary-count-drift"
+      "summary-count-drift",
+      "metadata-strategy-profile-drift"
     ]
   },
   "catalogFormatCoverage": {

@@ -115,4 +115,29 @@ describe("external source matcher", () => {
       "lyrics:title-token-match",
     ]));
   });
+
+  it("uses HTML and oEmbed metadata as structured scoring evidence", () => {
+    const score = scoreCatalogEntry(
+      {
+        url: "https://www.youtube.com/watch?v=test",
+        sourceProvider: "youtube.com",
+        metadata: {
+          htmlTitle: "Allah Emrin Tutalım - Uşşak İlahi",
+          oembedTitle: "Allah Emrin Tutalım Zekai Dede",
+          oembedAuthor: "Zekai Dede",
+          oembedProvider: "YouTube",
+          signals: ["html:og-title", "youtube:oembed-title", "youtube:oembed-author"],
+        },
+      },
+      catalogEntries[0],
+    );
+
+    expect(score.score).toBeGreaterThanOrEqual(120);
+    expect(score.reasons).toEqual(expect.arrayContaining([
+      "metadata-title:token-match",
+      "metadata-author:token-match",
+      "metadata-signal:html:og-title",
+      "metadata-signal:youtube:oembed-title",
+    ]));
+  });
 });

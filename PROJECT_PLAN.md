@@ -96,6 +96,14 @@ tek kurala bağlamaktır.
       `queryFields` + `scoreReasons` ile hangi metadata alanlarından üretildiğini
       makine-okunur raporlar. PDF/HTML metadata ve YouTube oEmbed sinyallerinin
       daha fazla otomatik toplu verify/terfi akışı hâlâ açık kalır.
+      2026-06-01 metadata scoring dalgası: HTML sayfa başlığı/açıklaması/yazarı
+      ve YouTube oEmbed başlık/yazar/provider sinyalleri artık `metadata`
+      provenance alanında taşınır; matcher bunları `metadata-title`,
+      `metadata-author` ve `metadata-signal:*` gerekçeleriyle skorlar. Review
+      queue satırları profil `metadataStrategy` bilgisini taşır ve batch report
+      `profile-metadata-strategy` scoring sinyalini doğrulanabilir kapı olarak
+      raporlar. PDF içi metadata parse ve doğrulanmış otomatik terfi hâlâ
+      review/validation işi olarak açık kalır.
 - [x] Otomatik iliştirilen kaynaklar için kalıcı feedback/event log ekle.
       Kullanıcının `user-removed`, `delete-requested`, `deleted`,
       `user-prioritized`, `user-demoted`, `user-corrected`, `manual-entry`
@@ -211,6 +219,10 @@ tek kurala bağlamaktır.
       `scoreReasons` ve veri-duyarlı `queryFields` taşımak zorunda; validator
       makam/form/usul/title/composer alanlarından mevcut olanların query içinde
       temsil edildiğini ve scoring evidence listesinin boş olmadığını doğrular.
+      2026-06-01 ek metadata kapısı: candidate review queue `metadataStrategy`
+      değerini research profile ile birebir hizalı taşımak zorunda; stratejisi
+      `none` olmayan profillerde scoring evidence içinde
+      `metadata-strategy:*` gerekçesi bulunmazsa validation kırılır.
 - [ ] PDF vector ölçü adayları gerçek ölçü kutusuna terfi etmeden önce insan
       veya görsel regresyon doğrulaması bekliyor. Pipeline, review artifact'i,
       verification manifest'i ve Eser Takip UI yolu hazır; gerçek manifest şu

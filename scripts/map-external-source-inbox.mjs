@@ -83,6 +83,18 @@ async function enrichSource(source, {verifyYoutubeOembed, fetchPageMetadataEnabl
       ...enrichedSource,
       title: source.title ?? metadata.title,
       notes: metadata.notes ?? source.notes,
+      metadata: {
+        ...(enrichedSource.metadata ?? {}),
+        htmlTitle: metadata.title,
+        htmlDescription: metadata.description,
+        htmlAuthor: metadata.author,
+        signals: [
+          ...new Set([
+            ...(enrichedSource.metadata?.signals ?? []),
+            ...(metadata.metadataSignals ?? []),
+          ]),
+        ],
+      },
     };
   }
 
@@ -110,6 +122,21 @@ async function enrichSource(source, {verifyYoutubeOembed, fetchPageMetadataEnabl
     title: enrichedSource.title ?? metadata.title,
     author: enrichedSource.author ?? metadata.author_name,
     thumbnailUrl: enrichedSource.thumbnailUrl ?? metadata.thumbnail_url,
+    metadata: {
+      ...(enrichedSource.metadata ?? {}),
+      oembedTitle: metadata.title,
+      oembedAuthor: metadata.author_name,
+      oembedProvider: metadata.provider_name,
+      oembedThumbnailUrl: metadata.thumbnail_url,
+      signals: [
+        ...new Set([
+          ...(enrichedSource.metadata?.signals ?? []),
+          "youtube:oembed-title",
+          metadata.author_name ? "youtube:oembed-author" : "",
+          metadata.provider_name ? "youtube:oembed-provider" : "",
+        ].filter(Boolean)),
+      ],
+    },
     oembedVerified: true,
     verification: "oembed",
   };

@@ -74,9 +74,22 @@ export function extractHtmlMetadata(html) {
     html.match(/<meta\s+[^>]*(?:property|name)=["']og:title["'][^>]*content=["']([^"']+)["'][^>]*>/i)?.[1] ??
     html.match(/<meta\s+[^>]*content=["']([^"']+)["'][^>]*(?:property|name)=["']og:title["'][^>]*>/i)?.[1];
   const pageTitle = html.match(/<title[^>]*>([\s\S]*?)<\/title>/i)?.[1];
+  const description =
+    html.match(/<meta\s+[^>]*(?:property|name)=["'](?:og:description|description)["'][^>]*content=["']([^"']+)["'][^>]*>/i)?.[1] ??
+    html.match(/<meta\s+[^>]*content=["']([^"']+)["'][^>]*(?:property|name)=["'](?:og:description|description)["'][^>]*>/i)?.[1];
+  const author =
+    html.match(/<meta\s+[^>]*name=["']author["'][^>]*content=["']([^"']+)["'][^>]*>/i)?.[1] ??
+    html.match(/<meta\s+[^>]*content=["']([^"']+)["'][^>]*name=["']author["'][^>]*>/i)?.[1];
 
   return {
     title: (metaTitle ?? pageTitle ?? "").replace(/\s+/g, " ").trim(),
+    description: (description ?? "").replace(/\s+/g, " ").trim(),
+    author: (author ?? "").replace(/\s+/g, " ").trim(),
+    metadataSignals: [
+      metaTitle ? "html:og-title" : pageTitle ? "html:title" : "",
+      description ? "html:description" : "",
+      author ? "html:author" : "",
+    ].filter(Boolean),
   };
 }
 

@@ -121,6 +121,12 @@ tek kurala bağlamaktır.
       filtresi ve besteci facet'i döndürür; dashboard dedicated Besteci ve
       Silme filtreleriyle besteciye göre queue daraltmayı ve `delete-requested`
       / `deleted` durumlarını tek tek manuel dolaşmadan ayırmayı destekler.
+      2026-06-01 detay filtre dalgası: `/references/curation/[catalogId]`
+      artık auto-attached kaynakları katalog bestecisi, source/manual güfteci,
+      status ve silme kapsamına göre facet'ler; silme isteği, silindi işareti
+      ve geri alma mevcut merkezi `source-feedback-events.json` event akışına
+      token'lı şekilde yazılır. Kaynak tipi/site/güven skoru ve manuel notlu
+      kayıt facet'lerini aynı detay yüzeyinde tamamlama işi açık kalır.
 - [x] Inline medya deneyimini ekle. YouTube videoları, PDF'ler ve iframe'e izin
       veren kaynak sayfaları parça ekranında yeni sekme açmadan görüntülenmeli;
       embed sandbox, lazy load, erişilebilir `title`, klavye odağı, bozuk embed

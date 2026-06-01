@@ -7,7 +7,22 @@ import {Button, Input} from "@/shared/ui";
 import {tokens} from "@/shared/tokens";
 
 type CurationAction = "curation-feedback" | "curation-manual-correction";
+type FeedbackEventType =
+  | "user-approved"
+  | "user-prioritized"
+  | "user-removed"
+  | "delete-requested"
+  | "deleted"
+  | "restored";
 type DetailView = "scores" | "videos" | "archive" | "metadata" | "log" | "manual";
+
+interface CatalogMetadata {
+  makam?: string;
+  form?: string;
+  usul?: string;
+  title?: string;
+  composer?: string;
+}
 
 interface ExternalReferenceSource {
   id?: string;
@@ -26,6 +41,7 @@ interface ExternalReferenceSource {
 interface CurationReference {
   catalogId?: string;
   sourceId?: string;
+  catalog?: CatalogMetadata | null;
   source?: ExternalReferenceSource | null;
   status?: string;
   rank?: number;
@@ -100,6 +116,7 @@ const detailViews: Array<{id: DetailView; label: string}> = [
   {id: "log", label: "Log"},
   {id: "manual", label: "Manuel Düzeltme"},
 ];
+const deleteStatuses = new Set(["delete-requested", "deleted", "user-removed"]);
 
 function emptyCorrectionForm(): CorrectionFormState {
   return {
@@ -158,6 +175,32 @@ function getSourceTitle(reference: CurationReference): string {
   return reference.source?.title ?? reference.source?.label ?? reference.sourceId ?? "Kaynak";
 }
 
+function normalizeFacet(value: string | null | undefined): string {
+  return value?.trim() || "";
+}
+
+function uniqueSorted(values: string[]): string[] {
+  return Array.from(new Set(values.map(normalizeFacet).filter(Boolean)))
+    .sort((a, b) => a.localeCompare(b, "tr-TR"));
+}
+
+function getReferenceComposer(reference: CurationReference): string {
+  return normalizeFacet(reference.manualCorrection?.correctComposer ?? reference.catalog?.composer);
+}
+
+function getReferenceLyricist(reference: CurationReference): string {
+  return normalizeFacet(reference.manualCorrection?.correctLyricist ?? reference.source?.author);
+}
+
+function matchesDeleteScope(reference: CurationReference, scope: string): boolean {
+  if (!scope) return true;
+  if (scope === "pending-delete") return reference.status === "delete-requested";
+  if (scope === "deleted") return reference.status === "deleted";
+  if (scope === "removed") return reference.status === "user-removed";
+  if (scope === "active") return !deleteStatuses.has(reference.status ?? "");
+  return true;
+}
+
 function getYoutubeEmbedUrl(value: string | undefined): string | null {
   if (!value) return null;
 
@@ -201,19 +244,40 @@ export function ReferencesCurationDetail({catalogId}: {catalogId: string}) {
   const [message, setMessage] = useState("");
   const [activeView, setActiveView] = useState<DetailView>("scores");
   const [selectedSourceId, setSelectedSourceId] = useState("");
+  const [composerFilter, setComposerFilter] = useState("");
+  const [lyricistFilter, setLyricistFilter] = useState("");
+  const [statusFilter, setStatusFilter] = useState("");
+  const [deleteScopeFilter, setDeleteScopeFilter] = useState("");
   const [previewVisible, setPreviewVisible] = useState(true);
   const [form, setForm] = useState<CorrectionFormState>(() => emptyCorrectionForm());
 
   const references = useMemo(() => (
     state.curation?.autoAttachedReferences?.filter((reference) => reference.catalogId === catalogId) ?? []
   ), [catalogId, state]);
-  const currentReference = references.find((reference) => reference.sourceId === selectedSourceId) ?? references[0] ?? null;
+  const composerFacets = useMemo(() => uniqueSorted(references.map(getReferenceComposer)), [references]);
+  const lyricistFacets = useMemo(() => uniqueSorted(references.map(getReferenceLyricist)), [references]);
+  const statusFacets = useMemo(() => uniqueSorted(references.map((reference) => reference.status ?? "")), [references]);
+  const filteredReferences = useMemo(() => (
+    references.filter((reference) => {
+      if (composerFilter && getReferenceComposer(reference) !== composerFilter) return false;
+      if (lyricistFilter && getReferenceLyricist(reference) !== lyricistFilter) return false;
+      if (statusFilter && reference.status !== statusFilter) return false;
+      return matchesDeleteScope(reference, deleteScopeFilter);
+    })
+  ), [composerFilter, deleteScopeFilter, lyricistFilter, references, statusFilter]);
+  const deleteQueueCount = references.filter((reference) => reference.status === "delete-requested").length;
+  const deletedCount = references.filter((reference) => reference.status === "deleted").length;
+  const currentReference =
+    filteredReferences.find((reference) => reference.sourceId === selectedSourceId) ??
+    filteredReferences[0] ??
+    references[0] ??
+    null;
   const previewUrl = getInlinePreviewUrl(currentReference);
   const visibleReferences = useMemo(() => (
     activeView === "log" || activeView === "manual"
-      ? references
-      : references.filter((reference) => sourceMatchesView(reference, activeView))
-  ), [activeView, references]);
+      ? filteredReferences
+      : filteredReferences.filter((reference) => sourceMatchesView(reference, activeView))
+  ), [activeView, filteredReferences]);
   const eventLog = useMemo(() => (
     state.curation?.feedbackEvents?.filter((event) => event.catalogId === catalogId) ?? []
   ), [catalogId, state]);
@@ -283,7 +347,7 @@ export function ReferencesCurationDetail({catalogId}: {catalogId: string}) {
     });
   }, [catalogId, currentReference, form, runOperation]);
 
-  const recordFeedback = useCallback((eventType: "user-approved" | "user-prioritized" | "user-removed") => {
+  const recordFeedback = useCallback((eventType: FeedbackEventType) => {
     if (!currentReference?.sourceId) return;
 
     void runOperation("curation-feedback", {
@@ -349,6 +413,59 @@ export function ReferencesCurationDetail({catalogId}: {catalogId: string}) {
             ))}
           </nav>
 
+          <section className={`grid gap-3 border ${tokens.colors.border.base} ${tokens.radius.lg} ${tokens.colors.background.surface} p-4 md:grid-cols-4`}>
+            <label className={`flex flex-col gap-1 text-sm ${tokens.colors.text.secondary}`}>
+              Besteci
+              <select
+                value={composerFilter}
+                onChange={(event) => setComposerFilter(event.target.value)}
+                className={`rounded-md border ${tokens.colors.border.base} bg-white px-3 py-2 text-sm ${tokens.colors.text.primary}`}
+              >
+                <option value="">Tümü</option>
+                {composerFacets.map((composer) => <option key={composer} value={composer}>{composer}</option>)}
+              </select>
+            </label>
+            <label className={`flex flex-col gap-1 text-sm ${tokens.colors.text.secondary}`}>
+              Güfteci
+              <select
+                value={lyricistFilter}
+                onChange={(event) => setLyricistFilter(event.target.value)}
+                className={`rounded-md border ${tokens.colors.border.base} bg-white px-3 py-2 text-sm ${tokens.colors.text.primary}`}
+              >
+                <option value="">Tümü</option>
+                {lyricistFacets.map((lyricist) => <option key={lyricist} value={lyricist}>{lyricist}</option>)}
+              </select>
+            </label>
+            <label className={`flex flex-col gap-1 text-sm ${tokens.colors.text.secondary}`}>
+              Durum
+              <select
+                value={statusFilter}
+                onChange={(event) => setStatusFilter(event.target.value)}
+                className={`rounded-md border ${tokens.colors.border.base} bg-white px-3 py-2 text-sm ${tokens.colors.text.primary}`}
+              >
+                <option value="">Tümü</option>
+                {statusFacets.map((status) => <option key={status} value={status}>{status}</option>)}
+              </select>
+            </label>
+            <label className={`flex flex-col gap-1 text-sm ${tokens.colors.text.secondary}`}>
+              Silme
+              <select
+                value={deleteScopeFilter}
+                onChange={(event) => setDeleteScopeFilter(event.target.value)}
+                className={`rounded-md border ${tokens.colors.border.base} bg-white px-3 py-2 text-sm ${tokens.colors.text.primary}`}
+              >
+                <option value="">Tümü</option>
+                <option value="active">Aktif</option>
+                <option value="pending-delete">Silme bekleyen</option>
+                <option value="deleted">Silindi</option>
+                <option value="removed">Kaldırıldı</option>
+              </select>
+            </label>
+            <div className={`md:col-span-4 text-xs ${tokens.colors.text.secondary}`}>
+              {visibleReferences.length} / {references.length} kaynak görünür · silme bekleyen {deleteQueueCount} · silindi {deletedCount}
+            </div>
+          </section>
+
           {activeView !== "log" && activeView !== "manual" && (
             <section className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_minmax(20rem,28rem)]">
               <div className={`min-w-0 overflow-hidden border ${tokens.colors.border.base} ${tokens.radius.lg} ${tokens.colors.background.surface}`}>
@@ -405,7 +522,7 @@ export function ReferencesCurationDetail({catalogId}: {catalogId: string}) {
                     onChange={(event) => setSelectedSourceId(event.target.value)}
                     className={`rounded-md border ${tokens.colors.border.base} bg-white px-3 py-2 text-sm ${tokens.colors.text.primary}`}
                   >
-                    {references.map((reference) => (
+                    {filteredReferences.map((reference) => (
                       <option key={reference.sourceId} value={reference.sourceId}>{getSourceTitle(reference)}</option>
                     ))}
                   </select>
@@ -419,6 +536,15 @@ export function ReferencesCurationDetail({catalogId}: {catalogId: string}) {
                   </Button>
                   <Button size="sm" variant="danger" disabled={isBusy || !currentReference} onPress={() => recordFeedback("user-removed")}>
                     Kaldır
+                  </Button>
+                  <Button size="sm" variant="danger" disabled={isBusy || !currentReference} onPress={() => recordFeedback("delete-requested")}>
+                    Silme İste
+                  </Button>
+                  <Button size="sm" variant="danger" disabled={isBusy || !currentReference} onPress={() => recordFeedback("deleted")}>
+                    Silindi İşaretle
+                  </Button>
+                  <Button size="sm" variant="outline" disabled={isBusy || !currentReference} onPress={() => recordFeedback("restored")}>
+                    Geri Al
                   </Button>
                 </div>
                 <dl className={`mt-5 grid grid-cols-[8rem_minmax(0,1fr)] gap-2 text-sm ${tokens.colors.text.secondary}`}>
@@ -511,7 +637,7 @@ export function ReferencesCurationDetail({catalogId}: {catalogId: string}) {
                     onChange={(event) => setSelectedSourceId(event.target.value)}
                     className={`rounded-md border ${tokens.colors.border.base} bg-white px-3 py-2 text-sm ${tokens.colors.text.primary}`}
                   >
-                    {references.map((reference) => (
+                    {filteredReferences.map((reference) => (
                       <option key={reference.sourceId} value={reference.sourceId}>{getSourceTitle(reference)}</option>
                     ))}
                   </select>

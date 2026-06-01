@@ -14,6 +14,13 @@ const stateFixture = {
       {
         catalogId,
         sourceId: "divanmakam-example",
+        catalog: {
+          makam: "Uşşak",
+          form: "İlahi",
+          usul: "Düyek",
+          title: "Example",
+          composer: "Zekai Dede",
+        },
         status: "auto-attached",
         confidenceScore: 0.82,
         confidenceLevel: "high",
@@ -24,6 +31,7 @@ const stateFixture = {
           provider: "score",
           url: "https://divanmakam.com/forum/example.1/",
           title: "Example Source",
+          author: "Yunus Emre",
           access: "external-link",
           verification: "manual",
         },
@@ -43,6 +51,13 @@ const youtubeStateFixture = {
       {
         catalogId,
         sourceId: "youtube-example",
+        catalog: {
+          makam: "Uşşak",
+          form: "İlahi",
+          usul: "Düyek",
+          title: "Example",
+          composer: "Zekai Dede",
+        },
         status: "auto-attached",
         confidenceScore: 0.9,
         confidenceLevel: "high",
@@ -116,6 +131,15 @@ describe("ReferencesCurationDetailPage", () => {
 
     await screen.findByRole("heading", {name: "Example Source"});
     expect(screen.getAllByRole("link", {name: "https://divanmakam.com/forum/example.1/"}).length).toBeGreaterThan(0);
+    expect(screen.getByLabelText("Besteci")).toBeDefined();
+    expect(screen.getByLabelText("Güfteci")).toBeDefined();
+    fireEvent.change(screen.getByLabelText("Besteci"), {
+      target: {value: "Zekai Dede"},
+    });
+    fireEvent.change(screen.getByLabelText("Güfteci"), {
+      target: {value: "Yunus Emre"},
+    });
+    expect(screen.getByText(/1 \/ 1 kaynak görünür/)).toBeDefined();
 
     fireEvent.click(screen.getByRole("button", {name: "Manuel Düzeltme"}));
     fireEvent.change(screen.getByLabelText("Doğru başlık"), {
@@ -147,6 +171,48 @@ describe("ReferencesCurationDetailPage", () => {
           correctTitle: "Corrected title",
           correctMakam: "Uşşak",
           alternativeUrl: "https://example.com/corrected",
+        }),
+      }),
+    );
+  });
+
+  it("records delete lifecycle feedback through the token-protected operation API", async () => {
+    const fetchMock = mockFetch();
+    vi.stubGlobal("fetch", fetchMock);
+    const page = await ReferencesCurationDetailPage({
+      params: Promise.resolve({catalogId}),
+    });
+
+    render(page);
+
+    fireEvent.change(screen.getByLabelText("Ops token"), {
+      target: {value: "secret-token"},
+    });
+    fireEvent.click(screen.getByRole("button", {name: "Yenile"}));
+    await screen.findByRole("heading", {name: "Example Source"});
+
+    fireEvent.click(screen.getByRole("button", {name: "Silme İste"}));
+
+    await waitFor(() => expect(fetchMock).toHaveBeenCalledWith(
+      "/api/external-references",
+      expect.objectContaining({method: "POST"}),
+    ));
+
+    const deleteCall = fetchMock.mock.calls.find(([, init]) => (
+      init?.method === "POST" &&
+      String(init.body).includes("delete-requested")
+    ));
+    expect(deleteCall?.[1]?.headers).toEqual(expect.objectContaining({
+      "x-external-reference-ops-token": "secret-token",
+    }));
+    expect(JSON.parse(String(deleteCall?.[1]?.body))).toEqual(
+      expect.objectContaining({
+        action: "curation-feedback",
+        feedback: expect.objectContaining({
+          catalogId,
+          sourceId: "divanmakam-example",
+          eventType: "delete-requested",
+          reason: "curation-detail-delete-requested",
         }),
       }),
     );

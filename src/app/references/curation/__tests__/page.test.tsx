@@ -17,6 +17,8 @@ const stateFixture = {
     candidateReviewQueueJson: "output/external-reference-coverage/symbtr-curated-reference-candidate-review-queue.json",
     candidateReviewGroupDecisionRecommendationEntries: 1,
     candidateReviewGroupDecisionRecommendationsJson: "output/external-reference-coverage/symbtr-curated-reference-candidate-review-group-decision-recommendations.json",
+    coverageMatrixEntries: 24,
+    coverageMatrixJson: "output/external-reference-coverage/symbtr-curated-reference-coverage-matrix.json",
     batchReport: {
       processedCatalogEntries: 3000,
       curatedBeforeBulkCandidates: 15,
@@ -344,6 +346,8 @@ describe("ReferencesCurationPage", () => {
     expect(screen.getByLabelText("Silme")).toBeDefined();
     expect(screen.getByText("src/data/references/external-reference-bulk-candidates.json")).toBeDefined();
     expect(screen.getAllByText("output/external-reference-coverage/symbtr-curated-reference-candidate-review-queue.json").length).toBeGreaterThan(0);
+    expect(screen.getByText(/symbtr-curated-reference-coverage-matrix\.json/)).toBeDefined();
+    expect(screen.getByText(/24 kırılım/)).toBeDefined();
     expect(screen.getByText("output/external-reference-coverage/symbtr-curated-reference-candidate-review-groups.json")).toBeDefined();
     expect(screen.getByText(/candidate-review-group-decisions\.json/)).toBeDefined();
     expect(screen.getByText(/candidate-review-group-decision-recommendations\.json/)).toBeDefined();

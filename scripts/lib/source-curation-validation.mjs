@@ -32,6 +32,7 @@ const CANDIDATE_REVIEW_STATUSES = new Set(["needs-review", "conflict"]);
 const CANDIDATE_REVIEW_GROUP_STATUSES = new Set(["needs-review", "conflict", "rejected", "deferred"]);
 const CANDIDATE_REVIEW_GROUP_DECISION_STATUSES = new Set(["rejected", "conflict", "deferred"]);
 const CANDIDATE_REVIEW_GROUP_DECISION_RECOMMENDATION_TYPE = "candidate-review-group-decision-recommendations";
+const COVERAGE_MATRIX_TYPE = "external-reference-coverage-matrix";
 const PROVIDERS = new Set(["score", "symbtr", "youtube", "archive", "github"]);
 const EMBED_CAPABILITIES = new Set(["none", "iframe", "pdf", "youtube"]);
 const EMBED_TYPES = new Set(["none", "iframe", "pdf", "youtube"]);
@@ -59,6 +60,7 @@ const REQUIRED_BATCH_VALIDATION_GATES = [
   "candidate-review-group-drift",
   "candidate-review-group-decision-drift",
   "candidate-review-group-decision-recommendation-drift",
+  "coverage-matrix-drift",
 ];
 
 function hasCatalogId(catalogIds, catalogId) {
@@ -260,6 +262,127 @@ function validateBatchReport(summary, actualCandidateReviewCount, actualCandidat
   }
 }
 
+function validateCoverageMatrixTotals({
+  coverageMatrix,
+  coverageSummary,
+  actualCandidateReviewCount,
+  actualCandidateReviewGroupCount,
+  enabledProfileCount,
+  errors,
+}) {
+  if (coverageMatrix === undefined) return;
+  if (!coverageMatrix || typeof coverageMatrix !== "object") {
+    errors.push("coverage-matrix: artifact must be an object");
+    return;
+  }
+
+  if (coverageMatrix.version !== 1) {
+    errors.push("coverage-matrix: version must be 1");
+  }
+  if (coverageMatrix.type !== COVERAGE_MATRIX_TYPE) {
+    errors.push(`coverage-matrix: type must be ${COVERAGE_MATRIX_TYPE}`);
+  }
+
+  const summary = coverageMatrix.summary ?? {};
+  const expectedTotals = {
+    totalCatalogEntries: coverageSummary?.totalCatalogEntries,
+    curatedReferenceEntries: coverageSummary?.curatedReferenceEntries,
+    missingCuratedEntries: coverageSummary?.missingCuratedEntries,
+    candidateReviewQueueEntries: actualCandidateReviewCount,
+    candidateReviewGroupEntries: actualCandidateReviewGroupCount,
+    researchSourceProfileEntries: enabledProfileCount,
+  };
+  for (const [field, expected] of Object.entries(expectedTotals)) {
+    if (!Number.isInteger(summary[field]) || summary[field] < 0) {
+      errors.push(`coverage-matrix: summary.${field} must be a non-negative integer`);
+    } else if (summary[field] !== expected) {
+      errors.push(`coverage-matrix: summary.${field} ${summary[field]} does not match ${expected}`);
+    }
+  }
+
+  const catalogDimensions = coverageMatrix.catalogDimensions ?? {};
+  for (const dimension of ["makam", "form", "usul", "priorityGroup"]) {
+    const rows = catalogDimensions[dimension];
+    if (!Array.isArray(rows) || rows.length === 0) {
+      errors.push(`coverage-matrix: catalogDimensions.${dimension} must be a non-empty array`);
+      continue;
+    }
+
+    const totals = rows.reduce((accumulator, row) => {
+      for (const field of [
+        "totalCatalogEntries",
+        "curatedReferenceEntries",
+        "missingCuratedEntries",
+        "activeMissingEntries",
+        "deferredMissingEntries",
+      ]) {
+        if (!Number.isInteger(row?.[field]) || row[field] < 0) {
+          errors.push(`coverage-matrix: catalogDimensions.${dimension} rows must have non-negative ${field}`);
+        }
+        accumulator[field] += Number(row?.[field] ?? 0);
+      }
+      if (!isNonEmptyString(row?.value)) {
+        errors.push(`coverage-matrix: catalogDimensions.${dimension} rows must have value`);
+      }
+      if ((row?.curatedReferenceEntries ?? 0) + (row?.missingCuratedEntries ?? 0) !== row?.totalCatalogEntries) {
+        errors.push(`coverage-matrix: catalogDimensions.${dimension} ${row?.value ?? "<missing>"} curated plus missing must equal total`);
+      }
+      if ((row?.activeMissingEntries ?? 0) + (row?.deferredMissingEntries ?? 0) !== row?.missingCuratedEntries) {
+        errors.push(`coverage-matrix: catalogDimensions.${dimension} ${row?.value ?? "<missing>"} active plus deferred must equal missing`);
+      }
+      return accumulator;
+    }, {
+      totalCatalogEntries: 0,
+      curatedReferenceEntries: 0,
+      missingCuratedEntries: 0,
+      activeMissingEntries: 0,
+      deferredMissingEntries: 0,
+    });
+
+    if (totals.totalCatalogEntries !== coverageSummary?.totalCatalogEntries) {
+      errors.push(`coverage-matrix: catalogDimensions.${dimension} totalCatalogEntries drift`);
+    }
+    if (totals.curatedReferenceEntries !== coverageSummary?.curatedReferenceEntries) {
+      errors.push(`coverage-matrix: catalogDimensions.${dimension} curatedReferenceEntries drift`);
+    }
+    if (totals.missingCuratedEntries !== coverageSummary?.missingCuratedEntries) {
+      errors.push(`coverage-matrix: catalogDimensions.${dimension} missingCuratedEntries drift`);
+    }
+    if (totals.deferredMissingEntries !== coverageSummary?.deferredMissingEntries) {
+      errors.push(`coverage-matrix: catalogDimensions.${dimension} deferredMissingEntries drift`);
+    }
+  }
+
+  const candidateDimensions = coverageMatrix.candidateDimensions ?? {};
+  for (const dimension of ["profileId", "provider", "status", "confidenceLevel"]) {
+    const rows = candidateDimensions[dimension];
+    if (!Array.isArray(rows) || rows.length === 0) {
+      errors.push(`coverage-matrix: candidateDimensions.${dimension} must be a non-empty array`);
+      continue;
+    }
+
+    const totalCandidates = rows.reduce((total, row) => {
+      if (!isNonEmptyString(row?.value)) {
+        errors.push(`coverage-matrix: candidateDimensions.${dimension} rows must have value`);
+      }
+      if (!Number.isInteger(row?.candidateReviewQueueEntries) || row.candidateReviewQueueEntries < 0) {
+        errors.push(`coverage-matrix: candidateDimensions.${dimension} rows must have non-negative candidateReviewQueueEntries`);
+      }
+      if (!Number.isInteger(row?.affectedCatalogEntries) || row.affectedCatalogEntries < 0) {
+        errors.push(`coverage-matrix: candidateDimensions.${dimension} rows must have non-negative affectedCatalogEntries`);
+      }
+      if ((row?.needsReviewEntries ?? 0) + (row?.conflictEntries ?? 0) !== row?.candidateReviewQueueEntries) {
+        errors.push(`coverage-matrix: candidateDimensions.${dimension} ${row?.value ?? "<missing>"} needs-review plus conflict must equal candidates`);
+      }
+      return total + Number(row?.candidateReviewQueueEntries ?? 0);
+    }, 0);
+
+    if (totalCandidates !== actualCandidateReviewCount) {
+      errors.push(`coverage-matrix: candidateDimensions.${dimension} candidateReviewQueueEntries drift`);
+    }
+  }
+}
+
 export function validateSourceCurationRegistries({
   catalog,
   autoAttached,
@@ -273,6 +396,7 @@ export function validateSourceCurationRegistries({
   candidateReviewGroups,
   candidateReviewGroupDecisions,
   candidateReviewGroupDecisionRecommendations,
+  coverageMatrix,
   coverageSummary,
 }) {
   const errors = [];
@@ -716,6 +840,14 @@ export function validateSourceCurationRegistries({
           enabledResearchProfileIds.size,
           errors,
         );
+        validateCoverageMatrixTotals({
+          coverageMatrix,
+          coverageSummary,
+          actualCandidateReviewCount: candidateReviewQueue.length,
+          actualCandidateReviewGroupCount: Array.isArray(candidateReviewGroups) ? candidateReviewGroups.length : 0,
+          enabledProfileCount: enabledResearchProfileIds.size,
+          errors,
+        });
       }
 
       if (candidateReviewGroups !== undefined) {

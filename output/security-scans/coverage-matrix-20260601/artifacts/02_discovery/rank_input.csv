@@ -1,0 +1,11 @@
+path,change_type,security_relevance
+scripts/lib/external-reference-audit.mjs,modified,"Generates coverage matrix and normalizes catalog labels; review for unsafe promotion, filesystem writes, and data drift."
+scripts/lib/source-curation-validation.mjs,modified,"Validates coverage matrix; review for missing drift checks or unsafe accepted-source allowance."
+scripts/validate-source-curation.mjs,modified,"Reads new generated artifact; review path scope and fail-closed behavior."
+src/features/references/ReferencesCurationDashboard.tsx,modified,"Displays matrix artifact/count; review token flow and unsafe data exposure."
+src/app/api/external-references/__tests__/route.test.ts,modified,"API state regression coverage context."
+src/app/references/curation/__tests__/page.test.tsx,modified,"UI regression coverage context."
+scripts/lib/__tests__/external-reference-audit.test.mjs,modified,"Audit regression coverage context."
+scripts/lib/__tests__/source-curation-validation.test.mjs,modified,"Validation regression coverage context."
+output/external-reference-coverage/summary.json,generated,"Generated summary with coverage-matrix-drift gate; review count consistency."
+output/external-reference-coverage/symbtr-curated-reference-coverage-matrix.json,generated,"New generated matrix artifact; review for source attachment leakage and count drift."

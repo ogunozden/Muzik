@@ -157,6 +157,32 @@ function validRegistries() {
       },
       decisions: [],
     },
+    coverageMatrix: {
+      version: 1,
+      type: "external-reference-coverage-matrix",
+      policyVersion: "external-reference-coverage-matrix-v1",
+      generatedAt: "2026-06-01T00:00:00.000Z",
+      summary: {
+        totalCatalogEntries: 2,
+        curatedReferenceEntries: 1,
+        missingCuratedEntries: 1,
+        candidateReviewQueueEntries: 1,
+        candidateReviewGroupEntries: 1,
+        researchSourceProfileEntries: 1,
+      },
+      catalogDimensions: {
+        makam: [{value: "Hicazkar", totalCatalogEntries: 2, curatedReferenceEntries: 1, missingCuratedEntries: 1, activeMissingEntries: 1, deferredMissingEntries: 0}],
+        form: [{value: "Peşrev", totalCatalogEntries: 2, curatedReferenceEntries: 1, missingCuratedEntries: 1, activeMissingEntries: 1, deferredMissingEntries: 0}],
+        usul: [{value: "Düyek", totalCatalogEntries: 2, curatedReferenceEntries: 1, missingCuratedEntries: 1, activeMissingEntries: 1, deferredMissingEntries: 0}],
+        priorityGroup: [{value: "pdf-and-musicxml", totalCatalogEntries: 2, curatedReferenceEntries: 1, missingCuratedEntries: 1, activeMissingEntries: 1, deferredMissingEntries: 0}],
+      },
+      candidateDimensions: {
+        profileId: [{value: "youtube", candidateReviewQueueEntries: 1, affectedCatalogEntries: 1, needsReviewEntries: 1, conflictEntries: 0}],
+        provider: [{value: "youtube", candidateReviewQueueEntries: 1, affectedCatalogEntries: 1, needsReviewEntries: 1, conflictEntries: 0}],
+        status: [{value: "needs-review", candidateReviewQueueEntries: 1, affectedCatalogEntries: 1, needsReviewEntries: 1, conflictEntries: 0}],
+        confidenceLevel: [{value: "low", candidateReviewQueueEntries: 1, affectedCatalogEntries: 1, needsReviewEntries: 1, conflictEntries: 0}],
+      },
+    },
     coverageSummary: {
       totalCatalogEntries: 2,
       curatedReferenceEntries: 1,
@@ -209,6 +235,7 @@ function validRegistries() {
           "candidate-review-group-drift",
           "candidate-review-group-decision-drift",
           "candidate-review-group-decision-recommendation-drift",
+          "coverage-matrix-drift",
         ],
       },
     },
@@ -476,6 +503,23 @@ describe("source curation validation", () => {
     );
   });
 
+  it("rejects coverage matrix drift from summary and review queue counts", () => {
+    const registries = validRegistries();
+    registries.coverageMatrix.summary.missingCuratedEntries = 2;
+    registries.coverageMatrix.catalogDimensions.makam[0].missingCuratedEntries = 2;
+    registries.coverageMatrix.candidateDimensions.profileId[0].candidateReviewQueueEntries = 2;
+
+    const result = validateSourceCurationRegistries(registries);
+
+    expect(result.errors).toEqual(expect.arrayContaining([
+      "coverage-matrix: summary.missingCuratedEntries 2 does not match 1",
+      "coverage-matrix: catalogDimensions.makam Hicazkar curated plus missing must equal total",
+      "coverage-matrix: catalogDimensions.makam missingCuratedEntries drift",
+      "coverage-matrix: candidateDimensions.profileId youtube needs-review plus conflict must equal candidates",
+      "coverage-matrix: candidateDimensions.profileId candidateReviewQueueEntries drift",
+    ]));
+  });
+
   it("rejects batch reports that do not declare the full batch-first lifecycle and accepted-only policy", () => {
     const registries = validRegistries();
     registries.coverageSummary.batchReport.flow = ["ingest", "validate"];
@@ -491,6 +535,7 @@ describe("source curation validation", () => {
         "coverage-summary: batchReport.flow must include safe-auto-attach-accepted-only",
         "coverage-summary: batchReport.validationGates must include accepted-identity-dedupe",
         "coverage-summary: batchReport.validationGates must include metadata-strategy-profile-drift",
+        "coverage-summary: batchReport.validationGates must include coverage-matrix-drift",
         "coverage-summary: batchReport.autoAttachPolicy must document accepted-only auto-attach",
         "coverage-summary: batchReport.duplicateAcceptedIdentityPolicy must document duplicate accepted URL protection",
       ]),

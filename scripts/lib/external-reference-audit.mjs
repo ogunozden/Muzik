@@ -11,6 +11,7 @@ const NEXT_BATCH_DEFER_STATUSES = new Set(["needs-disambiguation", "source-misma
 const ALLOWED_BULK_CANDIDATE_STATUSES = new Set(["accepted", "needs-review", "rejected", "conflict"]);
 const ALLOWED_CANDIDATE_REVIEW_GROUP_DECISION_STATUSES = new Set(["needs-review", "rejected", "conflict", "deferred"]);
 const CANDIDATE_REVIEW_GROUP_DECISION_RECOMMENDATION_VERSION = "candidate-review-group-decision-recommendations-v1";
+const COVERAGE_MATRIX_VERSION = "external-reference-coverage-matrix-v1";
 const SCORE_SOURCE_HINTS = [
   "site:neyzen.com nota",
   "site:defteriniz.com nota",
@@ -60,6 +61,7 @@ export function humanizeSegment(value) {
     .trim()
     .replace(/[_-]+/g, " ")
     .replace(/\s+/g, " ")
+    .trim()
     .replace(/\b\p{L}/gu, (letter) => letter.toLocaleUpperCase("tr-TR"));
 }
 
@@ -521,6 +523,123 @@ function countCatalogFormats(entries) {
   }, {});
 }
 
+function incrementMatrixRow(rowsByValue, value, mutator) {
+  const key = value || "-";
+  const row = rowsByValue.get(key) ?? {
+    value: key,
+    totalCatalogEntries: 0,
+    curatedReferenceEntries: 0,
+    missingCuratedEntries: 0,
+    activeMissingEntries: 0,
+    deferredMissingEntries: 0,
+  };
+  mutator(row);
+  rowsByValue.set(key, row);
+}
+
+function summarizeCatalogCoverage(rows, field) {
+  const rowsByValue = new Map();
+
+  for (const row of rows) {
+    incrementMatrixRow(rowsByValue, row[field], (summary) => {
+      summary.totalCatalogEntries += 1;
+      if (row.hasCuratedReference) {
+        summary.curatedReferenceEntries += 1;
+      } else {
+        summary.missingCuratedEntries += 1;
+        if (row.deferredFromNextBatch) {
+          summary.deferredMissingEntries += 1;
+        } else {
+          summary.activeMissingEntries += 1;
+        }
+      }
+    });
+  }
+
+  return Array.from(rowsByValue.values()).sort((left, right) => (
+    right.missingCuratedEntries - left.missingCuratedEntries ||
+    right.totalCatalogEntries - left.totalCatalogEntries ||
+    left.value.localeCompare(right.value, "tr")
+  ));
+}
+
+function summarizeCandidateCoverage(rows, field) {
+  const rowsByValue = new Map();
+  const catalogIdsByValue = new Map();
+
+  for (const row of rows) {
+    const key = row[field] || "-";
+    const summary = rowsByValue.get(key) ?? {
+      value: key,
+      candidateReviewQueueEntries: 0,
+      affectedCatalogEntries: 0,
+      needsReviewEntries: 0,
+      conflictEntries: 0,
+    };
+    summary.candidateReviewQueueEntries += 1;
+    if (row.status === "conflict") {
+      summary.conflictEntries += 1;
+    } else {
+      summary.needsReviewEntries += 1;
+    }
+    rowsByValue.set(key, summary);
+
+    const catalogIds = catalogIdsByValue.get(key) ?? new Set();
+    if (row.catalogId) catalogIds.add(row.catalogId);
+    catalogIdsByValue.set(key, catalogIds);
+  }
+
+  return Array.from(rowsByValue.values())
+    .map((row) => ({
+      ...row,
+      affectedCatalogEntries: catalogIdsByValue.get(row.value)?.size ?? 0,
+    }))
+    .sort((left, right) => (
+      right.candidateReviewQueueEntries - left.candidateReviewQueueEntries ||
+      left.value.localeCompare(right.value, "tr")
+    ));
+}
+
+export function buildCoverageMatrix({
+  rows,
+  candidateReviewRows,
+  candidateReviewGroups,
+  researchProfiles,
+  generatedAt,
+}) {
+  const missingRows = rows.filter((row) => row.missingCuratedReference);
+  const curatedRows = rows.filter((row) => row.hasCuratedReference);
+
+  return {
+    version: 1,
+    type: "external-reference-coverage-matrix",
+    policyVersion: COVERAGE_MATRIX_VERSION,
+    generatedAt,
+    summary: {
+      totalCatalogEntries: rows.length,
+      curatedReferenceEntries: curatedRows.length,
+      missingCuratedEntries: missingRows.length,
+      candidateReviewQueueEntries: candidateReviewRows.length,
+      candidateReviewGroupEntries: candidateReviewGroups.length,
+      researchSourceProfileEntries: researchProfiles.length,
+    },
+    catalogDimensions: {
+      makam: summarizeCatalogCoverage(rows, "makam"),
+      form: summarizeCatalogCoverage(rows, "form"),
+      usul: summarizeCatalogCoverage(rows, "usul"),
+      priorityGroup: summarizeCatalogCoverage(rows, "priorityGroup"),
+    },
+    candidateDimensions: {
+      profileId: summarizeCandidateCoverage(candidateReviewRows, "profileId"),
+      provider: summarizeCandidateCoverage(candidateReviewRows, "provider"),
+      status: summarizeCandidateCoverage(candidateReviewRows, "status"),
+      confidenceLevel: summarizeCandidateCoverage(candidateReviewRows, "reviewConfidenceLevel"),
+    },
+    policy:
+      "Coverage is measured by catalog dimensions and provider/status review dimensions; search candidates remain review-only and accepted coverage only comes from validated accepted sources.",
+  };
+}
+
 export function buildBacklogRows(entries, curatedCatalogIds, curationDecisionsByCatalogId) {
   return entries
     .map((entry) => {
@@ -923,6 +1042,7 @@ export function runExternalReferenceCoverageAudit({
     safeOutDir,
     "symbtr-curated-reference-candidate-review-group-decision-recommendations.json",
   );
+  const coverageMatrixJsonPath = path.join(safeOutDir, "symbtr-curated-reference-coverage-matrix.json");
   const recommendationReviewedAt = getLatestIsoDate(
     Array.from(curationDecisionsByCatalogId.values()).map((decision) => decision.reviewedAt),
   );
@@ -944,6 +1064,13 @@ export function runExternalReferenceCoverageAudit({
     },
     decisions: candidateReviewGroupDecisionRecommendations,
   };
+  const coverageMatrix = buildCoverageMatrix({
+    rows,
+    candidateReviewRows,
+    candidateReviewGroups,
+    researchProfiles,
+    generatedAt,
+  });
   writeFileSync(csvPath, renderCsv(rows));
   writeFileSync(backlogJsonPath, `${JSON.stringify(rows, null, 2)}\n`);
   writeFileSync(nextBatchCsvPath, renderCsv(nextBatchRows));
@@ -958,6 +1085,7 @@ export function runExternalReferenceCoverageAudit({
     candidateReviewGroupRecommendationJsonPath,
     `${JSON.stringify(candidateReviewGroupDecisionRecommendationManifest, null, 2)}\n`,
   );
+  writeFileSync(coverageMatrixJsonPath, `${JSON.stringify(coverageMatrix, null, 2)}\n`);
 
   const batchReport = {
     version: 1,
@@ -1007,6 +1135,7 @@ export function runExternalReferenceCoverageAudit({
       "candidate-review-group-drift",
       "candidate-review-group-decision-drift",
       "candidate-review-group-decision-recommendation-drift",
+      "coverage-matrix-drift",
     ],
   };
 
@@ -1032,6 +1161,10 @@ export function runExternalReferenceCoverageAudit({
       candidateReviewGroupDecisionRecommendations,
       "status",
     ),
+    coverageMatrixEntries: Object.values(coverageMatrix.catalogDimensions).reduce(
+      (total, dimensionRows) => total + dimensionRows.length,
+      0,
+    ) + Object.values(coverageMatrix.candidateDimensions).reduce((total, dimensionRows) => total + dimensionRows.length, 0),
     candidateReviewGroupDecisionsByStatus: summarizeCounts(
       Array.from(candidateReviewGroupDecisionsByCatalogId.values()),
       "status",
@@ -1058,6 +1191,7 @@ export function runExternalReferenceCoverageAudit({
     candidateReviewGroupDecisionRecommendationsJson: toProjectPath(
       path.relative(root, candidateReviewGroupRecommendationJsonPath),
     ),
+    coverageMatrixJson: toProjectPath(path.relative(root, coverageMatrixJsonPath)),
     candidateReviewGroupDecisionsJson: toProjectPath(path.relative(root, paths.candidateReviewGroupDecisions)),
     policy:
       "No media is downloaded. Safe inline preview/embed is allowed only for validated HTTPS sources with provider-specific verification, sandbox, lazy loading and fallback links.",

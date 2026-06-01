@@ -249,6 +249,19 @@ tek kurala bağlamaktır.
       safe-auto-attach-accepted-only, validate ve coverage-report adımlarını
       taşımak zorunda; accepted-only auto-attach ve duplicate accepted URL
       identity policy metinleri validation tarafından doğrulanır.
+      2026-06-01 ek coverage matrix kapısı: audit artık
+      `symbtr-curated-reference-coverage-matrix.json` üretir; makam/form/usul/
+      priorityGroup kırılımında total/curated/missing/active/deferred katalog
+      sayıları ve profile/provider/status/confidence kırılımında review-only
+      aday sayıları validator tarafından `coverage-matrix-drift` kapısıyla
+      summary ve queue satırlarına karşı doğrulanır. Başında tire olan katalog
+      segmentlerinin metrikte başı boşluklu değere dönüşmesi merkezi
+      `humanizeSegment` trim düzeltmesiyle giderildi.
+      2026-06-01 runtime takip notu: `/references/curation` production
+      `next start` üzerinde layout/browser/console kapılarından geçti; mevcut
+      `next dev --webpack` PostCSS/UnoCSS loader yolu aynı sayfada 500 üretiyor.
+      Bu dev-runtime uyumsuzluğu ayrı migration işi olarak açık tutulacak; prod
+      build/start kanıtı bu fazın browser doğrulamasında kullanıldı.
 - [ ] PDF vector ölçü adayları gerçek ölçü kutusuna terfi etmeden önce insan
       veya görsel regresyon doğrulaması bekliyor. Pipeline, review artifact'i,
       verification manifest'i ve Eser Takip UI yolu hazır; gerçek manifest şu

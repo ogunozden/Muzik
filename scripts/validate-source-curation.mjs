@@ -38,6 +38,7 @@ const result = validateSourceCurationRegistries({
   candidateReviewGroupDecisionRecommendations: readJson(
     "output/external-reference-coverage/symbtr-curated-reference-candidate-review-group-decision-recommendations.json",
   ),
+  coverageMatrix: readJson("output/external-reference-coverage/symbtr-curated-reference-coverage-matrix.json"),
   coverageSummary: readJson("output/external-reference-coverage/summary.json"),
   sources: dedupeSources([
     ...sourcesFromMapping(readJson("output/external-reference-coverage/mapped-external-reference-candidates.json")),

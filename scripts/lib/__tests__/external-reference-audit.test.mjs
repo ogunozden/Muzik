@@ -7,6 +7,8 @@ import {
   buildCandidateReviewGroupDecisionRecommendations,
   buildCandidateReviewGroups,
   buildCandidateReviewRows,
+  buildCoverageMatrix,
+  humanizeSegment,
   readCandidateReviewGroupDecisions,
   normalizeUrlForIdentity,
   readBulkReferenceCandidates,
@@ -132,6 +134,10 @@ function createAuditRoot() {
 }
 
 describe("external reference audit", () => {
+  it("normalizes slug-like catalog segments without leading whitespace", () => {
+    expect(humanizeSegment("-aksak")).toBe("Aksak");
+  });
+
   it("normalizes YouTube identities before duplicate checks", () => {
     expect(normalizeUrlForIdentity("https://youtu.be/NwbNZN75bR8?t=12")).toBe(
       "https://www.youtube.com/watch?v=nwbnzn75br8",
@@ -225,6 +231,12 @@ describe("external reference audit", () => {
         "utf8",
       ),
     );
+    const coverageMatrixJson = JSON.parse(
+      readFileSync(
+        path.join(root, "output", "external-reference-coverage", "symbtr-curated-reference-coverage-matrix.json"),
+        "utf8",
+      ),
+    );
     expect(nextBatchJson).toEqual([]);
     expect(backlogJson).toHaveLength(3);
     expect(candidateReviewJson).toHaveLength(3);
@@ -247,6 +259,8 @@ describe("external reference audit", () => {
     expect(summary.candidateReviewGroupDecisionRecommendationsJson).toBe(
       "output/external-reference-coverage/symbtr-curated-reference-candidate-review-group-decision-recommendations.json",
     );
+    expect(summary.coverageMatrixJson).toBe("output/external-reference-coverage/symbtr-curated-reference-coverage-matrix.json");
+    expect(summary.coverageMatrixEntries).toBeGreaterThan(0);
     expect(summary.candidateReviewGroupDecisionRecommendationEntries).toBe(1);
     expect(candidateReviewGroupRecommendationsJson).toEqual(expect.objectContaining({
       type: "candidate-review-group-decision-recommendations",
@@ -261,6 +275,32 @@ describe("external reference audit", () => {
           reviewedBy: "batch-policy",
         }),
       ],
+    }));
+    expect(coverageMatrixJson).toEqual(expect.objectContaining({
+      type: "external-reference-coverage-matrix",
+      summary: expect.objectContaining({
+        totalCatalogEntries: 3,
+        curatedReferenceEntries: 2,
+        missingCuratedEntries: 1,
+        candidateReviewQueueEntries: 3,
+      }),
+      catalogDimensions: expect.objectContaining({
+        makam: expect.arrayContaining([
+          expect.objectContaining({
+            value: "Hicaz",
+            missingCuratedEntries: 1,
+            deferredMissingEntries: 1,
+          }),
+        ]),
+      }),
+      candidateDimensions: expect.objectContaining({
+        provider: expect.arrayContaining([
+          expect.objectContaining({
+            value: "youtube",
+            candidateReviewQueueEntries: 1,
+          }),
+        ]),
+      }),
     }));
   });
 
@@ -362,6 +402,48 @@ describe("external reference audit", () => {
         sourceId: expect.anything(),
       }),
     ]));
+  });
+
+  it("builds catalog and provider coverage matrix without source attachment data", () => {
+    const root = createAuditRoot();
+    const rows = buildBacklogRows(
+      catalogEntries,
+      new Set(["ussak--ilahi--duyek--allah_emrin--zekai_dede"]),
+      new Map(),
+    );
+    const profiles = readResearchSourceProfiles(path.join(root, "src/data/references/research-source-profiles.json"));
+    const candidateRows = buildCandidateReviewRows(rows, profiles);
+    const groups = buildCandidateReviewGroups(candidateRows);
+    const matrix = buildCoverageMatrix({
+      rows,
+      candidateReviewRows: candidateRows,
+      candidateReviewGroups: groups,
+      researchProfiles: profiles,
+      generatedAt: "2026-06-01T00:00:00.000Z",
+    });
+
+    expect(matrix.summary).toEqual(expect.objectContaining({
+      totalCatalogEntries: 3,
+      curatedReferenceEntries: 1,
+      missingCuratedEntries: 2,
+      candidateReviewQueueEntries: 6,
+      candidateReviewGroupEntries: 2,
+      researchSourceProfileEntries: 3,
+    }));
+    expect(matrix.catalogDimensions.form).toEqual(expect.arrayContaining([
+      expect.objectContaining({
+        value: "Sarki",
+        missingCuratedEntries: 1,
+      }),
+    ]));
+    expect(matrix.candidateDimensions.profileId).toEqual(expect.arrayContaining([
+      expect.objectContaining({
+        value: "internet-archive",
+        candidateReviewQueueEntries: 2,
+        affectedCatalogEntries: 2,
+      }),
+    ]));
+    expect(JSON.stringify(matrix)).not.toMatch(/sourceUrl|sourceId|"accepted"/);
   });
 
   it("applies batch review group decisions without producing accepted sources", () => {

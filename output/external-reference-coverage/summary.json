@@ -73,6 +73,7 @@
       "count": 1
     }
   ],
+  "coverageMatrixEntries": 350,
   "candidateReviewGroupDecisionsByStatus": [],
   "batchReport": {
     "version": 1,
@@ -197,7 +198,8 @@
       "metadata-strategy-profile-drift",
       "candidate-review-group-drift",
       "candidate-review-group-decision-drift",
-      "candidate-review-group-decision-recommendation-drift"
+      "candidate-review-group-decision-recommendation-drift",
+      "coverage-matrix-drift"
     ]
   },
   "catalogFormatCoverage": {
@@ -380,7 +382,7 @@
   "topMissingByUsul": [
     {
       "value": "Aksak",
-      "count": 436
+      "count": 437
     },
     {
       "value": "Duyek",
@@ -580,6 +582,7 @@
   "candidateReviewGroupsCsv": "output/external-reference-coverage/symbtr-curated-reference-candidate-review-groups.csv",
   "candidateReviewGroupsJson": "output/external-reference-coverage/symbtr-curated-reference-candidate-review-groups.json",
   "candidateReviewGroupDecisionRecommendationsJson": "output/external-reference-coverage/symbtr-curated-reference-candidate-review-group-decision-recommendations.json",
+  "coverageMatrixJson": "output/external-reference-coverage/symbtr-curated-reference-coverage-matrix.json",
   "candidateReviewGroupDecisionsJson": "src/data/references/candidate-review-group-decisions.json",
   "policy": "No media is downloaded. Safe inline preview/embed is allowed only for validated HTTPS sources with provider-specific verification, sandbox, lazy loading and fallback links.",
   "curationRule": "Entries are prioritized by missing curated references, catalog-reported PDF/MusicXML/TXT source formats, named title/composer fields, and common form/usul groups. Search URLs are generated for review only; they are not evidence by themselves.",

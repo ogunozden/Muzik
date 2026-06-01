@@ -1,0 +1,5 @@
+path,area,preview
+package.json,diff,"{   ""name"": ""muzik"",   ""version"": ""0.1.0"",   ""private"": true,   ""engines"": {     ""node"": "">=24 <25"",     ""npm"": "">=10""   },   ""scripts"": {     ""dev"": ""next dev --turbopack"",     ""build"": ""next build -"
+scripts/__tests__/import-symbtr-layout-verification.test.mjs,diff,"import {execFileSync} from ""node:child_process""; import {mkdtempSync, mkdirSync, readFileSync, writeFileSync} from ""node:fs""; import {tmpdir} from ""node:os""; import path from ""node:path""; import {desc"
+scripts/import-symbtr-layout-verification.mjs,diff,"#!/usr/bin/env node import {existsSync, mkdirSync, readFileSync, rmSync, writeFileSync} from ""node:fs""; import path from ""node:path"";  const root = process.cwd(); const outputPath = path.join(root, ""s"
+scripts/validate-symbtr-layout-verification.mjs,diff,"import { mkdirSync, readFileSync, writeFileSync } from ""node:fs""; import path from ""node:path""; import { getSymbTrMeasureIndexSummary } from ""./lib/symbtr-score-measures.mjs"";  const PROJECT_ROOT = pr"

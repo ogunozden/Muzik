@@ -499,8 +499,12 @@ function validateReviewTemplate({
 }
 
 const errors = [];
+const options = parseCliOptions(process.argv.slice(2));
+const verificationPath = options.has("verification-path")
+  ? assertInsideProject(options.get("verification-path"))
+  : VERIFICATION_PATH;
 const layoutData = readJson(LAYOUT_PATH);
-const verificationData = readJson(VERIFICATION_PATH);
+const verificationData = readJson(verificationPath);
 const reviewTemplateData = readJson(REVIEW_TEMPLATE_PATH);
 
 validateTopLevel(layoutData, verificationData, errors);
@@ -602,7 +606,6 @@ const summary = {
   errors,
 };
 
-const options = parseCliOptions(process.argv.slice(2));
 const summaryOutput = options.get("summary-output");
 if (summaryOutput) {
   const outputPath = assertInsideProject(summaryOutput);

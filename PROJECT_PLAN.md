@@ -329,6 +329,14 @@ tek kurala bağlamaktır.
       3000 katalogdan review queue kapsamına girmeyen veya stale/elle uydurulmuş
       kararlar gerçek karar manifest'ine batch olarak taşınmadan fail-closed
       kalır; script testi valid import ve unknown group reddini kapsar.
+      2026-06-01 ek PDF verification import hattı: `npm run
+      import:symbtr-measure-verification -- --input <manifest> --write`
+      insan/görsel regresyon onayından çıkan verified kutuları tek tek elle
+      manifest düzenletmeden batch olarak `layout-verification.generated.json`
+      içine taşır. Import, catalog id/source layout/source PDF/candidate count
+      ve her verified box'ın generated PDF candidate satır-indeks çiftiyle
+      eşleşmesini fail-closed doğrular; final yazımdan önce mevcut
+      `verify:symbtr-measures` validator'ını otorite kabul eder.
 
 ### Tamamlanan Otomasyon ve Altyapı Kanıtları (TODO Dışı)
 

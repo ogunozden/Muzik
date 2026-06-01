@@ -305,6 +305,10 @@ tek kurala bağlamaktır.
       taşır. `npm run verify:symbtr-measures` bu şablonu da okuyup kaynak
       PDF aday sayısı, TXT ölçü özeti, review satır geometrisi ve boş
       `measureBoxes` politikasını drift'e karşı doğrular.
+      2026-06-01 ek batch-first kapanış: `review:symbtr-measures` artık
+      varsayılan olarak tüm mevcut PDF candidate entry'lerini üretir;
+      validator review template'in candidate entry kapsamından eksik veya
+      fazla satır taşımasını hata sayar.
 
 ### Tamamlanan Otomasyon ve Altyapı Kanıtları (TODO Dışı)
 

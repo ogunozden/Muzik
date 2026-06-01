@@ -414,9 +414,9 @@ if (isMain) {
     .filter((entry) => Array.isArray(entry.measureCandidates) && entry.measureCandidates.length > 0)
     .map((entry) => entry.catalogId)
     .sort();
-  const requestedCatalogIds = options.has("all")
-    ? candidateEntries
-    : [options.get("catalog-id") ?? DEFAULT_CATALOG_ID];
+  const requestedCatalogIds = options.has("catalog-id")
+    ? [options.get("catalog-id") ?? DEFAULT_CATALOG_ID]
+    : candidateEntries;
   const limit = Number(options.get("limit") ?? requestedCatalogIds.length);
   const catalogIds = requestedCatalogIds.slice(0, Number.isInteger(limit) && limit > 0 ? limit : requestedCatalogIds.length);
   const artifacts = catalogIds.map((catalogId) => renderReviewArtifact(catalogId, outDir, layoutData, reviewer));

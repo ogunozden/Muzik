@@ -415,6 +415,7 @@ function validateReviewTemplateEntry({
 function validateReviewTemplate({
   layoutData,
   layoutEntries,
+  candidateEntryIds,
   reviewTemplateData,
   getScoreMeasureSummary,
   errors,
@@ -445,9 +446,23 @@ function validateReviewTemplate({
     errors,
   );
   const reviewEntryIds = Object.keys(reviewEntries);
+  const candidateEntryIdSet = new Set(candidateEntryIds);
+  const reviewEntryIdSet = new Set(reviewEntryIds);
 
   if (reviewTemplateData.entryCount !== reviewEntryIds.length) {
     errors.push("layout-verification-review-template.json entryCount must match entries");
+  }
+
+  for (const catalogId of candidateEntryIds) {
+    if (!reviewEntryIdSet.has(catalogId)) {
+      errors.push(`layout-verification-review-template.json must include candidate entry ${catalogId}`);
+    }
+  }
+
+  for (const catalogId of reviewEntryIds) {
+    if (!candidateEntryIdSet.has(catalogId)) {
+      errors.push(`layout-verification-review-template.json includes non-candidate entry ${catalogId}`);
+    }
   }
 
   if (!Array.isArray(reviewTemplateData.artifactIndex)) {
@@ -555,6 +570,7 @@ const candidateEntryIds = Object.entries(layoutEntries)
 const reviewTemplateSummary = validateReviewTemplate({
   layoutData,
   layoutEntries,
+  candidateEntryIds,
   reviewTemplateData,
   getScoreMeasureSummary,
   errors,

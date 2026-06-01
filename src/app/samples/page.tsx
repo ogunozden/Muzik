@@ -4,7 +4,7 @@ import {ChangeEvent, useCallback, useEffect, useMemo, useState} from "react";
 import {UnifiedLayout} from "@/components/layout/UnifiedLayout";
 import {clearSampleCache, playNote, playRhythm} from "@/engines/ses/engine";
 import type {InstrumentType} from "@/engines/ses/engine";
-import {Button} from "@/shared/ui";
+import {Button, PageHeader, PageShell} from "@/shared/ui";
 import {tokens} from "@/shared/tokens";
 
 interface SampleSlotStatus {
@@ -247,19 +247,17 @@ export default function SeslerPage() {
 
   return (
     <UnifiedLayout>
-      <div className={`mx-auto max-w-7xl px-4 py-8 ${tokens.colors.background.base}`}>
-        <div className="mb-6 flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
-          <div>
-            <h1 className={`text-3xl font-bold ${tokens.colors.text.primary}`}>Ses Kütüphanesi</h1>
-            <p className={`mt-2 max-w-3xl text-sm ${tokens.colors.text.secondary}`}>
-              Her slot sabit bir dosya adına yazılır. Dosyayı değiştirdiğinde çalma motoru yeni sample&apos;ı kullanır. Sample yüklü değilse test ve çalma akışı synth fallback ile devam eder.
-            </p>
-          </div>
-
-          <div className={`text-sm ${tokens.colors.text.secondary}`}>
+      <PageShell>
+        <PageHeader
+          meta="Enstrüman sesleri"
+          title="Ses Kütüphanesi"
+          description="Her slot sabit bir dosya adına yazılır. Sample yüklü değilse test ve çalma akışı synth fallback ile devam eder."
+          actions={(
+          <div className={`rounded-md border ${tokens.colors.border.base} ${tokens.colors.background.surface} px-3 py-2 text-sm ${tokens.colors.text.secondary}`}>
             {installedCount} / {slots.length} sample hazır
           </div>
-        </div>
+          )}
+        />
 
         <form
           className={`mb-4 grid gap-2 border ${tokens.colors.border.base} ${tokens.radius.md} ${tokens.colors.background.surface} p-3 md:max-w-md`}
@@ -487,7 +485,7 @@ export default function SeslerPage() {
             </table>
           </div>
         </section>
-      </div>
+      </PageShell>
     </UnifiedLayout>
   );
 }

@@ -4,6 +4,7 @@ export {Card, CardBody, CardHeader} from "@/components/atoms/Card";
 export {Input} from "@/components/atoms/Input";
 export {Select} from "@/components/atoms/Select";
 export {UnifiedLayout} from "@/components/layout/UnifiedLayout";
+export {PageHeader, PageShell, PageSurface} from "@/components/layout/PageShell";
 export {LabeledSelect} from "@/components/molecules/LabeledSelect";
 export {LabeledSlider} from "@/components/molecules/LabeledSlider";
 export {NoteChip} from "@/components/molecules/NoteChip";

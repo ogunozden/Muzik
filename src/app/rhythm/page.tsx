@@ -6,7 +6,7 @@
 
 import {useCallback, useEffect, useRef, useState} from "react";
 import {useTranslation} from "react-i18next";
-import {LabeledSelect, LabeledSlider, UsulPanel} from "@/shared/ui";
+import {LabeledSelect, LabeledSlider, PageHeader, PageShell, PageSurface, UsulPanel} from "@/shared/ui";
 import {UnifiedLayout} from "@/components/layout/UnifiedLayout";
 import {USUL_DATA, getUsulBeatDuration} from "@/engines/usul/data";
 import type {InstrumentType} from "@/engines/ses/engine";
@@ -88,16 +88,12 @@ export default function UsulPage() {
 
   return (
     <UnifiedLayout>
-      <div style={styles.container}>
-        {/* Başlık */}
-        <div style={styles.header}>
-          <h1 style={styles.title}>
-            {t("usul.title")}
-          </h1>
-          <p style={styles.subtitle}>
-            {t("usul.subtitle")}
-          </p>
-        </div>
+      <PageShell className="max-w-5xl">
+        <PageHeader
+          meta="Ritim motoru"
+          title={t("usul.title")}
+          description={t("usul.subtitle")}
+        />
 
         {/* Usul Seçimi ve Vuruş Gösterimi */}
         <UsulPanel
@@ -120,8 +116,8 @@ export default function UsulPage() {
         />
 
         {/* Kontroller */}
-        <div style={styles.controls}>
-          <div style={styles.controlItem}>
+        <PageSurface className="mb-6 p-5">
+          <div className="mb-4">
             <LabeledSelect
               label={t("makam.instrument")}
               ariaLabel={t("makam.selectInstrument")}
@@ -144,83 +140,32 @@ export default function UsulPage() {
             step={10}
             size="sm"
           />
-        </div>
+        </PageSurface>
 
         {/* Usul Bilgileri */}
         {selectedUsulObj && (
-          <div style={styles.infoGrid}>
+          <PageSurface className="grid gap-4 p-5 sm:grid-cols-2 lg:grid-cols-4">
             <div>
-              <p style={styles.infoLabel}>{t("usul.beats")}</p>
-              <p style={styles.infoValue}>{selectedUsulObj.beats}</p>
+              <p className="mb-1 text-xs text-[var(--color-text-secondary)]">{t("usul.beats")}</p>
+              <p className="font-semibold text-[var(--color-text-primary)]">{selectedUsulObj.beats}</p>
             </div>
             <div>
-              <p style={styles.infoLabel}>{t("usul.unit")}</p>
-              <p style={styles.infoValue}>{selectedUsulObj.unit}</p>
+              <p className="mb-1 text-xs text-[var(--color-text-secondary)]">{t("usul.unit")}</p>
+              <p className="font-semibold text-[var(--color-text-primary)]">{selectedUsulObj.unit}</p>
             </div>
             <div>
-              <p style={styles.infoLabel}>Aktif darp</p>
-              <p style={styles.infoValue}>
+              <p className="mb-1 text-xs text-[var(--color-text-secondary)]">Aktif darp</p>
+              <p className="font-semibold text-[var(--color-text-primary)]">
                 {activeSymbol ? `${activeSymbol.beat}. ${activeSymbol.symbol.toUpperCase()}` : "Hazır"}
               </p>
             </div>
             <div>
-              <p style={styles.infoLabel}>Döngü</p>
-              <p style={styles.infoValue}>{isRhythmPlaying ? "Çalıyor" : "Durdu"}</p>
+              <p className="mb-1 text-xs text-[var(--color-text-secondary)]">Döngü</p>
+              <p className="font-semibold text-[var(--color-text-primary)]">{isRhythmPlaying ? "Çalıyor" : "Durdu"}</p>
             </div>
-          </div>
+          </PageSurface>
         )}
-      </div>
+      </PageShell>
     </UnifiedLayout>
   );
 }
-
-const styles: Record<string, React.CSSProperties> = {
-  container: {
-    maxWidth: "56rem",
-    marginLeft: "auto",
-    marginRight: "auto",
-    padding: "var(--space-12) var(--space-6)",
-    backgroundColor: "var(--color-bg-base)",
-  },
-  header: {
-    marginBottom: "var(--space-10)",
-  },
-  title: {
-    fontSize: "1.875rem",
-    fontWeight: 700,
-    color: "var(--color-text-primary)",
-    marginBottom: "var(--space-2)",
-  },
-  subtitle: {
-    fontSize: "0.875rem",
-    color: "var(--color-text-secondary)",
-  },
-  controls: {
-    padding: "var(--space-5)",
-    backgroundColor: "var(--color-bg-surface)",
-    borderRadius: "var(--radius-lg)",
-    border: "1px solid var(--color-border-default)",
-    marginBottom: "var(--space-8)",
-  },
-  controlItem: {
-    marginBottom: "var(--space-4)",
-  },
-  infoGrid: {
-    display: "grid",
-    gridTemplateColumns: "repeat(auto-fit, minmax(8rem, 1fr))",
-    gap: "var(--space-4)",
-    padding: "var(--space-5)",
-    backgroundColor: "var(--color-bg-surface)",
-    borderRadius: "var(--radius-lg)",
-    border: "1px solid var(--color-border-default)",
-  },
-  infoLabel: {
-    fontSize: "0.75rem",
-    color: "var(--color-text-secondary)",
-    marginBottom: "var(--space-1)",
-  },
-  infoValue: {
-    fontWeight: 600,
-    color: "var(--color-text-primary)",
-  },
-};

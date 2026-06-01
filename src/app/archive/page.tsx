@@ -4,7 +4,7 @@ import { useEffect, useState, memo } from "react";
 import { useTranslation } from "react-i18next";
 import { UnifiedLayout } from "@/components/layout/UnifiedLayout";
 import { tokens } from "@/shared/tokens";
-import { Badge, Button, Card, CardBody } from "@/shared/ui";
+import { Badge, Button, Card, CardBody, PageHeader, PageShell } from "@/shared/ui";
 import Link from "next/link";
 import dynamic from "next/dynamic";
 import { NotaEvent } from "@/types";
@@ -71,20 +71,17 @@ function ArchivePage() {
 
   return (
     <UnifiedLayout>
-      <div className={`max-w-6xl mx-auto px-6 py-12 ${tokens.colors.background.base}`}>
-        <div className="mb-10 flex items-center justify-between">
-          <div>
-            <h1 className={`text-3xl font-bold ${tokens.colors.accent.base} mb-2`}>
-              {t("nav.archive", "Eser Arşivi")}
-            </h1>
-            <p className={`text-sm ${tokens.colors.text.secondary}`}>
-              Veritabanına kaydedilmiş Türk Müziği eserleri
-            </p>
-          </div>
+      <PageShell className="max-w-6xl">
+        <PageHeader
+          meta="Yerel arşiv"
+          title={t("nav.archive", "Eser Arşivi")}
+          description="Veritabanına kaydedilmiş Türk Müziği eserleri."
+          actions={(
           <Link href="/studio">
             <Button variant="primary">Yeni Eser Kaydet</Button>
           </Link>
-        </div>
+          )}
+        />
 
         {isLoading ? (
           <div className="flex justify-center p-12">
@@ -184,7 +181,7 @@ function ArchivePage() {
             </div>
           </>
         )}
-      </div>
+      </PageShell>
     </UnifiedLayout>
   );
 }

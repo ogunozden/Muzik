@@ -15,9 +15,13 @@
     "youtube-oembed"
   ],
   "verificationPacketCount": 125,
+  "networkRequestCount": 0,
+  "cacheHitCount": 25,
+  "respectRateLimit": true,
+  "providerCoverageArtifactPath": "output/external-source-discovery/provider-verification-coverage.json",
   "nextBatch": {
-    "offset": 25,
-    "command": "npm run verify:external-source-providers -- --provider internet-archive,divanmakam,ogm-materyal,salihbora,youtube-oembed --offset 25 --limit 25"
+    "offset": 50,
+    "command": "npm run verify:external-source-providers -- --provider internet-archive,divanmakam,ogm-materyal,salihbora,youtube-oembed --offset 50 --limit 25"
   },
   "backlogByStatus": [
     {

@@ -87,7 +87,8 @@
     "evidence": "output/external-source-discovery/provider-verification-evidence.json",
     "acceptedImportReady": "output/external-source-discovery/provider-verification-accepted-import-ready.json",
     "cache": "output/external-source-discovery/provider-verification-cache.json",
-    "plan": "output/external-source-discovery/provider-verification-plan.json"
+    "plan": "output/external-source-discovery/provider-verification-plan.json",
+    "coverage": "output/external-source-discovery/provider-verification-coverage.json"
   },
   "acceptedImportDryRun": {
     "input": "output/external-source-discovery/provider-verification-accepted-import-ready.json",

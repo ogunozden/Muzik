@@ -13,6 +13,7 @@ const DEFAULT_PROVIDER = "internet-archive";
 const DEFAULT_LIMIT = "25";
 const DEFAULT_CHECKED_AT = "2026-06-01";
 const DEFAULT_STATUSES = ["needs-review", "deferred", "conflict"];
+const RATE_LIMIT_DISABLED_VALUES = new Set(["0", "false", "off", "no"]);
 const INTERNET_ARCHIVE_ADVANCED_SEARCH_URL = "https://archive.org/advancedsearch.php";
 
 function resolveProjectPath(projectPath, label) {
@@ -83,6 +84,21 @@ function parseCsv(value, fallback) {
 
 function normalizeProviderId(providerId) {
   return providerId === "youtube" ? "youtube-oembed" : providerId;
+}
+
+function sleep(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+async function enforceProviderRateLimit(provider, state, enabled) {
+  if (!enabled) return;
+  const perSecond = Number(provider.rateLimitPerSecond ?? 0);
+  if (!Number.isFinite(perSecond) || perSecond <= 0) return;
+  const intervalMs = Math.ceil(1000 / perSecond);
+  const lastRequestAt = state.lastRequestAtByProvider.get(provider.id) ?? 0;
+  const waitMs = Math.max(0, intervalMs - (Date.now() - lastRequestAt));
+  if (waitMs > 0) await sleep(waitMs);
+  state.lastRequestAtByProvider.set(provider.id, Date.now());
 }
 
 function tokenCoverage(needle, haystack) {
@@ -228,13 +244,14 @@ function buildAcceptedCandidate({group, doc, checkedAt, score}) {
   };
 }
 
-async function verifyInternetArchiveGroup({group, provider, checkedAt, timeoutMs, maxResponseBytes, rows, cache}) {
+async function verifyInternetArchiveGroup({group, provider, checkedAt, timeoutMs, maxResponseBytes, rows, cache, rateLimitState, respectRateLimit}) {
   const query = buildCatalogSearchQuery(group);
   const cacheKey = buildDiscoveryIdentity(group.catalogId, provider.id, query);
   const cached = cache.entries?.[cacheKey];
   if (cached) return {...cached, cacheHit: true};
 
   const searchUrl = buildArchiveSearchUrl(group, rows);
+  await enforceProviderRateLimit(provider, rateLimitState, respectRateLimit);
   const fetched = await fetchJson(searchUrl, {timeoutMs, maxResponseBytes});
   const docs = Array.isArray(fetched?.response?.docs) ? fetched.response.docs : [];
   const scored = docs.map((doc) => ({
@@ -261,6 +278,7 @@ async function verifyInternetArchiveGroup({group, provider, checkedAt, timeoutMs
     searchQuery: query,
     searchUrl,
     resultCount: scored.length,
+    networkRequest: true,
     best,
     candidates: scored.slice(0, rows),
     catalog: {
@@ -322,7 +340,18 @@ function discoveryCandidateLookup(candidates) {
   return lookup;
 }
 
-async function verifyProviderGroup({group, provider, checkedAt, timeoutMs, maxResponseBytes, rows, cache, discoveryLookup}) {
+async function verifyProviderGroup({
+  group,
+  provider,
+  checkedAt,
+  timeoutMs,
+  maxResponseBytes,
+  rows,
+  cache,
+  discoveryLookup,
+  rateLimitState,
+  respectRateLimit,
+}) {
   if (group.status !== "needs-review") {
     return buildDeferredProviderResult({
       group,
@@ -334,7 +363,17 @@ async function verifyProviderGroup({group, provider, checkedAt, timeoutMs, maxRe
   }
 
   if (provider.id === "internet-archive") {
-    return verifyInternetArchiveGroup({group, provider, checkedAt, timeoutMs, maxResponseBytes, rows, cache});
+    return verifyInternetArchiveGroup({
+      group,
+      provider,
+      checkedAt,
+      timeoutMs,
+      maxResponseBytes,
+      rows,
+      cache,
+      rateLimitState,
+      respectRateLimit,
+    });
   }
 
   return buildDeferredProviderResult({
@@ -357,6 +396,54 @@ function countBy(rows, keyFn) {
     .sort((left, right) => right.count - left.count || String(left.value).localeCompare(String(right.value)));
 }
 
+function buildProviderCoverage({groups, providers, evidence, cache, generatedAt, policy}) {
+  const groupIds = new Set(groups.map((group) => group.catalogId));
+  const cacheEntries = Object.values(cache.entries ?? {});
+  const byProvider = providers.map((provider) => {
+    const currentRows = evidence.filter((row) => row.providerProfileId === provider.id);
+    const cachedRows = cacheEntries.filter((row) => row.providerProfileId === provider.id && groupIds.has(row.catalogId));
+    const cachedGroupCount = new Set(cachedRows.map((row) => row.catalogId)).size;
+    const deterministicDeferred = provider.id === "internet-archive" ? 0 : groups.length;
+    const verifiedOrClassifiedGroupCount = provider.id === "internet-archive" ? cachedGroupCount : deterministicDeferred;
+    return {
+      providerProfileId: provider.id,
+      connector: provider.connector,
+      rateLimitPerSecond: provider.rateLimitPerSecond ?? null,
+      totalEligibleGroupCount: groups.length,
+      verifiedOrClassifiedGroupCount,
+      remainingGroupCount: Math.max(0, groups.length - verifiedOrClassifiedGroupCount),
+      currentBatchPacketCount: currentRows.length,
+      currentBatchStatusCounts: countBy(currentRows, (row) => row.status),
+      cachedGroupCount,
+      deterministicDeferredGroupCount: deterministicDeferred,
+      networkRequestCount: currentRows.filter((row) => row.networkRequest).length,
+      cacheHitCount: currentRows.filter((row) => row.cacheHit).length,
+      acceptedReadyCount: currentRows.filter((row) => row.status === "accepted-ready").length,
+    };
+  });
+  return {
+    version: 1,
+    type: "external-source-provider-verification-coverage",
+    generatedAt,
+    dryRun: true,
+    policyVersion: policy.policyVersion,
+    totalBacklogGroupCount: groups.length,
+    providerProfileIds: providers.map((provider) => provider.id),
+    providerCount: providers.length,
+    fullyClassifiedProviderCount: byProvider.filter((row) => row.remainingGroupCount === 0).length,
+    networkProviderRemainingGroupCount: byProvider
+      .filter((row) => row.providerProfileId === "internet-archive")
+      .reduce((sum, row) => sum + row.remainingGroupCount, 0),
+    byProvider,
+    safety: {
+      directAutoAttachCount: 0,
+      mediaDownloadCount: 0,
+      sourceContentCopiedCount: 0,
+      searchOnlyCandidatesAccepted: 0,
+    },
+  };
+}
+
 export async function runProviderVerification({
   providerId = DEFAULT_PROVIDER,
   limit = DEFAULT_LIMIT,
@@ -367,6 +454,7 @@ export async function runProviderVerification({
   coverageDir = DEFAULT_COVERAGE_DIR,
   outDir = DEFAULT_OUT_DIR,
   policyPath = DEFAULT_POLICY_PATH,
+  respectRateLimit = true,
 } = {}) {
   const policy = readJson(policyPath, "discovery policy");
   const providers = providerPolicies(policy, providerId);
@@ -388,6 +476,7 @@ export async function runProviderVerification({
   const cache = readJson(cachePath, "provider verification cache", {version: 1, entries: {}});
   const evidence = [];
   const warnings = [];
+  const rateLimitState = {lastRequestAtByProvider: new Map()};
 
   for (const provider of providers) {
     for (const group of selectedGroups) {
@@ -401,6 +490,8 @@ export async function runProviderVerification({
           rows,
           cache,
           discoveryLookup,
+          rateLimitState,
+          respectRateLimit,
         }));
       } catch (error) {
         warnings.push(`${provider.id}:${group.catalogId}: ${error instanceof Error ? error.message : String(error)}`);
@@ -440,6 +531,11 @@ export async function runProviderVerification({
     },
     candidates: acceptedReady,
   };
+  const coverage = buildProviderCoverage({groups, providers, evidence, cache, generatedAt, policy});
+  const internetArchiveCoverage = coverage.byProvider.find((row) => row.providerProfileId === "internet-archive");
+  const nextOffset = Number.isFinite(parsedLimit)
+    ? Math.max(parsedOffset + parsedLimit, Number(internetArchiveCoverage?.verifiedOrClassifiedGroupCount ?? 0))
+    : groups.length;
   writeJson(cachePath, cache);
   writeJson(path.join(outDir, "provider-verification-evidence.json"), {
     version: 1,
@@ -498,6 +594,7 @@ export async function runProviderVerification({
       acceptedImportReady: toProjectPath(path.join(outDir, "provider-verification-accepted-import-ready.json")),
       cache: toProjectPath(cachePath),
       plan: toProjectPath(path.join(outDir, "provider-verification-plan.json")),
+      coverage: toProjectPath(path.join(outDir, "provider-verification-coverage.json")),
     },
     acceptedImportDryRun,
     source: {
@@ -516,10 +613,14 @@ export async function runProviderVerification({
     selectedGroupCount: selectedGroups.length,
     providerProfileIds: run.providerProfileIds,
     verificationPacketCount: evidence.length,
-    nextBatch: Number.isFinite(parsedLimit) && parsedOffset + parsedLimit < groups.length
+    networkRequestCount: evidence.filter((row) => row.networkRequest).length,
+    cacheHitCount: evidence.filter((row) => row.cacheHit).length,
+    respectRateLimit,
+    providerCoverageArtifactPath: toProjectPath(path.join(outDir, "provider-verification-coverage.json")),
+    nextBatch: Number.isFinite(parsedLimit) && nextOffset < groups.length
       ? {
-          offset: parsedOffset + parsedLimit,
-          command: `npm run verify:external-source-providers -- --provider ${providers.map((provider) => provider.id).join(",")} --offset ${parsedOffset + parsedLimit} --limit ${parsedLimit}`,
+          offset: nextOffset,
+          command: `npm run verify:external-source-providers -- --provider ${providers.map((provider) => provider.id).join(",")} --offset ${nextOffset} --limit ${parsedLimit}`,
         }
       : null,
     backlogByStatus: countBy(groups, (group) => group.status),
@@ -533,6 +634,7 @@ export async function runProviderVerification({
       searchOnlyCandidatesAccepted: 0,
     },
   });
+  writeJson(path.join(outDir, "provider-verification-coverage.json"), coverage);
   writeJson(path.join(outDir, "provider-verification-run.json"), run);
   return run;
 }
@@ -549,6 +651,7 @@ export async function runCli(args = process.argv.slice(2)) {
     coverageDir: options.get("coverage-dir") ?? DEFAULT_COVERAGE_DIR,
     outDir: options.get("out-dir") ?? DEFAULT_OUT_DIR,
     policyPath: options.get("policy") ?? DEFAULT_POLICY_PATH,
+    respectRateLimit: !RATE_LIMIT_DISABLED_VALUES.has(String(options.get("respect-rate-limit") ?? "true").toLowerCase()),
   });
 }
 

@@ -1,7 +1,7 @@
 {
   "version": 1,
   "type": "batch-first-prod-cycle-audit",
-  "generatedAt": "2026-06-01T16:35:38.274Z",
+  "generatedAt": "2026-06-01T16:43:50.140Z",
   "baseUrl": "http://localhost:4015",
   "ok": true,
   "errors": [],
@@ -12,7 +12,7 @@
       "command": "npm run audit:external-references",
       "ok": true,
       "exitCode": 0,
-      "durationMs": 3063,
+      "durationMs": 1395,
       "timedOut": false,
       "stdoutTail": [
         "  \"candidateReviewBatchPlanJson\": \"output/external-reference-coverage/symbtr-curated-reference-candidate-review-batch-plan.json\",",
@@ -35,7 +35,7 @@
       "command": "npm run discover:external-sources",
       "ok": true,
       "exitCode": 0,
-      "durationMs": 7331,
+      "durationMs": 2623,
       "timedOut": false,
       "stdoutTail": [
         "  \"artifacts\": {",
@@ -58,7 +58,7 @@
       "command": "npm run verify:external-source-discovery",
       "ok": true,
       "exitCode": 0,
-      "durationMs": 2005,
+      "durationMs": 557,
       "timedOut": false,
       "stdoutTail": [
         "      \"input\": \"output/external-source-discovery/accepted-import-ready.json\",",
@@ -81,7 +81,7 @@
       "command": "npm run verify:external-source-providers",
       "ok": true,
       "exitCode": 0,
-      "durationMs": 769,
+      "durationMs": 537,
       "timedOut": false,
       "stdoutTail": [
         "    \"incomingCandidateCount\": 0,",
@@ -104,7 +104,7 @@
       "command": "npm run verify:external-source-intake",
       "ok": true,
       "exitCode": 0,
-      "durationMs": 599,
+      "durationMs": 439,
       "timedOut": false,
       "stdoutTail": [
         "    \"dryRun\": true,",
@@ -127,7 +127,7 @@
       "command": "npm run verify:symbtr-layout-review-import",
       "ok": true,
       "exitCode": 0,
-      "durationMs": 687,
+      "durationMs": 581,
       "timedOut": false,
       "stdoutTail": [
         "  },",
@@ -150,7 +150,7 @@
       "command": "npm run verify:symbtr-measures",
       "ok": true,
       "exitCode": 0,
-      "durationMs": 512,
+      "durationMs": 424,
       "timedOut": false,
       "stdoutTail": [
         "  \"unresolvedCandidateEntries\": 1,",
@@ -173,7 +173,7 @@
       "command": "npm run curation:validate",
       "ok": true,
       "exitCode": 0,
-      "durationMs": 856,
+      "durationMs": 653,
       "timedOut": false,
       "stdoutTail": [
         "    \"researchSourceProfiles\": 5,",
@@ -196,7 +196,7 @@
       "command": "npm run audit:samples",
       "ok": true,
       "exitCode": 0,
-      "durationMs": 1874,
+      "durationMs": 1552,
       "timedOut": false,
       "stdoutTail": [
         "> muzik@0.1.0 audit:samples",
@@ -208,8 +208,8 @@
         "",
         " Test Files  3 passed (3)",
         "      Tests  11 passed (11)",
-        "   Start at  19:35:09",
-        "   Duration  1.15s (transform 174ms, setup 0ms, import 300ms, tests 133ms, environment 2.39s)"
+        "   Start at  19:43:34",
+        "   Duration  907ms (transform 126ms, setup 0ms, import 208ms, tests 97ms, environment 1.84s)"
       ],
       "stderrTail": []
     },
@@ -218,7 +218,7 @@
       "command": "npm run audit:studio-follow",
       "ok": true,
       "exitCode": 0,
-      "durationMs": 6602,
+      "durationMs": 6495,
       "timedOut": false,
       "stdoutTail": [
         "        \"viewportHeight\": 844,",
@@ -241,15 +241,15 @@
       "command": "npm run audit:references-curation-runtime",
       "ok": true,
       "exitCode": 0,
-      "durationMs": 865,
+      "durationMs": 733,
       "timedOut": false,
       "stdoutTail": [
-        "    \"hasDiscoveryPanel\": true,",
         "    \"hasDiscoveryArtifact\": true,",
         "    \"hasDiscoveryCommand\": true,",
         "    \"hasProviderVerificationPanel\": true,",
         "    \"hasProviderVerificationArtifact\": true,",
         "    \"hasProviderVerificationPlanArtifact\": true,",
+        "    \"hasProviderVerificationCoverageArtifact\": true,",
         "    \"hasProviderVerificationCommand\": true,",
         "    \"hasReadOnlySnapshotMessage\": true",
         "  },",
@@ -264,7 +264,7 @@
       "command": "npm run guardrails:layout -- --base-url http://localhost:4015 --routes /references/curation,/studio/follow",
       "ok": true,
       "exitCode": 0,
-      "durationMs": 18914,
+      "durationMs": 6568,
       "timedOut": false,
       "stdoutTail": [
         "> muzik@0.1.0 guardrails:layout",
@@ -274,8 +274,8 @@
         "Routes: /references/curation, /studio/follow",
         "OK mobile  /references/curation Muzik - Türk Müziği Platformu; 8 clipped candidates within non-overflowing page",
         "OK desktop /references/curation Muzik - Türk Müziği Platformu",
-        "OK mobile  /studio/follow     Muzik - Türk Müziği Platformu; 8 clipped candidates within non-overflowing page",
-        "OK desktop /studio/follow     Muzik - Türk Müziği Platformu",
+        "OK mobile  /studio/follow     Muzik - Türk Müziği Platformu",
+        "OK desktop /studio/follow     Muzik - Türk Müziği Platformu; 8 clipped candidates within non-overflowing page",
         "Layout guard passed for 2 routes across 2 viewports."
       ],
       "stderrTail": []
@@ -285,7 +285,7 @@
       "command": "npm run audit:security",
       "ok": true,
       "exitCode": 0,
-      "durationMs": 1140,
+      "durationMs": 1209,
       "timedOut": false,
       "stdoutTail": [
         "> muzik@0.1.0 audit:security",
@@ -450,6 +450,7 @@
       "evidenceArtifactPath": "output/external-source-discovery/provider-verification-evidence.json",
       "acceptedImportReadyArtifactPath": "output/external-source-discovery/provider-verification-accepted-import-ready.json",
       "planArtifactPath": "output/external-source-discovery/provider-verification-plan.json",
+      "coverageArtifactPath": "output/external-source-discovery/provider-verification-coverage.json",
       "lastRunOk": true,
       "dryRun": true,
       "providerProfileId": "multi-provider",
@@ -465,6 +466,8 @@
       "totalEligibleGroupCount": 2978,
       "totalBacklogGroupCount": 2978,
       "providerCount": 5,
+      "cumulativeVerifiedOrClassifiedCount": 11962,
+      "networkProviderRemainingGroupCount": 2928,
       "resultCount": 0,
       "acceptedReadyCount": 0,
       "needsReviewCount": 0,
@@ -476,8 +479,8 @@
       "sourceContentCopiedCount": 0,
       "warningCount": 0,
       "nextBatch": {
-        "offset": 25,
-        "command": "npm run verify:external-source-providers -- --provider internet-archive,divanmakam,ogm-materyal,salihbora,youtube-oembed --offset 25 --limit 25"
+        "offset": 50,
+        "command": "npm run verify:external-source-providers -- --provider internet-archive,divanmakam,ogm-materyal,salihbora,youtube-oembed --offset 50 --limit 25"
       },
       "targetScript": "npm run verify:external-source-providers"
     }
@@ -510,7 +513,7 @@
     "referencesCuration": {
       "ok": true,
       "targetUrl": "http://localhost:4015/references/curation",
-      "htmlBytes": 485326,
+      "htmlBytes": 485514,
       "hydratedCandidateIds": 100,
       "hydratedCatalogIds": 287,
       "hasRawPacketArrays": false,
@@ -541,6 +544,7 @@
     "sourceDiscoveryVerification": "output/external-source-discovery/discovery-verification.json",
     "sourceProviderVerificationRun": "output/external-source-discovery/provider-verification-run.json",
     "sourceProviderVerificationPlan": "output/external-source-discovery/provider-verification-plan.json",
+    "sourceProviderVerificationCoverage": "output/external-source-discovery/provider-verification-coverage.json",
     "sourceIntakeDryRun": "output/external-reference-coverage/source-intake-accepted-import-dry-run.json",
     "pdfLayoutVerificationSummary": "output/symbtr-layout-review/layout-verification-summary.json",
     "referencesRuntimeAudit": "output/playwright/references-curation-batch-runtime-audit-20260601.json",

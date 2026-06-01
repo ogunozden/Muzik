@@ -381,6 +381,7 @@ export interface ExternalReferenceState {
         evidenceArtifactPath?: string;
         acceptedImportReadyArtifactPath?: string;
         planArtifactPath?: string;
+        coverageArtifactPath?: string;
         generatedAt?: string | null;
         ok?: boolean;
         dryRun?: boolean;
@@ -392,6 +393,8 @@ export interface ExternalReferenceState {
         totalEligibleGroupCount?: number;
         totalBacklogGroupCount?: number;
         providerCount?: number;
+        cumulativeVerifiedOrClassifiedCount?: number;
+        networkProviderRemainingGroupCount?: number;
         resultCount?: number;
         acceptedReadyCount?: number;
         needsReviewCount?: number;
@@ -815,6 +818,20 @@ function buildArtifactInventory(state: ExternalReferenceState): ArtifactInventor
       `${formatNumber(providerVerification.providerCount)} provider`,
       `${formatNumber(providerVerification.totalBacklogGroupCount)} backlog`,
       `${formatNumber(providerVerification.totalEligibleGroupCount)} eligible`,
+    ],
+    command: providerVerification.targetScript,
+  } : null);
+
+  addItem(providerVerification?.coverageArtifactPath ? {
+    id: "provider-verification-coverage",
+    label: "Provider verification coverage",
+    category: "Verification",
+    status: "dry-run",
+    path: providerVerification.coverageArtifactPath,
+    metrics: [
+      `${formatNumber(providerVerification.cumulativeVerifiedOrClassifiedCount)} classified`,
+      `${formatNumber(providerVerification.networkProviderRemainingGroupCount)} network left`,
+      `${formatNumber(providerVerification.directAutoAttachCount)} direct attach`,
     ],
     command: providerVerification.targetScript,
   } : null);
@@ -1615,6 +1632,9 @@ export function ReferencesCurationDashboard({
                       {sourceDiscovery.providerVerification.planArtifactPath && (
                         <code className="mt-1 block break-all text-xs text-[var(--color-text-primary)]">{sourceDiscovery.providerVerification.planArtifactPath}</code>
                       )}
+                      {sourceDiscovery.providerVerification.coverageArtifactPath && (
+                        <code className="mt-1 block break-all text-xs text-[var(--color-text-primary)]">{sourceDiscovery.providerVerification.coverageArtifactPath}</code>
+                      )}
                     </div>
                     <div className="grid w-full gap-2 text-sm sm:grid-cols-2 lg:max-w-4xl lg:grid-cols-4">
                       <div>
@@ -1627,7 +1647,7 @@ export function ReferencesCurationDashboard({
                       </div>
                       <div>
                         <div className={`text-xs uppercase ${tokens.colors.text.secondary}`}>Decision</div>
-                        <div className={tokens.colors.text.primary}>{formatNumber(sourceDiscovery.providerVerification.acceptedReadyCount)} ready · {formatNumber(sourceDiscovery.providerVerification.rejectedCount)} rejected</div>
+                        <div className={tokens.colors.text.primary}>{formatNumber(sourceDiscovery.providerVerification.cumulativeVerifiedOrClassifiedCount)} class · {formatNumber(sourceDiscovery.providerVerification.networkProviderRemainingGroupCount)} left</div>
                       </div>
                       <div>
                         <div className={`text-xs uppercase ${tokens.colors.text.secondary}`}>Safety</div>

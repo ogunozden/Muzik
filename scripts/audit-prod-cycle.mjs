@@ -118,6 +118,7 @@ function collectErrors({
   sourceDiscoveryVerification,
   sourceProviderVerificationRun,
   sourceProviderVerificationPlan,
+  sourceProviderVerificationCoverage,
   pdfSummary,
   studioFollowAudit,
   referencesRuntimeAudit,
@@ -257,6 +258,19 @@ function collectErrors({
       errors.push("external source provider verification plan must not accept search-only candidates");
     }
   }
+  if (!sourceProviderVerificationCoverage) {
+    errors.push("external source provider verification coverage could not be read");
+  } else {
+    if ((sourceProviderVerificationCoverage.totalBacklogGroupCount ?? 0) !== 2978) {
+      errors.push("external source provider verification coverage must cover the 2978 backlog groups");
+    }
+    if ((sourceProviderVerificationCoverage.safety?.directAutoAttachCount ?? -1) !== 0) {
+      errors.push("external source provider verification coverage directAutoAttachCount must be 0");
+    }
+    if ((sourceProviderVerificationCoverage.networkProviderRemainingGroupCount ?? 2978) >= 2978) {
+      errors.push("external source provider verification coverage must show network-provider progress");
+    }
+  }
 
   if (!pdfSummary) {
     errors.push("PDF layout verification summary could not be read");
@@ -359,6 +373,7 @@ function buildSummary({
   sourceDiscoveryVerification,
   sourceProviderVerificationRun,
   sourceProviderVerificationPlan,
+  sourceProviderVerificationCoverage,
   pdfSummary,
   studioFollowAudit,
   referencesRuntimeAudit,
@@ -371,6 +386,7 @@ function buildSummary({
     sourceDiscoveryVerification,
     sourceProviderVerificationRun,
     sourceProviderVerificationPlan,
+    sourceProviderVerificationCoverage,
     pdfSummary,
     studioFollowAudit,
     referencesRuntimeAudit,
@@ -427,6 +443,7 @@ function buildSummary({
         evidenceArtifactPath: "output/external-source-discovery/provider-verification-evidence.json",
         acceptedImportReadyArtifactPath: "output/external-source-discovery/provider-verification-accepted-import-ready.json",
         planArtifactPath: "output/external-source-discovery/provider-verification-plan.json",
+        coverageArtifactPath: "output/external-source-discovery/provider-verification-coverage.json",
         lastRunOk: sourceProviderVerificationRun?.ok === true,
         dryRun: sourceProviderVerificationRun?.dryRun === true,
         providerProfileId: sourceProviderVerificationRun?.providerProfileId ?? null,
@@ -436,6 +453,10 @@ function buildSummary({
         totalEligibleGroupCount: sourceProviderVerificationRun?.totalEligibleGroupCount ?? 0,
         totalBacklogGroupCount: sourceProviderVerificationRun?.totalBacklogGroupCount ?? 0,
         providerCount: sourceProviderVerificationRun?.providerCount ?? 0,
+        cumulativeVerifiedOrClassifiedCount: Array.isArray(sourceProviderVerificationCoverage?.byProvider)
+          ? sourceProviderVerificationCoverage.byProvider.reduce((sum, row) => sum + Number(row.verifiedOrClassifiedGroupCount ?? 0), 0)
+          : 0,
+        networkProviderRemainingGroupCount: sourceProviderVerificationCoverage?.networkProviderRemainingGroupCount ?? null,
         resultCount: sourceProviderVerificationRun?.resultCount ?? 0,
         acceptedReadyCount: sourceProviderVerificationRun?.acceptedReadyCount ?? 0,
         needsReviewCount: sourceProviderVerificationRun?.needsReviewCount ?? 0,
@@ -499,6 +520,7 @@ function buildSummary({
       sourceDiscoveryVerification: "output/external-source-discovery/discovery-verification.json",
       sourceProviderVerificationRun: "output/external-source-discovery/provider-verification-run.json",
       sourceProviderVerificationPlan: "output/external-source-discovery/provider-verification-plan.json",
+      sourceProviderVerificationCoverage: "output/external-source-discovery/provider-verification-coverage.json",
       sourceIntakeDryRun: "output/external-reference-coverage/source-intake-accepted-import-dry-run.json",
       pdfLayoutVerificationSummary: "output/symbtr-layout-review/layout-verification-summary.json",
       referencesRuntimeAudit: "output/playwright/references-curation-batch-runtime-audit-20260601.json",
@@ -578,6 +600,11 @@ export async function runProdCycleAudit({
     "external source provider verification plan",
     readErrors,
   );
+  const sourceProviderVerificationCoverage = readJson(
+    "output/external-source-discovery/provider-verification-coverage.json",
+    "external source provider verification coverage",
+    readErrors,
+  );
   const pdfSummary = readJson(
     "output/symbtr-layout-review/layout-verification-summary.json",
     "PDF layout verification summary",
@@ -603,6 +630,7 @@ export async function runProdCycleAudit({
     sourceDiscoveryVerification,
     sourceProviderVerificationRun,
     sourceProviderVerificationPlan,
+    sourceProviderVerificationCoverage,
     pdfSummary,
     studioFollowAudit,
     referencesRuntimeAudit,

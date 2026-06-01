@@ -1,7 +1,7 @@
 {
   "version": 1,
   "type": "external-source-discovery-verification",
-  "generatedAt": "2026-06-01T16:35:05.381Z",
+  "generatedAt": "2026-06-01T16:43:30.917Z",
   "discoveryDir": "output/external-source-discovery",
   "ok": true,
   "errors": [],

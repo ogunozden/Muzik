@@ -22,6 +22,8 @@ Reviewed controls:
 - Provider verification uses the fixed Internet Archive advancedsearch endpoint, not arbitrary user-provided server-side fetch targets.
 - Multi-provider verification covers the configured provider profile allowlist and records deferred packets when a provider has no validated source URL to probe.
 - `provider-verification-plan.json` accounts for the full 2978-group backlog and emits the next resumable batch command.
+- `provider-verification-coverage.json` records cumulative provider progress; the current Internet Archive network-backed cache covers 50 groups, while non-URL providers are classified without fetching arbitrary search results.
+- Provider rate limits from `external-source-discovery-policy.json` are enforced for non-cached network requests.
 - The provider worker is dry-run by default and writes only project-local output artifacts.
 - No media, PDF, audio or video content is downloaded.
 - No external source body/content is copied into product data.

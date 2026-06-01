@@ -4,7 +4,7 @@ This is the live remaining-work list for the batch-first production-near close. 
 
 ## In Progress
 
-- [ ] Full backlog provider verification batches: `npm run verify:external-source-providers` now covers the five configured provider profiles and writes a resumable plan for all 2978 backlog groups; next work is to advance the offset batches or run `--limit all` under the provider rate policy.
+- [ ] Full backlog provider verification batches: `npm run verify:external-source-providers` now covers the five configured provider profiles, respects provider rate policy, writes cumulative coverage, and has advanced Internet Archive network verification to 50/2978 groups; next resumable batch starts at offset 50.
 
 ## Remaining
 
@@ -25,3 +25,4 @@ This is the live remaining-work list for the batch-first production-near close. 
 - [x] Provider verification dry-run v1 is wired into `npm run audit:prod-cycle`; current Internet Archive run processed 25 eligible groups, produced 0 accepted-ready rows, 25 rejected rows, 0 warnings, 0 direct auto-attach, 0 media download and 0 copied source content.
 - [x] Current phase close gates are green: `npm run lint`, `npm run typecheck`, targeted curation/API tests, `npm run test:run`, `npm run build`, `npm run curation:validate`, `npm run audit:security`, `npm run audit:references-curation-runtime`, `npm run audit:prod-cycle` and browser evidence for `/references/curation` plus `/studio/follow`.
 - [x] Provider verification connector v2 covers Internet Archive, DivanMakam, OGM Materyal, Salih Bora and YouTube oEmbed profiles in one dry-run command; current batch writes 125 evidence packets for 25 groups, accounts for all 2978 backlog groups, produces a next-batch command, and keeps accepted-ready/direct-attach/media-copy counts at 0.
+- [x] Provider verification coverage artifact exists: `output/external-source-discovery/provider-verification-coverage.json` tracks cumulative provider progress, current Internet Archive cache coverage is 50 groups, non-URL providers are safely classified as source-URL-required deferred, and `/references/curation` plus `npm run audit:prod-cycle` require the coverage artifact.

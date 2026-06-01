@@ -84,6 +84,7 @@ export async function auditReferencesCurationRuntime({
   requireContains(html, "providerVerification", "provider verification state", errors);
   requireContains(html, "output/external-source-discovery/provider-verification-run.json", "provider verification artifact", errors);
   requireContains(html, "output/external-source-discovery/provider-verification-plan.json", "provider verification plan artifact", errors);
+  requireContains(html, "output/external-source-discovery/provider-verification-coverage.json", "provider verification coverage artifact", errors);
   requireContains(html, "npm run verify:external-source-providers", "provider verification command", errors);
   requireContains(html, "Read-only batch snapshot", "read-only snapshot message", errors);
 
@@ -120,6 +121,7 @@ export async function auditReferencesCurationRuntime({
       hasProviderVerificationPanel: html.includes("providerVerification"),
       hasProviderVerificationArtifact: html.includes("output/external-source-discovery/provider-verification-run.json"),
       hasProviderVerificationPlanArtifact: html.includes("output/external-source-discovery/provider-verification-plan.json"),
+      hasProviderVerificationCoverageArtifact: html.includes("output/external-source-discovery/provider-verification-coverage.json"),
       hasProviderVerificationCommand: html.includes("npm run verify:external-source-providers"),
       hasReadOnlySnapshotMessage: html.includes("Read-only batch snapshot"),
     },

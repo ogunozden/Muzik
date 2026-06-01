@@ -397,6 +397,7 @@ async function buildReadOnlyInitialState(): Promise<ExternalReferenceState> {
   const sourceProviderVerificationEvidencePath = path.join(SOURCE_DISCOVERY_ROOT, "provider-verification-evidence.json");
   const sourceProviderVerificationAcceptedImportReadyPath = path.join(SOURCE_DISCOVERY_ROOT, "provider-verification-accepted-import-ready.json");
   const sourceProviderVerificationPlanPath = path.join(SOURCE_DISCOVERY_ROOT, "provider-verification-plan.json");
+  const sourceProviderVerificationCoveragePath = path.join(SOURCE_DISCOVERY_ROOT, "provider-verification-coverage.json");
   const mappingPath = path.join(COVERAGE_ROOT, "mapped-external-reference-candidates.json");
   const [
     coverage,
@@ -423,6 +424,7 @@ async function buildReadOnlyInitialState(): Promise<ExternalReferenceState> {
     sourceDiscoveryNegativeCache,
     sourceDiscoveryCoverageDelta,
     sourceProviderVerificationRun,
+    sourceProviderVerificationCoverage,
     candidateReviewQueueData,
     candidateReviewGroupsData,
     backlogData,
@@ -452,6 +454,7 @@ async function buildReadOnlyInitialState(): Promise<ExternalReferenceState> {
     readJsonOrNull<SourceDiscoveryNegativeCacheManifest>(sourceDiscoveryNegativeCachePath),
     readJsonOrNull<SourceDiscoveryCoverageDeltaManifest>(sourceDiscoveryCoverageDeltaPath),
     readJsonOrNull<SourceProviderVerificationRunManifest>(sourceProviderVerificationRunPath),
+    readJsonOrNull<Record<string, unknown>>(sourceProviderVerificationCoveragePath),
     readJsonOrNull<CandidateReviewRow[]>(candidateQueuePath),
     readJsonOrNull<CandidateReviewGroup[]>(candidateGroupsPath),
     readJsonOrNull<CurationBacklogRow[]>(backlogPath),
@@ -644,6 +647,7 @@ async function buildReadOnlyInitialState(): Promise<ExternalReferenceState> {
           evidenceArtifactPath: toProjectPath(sourceProviderVerificationEvidencePath),
           acceptedImportReadyArtifactPath: toProjectPath(sourceProviderVerificationAcceptedImportReadyPath),
           planArtifactPath: toProjectPath(sourceProviderVerificationPlanPath),
+          coverageArtifactPath: toProjectPath(sourceProviderVerificationCoveragePath),
           generatedAt: sourceProviderVerificationRun?.generatedAt ?? null,
           ok: sourceProviderVerificationRun?.ok === true,
           dryRun: sourceProviderVerificationRun?.dryRun === true,
@@ -657,6 +661,10 @@ async function buildReadOnlyInitialState(): Promise<ExternalReferenceState> {
           totalEligibleGroupCount: Number(sourceProviderVerificationRun?.totalEligibleGroupCount ?? 0),
           totalBacklogGroupCount: Number(sourceProviderVerificationRun?.totalBacklogGroupCount ?? 0),
           providerCount: Number(sourceProviderVerificationRun?.providerCount ?? 0),
+          cumulativeVerifiedOrClassifiedCount: Array.isArray(sourceProviderVerificationCoverage?.byProvider)
+            ? sourceProviderVerificationCoverage.byProvider.reduce((sum: number, row: Record<string, unknown>) => sum + Number(row.verifiedOrClassifiedGroupCount ?? 0), 0)
+            : 0,
+          networkProviderRemainingGroupCount: Number(sourceProviderVerificationCoverage?.networkProviderRemainingGroupCount ?? 0),
           resultCount: Number(sourceProviderVerificationRun?.resultCount ?? 0),
           acceptedReadyCount: Number(sourceProviderVerificationRun?.acceptedReadyCount ?? 0),
           needsReviewCount: Number(sourceProviderVerificationRun?.needsReviewCount ?? 0),

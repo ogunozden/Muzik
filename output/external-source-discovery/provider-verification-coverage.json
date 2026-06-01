@@ -1,0 +1,126 @@
+{
+  "version": 1,
+  "type": "external-source-provider-verification-coverage",
+  "generatedAt": "2026-06-01T00:00:00.000Z",
+  "dryRun": true,
+  "policyVersion": "external-source-discovery-dry-run-v1",
+  "totalBacklogGroupCount": 2978,
+  "providerProfileIds": [
+    "internet-archive",
+    "divanmakam",
+    "ogm-materyal",
+    "salihbora",
+    "youtube-oembed"
+  ],
+  "providerCount": 5,
+  "fullyClassifiedProviderCount": 4,
+  "networkProviderRemainingGroupCount": 2928,
+  "byProvider": [
+    {
+      "providerProfileId": "internet-archive",
+      "connector": "internet-archive",
+      "rateLimitPerSecond": 1,
+      "totalEligibleGroupCount": 2978,
+      "verifiedOrClassifiedGroupCount": 50,
+      "remainingGroupCount": 2928,
+      "currentBatchPacketCount": 25,
+      "currentBatchStatusCounts": [
+        {
+          "value": "rejected",
+          "count": 25
+        }
+      ],
+      "cachedGroupCount": 50,
+      "deterministicDeferredGroupCount": 0,
+      "networkRequestCount": 0,
+      "cacheHitCount": 25,
+      "acceptedReadyCount": 0
+    },
+    {
+      "providerProfileId": "divanmakam",
+      "connector": "known-site-search-url",
+      "rateLimitPerSecond": 0.5,
+      "totalEligibleGroupCount": 2978,
+      "verifiedOrClassifiedGroupCount": 2978,
+      "remainingGroupCount": 0,
+      "currentBatchPacketCount": 25,
+      "currentBatchStatusCounts": [
+        {
+          "value": "deferred",
+          "count": 25
+        }
+      ],
+      "cachedGroupCount": 0,
+      "deterministicDeferredGroupCount": 2978,
+      "networkRequestCount": 0,
+      "cacheHitCount": 0,
+      "acceptedReadyCount": 0
+    },
+    {
+      "providerProfileId": "ogm-materyal",
+      "connector": "known-site-search-url",
+      "rateLimitPerSecond": 0.5,
+      "totalEligibleGroupCount": 2978,
+      "verifiedOrClassifiedGroupCount": 2978,
+      "remainingGroupCount": 0,
+      "currentBatchPacketCount": 25,
+      "currentBatchStatusCounts": [
+        {
+          "value": "deferred",
+          "count": 25
+        }
+      ],
+      "cachedGroupCount": 0,
+      "deterministicDeferredGroupCount": 2978,
+      "networkRequestCount": 0,
+      "cacheHitCount": 0,
+      "acceptedReadyCount": 0
+    },
+    {
+      "providerProfileId": "salihbora",
+      "connector": "known-site-search-url",
+      "rateLimitPerSecond": 0.5,
+      "totalEligibleGroupCount": 2978,
+      "verifiedOrClassifiedGroupCount": 2978,
+      "remainingGroupCount": 0,
+      "currentBatchPacketCount": 25,
+      "currentBatchStatusCounts": [
+        {
+          "value": "deferred",
+          "count": 25
+        }
+      ],
+      "cachedGroupCount": 0,
+      "deterministicDeferredGroupCount": 2978,
+      "networkRequestCount": 0,
+      "cacheHitCount": 0,
+      "acceptedReadyCount": 0
+    },
+    {
+      "providerProfileId": "youtube-oembed",
+      "connector": "youtube-oembed-verifier",
+      "rateLimitPerSecond": 1,
+      "totalEligibleGroupCount": 2978,
+      "verifiedOrClassifiedGroupCount": 2978,
+      "remainingGroupCount": 0,
+      "currentBatchPacketCount": 25,
+      "currentBatchStatusCounts": [
+        {
+          "value": "deferred",
+          "count": 25
+        }
+      ],
+      "cachedGroupCount": 0,
+      "deterministicDeferredGroupCount": 2978,
+      "networkRequestCount": 0,
+      "cacheHitCount": 0,
+      "acceptedReadyCount": 0
+    }
+  ],
+  "safety": {
+    "directAutoAttachCount": 0,
+    "mediaDownloadCount": 0,
+    "sourceContentCopiedCount": 0,
+    "searchOnlyCandidatesAccepted": 0
+  }
+}

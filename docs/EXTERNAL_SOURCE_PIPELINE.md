@@ -80,9 +80,14 @@ YouTube oEmbed stay `deferred` until a validated source URL exists, so search
 URLs are never promoted as evidence. The command writes
 `provider-verification-run.json`, `provider-verification-evidence.json`,
 `provider-verification-cache.json`,
-`provider-verification-accepted-import-ready.json` and
-`provider-verification-plan.json`; it never downloads media, copies source
-content or attaches directly.
+`provider-verification-accepted-import-ready.json`,
+`provider-verification-plan.json` and `provider-verification-coverage.json`; it
+never downloads media, copies source content or attaches directly. The coverage
+artifact is cumulative: Internet Archive progress is counted from the metadata
+cache, while providers that require an operator-supplied validated URL are
+classified as deferred across the backlog instead of being probed from search
+URLs. The plan's `nextBatch.command` advances from the cumulative cache count,
+so rerunning the default batch cannot move the queue backwards.
 
 Provider research references used for the current connector policy:
 

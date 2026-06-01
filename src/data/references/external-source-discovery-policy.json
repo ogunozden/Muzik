@@ -1,0 +1,94 @@
+{
+  "version": 1,
+  "policyVersion": "external-source-discovery-dry-run-v1",
+  "defaultMode": "dry-run",
+  "scope": "missing",
+  "acceptedThreshold": 92,
+  "cacheTtlDays": 14,
+  "timeoutMs": 8000,
+  "maxResponseBytes": 262144,
+  "directAutoAttachAllowed": false,
+  "writeSafety": {
+    "dryRunDefault": true,
+    "discoveryMayAttachDirectly": false,
+    "acceptedReadyRequiresImportDryRun": true,
+    "acceptedReadyImportTarget": "npm run import:external-references -- --input output/external-source-discovery/accepted-import-ready.json --dry-run"
+  },
+  "acceptedRequirements": [
+    "https-url",
+    "provider-profile-match",
+    "catalog-id-or-deterministic-metadata-match",
+    "duplicate-identity-free",
+    "metadata-conflict-free",
+    "checked-at-date",
+    "complete-evidence",
+    "provider-specific-verification",
+    "confidence-threshold"
+  ],
+  "forbiddenAutomation": [
+    "search-result-scraping-to-accepted",
+    "pdf-audio-video-media-download",
+    "remote-site-content-copy",
+    "arbitrary-url-server-side-fetch",
+    "unsupported-provider-endpoint",
+    "write-before-clean-dry-run"
+  ],
+  "providers": [
+    {
+      "id": "internet-archive",
+      "connector": "internet-archive",
+      "mode": "structured-search-metadata",
+      "baseUrl": "https://archive.org",
+      "allowedHosts": ["archive.org"],
+      "provider": "archive",
+      "enabled": true,
+      "rateLimitPerSecond": 1,
+      "verificationRequiredForAccepted": ["archive-metadata-title", "archive-item-identifier"]
+    },
+    {
+      "id": "divanmakam",
+      "connector": "known-site-search-url",
+      "mode": "metadata-probe",
+      "baseUrl": "https://divanmakam.com",
+      "allowedHosts": ["divanmakam.com"],
+      "provider": "score",
+      "enabled": true,
+      "rateLimitPerSecond": 0.5,
+      "verificationRequiredForAccepted": ["html-title-or-og-title", "catalog-metadata-match"]
+    },
+    {
+      "id": "ogm-materyal",
+      "connector": "known-site-search-url",
+      "mode": "metadata-probe",
+      "baseUrl": "https://ogmmateryal.eba.gov.tr",
+      "allowedHosts": ["ogmmateryal.eba.gov.tr"],
+      "provider": "score",
+      "enabled": true,
+      "rateLimitPerSecond": 0.5,
+      "verificationRequiredForAccepted": ["html-title", "catalog-metadata-match"]
+    },
+    {
+      "id": "salihbora",
+      "connector": "known-site-search-url",
+      "mode": "metadata-probe",
+      "baseUrl": "https://www.salihbora.com",
+      "allowedHosts": ["www.salihbora.com", "salihbora.com"],
+      "provider": "score",
+      "enabled": true,
+      "rateLimitPerSecond": 0.5,
+      "verificationRequiredForAccepted": ["html-title", "catalog-metadata-match"]
+    },
+    {
+      "id": "youtube-oembed",
+      "connector": "youtube-oembed-verifier",
+      "mode": "verification-only",
+      "baseUrl": "https://www.youtube.com",
+      "allowedHosts": ["www.youtube.com", "youtube.com", "youtu.be"],
+      "provider": "youtube",
+      "enabled": true,
+      "discoverBySearch": false,
+      "rateLimitPerSecond": 1,
+      "verificationRequiredForAccepted": ["youtube-oembed-title", "youtube-oembed-provider"]
+    }
+  ]
+}

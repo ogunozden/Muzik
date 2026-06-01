@@ -1,0 +1,198 @@
+{
+  "version": 1,
+  "type": "external-source-discovery-conflicts",
+  "generatedAt": "2026-06-01T00:00:00.000Z",
+  "summary": {
+    "conflictCount": 4
+  },
+  "conflicts": [
+    {
+      "discoveryId": "muhayyer--ilahi--sofyan--duseli_bu_askin--dede_efendi:internet-archive:muhayyer-ilahi-sofyan-duseli-bu-askin-dede-efendi",
+      "catalogId": "muhayyer--ilahi--sofyan--duseli_bu_askin--dede_efendi",
+      "providerProfileId": "internet-archive",
+      "provider": "archive",
+      "connector": "internet-archive",
+      "status": "conflict",
+      "statusReason": "search-lead-not-source-evidence",
+      "checkedAt": "2026-06-01",
+      "searchQuery": "Muhayyer İLahi Sofyan Duseli Bu Askin Dede Efendi",
+      "searchUrl": "https://archive.org/search?query=Muhayyer%20%C4%B0Lahi%20Sofyan%20Duseli%20Bu%20Askin%20Dede%20Efendi",
+      "confidence": {
+        "score": 13,
+        "bucket": "needs-context",
+        "reasons": [
+          "provider-profile-search-lead",
+          "no-validated-source-url-yet",
+          "no-provider-metadata-evidence-yet",
+          "group-conflict-decision"
+        ]
+      },
+      "evidence": {
+        "complete": false,
+        "missing": [
+          "validated-https-source-url",
+          "provider-metadata",
+          "catalog-id-or-deterministic-metadata-match",
+          "duplicate-identity-check"
+        ],
+        "signals": [
+          "provider-profile-search-query"
+        ]
+      },
+      "catalog": {
+        "makam": "Muhayyer",
+        "form": "İlahi",
+        "usul": "Sofyan",
+        "title": "Duseli Bu Askin",
+        "composer": "Dede Efendi",
+        "priorityGroup": "pdf-and-musicxml"
+      },
+      "safety": {
+        "directAutoAttach": false,
+        "mediaDownload": false,
+        "sourceContentCopied": false
+      }
+    },
+    {
+      "discoveryId": "muhayyer--ilahi--sofyan--duseli_bu_askin--dede_efendi:divanmakam:muhayyer-ilahi-sofyan-duseli-bu-askin-dede-efendi",
+      "catalogId": "muhayyer--ilahi--sofyan--duseli_bu_askin--dede_efendi",
+      "providerProfileId": "divanmakam",
+      "provider": "score",
+      "connector": "known-site-search-url",
+      "status": "conflict",
+      "statusReason": "search-lead-not-source-evidence",
+      "checkedAt": "2026-06-01",
+      "searchQuery": "Muhayyer İLahi Sofyan Duseli Bu Askin Dede Efendi",
+      "searchUrl": "https://duckduckgo.com/?q=site%3Adivanmakam.com%2Fforum%2F+Muhayyer%20%C4%B0Lahi%20Sofyan%20Duseli%20Bu%20Askin%20Dede%20Efendi",
+      "confidence": {
+        "score": 31,
+        "bucket": "needs-context",
+        "reasons": [
+          "provider-profile-search-lead",
+          "no-validated-source-url-yet",
+          "no-provider-metadata-evidence-yet",
+          "group-conflict-decision"
+        ]
+      },
+      "evidence": {
+        "complete": false,
+        "missing": [
+          "validated-https-source-url",
+          "provider-metadata",
+          "catalog-id-or-deterministic-metadata-match",
+          "duplicate-identity-check"
+        ],
+        "signals": [
+          "provider-profile-search-query"
+        ]
+      },
+      "catalog": {
+        "makam": "Muhayyer",
+        "form": "İlahi",
+        "usul": "Sofyan",
+        "title": "Duseli Bu Askin",
+        "composer": "Dede Efendi",
+        "priorityGroup": "pdf-and-musicxml"
+      },
+      "safety": {
+        "directAutoAttach": false,
+        "mediaDownload": false,
+        "sourceContentCopied": false
+      }
+    },
+    {
+      "discoveryId": "muhayyer--ilahi--sofyan--duseli_bu_askin--dede_efendi:ogm-materyal:muhayyer-ilahi-sofyan-duseli-bu-askin-dede-efendi",
+      "catalogId": "muhayyer--ilahi--sofyan--duseli_bu_askin--dede_efendi",
+      "providerProfileId": "ogm-materyal",
+      "provider": "score",
+      "connector": "known-site-search-url",
+      "status": "conflict",
+      "statusReason": "search-lead-not-source-evidence",
+      "checkedAt": "2026-06-01",
+      "searchQuery": "Muhayyer İLahi Sofyan Duseli Bu Askin Dede Efendi",
+      "searchUrl": "https://duckduckgo.com/?q=site%3Aogmmateryal.eba.gov.tr+Muhayyer%20%C4%B0Lahi%20Sofyan%20Duseli%20Bu%20Askin%20Dede%20Efendi",
+      "confidence": {
+        "score": 25,
+        "bucket": "needs-context",
+        "reasons": [
+          "provider-profile-search-lead",
+          "no-validated-source-url-yet",
+          "no-provider-metadata-evidence-yet",
+          "group-conflict-decision"
+        ]
+      },
+      "evidence": {
+        "complete": false,
+        "missing": [
+          "validated-https-source-url",
+          "provider-metadata",
+          "catalog-id-or-deterministic-metadata-match",
+          "duplicate-identity-check"
+        ],
+        "signals": [
+          "provider-profile-search-query"
+        ]
+      },
+      "catalog": {
+        "makam": "Muhayyer",
+        "form": "İlahi",
+        "usul": "Sofyan",
+        "title": "Duseli Bu Askin",
+        "composer": "Dede Efendi",
+        "priorityGroup": "pdf-and-musicxml"
+      },
+      "safety": {
+        "directAutoAttach": false,
+        "mediaDownload": false,
+        "sourceContentCopied": false
+      }
+    },
+    {
+      "discoveryId": "muhayyer--ilahi--sofyan--duseli_bu_askin--dede_efendi:salihbora:muhayyer-ilahi-sofyan-duseli-bu-askin-dede-efendi",
+      "catalogId": "muhayyer--ilahi--sofyan--duseli_bu_askin--dede_efendi",
+      "providerProfileId": "salihbora",
+      "provider": "score",
+      "connector": "known-site-search-url",
+      "status": "conflict",
+      "statusReason": "search-lead-not-source-evidence",
+      "checkedAt": "2026-06-01",
+      "searchQuery": "Muhayyer İLahi Sofyan Duseli Bu Askin Dede Efendi",
+      "searchUrl": "https://duckduckgo.com/?q=site%3Asalihbora.com+Muhayyer%20%C4%B0Lahi%20Sofyan%20Duseli%20Bu%20Askin%20Dede%20Efendi",
+      "confidence": {
+        "score": 22,
+        "bucket": "needs-context",
+        "reasons": [
+          "provider-profile-search-lead",
+          "no-validated-source-url-yet",
+          "no-provider-metadata-evidence-yet",
+          "group-conflict-decision"
+        ]
+      },
+      "evidence": {
+        "complete": false,
+        "missing": [
+          "validated-https-source-url",
+          "provider-metadata",
+          "catalog-id-or-deterministic-metadata-match",
+          "duplicate-identity-check"
+        ],
+        "signals": [
+          "provider-profile-search-query"
+        ]
+      },
+      "catalog": {
+        "makam": "Muhayyer",
+        "form": "İlahi",
+        "usul": "Sofyan",
+        "title": "Duseli Bu Askin",
+        "composer": "Dede Efendi",
+        "priorityGroup": "pdf-and-musicxml"
+      },
+      "safety": {
+        "directAutoAttach": false,
+        "mediaDownload": false,
+        "sourceContentCopied": false
+      }
+    }
+  ]
+}

@@ -42,6 +42,12 @@ const MAPPING_FILE = path.join(
 );
 const COVERAGE_SUMMARY_FILE = path.join(PROJECT_ROOT, "output", "external-reference-coverage", "summary.json");
 const PROD_CYCLE_SUMMARY_FILE = path.join(PROJECT_ROOT, "output", "external-reference-coverage", "prod-cycle-summary.json");
+const SOURCE_DISCOVERY_RUN_FILE = path.join(PROJECT_ROOT, "output", "external-source-discovery", "discovery-run.json");
+const SOURCE_DISCOVERY_VERIFICATION_FILE = path.join(PROJECT_ROOT, "output", "external-source-discovery", "discovery-verification.json");
+const SOURCE_DISCOVERY_ACCEPTED_IMPORT_READY_FILE = path.join(PROJECT_ROOT, "output", "external-source-discovery", "accepted-import-ready.json");
+const SOURCE_DISCOVERY_PROVIDER_COVERAGE_FILE = path.join(PROJECT_ROOT, "output", "external-source-discovery", "provider-coverage.json");
+const SOURCE_DISCOVERY_NEGATIVE_CACHE_FILE = path.join(PROJECT_ROOT, "output", "external-source-discovery", "negative-cache.json");
+const SOURCE_DISCOVERY_COVERAGE_DELTA_FILE = path.join(PROJECT_ROOT, "output", "external-source-discovery", "coverage-delta.json");
 const AUTO_ATTACHED_FILE = path.join(PROJECT_ROOT, "src", "data", "references", "auto-attached-references.json");
 const FEEDBACK_FILE = path.join(PROJECT_ROOT, "src", "data", "references", "source-feedback-events.json");
 const MANUAL_CORRECTIONS_FILE = path.join(PROJECT_ROOT, "src", "data", "references", "manual-source-corrections.json");
@@ -330,6 +336,102 @@ interface ProdCycleSummary {
       verificationManifestAfterSha256?: string;
     } | null;
   };
+  sourceDiscovery?: {
+    lastRunOk?: boolean;
+    dryRun?: boolean;
+    processedMissingCatalogEntries?: number;
+    providerCount?: number;
+    candidateCount?: number;
+    acceptedReadyCount?: number;
+    needsReviewCount?: number;
+    conflictCount?: number;
+    negativeCacheCount?: number;
+    directAutoAttachCount?: number;
+    targetScript?: string;
+  };
+}
+
+interface SourceDiscoveryRunManifest {
+  generatedAt?: string;
+  ok?: boolean;
+  dryRun?: boolean;
+  scope?: string;
+  processedMissingCatalogEntries?: number;
+  totalMissingCatalogEntries?: number;
+  providerCount?: number;
+  candidateCount?: number;
+  acceptedReadyCount?: number;
+  needsReviewCount?: number;
+  conflictCount?: number;
+  deferredCount?: number;
+  negativeCacheCount?: number;
+  directAutoAttachCount?: number;
+  targetImportDryRun?: string;
+}
+
+interface SourceDiscoveryVerificationManifest {
+  ok?: boolean;
+  errors?: unknown[];
+  warnings?: unknown[];
+  validationGates?: string[];
+  summary?: {
+    processedMissingCatalogEntries?: number;
+    providerCount?: number;
+    candidateCount?: number;
+    acceptedReadyCount?: number;
+    needsReviewCount?: number;
+    conflictCount?: number;
+    negativeCacheCount?: number;
+    directAutoAttachCount?: number;
+  };
+}
+
+interface SourceDiscoveryAcceptedImportReadyManifest {
+  summary?: {
+    acceptedReadyCount?: number;
+    directAutoAttachCount?: number;
+    reasonWhenEmpty?: string;
+  };
+  importContract?: {
+    targetScript?: string;
+    acceptedOnlyAfterValidation?: boolean;
+  };
+  candidates?: unknown[];
+}
+
+interface SourceDiscoveryProviderCoverageManifest {
+  providers?: Array<{
+    providerProfileId?: string;
+    connector?: string;
+    mode?: string;
+    candidateCount?: number;
+    acceptedReadyCount?: number;
+    needsReviewCount?: number;
+    conflictCount?: number;
+    deferredCount?: number;
+    negativeCacheCount?: number;
+  }>;
+}
+
+interface SourceDiscoveryNegativeCacheManifest {
+  summary?: {
+    negativeCacheCount?: number;
+  };
+}
+
+interface SourceDiscoveryCoverageDeltaManifest {
+  acceptedReadyCount?: number;
+  directAutoAttachCount?: number;
+  before?: {
+    curatedReferenceEntries?: number;
+    missingCuratedEntries?: number;
+    acceptedBulkCandidateEntries?: number;
+  };
+  afterDryRun?: {
+    curatedReferenceEntries?: number;
+    missingCuratedEntries?: number;
+    acceptedBulkCandidateEntries?: number;
+  };
 }
 
 interface SymbTrLayoutVerificationSummary {
@@ -591,6 +693,12 @@ async function getExternalReferenceState(request: Request) {
     symbtrLayoutVerificationSummary,
     symbtrLayoutEmptyImportDryRunManifest,
     prodCycleSummary,
+    sourceDiscoveryRun,
+    sourceDiscoveryVerification,
+    sourceDiscoveryAcceptedImportReady,
+    sourceDiscoveryProviderCoverage,
+    sourceDiscoveryNegativeCache,
+    sourceDiscoveryCoverageDelta,
     candidateReviewQueue,
     candidateReviewGroups,
     fullBacklog,
@@ -630,6 +738,12 @@ async function getExternalReferenceState(request: Request) {
     readJsonOrNull<SymbTrLayoutVerificationSummary>(SYMBTR_LAYOUT_VERIFICATION_SUMMARY_FILE),
     readJsonOrNull<Record<string, unknown>>(SYMBTR_LAYOUT_EMPTY_IMPORT_DRY_RUN_FILE),
     readJsonOrNull<ProdCycleSummary>(PROD_CYCLE_SUMMARY_FILE),
+    readJsonOrNull<SourceDiscoveryRunManifest>(SOURCE_DISCOVERY_RUN_FILE),
+    readJsonOrNull<SourceDiscoveryVerificationManifest>(SOURCE_DISCOVERY_VERIFICATION_FILE),
+    readJsonOrNull<SourceDiscoveryAcceptedImportReadyManifest>(SOURCE_DISCOVERY_ACCEPTED_IMPORT_READY_FILE),
+    readJsonOrNull<SourceDiscoveryProviderCoverageManifest>(SOURCE_DISCOVERY_PROVIDER_COVERAGE_FILE),
+    readJsonOrNull<SourceDiscoveryNegativeCacheManifest>(SOURCE_DISCOVERY_NEGATIVE_CACHE_FILE),
+    readJsonOrNull<SourceDiscoveryCoverageDeltaManifest>(SOURCE_DISCOVERY_COVERAGE_DELTA_FILE),
     readJsonOrNull<CandidateReviewRow[]>(CANDIDATE_REVIEW_QUEUE_FILE),
     readJsonOrNull<CandidateReviewGroup[]>(CANDIDATE_REVIEW_GROUPS_FILE),
     readJsonOrNull<CurationBacklogRow[]>(BACKLOG_FILE),
@@ -827,6 +941,60 @@ async function getExternalReferenceState(request: Request) {
         pdfVerificationManifestUnchanged:
           prodCycleSummary?.pdfVerification?.emptyImportDryRun?.verificationManifestUnchanged === true,
         targetScript: "npm run audit:prod-cycle",
+      },
+      sourceDiscovery: {
+        artifactPath: toProjectRelativePath(SOURCE_DISCOVERY_RUN_FILE),
+        verificationArtifactPath: toProjectRelativePath(SOURCE_DISCOVERY_VERIFICATION_FILE),
+        acceptedImportReadyArtifactPath: toProjectRelativePath(SOURCE_DISCOVERY_ACCEPTED_IMPORT_READY_FILE),
+        providerCoverageArtifactPath: toProjectRelativePath(SOURCE_DISCOVERY_PROVIDER_COVERAGE_FILE),
+        negativeCacheArtifactPath: toProjectRelativePath(SOURCE_DISCOVERY_NEGATIVE_CACHE_FILE),
+        coverageDeltaArtifactPath: toProjectRelativePath(SOURCE_DISCOVERY_COVERAGE_DELTA_FILE),
+        generatedAt: sourceDiscoveryRun?.generatedAt ?? null,
+        ok: sourceDiscoveryRun?.ok === true && sourceDiscoveryVerification?.ok === true,
+        dryRun: sourceDiscoveryRun?.dryRun === true,
+        scope: sourceDiscoveryRun?.scope ?? "missing",
+        processedMissingCatalogEntries:
+          sourceDiscoveryVerification?.summary?.processedMissingCatalogEntries
+          ?? sourceDiscoveryRun?.processedMissingCatalogEntries
+          ?? 0,
+        totalMissingCatalogEntries: sourceDiscoveryRun?.totalMissingCatalogEntries ?? 0,
+        providerCount: sourceDiscoveryVerification?.summary?.providerCount ?? sourceDiscoveryRun?.providerCount ?? 0,
+        candidateCount: sourceDiscoveryVerification?.summary?.candidateCount ?? sourceDiscoveryRun?.candidateCount ?? 0,
+        acceptedReadyCount:
+          sourceDiscoveryVerification?.summary?.acceptedReadyCount
+          ?? sourceDiscoveryAcceptedImportReady?.summary?.acceptedReadyCount
+          ?? sourceDiscoveryRun?.acceptedReadyCount
+          ?? 0,
+        needsReviewCount: sourceDiscoveryVerification?.summary?.needsReviewCount ?? sourceDiscoveryRun?.needsReviewCount ?? 0,
+        conflictCount: sourceDiscoveryVerification?.summary?.conflictCount ?? sourceDiscoveryRun?.conflictCount ?? 0,
+        deferredCount: sourceDiscoveryRun?.deferredCount ?? 0,
+        negativeCacheCount:
+          sourceDiscoveryVerification?.summary?.negativeCacheCount
+          ?? sourceDiscoveryNegativeCache?.summary?.negativeCacheCount
+          ?? sourceDiscoveryRun?.negativeCacheCount
+          ?? 0,
+        directAutoAttachCount:
+          sourceDiscoveryVerification?.summary?.directAutoAttachCount
+          ?? sourceDiscoveryCoverageDelta?.directAutoAttachCount
+          ?? sourceDiscoveryRun?.directAutoAttachCount
+          ?? null,
+        verificationErrorCount: Array.isArray(sourceDiscoveryVerification?.errors) ? sourceDiscoveryVerification.errors.length : 0,
+        verificationWarningCount: Array.isArray(sourceDiscoveryVerification?.warnings) ? sourceDiscoveryVerification.warnings.length : 0,
+        validationGateCount: Array.isArray(sourceDiscoveryVerification?.validationGates)
+          ? sourceDiscoveryVerification.validationGates.length
+          : 0,
+        targetScript: "npm run discover:external-sources",
+        verifyScript: "npm run verify:external-source-discovery",
+        targetImportDryRun:
+          sourceDiscoveryAcceptedImportReady?.importContract?.targetScript
+          ?? sourceDiscoveryRun?.targetImportDryRun
+          ?? null,
+        reasonWhenEmpty: sourceDiscoveryAcceptedImportReady?.summary?.reasonWhenEmpty ?? null,
+        providerCoverage: sourceDiscoveryProviderCoverage?.providers?.slice(0, 12) ?? [],
+        coverageDelta: {
+          before: sourceDiscoveryCoverageDelta?.before ?? null,
+          afterDryRun: sourceDiscoveryCoverageDelta?.afterDryRun ?? null,
+        },
       },
       candidateReviewGroupPage: {
         offset: candidateReviewGroupOffset,

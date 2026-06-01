@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Security Diff Scan: external-source-discovery-dry-run-v1</title>
+    <style>
+      body { font-family: Arial, sans-serif; margin: 32px; line-height: 1.5; color: #1f2937; }
+      h1, h2 { color: #111827; }
+      code { background: #f3f4f6; padding: 2px 4px; border-radius: 4px; }
+      .pass { color: #047857; font-weight: 700; }
+    </style>
+  </head>
+  <body>
+    <h1>Security Diff Scan: external-source-discovery-dry-run-v1</h1>
+    <p>Date: 2026-06-01</p>
+    <p>Scope: Local working-tree diff for discovery dry-run, prod-cycle gate wiring, <code>/references/curation</code> read-only UI/API exposure, generated discovery artifacts, and browser evidence artifacts.</p>
+    <h2>Result</h2>
+    <p class="pass">Findings: 0 / Status: pass</p>
+    <h2>Reviewed Controls</h2>
+    <ul>
+      <li>Discovery is dry-run only and <code>directAutoAttachCount</code> must remain <code>0</code>.</li>
+      <li>Accepted-ready output is import-manifest only and currently empty because search leads do not satisfy complete evidence.</li>
+      <li>CLI path arguments are constrained to project-local paths before read/write.</li>
+      <li>API and SSR page read fixed artifact paths; no request-controlled filesystem path is introduced.</li>
+      <li>UI renders artifact strings through React text rendering; no raw HTML injection path is introduced.</li>
+      <li>Prod-cycle invokes fixed npm scripts through structured command arrays.</li>
+    </ul>
+    <h2>Conclusion</h2>
+    <p>No reportable security findings were identified in this diff. The implementation preserves the accepted-only attachment boundary.</p>
+  </body>
+</html>

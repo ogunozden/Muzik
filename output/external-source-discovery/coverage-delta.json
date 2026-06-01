@@ -1,0 +1,18 @@
+{
+  "version": 1,
+  "type": "external-source-discovery-coverage-delta",
+  "generatedAt": "2026-06-01T00:00:00.000Z",
+  "before": {
+    "curatedReferenceEntries": 22,
+    "missingCuratedEntries": 2978,
+    "acceptedBulkCandidateEntries": 7
+  },
+  "afterDryRun": {
+    "curatedReferenceEntries": 22,
+    "missingCuratedEntries": 2978,
+    "acceptedBulkCandidateEntries": 7
+  },
+  "acceptedReadyCount": 0,
+  "directAutoAttachCount": 0,
+  "policy": "Dry-run discovery never changes product-attached references."
+}

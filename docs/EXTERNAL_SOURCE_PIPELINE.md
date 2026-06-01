@@ -47,6 +47,26 @@ CLI flow remains available for batch work:
    port `4015`, then writes
    `output/external-reference-coverage/prod-cycle-summary.json`.
 
+Discovery dry-run flow is the batch-first producer for the 2978 missing-source
+backlog. It does not attach sources directly and it does not treat search result
+URLs as evidence:
+
+```bash
+npm run discover:external-sources
+npm run verify:external-source-discovery
+npm run import:external-references -- --input output/external-source-discovery/accepted-import-ready.json --dry-run
+npm run audit:prod-cycle
+```
+
+The discovery command writes `output/external-source-discovery/discovery-run.json`,
+`discovery-candidates.json`, `accepted-import-ready.json`,
+`needs-review-groups.json`, `conflicts.json`, `provider-coverage.json`,
+`negative-cache.json` and `coverage-delta.json`. The first connector set is
+Internet Archive structured search metadata, known-site metadata probes for
+DîvânMakam/OGM Materyal/Salih Bora, and YouTube oEmbed verification for
+operator-supplied YouTube URLs. YouTube Data API search remains optional because
+it needs credentials and quota management.
+
 Examples:
 
 ```bash

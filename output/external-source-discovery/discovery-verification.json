@@ -1,0 +1,38 @@
+{
+  "version": 1,
+  "type": "external-source-discovery-verification",
+  "generatedAt": "2026-06-01T14:50:32.379Z",
+  "discoveryDir": "output/external-source-discovery",
+  "ok": true,
+  "errors": [],
+  "warnings": [],
+  "validationGates": [
+    "all-discovery-artifacts-present",
+    "dry-run-only",
+    "direct-auto-attach-zero",
+    "accepted-import-ready-dry-run",
+    "provider-coverage-drift",
+    "negative-cache-drift"
+  ],
+  "summary": {
+    "processedMissingCatalogEntries": 2978,
+    "providerCount": 4,
+    "candidateCount": 11912,
+    "acceptedReadyCount": 0,
+    "needsReviewCount": 11892,
+    "conflictCount": 4,
+    "negativeCacheCount": 11912,
+    "directAutoAttachCount": 0,
+    "acceptedImportDryRun": {
+      "input": "output/external-source-discovery/accepted-import-ready.json",
+      "dryRun": true,
+      "existingCandidateCount": 7,
+      "incomingCandidateCount": 0,
+      "addedCandidateCount": 0,
+      "skippedDuplicateCount": 0,
+      "outputCandidateCount": 7,
+      "output": "src/data/references/external-reference-bulk-candidates.json",
+      "addedCatalogIds": []
+    }
+  }
+}

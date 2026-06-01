@@ -22,6 +22,8 @@
     "audit:references-curation-runtime": "node scripts/audit-references-curation-runtime.mjs --base-url http://localhost:4015",
     "audit:external-references": "node scripts/audit-external-reference-coverage.mjs",
     "audit:prod-cycle": "node scripts/audit-prod-cycle.mjs --base-url http://localhost:4015 --summary-output output/external-reference-coverage/prod-cycle-summary.json",
+    "discover:external-sources": "node scripts/discover-external-sources.mjs --scope missing --providers internet-archive,divanmakam,ogm-materyal,salihbora --dry-run",
+    "verify:external-source-discovery": "node scripts/verify-external-source-discovery.mjs",
     "stage:external-source": "node scripts/stage-external-sources.mjs",
     "stage:external-sources": "node scripts/stage-external-sources.mjs",
     "map:external-references": "node scripts/map-external-source-inbox.mjs",

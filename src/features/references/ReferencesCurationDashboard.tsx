@@ -333,6 +333,50 @@ export interface ExternalReferenceState {
       pdfVerificationManifestUnchanged?: boolean;
       targetScript?: string | null;
     };
+    sourceDiscovery?: {
+      artifactPath?: string;
+      verificationArtifactPath?: string;
+      acceptedImportReadyArtifactPath?: string;
+      providerCoverageArtifactPath?: string;
+      negativeCacheArtifactPath?: string;
+      coverageDeltaArtifactPath?: string;
+      generatedAt?: string | null;
+      ok?: boolean;
+      dryRun?: boolean;
+      scope?: string;
+      processedMissingCatalogEntries?: number;
+      totalMissingCatalogEntries?: number;
+      providerCount?: number;
+      candidateCount?: number;
+      acceptedReadyCount?: number;
+      needsReviewCount?: number;
+      conflictCount?: number;
+      deferredCount?: number;
+      negativeCacheCount?: number;
+      directAutoAttachCount?: number | null;
+      verificationErrorCount?: number;
+      verificationWarningCount?: number;
+      validationGateCount?: number;
+      targetScript?: string | null;
+      verifyScript?: string | null;
+      targetImportDryRun?: string | null;
+      reasonWhenEmpty?: string | null;
+      providerCoverage?: Array<{
+        providerProfileId?: string;
+        connector?: string;
+        mode?: string;
+        candidateCount?: number;
+        acceptedReadyCount?: number;
+        needsReviewCount?: number;
+        conflictCount?: number;
+        deferredCount?: number;
+        negativeCacheCount?: number;
+      }>;
+      coverageDelta?: {
+        before?: Record<string, number> | null;
+        afterDryRun?: Record<string, number> | null;
+      };
+    };
     candidateReviewGroupPage?: CandidateReviewGroupPage;
     candidateReviewGroupFacets?: {
       statuses?: BacklogFacet[];
@@ -496,6 +540,7 @@ function buildArtifactInventory(state: ExternalReferenceState): ArtifactInventor
   const sourceIntakeAcceptedImportDryRunManifest = curation?.sourceIntakeAcceptedImportDryRunManifest;
   const symbtrLayoutVerificationManifest = curation?.symbtrLayoutVerificationManifest;
   const prodCycleAudit = curation?.prodCycleAudit;
+  const sourceDiscovery = curation?.sourceDiscovery;
 
   if (coverage) {
     addItem({
@@ -660,6 +705,46 @@ function buildArtifactInventory(state: ExternalReferenceState): ArtifactInventor
       `${formatNumber(prodCycleAudit.warningCount)} uyarı`,
     ],
     command: prodCycleAudit.targetScript,
+  } : null);
+
+  addItem(sourceDiscovery?.artifactPath ? {
+    id: "source-discovery-run",
+    label: "External source discovery run",
+    category: "Discovery",
+    status: sourceDiscovery.ok ? "dry-run" : "needs-review",
+    path: sourceDiscovery.artifactPath,
+    metrics: [
+      `${formatNumber(sourceDiscovery.processedMissingCatalogEntries)} eksik işlendi`,
+      `${formatNumber(sourceDiscovery.candidateCount)} aday`,
+      `${formatNumber(sourceDiscovery.acceptedReadyCount)} accepted-ready`,
+      `${formatNumber(sourceDiscovery.directAutoAttachCount)} direct attach`,
+    ],
+    command: sourceDiscovery.targetScript,
+  } : null);
+
+  addItem(sourceDiscovery?.acceptedImportReadyArtifactPath ? {
+    id: "source-discovery-accepted-import-ready",
+    label: "Discovery accepted import-ready",
+    category: "Discovery",
+    status: sourceDiscovery.acceptedReadyCount ? "needs-review" : "dry-run",
+    path: sourceDiscovery.acceptedImportReadyArtifactPath,
+    metrics: [
+      `${formatNumber(sourceDiscovery.acceptedReadyCount)} accepted-ready`,
+      `${formatNumber(sourceDiscovery.directAutoAttachCount)} direct attach`,
+    ],
+    command: sourceDiscovery.targetImportDryRun,
+  } : null);
+
+  addItem(sourceDiscovery?.providerCoverageArtifactPath ? {
+    id: "source-discovery-provider-coverage",
+    label: "Discovery provider coverage",
+    category: "Discovery",
+    status: "dry-run",
+    path: sourceDiscovery.providerCoverageArtifactPath,
+    metrics: [
+      `${formatNumber(sourceDiscovery.providerCount)} provider`,
+      `${formatNumber(sourceDiscovery.negativeCacheCount)} negative cache`,
+    ],
   } : null);
 
   addItem(symbtrLayoutVerificationManifest?.summaryPath ? {
@@ -1281,6 +1366,7 @@ export function ReferencesCurationDashboard({
   const sourceIntakeAcceptedImportDryRunManifest = state.curation?.sourceIntakeAcceptedImportDryRunManifest;
   const symbtrLayoutVerificationManifest = state.curation?.symbtrLayoutVerificationManifest;
   const prodCycleAudit = state.curation?.prodCycleAudit;
+  const sourceDiscovery = state.curation?.sourceDiscovery;
   const candidateReviewGroupPage = state.curation?.candidateReviewGroupPage;
   const candidateReviewGroups = state.curation?.candidateReviewGroups ?? [];
   const candidateReviewPage = state.curation?.candidateReviewPage;
@@ -1387,6 +1473,59 @@ export function ReferencesCurationDashboard({
                   </div>
                 </div>
               </div>
+            </section>
+          )}
+
+          {sourceDiscovery && (
+            <section className={`min-w-0 overflow-hidden border ${tokens.colors.border.base} ${tokens.radius.lg} ${tokens.colors.background.surface}`}>
+              <div className="flex flex-col gap-3 border-b border-[var(--color-border)] px-4 py-3 lg:flex-row lg:items-start lg:justify-between">
+                <div>
+                  <h2 className={`text-lg font-semibold ${tokens.colors.text.primary}`}>Discovery runs</h2>
+                  <p className={`text-xs ${tokens.colors.text.secondary}`}>
+                    {sourceDiscovery.ok ? "Dry-run OK" : "Review"} · {formatNumber(sourceDiscovery.providerCount)} provider · {formatNumber(sourceDiscovery.verificationErrorCount)} hata · {formatDate(sourceDiscovery.generatedAt)}
+                  </p>
+                  {sourceDiscovery.artifactPath && (
+                    <code className="mt-1 block break-all text-xs text-[var(--color-text-primary)]">{sourceDiscovery.artifactPath}</code>
+                  )}
+                  {sourceDiscovery.targetScript && (
+                    <code className="mt-1 block break-all text-xs text-[var(--color-text-primary)]">{sourceDiscovery.targetScript}</code>
+                  )}
+                  {sourceDiscovery.targetImportDryRun && (
+                    <code className="mt-1 block break-all text-xs text-[var(--color-text-primary)]">{sourceDiscovery.targetImportDryRun}</code>
+                  )}
+                </div>
+                <div className="grid w-full gap-2 text-sm sm:grid-cols-2 lg:max-w-4xl lg:grid-cols-4">
+                  <div>
+                    <div className={`text-xs uppercase ${tokens.colors.text.secondary}`}>Scope</div>
+                    <div className={tokens.colors.text.primary}>{sourceDiscovery.scope ?? "missing"} · {formatNumber(sourceDiscovery.processedMissingCatalogEntries)} / {formatNumber(sourceDiscovery.totalMissingCatalogEntries)}</div>
+                  </div>
+                  <div>
+                    <div className={`text-xs uppercase ${tokens.colors.text.secondary}`}>Candidates</div>
+                    <div className={tokens.colors.text.primary}>{formatNumber(sourceDiscovery.candidateCount)} aday · {formatNumber(sourceDiscovery.acceptedReadyCount)} ready</div>
+                  </div>
+                  <div>
+                    <div className={`text-xs uppercase ${tokens.colors.text.secondary}`}>Queue</div>
+                    <div className={tokens.colors.text.primary}>{formatNumber(sourceDiscovery.needsReviewCount)} review · {formatNumber(sourceDiscovery.conflictCount)} conflict · {formatNumber(sourceDiscovery.deferredCount)} deferred</div>
+                  </div>
+                  <div>
+                    <div className={`text-xs uppercase ${tokens.colors.text.secondary}`}>Safety</div>
+                    <div className={tokens.colors.text.primary}>{formatNumber(sourceDiscovery.directAutoAttachCount)} direct attach · {formatNumber(sourceDiscovery.negativeCacheCount)} cache</div>
+                  </div>
+                </div>
+              </div>
+              {(sourceDiscovery.providerCoverage?.length ?? 0) > 0 && (
+                <div className="grid gap-2 p-4 md:grid-cols-2 xl:grid-cols-4">
+                  {sourceDiscovery.providerCoverage?.map((provider) => (
+                    <article key={provider.providerProfileId} className={`min-w-0 border ${tokens.colors.border.base} ${tokens.radius.md} p-3`}>
+                      <div className={`text-sm font-semibold ${tokens.colors.text.primary}`}>{provider.providerProfileId}</div>
+                      <div className={`mt-1 text-xs ${tokens.colors.text.secondary}`}>{provider.connector} · {provider.mode}</div>
+                      <div className={`mt-2 text-xs ${tokens.colors.text.secondary}`}>
+                        {formatNumber(provider.candidateCount)} aday · {formatNumber(provider.acceptedReadyCount)} ready · {formatNumber(provider.negativeCacheCount)} cache
+                      </div>
+                    </article>
+                  ))}
+                </div>
+              )}
             </section>
           )}
 

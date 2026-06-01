@@ -78,6 +78,9 @@ export async function auditReferencesCurationRuntime({
   requireContains(html, "candidateReviewQueueEntries", "candidate review queue metric key", errors);
   requireContains(html, "prod-cycle-summary.json", "prod-cycle summary artifact", errors);
   requireContains(html, "npm run audit:prod-cycle", "prod-cycle command", errors);
+  requireContains(html, "Discovery", "discovery operation panel", errors);
+  requireContains(html, "output/external-source-discovery/discovery-run.json", "discovery run artifact", errors);
+  requireContains(html, "npm run discover:external-sources", "discovery command", errors);
   requireContains(html, "Read-only batch snapshot", "read-only snapshot message", errors);
 
   const summary = {
@@ -107,6 +110,9 @@ export async function auditReferencesCurationRuntime({
       hasCandidateQueueMetric: html.includes("candidateReviewQueueEntries"),
       hasProdCycleArtifact: html.includes("prod-cycle-summary.json"),
       hasProdCycleCommand: html.includes("npm run audit:prod-cycle"),
+      hasDiscoveryPanel: html.includes("Discovery"),
+      hasDiscoveryArtifact: html.includes("output/external-source-discovery/discovery-run.json"),
+      hasDiscoveryCommand: html.includes("npm run discover:external-sources"),
       hasReadOnlySnapshotMessage: html.includes("Read-only batch snapshot"),
     },
     ok: errors.length === 0,

@@ -13,6 +13,7 @@ const COVERAGE_ROOT = path.join(PROJECT_ROOT, "output", "external-reference-cove
 const SYMBTR_LAYOUT_REVIEW_ROOT = path.join(PROJECT_ROOT, "output", "symbtr-layout-review");
 const REFERENCES_ROOT = path.join(PROJECT_ROOT, "src", "data", "references");
 const PROD_CYCLE_SUMMARY_PATH = path.join(COVERAGE_ROOT, "prod-cycle-summary.json");
+const SOURCE_DISCOVERY_ROOT = path.join(PROJECT_ROOT, "output", "external-source-discovery");
 const DEFAULT_BACKLOG_LIMIT = 100;
 const DEFAULT_CANDIDATE_LIMIT = 100;
 const DEFAULT_CANDIDATE_GROUP_LIMIT = 80;
@@ -166,6 +167,77 @@ interface ProdCycleSummary {
   };
 }
 
+interface SourceDiscoveryRunManifest {
+  generatedAt?: string;
+  ok?: boolean;
+  dryRun?: boolean;
+  scope?: string;
+  processedMissingCatalogEntries?: number;
+  totalMissingCatalogEntries?: number;
+  providerCount?: number;
+  candidateCount?: number;
+  acceptedReadyCount?: number;
+  needsReviewCount?: number;
+  conflictCount?: number;
+  deferredCount?: number;
+  negativeCacheCount?: number;
+  directAutoAttachCount?: number;
+  targetImportDryRun?: string;
+}
+
+interface SourceDiscoveryVerificationManifest {
+  ok?: boolean;
+  errors?: unknown[];
+  warnings?: unknown[];
+  validationGates?: string[];
+  summary?: {
+    processedMissingCatalogEntries?: number;
+    providerCount?: number;
+    candidateCount?: number;
+    acceptedReadyCount?: number;
+    needsReviewCount?: number;
+    conflictCount?: number;
+    negativeCacheCount?: number;
+    directAutoAttachCount?: number;
+  };
+}
+
+interface SourceDiscoveryAcceptedImportReadyManifest {
+  summary?: {
+    acceptedReadyCount?: number;
+    reasonWhenEmpty?: string;
+  };
+  importContract?: {
+    targetScript?: string;
+  };
+}
+
+interface SourceDiscoveryProviderCoverageManifest {
+  providers?: Array<{
+    providerProfileId?: string;
+    connector?: string;
+    mode?: string;
+    candidateCount?: number;
+    acceptedReadyCount?: number;
+    needsReviewCount?: number;
+    conflictCount?: number;
+    deferredCount?: number;
+    negativeCacheCount?: number;
+  }>;
+}
+
+interface SourceDiscoveryNegativeCacheManifest {
+  summary?: {
+    negativeCacheCount?: number;
+  };
+}
+
+interface SourceDiscoveryCoverageDeltaManifest {
+  directAutoAttachCount?: number;
+  before?: Record<string, number>;
+  afterDryRun?: Record<string, number>;
+}
+
 interface SourceIntakeAcceptedImportDryRunManifest {
   generatedAt?: string;
   type?: string;
@@ -288,6 +360,12 @@ async function buildReadOnlyInitialState(): Promise<ExternalReferenceState> {
   const sourceIntakeAcceptedDryRunPath = path.join(COVERAGE_ROOT, "source-intake-accepted-import-dry-run.json");
   const layoutVerificationSummaryPath = path.join(SYMBTR_LAYOUT_REVIEW_ROOT, "layout-verification-summary.json");
   const layoutEmptyImportDryRunPath = path.join(SYMBTR_LAYOUT_REVIEW_ROOT, "layout-verification-empty-import-dry-run.json");
+  const sourceDiscoveryRunPath = path.join(SOURCE_DISCOVERY_ROOT, "discovery-run.json");
+  const sourceDiscoveryVerificationPath = path.join(SOURCE_DISCOVERY_ROOT, "discovery-verification.json");
+  const sourceDiscoveryAcceptedImportReadyPath = path.join(SOURCE_DISCOVERY_ROOT, "accepted-import-ready.json");
+  const sourceDiscoveryProviderCoveragePath = path.join(SOURCE_DISCOVERY_ROOT, "provider-coverage.json");
+  const sourceDiscoveryNegativeCachePath = path.join(SOURCE_DISCOVERY_ROOT, "negative-cache.json");
+  const sourceDiscoveryCoverageDeltaPath = path.join(SOURCE_DISCOVERY_ROOT, "coverage-delta.json");
   const mappingPath = path.join(COVERAGE_ROOT, "mapped-external-reference-candidates.json");
   const [
     coverage,
@@ -307,6 +385,12 @@ async function buildReadOnlyInitialState(): Promise<ExternalReferenceState> {
     layoutVerificationSummary,
     layoutEmptyImportDryRun,
     prodCycleSummary,
+    sourceDiscoveryRun,
+    sourceDiscoveryVerification,
+    sourceDiscoveryAcceptedImportReady,
+    sourceDiscoveryProviderCoverage,
+    sourceDiscoveryNegativeCache,
+    sourceDiscoveryCoverageDelta,
     candidateReviewQueueData,
     candidateReviewGroupsData,
     backlogData,
@@ -329,6 +413,12 @@ async function buildReadOnlyInitialState(): Promise<ExternalReferenceState> {
     readJsonOrNull<SymbTrLayoutVerificationSummary>(layoutVerificationSummaryPath),
     readJsonOrNull<Record<string, unknown>>(layoutEmptyImportDryRunPath),
     readJsonOrNull<ProdCycleSummary>(PROD_CYCLE_SUMMARY_PATH),
+    readJsonOrNull<SourceDiscoveryRunManifest>(sourceDiscoveryRunPath),
+    readJsonOrNull<SourceDiscoveryVerificationManifest>(sourceDiscoveryVerificationPath),
+    readJsonOrNull<SourceDiscoveryAcceptedImportReadyManifest>(sourceDiscoveryAcceptedImportReadyPath),
+    readJsonOrNull<SourceDiscoveryProviderCoverageManifest>(sourceDiscoveryProviderCoveragePath),
+    readJsonOrNull<SourceDiscoveryNegativeCacheManifest>(sourceDiscoveryNegativeCachePath),
+    readJsonOrNull<SourceDiscoveryCoverageDeltaManifest>(sourceDiscoveryCoverageDeltaPath),
     readJsonOrNull<CandidateReviewRow[]>(candidateQueuePath),
     readJsonOrNull<CandidateReviewGroup[]>(candidateGroupsPath),
     readJsonOrNull<CurationBacklogRow[]>(backlogPath),
@@ -477,6 +567,49 @@ async function buildReadOnlyInitialState(): Promise<ExternalReferenceState> {
         pdfVerificationManifestUnchanged:
           prodCycleSummary?.pdfVerification?.emptyImportDryRun?.verificationManifestUnchanged === true,
         targetScript: "npm run audit:prod-cycle",
+      },
+      sourceDiscovery: {
+        artifactPath: toProjectPath(sourceDiscoveryRunPath),
+        verificationArtifactPath: toProjectPath(sourceDiscoveryVerificationPath),
+        acceptedImportReadyArtifactPath: toProjectPath(sourceDiscoveryAcceptedImportReadyPath),
+        providerCoverageArtifactPath: toProjectPath(sourceDiscoveryProviderCoveragePath),
+        negativeCacheArtifactPath: toProjectPath(sourceDiscoveryNegativeCachePath),
+        coverageDeltaArtifactPath: toProjectPath(sourceDiscoveryCoverageDeltaPath),
+        generatedAt: sourceDiscoveryRun?.generatedAt ?? null,
+        ok: sourceDiscoveryRun?.ok === true && sourceDiscoveryVerification?.ok === true,
+        dryRun: sourceDiscoveryRun?.dryRun === true,
+        scope: sourceDiscoveryRun?.scope ?? "missing",
+        processedMissingCatalogEntries:
+          Number(sourceDiscoveryVerification?.summary?.processedMissingCatalogEntries ?? sourceDiscoveryRun?.processedMissingCatalogEntries ?? 0),
+        totalMissingCatalogEntries: Number(sourceDiscoveryRun?.totalMissingCatalogEntries ?? 0),
+        providerCount: Number(sourceDiscoveryVerification?.summary?.providerCount ?? sourceDiscoveryRun?.providerCount ?? 0),
+        candidateCount: Number(sourceDiscoveryVerification?.summary?.candidateCount ?? sourceDiscoveryRun?.candidateCount ?? 0),
+        acceptedReadyCount:
+          Number(sourceDiscoveryVerification?.summary?.acceptedReadyCount ?? sourceDiscoveryAcceptedImportReady?.summary?.acceptedReadyCount ?? sourceDiscoveryRun?.acceptedReadyCount ?? 0),
+        needsReviewCount: Number(sourceDiscoveryVerification?.summary?.needsReviewCount ?? sourceDiscoveryRun?.needsReviewCount ?? 0),
+        conflictCount: Number(sourceDiscoveryVerification?.summary?.conflictCount ?? sourceDiscoveryRun?.conflictCount ?? 0),
+        deferredCount: Number(sourceDiscoveryRun?.deferredCount ?? 0),
+        negativeCacheCount:
+          Number(sourceDiscoveryVerification?.summary?.negativeCacheCount ?? sourceDiscoveryNegativeCache?.summary?.negativeCacheCount ?? sourceDiscoveryRun?.negativeCacheCount ?? 0),
+        directAutoAttachCount:
+          Number(sourceDiscoveryVerification?.summary?.directAutoAttachCount ?? sourceDiscoveryCoverageDelta?.directAutoAttachCount ?? sourceDiscoveryRun?.directAutoAttachCount ?? 0),
+        verificationErrorCount: Array.isArray(sourceDiscoveryVerification?.errors) ? sourceDiscoveryVerification.errors.length : 0,
+        verificationWarningCount: Array.isArray(sourceDiscoveryVerification?.warnings) ? sourceDiscoveryVerification.warnings.length : 0,
+        validationGateCount: Array.isArray(sourceDiscoveryVerification?.validationGates)
+          ? sourceDiscoveryVerification.validationGates.length
+          : 0,
+        targetScript: "npm run discover:external-sources",
+        verifyScript: "npm run verify:external-source-discovery",
+        targetImportDryRun:
+          sourceDiscoveryAcceptedImportReady?.importContract?.targetScript
+          ?? sourceDiscoveryRun?.targetImportDryRun
+          ?? null,
+        reasonWhenEmpty: sourceDiscoveryAcceptedImportReady?.summary?.reasonWhenEmpty ?? null,
+        providerCoverage: sourceDiscoveryProviderCoverage?.providers?.slice(0, 12) ?? [],
+        coverageDelta: {
+          before: sourceDiscoveryCoverageDelta?.before ?? null,
+          afterDryRun: sourceDiscoveryCoverageDelta?.afterDryRun ?? null,
+        },
       },
       candidateReviewGroupPage: {
         offset: 0,

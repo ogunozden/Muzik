@@ -180,10 +180,14 @@ export interface ExternalReferenceState {
       nextBatchSize?: number;
       generatedReviewCandidates?: number;
       recommendedReviewGroupDecisions?: number;
+      plannedReviewPackets?: number;
+      plannedReviewGroups?: number;
       validationGates?: string[];
     };
     candidateReviewGroupDecisionRecommendationEntries?: number;
     candidateReviewGroupDecisionRecommendationsJson?: string;
+    candidateReviewBatchPlanEntries?: number;
+    candidateReviewBatchPlanJson?: string;
     coverageMatrixEntries?: number;
     coverageMatrixJson?: string;
     dedupeReportEntries?: number;
@@ -231,6 +235,15 @@ export interface ExternalReferenceState {
       policyVersion?: string | null;
       generatedAt?: string | null;
       summary?: Record<string, unknown> | null;
+    };
+    candidateReviewBatchPlanManifest?: {
+      artifactPath?: string;
+      packetCount?: number;
+      plannedGroupCount?: number;
+      plannedCandidateCount?: number;
+      packetSize?: number;
+      policyVersion?: string | null;
+      generatedAt?: string | null;
     };
     candidateReviewGroupPage?: CandidateReviewGroupPage;
     candidateReviewGroupFacets?: {
@@ -831,6 +844,7 @@ export function ReferencesCurationDashboard({
   const candidateReviewGroupManifest = state.curation?.candidateReviewGroupManifest;
   const candidateReviewGroupDecisionManifest = state.curation?.candidateReviewGroupDecisionManifest;
   const candidateReviewGroupDecisionRecommendationManifest = state.curation?.candidateReviewGroupDecisionRecommendationManifest;
+  const candidateReviewBatchPlanManifest = state.curation?.candidateReviewBatchPlanManifest;
   const candidateReviewGroupPage = state.curation?.candidateReviewGroupPage;
   const candidateReviewGroups = state.curation?.candidateReviewGroups ?? [];
   const candidateReviewPage = state.curation?.candidateReviewPage;
@@ -982,6 +996,11 @@ export function ReferencesCurationDashboard({
                 {candidateReviewGroupDecisionRecommendationManifest?.artifactPath && (
                   <code className="block break-all text-xs text-[var(--color-text-primary)]">
                     {candidateReviewGroupDecisionRecommendationManifest.artifactPath} · {formatNumber(candidateReviewGroupDecisionRecommendationManifest.decisionCount)} öneri
+                  </code>
+                )}
+                {candidateReviewBatchPlanManifest?.artifactPath && (
+                  <code className="block break-all text-xs text-[var(--color-text-primary)]">
+                    {candidateReviewBatchPlanManifest.artifactPath} · {formatNumber(candidateReviewBatchPlanManifest.packetCount)} paket · {formatNumber(candidateReviewBatchPlanManifest.plannedGroupCount)} grup · {formatNumber(candidateReviewBatchPlanManifest.plannedCandidateCount)} aday
                   </code>
                 )}
               </div>

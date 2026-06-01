@@ -197,6 +197,7 @@ async function buildReadOnlyInitialState(): Promise<ExternalReferenceState> {
   const candidateQueuePath = path.join(COVERAGE_ROOT, "symbtr-curated-reference-candidate-review-queue.json");
   const candidateGroupsPath = path.join(COVERAGE_ROOT, "symbtr-curated-reference-candidate-review-groups.json");
   const recommendationPath = path.join(COVERAGE_ROOT, "symbtr-curated-reference-candidate-review-group-decision-recommendations.json");
+  const batchPlanPath = path.join(COVERAGE_ROOT, "symbtr-curated-reference-candidate-review-batch-plan.json");
   const mappingPath = path.join(COVERAGE_ROOT, "mapped-external-reference-candidates.json");
   const [
     coverage,
@@ -210,6 +211,7 @@ async function buildReadOnlyInitialState(): Promise<ExternalReferenceState> {
     bulkCandidateManifest,
     groupDecisionManifest,
     groupDecisionRecommendations,
+    candidateReviewBatchPlan,
     candidateReviewQueueData,
     candidateReviewGroupsData,
     backlogData,
@@ -226,6 +228,7 @@ async function buildReadOnlyInitialState(): Promise<ExternalReferenceState> {
     readJsonOrNull<BulkCandidateManifest>(path.join(REFERENCES_ROOT, "external-reference-bulk-candidates.json")),
     readJsonOrNull<{decisions?: unknown[]}>(path.join(REFERENCES_ROOT, "candidate-review-group-decisions.json")),
     readJsonOrNull<{policyVersion?: string; generatedAt?: string; summary?: Record<string, unknown>; decisions?: unknown[]}>(recommendationPath),
+    readJsonOrNull<{policyVersion?: string; generatedAt?: string; summary?: Record<string, unknown>; packets?: unknown[]}>(batchPlanPath),
     readJsonOrNull<CandidateReviewRow[]>(candidateQueuePath),
     readJsonOrNull<CandidateReviewGroup[]>(candidateGroupsPath),
     readJsonOrNull<CurationBacklogRow[]>(backlogPath),
@@ -277,6 +280,15 @@ async function buildReadOnlyInitialState(): Promise<ExternalReferenceState> {
         policyVersion: groupDecisionRecommendations?.policyVersion ?? null,
         generatedAt: groupDecisionRecommendations?.generatedAt ?? null,
         summary: groupDecisionRecommendations?.summary ?? null,
+      },
+      candidateReviewBatchPlanManifest: {
+        artifactPath: toProjectPath(batchPlanPath),
+        packetCount: candidateReviewBatchPlan?.packets?.length ?? 0,
+        plannedGroupCount: Number(candidateReviewBatchPlan?.summary?.plannedGroupCount ?? 0),
+        plannedCandidateCount: Number(candidateReviewBatchPlan?.summary?.plannedCandidateCount ?? 0),
+        packetSize: Number(candidateReviewBatchPlan?.summary?.packetSize ?? 0),
+        policyVersion: candidateReviewBatchPlan?.policyVersion ?? null,
+        generatedAt: candidateReviewBatchPlan?.generatedAt ?? null,
       },
       candidateReviewGroupPage: {
         offset: 0,

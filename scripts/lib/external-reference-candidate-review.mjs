@@ -1,6 +1,8 @@
 import {getCandidateReviewGroupFingerprint} from "../../src/data/references/candidate-review-group-fingerprint.mjs";
 
 export const CANDIDATE_REVIEW_GROUP_DECISION_RECOMMENDATION_VERSION = "candidate-review-group-decision-recommendations-v1";
+export const CANDIDATE_REVIEW_BATCH_PLAN_VERSION = "candidate-review-batch-plan-v1";
+export const DEFAULT_CANDIDATE_REVIEW_PACKET_SIZE = 25;
 
 function buildProfileSearchQuery(row, profile) {
   const suffix = profile.provider === "youtube" ? "icra kayıt" : "nota";
@@ -230,4 +232,102 @@ export function buildCandidateReviewGroups(candidateReviewRows, groupDecisionsBy
     right.highestReviewConfidenceScore - left.highestReviewConfidenceScore ||
     left.catalogId.localeCompare(right.catalogId, "en")
   ));
+}
+
+function summarizeByValue(rows, field) {
+  const counts = rows.reduce((summary, row) => {
+    const value = String(row[field] ?? "unknown");
+    summary.set(value, (summary.get(value) ?? 0) + 1);
+    return summary;
+  }, new Map());
+
+  return Array.from(counts, ([value, count]) => ({value, count}))
+    .sort((left, right) => right.count - left.count || left.value.localeCompare(right.value, "en"));
+}
+
+function chunkRows(rows, chunkSize) {
+  const chunks = [];
+  for (let index = 0; index < rows.length; index += chunkSize) {
+    chunks.push(rows.slice(index, index + chunkSize));
+  }
+  return chunks;
+}
+
+export function buildCandidateReviewBatchPlan(candidateReviewGroups, candidateReviewRows, {
+  generatedAt,
+  packetSize = DEFAULT_CANDIDATE_REVIEW_PACKET_SIZE,
+  reviewedAt = "1970-01-01",
+} = {}) {
+  const rowsByCatalogId = candidateReviewRows.reduce((rowsById, row) => {
+    const rows = rowsById.get(row.catalogId) ?? [];
+    rows.push(row);
+    rowsById.set(row.catalogId, rows);
+    return rowsById;
+  }, new Map());
+  const activeGroups = candidateReviewGroups
+    .filter((group) => group.status === "needs-review" && group.deferredFromNextBatch !== true)
+    .sort((left, right) => (
+      right.highestReviewConfidenceScore - left.highestReviewConfidenceScore ||
+      left.priorityGroup.localeCompare(right.priorityGroup, "en") ||
+      left.catalogId.localeCompare(right.catalogId, "en")
+    ));
+  const packets = chunkRows(activeGroups, packetSize).map((groups, index) => {
+    const catalogIds = groups.map((group) => group.catalogId);
+    const packetRows = groups.flatMap((group) => rowsByCatalogId.get(group.catalogId) ?? []);
+
+    return {
+      packetId: `candidate-review-packet-${String(index + 1).padStart(4, "0")}`,
+      sequence: index + 1,
+      status: "needs-review",
+      reviewAction: "batch-review-provider-candidates",
+      groupCount: groups.length,
+      candidateCount: packetRows.length,
+      profileCount: new Set(packetRows.map((row) => row.profileId)).size,
+      highestReviewConfidenceScore: Math.max(...groups.map((group) => group.highestReviewConfidenceScore)),
+      profiles: Array.from(new Set(packetRows.map((row) => row.profileId))).sort((left, right) => left.localeCompare(right, "en")),
+      providers: Array.from(new Set(packetRows.map((row) => row.provider))).sort((left, right) => left.localeCompare(right, "en")),
+      confidenceLevels: summarizeByValue(packetRows, "reviewConfidenceLevel"),
+      priorityGroups: summarizeByValue(groups, "priorityGroup"),
+      makamCounts: summarizeByValue(groups, "makam").slice(0, 10),
+      formCounts: summarizeByValue(groups, "form").slice(0, 10),
+      catalogIds,
+      decisionTemplate: {
+        version: 1,
+        type: "candidate-review-group-decision-template",
+        policy:
+          "Packet decisions may reject, defer, or mark conflict review groups; accepted sources must be imported through validated bulk candidate manifests.",
+        decisions: groups.map((group) => ({
+          groupId: group.groupId,
+          catalogId: group.catalogId,
+          sourceGroupFingerprint: getCandidateReviewGroupFingerprint(group),
+          status: "rejected",
+          reason: "batch-reviewed-no-safe-source",
+          reviewedAt,
+          reviewedBy: "local-operator",
+        })),
+      },
+    };
+  });
+
+  return {
+    version: 1,
+    type: "candidate-review-batch-plan",
+    policyVersion: CANDIDATE_REVIEW_BATCH_PLAN_VERSION,
+    generatedAt,
+    summary: {
+      totalGroups: candidateReviewGroups.length,
+      candidateReviewQueueEntries: candidateReviewRows.length,
+      activeGroupCount: activeGroups.length,
+      conflictGroupCount: candidateReviewGroups.filter((group) => group.status === "conflict").length,
+      deferredGroupCount: candidateReviewGroups.filter((group) => group.deferredFromNextBatch === true).length,
+      rejectedGroupCount: candidateReviewGroups.filter((group) => group.status === "rejected").length,
+      packetSize,
+      packetCount: packets.length,
+      plannedGroupCount: packets.reduce((total, packet) => total + packet.groupCount, 0),
+      plannedCandidateCount: packets.reduce((total, packet) => total + packet.candidateCount, 0),
+      safetyPolicy:
+        "Review packets do not create accepted references and do not carry source URLs; they only group review candidates for operator batch decisions.",
+    },
+    packets,
+  };
 }

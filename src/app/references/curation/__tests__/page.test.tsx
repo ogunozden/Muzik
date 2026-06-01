@@ -17,6 +17,8 @@ const stateFixture = {
     candidateReviewQueueJson: "output/external-reference-coverage/symbtr-curated-reference-candidate-review-queue.json",
     candidateReviewGroupDecisionRecommendationEntries: 1,
     candidateReviewGroupDecisionRecommendationsJson: "output/external-reference-coverage/symbtr-curated-reference-candidate-review-group-decision-recommendations.json",
+    candidateReviewBatchPlanEntries: 119,
+    candidateReviewBatchPlanJson: "output/external-reference-coverage/symbtr-curated-reference-candidate-review-batch-plan.json",
     coverageMatrixEntries: 24,
     coverageMatrixJson: "output/external-reference-coverage/symbtr-curated-reference-coverage-matrix.json",
     dedupeReportEntries: 0,
@@ -31,7 +33,9 @@ const stateFixture = {
       deferredMissingEntries: 5,
       generatedReviewCandidates: 14890,
       recommendedReviewGroupDecisions: 1,
-      validationGates: ["candidate-review-group-decision-recommendation-drift", "dedupe-report-drift"],
+      plannedReviewPackets: 119,
+      plannedReviewGroups: 2973,
+      validationGates: ["candidate-review-group-decision-recommendation-drift", "candidate-review-batch-plan-drift", "dedupe-report-drift"],
     },
   },
   curation: {
@@ -114,6 +118,15 @@ const stateFixture = {
       policyVersion: "candidate-review-group-decision-recommendations-v1",
       generatedAt: "2026-06-01T00:00:00.000Z",
       summary: {recommendedDecisionCount: 1},
+    },
+    candidateReviewBatchPlanManifest: {
+      artifactPath: "output/external-reference-coverage/symbtr-curated-reference-candidate-review-batch-plan.json",
+      packetCount: 119,
+      plannedGroupCount: 2973,
+      plannedCandidateCount: 14865,
+      packetSize: 25,
+      policyVersion: "candidate-review-batch-plan-v1",
+      generatedAt: "2026-06-01T00:00:00.000Z",
     },
     candidateReviewGroupPage: {
       offset: 0,
@@ -357,6 +370,8 @@ describe("ReferencesCurationPage", () => {
     expect(screen.getByText("output/external-reference-coverage/symbtr-curated-reference-candidate-review-groups.json")).toBeDefined();
     expect(screen.getByText(/candidate-review-group-decisions\.json/)).toBeDefined();
     expect(screen.getByText(/candidate-review-group-decision-recommendations\.json/)).toBeDefined();
+    expect(screen.getByText(/candidate-review-batch-plan\.json/)).toBeDefined();
+    expect(screen.getByText(/119 paket/)).toBeDefined();
     expect(screen.getByText("review-provider-candidates")).toBeDefined();
     expect(screen.getByLabelText("Grup durum")).toBeDefined();
     expect(screen.getByLabelText("Karar durum")).toBeDefined();

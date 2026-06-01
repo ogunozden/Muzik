@@ -69,6 +69,12 @@ const CANDIDATE_REVIEW_GROUP_DECISION_RECOMMENDATIONS_FILE = path.join(
   "external-reference-coverage",
   "symbtr-curated-reference-candidate-review-group-decision-recommendations.json",
 );
+const CANDIDATE_REVIEW_BATCH_PLAN_FILE = path.join(
+  PROJECT_ROOT,
+  "output",
+  "external-reference-coverage",
+  "symbtr-curated-reference-candidate-review-batch-plan.json",
+);
 const TEMP_INPUT_DIR = path.join(PROJECT_ROOT, "output", "external-reference-coverage", "ui-input");
 const JSON_MAX_BUFFER_BYTES = 1024 * 1024 * 12;
 const MAX_BULK_TEXT_CHARS = 100_000;
@@ -207,6 +213,20 @@ interface CandidateReviewGroupDecisionRecommendationManifest {
   generatedAt?: string;
   summary?: Record<string, unknown>;
   decisions?: CandidateReviewGroupDecisionRecommendation[];
+}
+
+interface CandidateReviewBatchPlanManifest {
+  version?: number;
+  type?: string;
+  policyVersion?: string;
+  generatedAt?: string;
+  summary?: {
+    packetCount?: number;
+    plannedGroupCount?: number;
+    plannedCandidateCount?: number;
+    packetSize?: number;
+  };
+  packets?: unknown[];
 }
 
 interface BulkCandidateManifest {
@@ -429,6 +449,7 @@ async function getExternalReferenceState(request: Request) {
     bulkCandidateManifest,
     candidateReviewGroupDecisionManifest,
     candidateReviewGroupDecisionRecommendationManifest,
+    candidateReviewBatchPlanManifest,
     candidateReviewQueue,
     candidateReviewGroups,
     fullBacklog,
@@ -462,6 +483,7 @@ async function getExternalReferenceState(request: Request) {
     readJsonOrNull<BulkCandidateManifest>(BULK_CANDIDATES_FILE),
     readJsonOrNull<CandidateReviewGroupDecisionManifest>(CANDIDATE_REVIEW_GROUP_DECISIONS_FILE),
     readJsonOrNull<CandidateReviewGroupDecisionRecommendationManifest>(CANDIDATE_REVIEW_GROUP_DECISION_RECOMMENDATIONS_FILE),
+    readJsonOrNull<CandidateReviewBatchPlanManifest>(CANDIDATE_REVIEW_BATCH_PLAN_FILE),
     readJsonOrNull<CandidateReviewRow[]>(CANDIDATE_REVIEW_QUEUE_FILE),
     readJsonOrNull<CandidateReviewGroup[]>(CANDIDATE_REVIEW_GROUPS_FILE),
     readJsonOrNull<CurationBacklogRow[]>(BACKLOG_FILE),
@@ -553,6 +575,17 @@ async function getExternalReferenceState(request: Request) {
         policyVersion: candidateReviewGroupDecisionRecommendationManifest?.policyVersion ?? null,
         generatedAt: candidateReviewGroupDecisionRecommendationManifest?.generatedAt ?? null,
         summary: candidateReviewGroupDecisionRecommendationManifest?.summary ?? null,
+      },
+      candidateReviewBatchPlanManifest: {
+        artifactPath: typeof coverage?.candidateReviewBatchPlanJson === "string"
+          ? coverage.candidateReviewBatchPlanJson
+          : toProjectRelativePath(CANDIDATE_REVIEW_BATCH_PLAN_FILE),
+        packetCount: candidateReviewBatchPlanManifest?.packets?.length ?? 0,
+        plannedGroupCount: candidateReviewBatchPlanManifest?.summary?.plannedGroupCount ?? 0,
+        plannedCandidateCount: candidateReviewBatchPlanManifest?.summary?.plannedCandidateCount ?? 0,
+        packetSize: candidateReviewBatchPlanManifest?.summary?.packetSize ?? 0,
+        policyVersion: candidateReviewBatchPlanManifest?.policyVersion ?? null,
+        generatedAt: candidateReviewBatchPlanManifest?.generatedAt ?? null,
       },
       candidateReviewGroupPage: {
         offset: candidateReviewGroupOffset,

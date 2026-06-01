@@ -350,6 +350,16 @@ tek kurala bağlamaktır.
       `sourceGroupFingerprint` taşır. `curation:validate` ve import script'i,
       operator kararının güncel generated review group ile aynı candidate setine
       ait olduğunu doğrulamadan karar manifest'ine yazmaz.
+      2026-06-01 ek review packet plan kapısı: `audit:external-references`
+      artık 2973 aktif needs-review grubu 25'lik 119 güvenli review paketine
+      bölen `symbtr-curated-reference-candidate-review-batch-plan.json`
+      artifact'ini üretir. Paketler accepted kaynak üretmez, source URL/source
+      id taşımaz, yalnız catalog id'leri ve `sourceGroupFingerprint` içeren
+      rejected/deferred/conflict karar şablonu sağlar. `curation:validate`
+      `candidate-review-batch-plan-drift` kapısıyla packet count, planlanan grup
+      sayısı, queue row count, aktif group drift'i ve source-field yasağını
+      doğrular; `/references/curation` packet plan path/count bilgisini salt
+      okunur snapshot ve tokenlı API state içinde gösterir.
 - [ ] PDF vector ölçü adayları gerçek ölçü kutusuna terfi etmeden önce insan
       veya görsel regresyon doğrulaması bekliyor. Pipeline, review artifact'i,
       verification manifest'i ve Eser Takip UI yolu hazır; gerçek manifest şu
@@ -760,6 +770,18 @@ tek kurala bağlamaktır.
         `/references/curation` `Karar önerisi` kontrolü mevcut filtrelerle
         öneri manifestini JSON alanına alır; import hâlâ dry-run/write ayrımıyla
         mevcut karar import script'inden geçer.
+64. [x] Candidate review group batch packet planı eklendi:
+        `scripts/lib/external-reference-candidate-review.mjs` aktif
+        needs-review grupları source URL taşımayan review paketlerine böler;
+        `audit:external-references` 119 paket / 2973 aktif grup /
+        14865 review adayı için
+        `symbtr-curated-reference-candidate-review-batch-plan.json` üretir.
+        Her paket kendi karar şablonunda `sourceGroupFingerprint` taşır ve
+        default `rejected` satırları yalnız operatör batch kararı için tasarlanır;
+        accepted kaynak üretimi hâlâ bulk candidate import + validation hattıyla
+        sınırlıdır. `curation:validate`, API state ve `/references/curation`
+        dashboard'u packet planı drift/source-field kapısıyla doğrular ve
+        görünür yapar.
 
 ### Doğrulama Notu
 

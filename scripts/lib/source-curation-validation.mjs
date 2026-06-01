@@ -34,6 +34,7 @@ const CANDIDATE_REVIEW_STATUSES = new Set(["needs-review", "conflict"]);
 const CANDIDATE_REVIEW_GROUP_STATUSES = new Set(["needs-review", "conflict", "rejected", "deferred"]);
 const CANDIDATE_REVIEW_GROUP_DECISION_STATUSES = new Set(["rejected", "conflict", "deferred"]);
 const CANDIDATE_REVIEW_GROUP_DECISION_RECOMMENDATION_TYPE = "candidate-review-group-decision-recommendations";
+const CANDIDATE_REVIEW_BATCH_PLAN_TYPE = "candidate-review-batch-plan";
 const COVERAGE_MATRIX_TYPE = "external-reference-coverage-matrix";
 const DEDUPE_REPORT_TYPE = "external-reference-dedupe-report";
 const PROVIDERS = new Set(["score", "symbtr", "youtube", "archive", "github"]);
@@ -63,6 +64,7 @@ const REQUIRED_BATCH_VALIDATION_GATES = [
   "candidate-review-group-drift",
   "candidate-review-group-decision-drift",
   "candidate-review-group-decision-recommendation-drift",
+  "candidate-review-batch-plan-drift",
   "coverage-matrix-drift",
   "dedupe-report-drift",
 ];
@@ -81,6 +83,17 @@ function isHttpUrl(value) {
   } catch {
     return false;
   }
+}
+
+function hasSourceIdentityKey(value) {
+  if (!value || typeof value !== "object") return false;
+  if (Array.isArray(value)) return value.some(hasSourceIdentityKey);
+  return Object.entries(value).some(([key, child]) => (
+    key === "sourceId" ||
+    key === "sourceUrl" ||
+    key === "url" ||
+    hasSourceIdentityKey(child)
+  ));
 }
 
 function normalizedHost(value) {
@@ -205,6 +218,8 @@ function validateBatchReport(summary, actualCandidateReviewCount, actualCandidat
     "generatedReviewCandidates",
     "generatedReviewGroups",
     "recommendedReviewGroupDecisions",
+    "plannedReviewPackets",
+    "plannedReviewGroups",
   ];
   for (const field of integerFields) {
     if (!Number.isInteger(report[field]) || report[field] < 0) {
@@ -241,6 +256,12 @@ function validateBatchReport(summary, actualCandidateReviewCount, actualCandidat
   }
   if (report.recommendedReviewGroupDecisions !== summary?.candidateReviewGroupDecisionRecommendationEntries) {
     errors.push("coverage-summary: batchReport.recommendedReviewGroupDecisions must match candidateReviewGroupDecisionRecommendationEntries");
+  }
+  if (report.plannedReviewPackets !== summary?.candidateReviewBatchPlanEntries) {
+    errors.push("coverage-summary: batchReport.plannedReviewPackets must match candidateReviewBatchPlanEntries");
+  }
+  if (report.plannedReviewGroups > report.generatedReviewGroups) {
+    errors.push("coverage-summary: batchReport.plannedReviewGroups cannot exceed generatedReviewGroups");
   }
   if (report.newlyAcceptedCatalogEntries > summary?.acceptedBulkCandidateEntries) {
     errors.push("coverage-summary: batchReport.newlyAcceptedCatalogEntries cannot exceed acceptedBulkCandidateEntries");
@@ -499,6 +520,7 @@ export function validateSourceCurationRegistries({
   candidateReviewGroups,
   candidateReviewGroupDecisions,
   candidateReviewGroupDecisionRecommendations,
+  candidateReviewBatchPlan,
   coverageMatrix,
   dedupeReport,
   bulkCandidates,
@@ -1072,6 +1094,113 @@ export function validateSourceCurationRegistries({
           }
         }
       }
+
+      if (candidateReviewBatchPlan !== undefined) {
+        if (!candidateReviewBatchPlan || typeof candidateReviewBatchPlan !== "object") {
+          errors.push("candidate-review-batch-plan: artifact must be an object");
+        } else if (Array.isArray(candidateReviewGroups)) {
+          if (candidateReviewBatchPlan.version !== 1) {
+            errors.push("candidate-review-batch-plan: version must be 1");
+          }
+          if (candidateReviewBatchPlan.type !== CANDIDATE_REVIEW_BATCH_PLAN_TYPE) {
+            errors.push(`candidate-review-batch-plan: type must be ${CANDIDATE_REVIEW_BATCH_PLAN_TYPE}`);
+          }
+          if (!Array.isArray(candidateReviewBatchPlan.packets)) {
+            errors.push("candidate-review-batch-plan: packets must be an array");
+          } else {
+            const activeReviewGroups = candidateReviewGroups.filter(
+              (group) => group.status === "needs-review" && group.deferredFromNextBatch !== true,
+            );
+            const activeReviewGroupIds = new Set(activeReviewGroups.map((group) => group.groupId));
+            const reviewGroupByCatalogId = new Map(candidateReviewGroups.map((group) => [group.catalogId, group]));
+            const plannedCatalogIds = [];
+
+            validateUnique(candidateReviewBatchPlan.packets.map((packet) => packet.packetId), "candidate-review-batch-plan", errors);
+
+            for (const packet of candidateReviewBatchPlan.packets) {
+              const packetLabel = packet?.packetId ?? "<missing-packet-id>";
+              if (!isNonEmptyString(packet?.packetId)) {
+                errors.push("candidate-review-batch-plan: packetId is required");
+              }
+              if (packet?.status !== "needs-review") {
+                errors.push(`candidate-review-batch-plan: ${packetLabel} status must be needs-review`);
+              }
+              if (hasSourceIdentityKey(packet)) {
+                errors.push(`candidate-review-batch-plan: ${packetLabel} must not carry accepted source ids or source URLs`);
+              }
+              if (!Array.isArray(packet?.catalogIds) || packet.catalogIds.length === 0) {
+                errors.push(`candidate-review-batch-plan: ${packetLabel} catalogIds must be a non-empty array`);
+                continue;
+              }
+              if (!Number.isInteger(packet.groupCount) || packet.groupCount !== packet.catalogIds.length) {
+                errors.push(`candidate-review-batch-plan: ${packetLabel} groupCount must match catalogIds`);
+              }
+
+              const expectedCandidateCount = packet.catalogIds.reduce(
+                (total, catalogId) => total + (candidateRowsByCatalogId.get(catalogId) ?? []).length,
+                0,
+              );
+              if (!Number.isInteger(packet.candidateCount) || packet.candidateCount !== expectedCandidateCount) {
+                errors.push(`candidate-review-batch-plan: ${packetLabel} candidateCount must match review queue rows`);
+              }
+
+              if (!Array.isArray(packet?.decisionTemplate?.decisions) || packet.decisionTemplate.decisions.length !== packet.catalogIds.length) {
+                errors.push(`candidate-review-batch-plan: ${packetLabel} decisionTemplate decisions must match catalogIds`);
+              }
+
+              for (const catalogId of packet.catalogIds) {
+                plannedCatalogIds.push(catalogId);
+                const group = reviewGroupByCatalogId.get(catalogId);
+                if (!group || !activeReviewGroupIds.has(group.groupId)) {
+                  errors.push(`candidate-review-batch-plan: ${packetLabel} catalogId ${catalogId} is not an active needs-review group`);
+                  continue;
+                }
+
+                const decision = packet.decisionTemplate?.decisions?.find((row) => row.catalogId === catalogId);
+                if (!decision) {
+                  errors.push(`candidate-review-batch-plan: ${packetLabel} missing decision template row for ${catalogId}`);
+                } else {
+                  if (decision.status === "accepted" || decision.sourceId !== undefined || decision.sourceUrl !== undefined || decision.url !== undefined) {
+                    errors.push(`candidate-review-batch-plan: ${packetLabel} decision template for ${catalogId} must not accept or carry source URLs`);
+                  }
+                  if (decision.groupId !== group.groupId) {
+                    errors.push(`candidate-review-batch-plan: ${packetLabel} decision groupId must match ${group.groupId}`);
+                  }
+                  if (decision.sourceGroupFingerprint !== getCandidateReviewGroupFingerprint(group)) {
+                    errors.push(`candidate-review-batch-plan: ${packetLabel} sourceGroupFingerprint must match ${group.groupId}`);
+                  }
+                }
+              }
+            }
+
+            validateUnique(plannedCatalogIds, "candidate-review-batch-plan catalogIds", errors);
+            const summary = candidateReviewBatchPlan.summary ?? {};
+            if (summary.totalGroups !== candidateReviewGroups.length) {
+              errors.push("candidate-review-batch-plan: summary.totalGroups must match candidate review groups");
+            }
+            if (summary.candidateReviewQueueEntries !== candidateReviewQueue.length) {
+              errors.push("candidate-review-batch-plan: summary.candidateReviewQueueEntries must match candidate review queue");
+            }
+            if (summary.activeGroupCount !== activeReviewGroups.length) {
+              errors.push("candidate-review-batch-plan: summary.activeGroupCount must match active needs-review groups");
+            }
+            if (summary.packetCount !== candidateReviewBatchPlan.packets.length) {
+              errors.push("candidate-review-batch-plan: summary.packetCount must match packets");
+            }
+            if (summary.plannedGroupCount !== plannedCatalogIds.length) {
+              errors.push("candidate-review-batch-plan: summary.plannedGroupCount must match packet catalogIds");
+            }
+            if (coverageSummary !== undefined) {
+              validateCoverageCount(
+                coverageSummary,
+                "candidateReviewBatchPlanEntries",
+                candidateReviewBatchPlan.packets.length,
+                errors,
+              );
+            }
+          }
+        }
+      }
     }
   }
 
@@ -1093,6 +1222,9 @@ export function validateSourceCurationRegistries({
         : 0,
       candidateReviewGroupDecisionRecommendationEntries: Array.isArray(candidateReviewGroupDecisionRecommendations?.decisions)
         ? candidateReviewGroupDecisionRecommendations.decisions.length
+        : 0,
+      candidateReviewBatchPlanEntries: Array.isArray(candidateReviewBatchPlan?.packets)
+        ? candidateReviewBatchPlan.packets.length
         : 0,
     },
   };

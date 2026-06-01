@@ -1,0 +1,13 @@
+path,area
+output/external-reference-coverage/summary.json,diff
+scripts/lib/__tests__/external-reference-candidate-review.test.mjs,diff
+scripts/lib/__tests__/source-curation-validation.test.mjs,diff
+scripts/lib/external-reference-audit.mjs,diff
+scripts/lib/external-reference-candidate-review.mjs,diff
+scripts/lib/source-curation-validation.mjs,diff
+scripts/validate-source-curation.mjs,diff
+src/app/api/external-references/__tests__/route.test.ts,diff
+src/app/api/external-references/route.ts,diff
+src/app/references/curation/__tests__/page.test.tsx,diff
+src/app/references/curation/page.tsx,diff
+src/features/references/ReferencesCurationDashboard.tsx,diff

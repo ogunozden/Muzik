@@ -158,6 +158,78 @@ function validRegistries() {
       },
       decisions: [],
     },
+    candidateReviewBatchPlan: {
+      version: 1,
+      type: "candidate-review-batch-plan",
+      policyVersion: "candidate-review-batch-plan-v1",
+      generatedAt: "2026-06-01T00:00:00.000Z",
+      summary: {
+        totalGroups: 1,
+        candidateReviewQueueEntries: 1,
+        activeGroupCount: 1,
+        conflictGroupCount: 0,
+        deferredGroupCount: 0,
+        rejectedGroupCount: 0,
+        packetSize: 25,
+        packetCount: 1,
+        plannedGroupCount: 1,
+        plannedCandidateCount: 1,
+        safetyPolicy: "Review packets do not create accepted references and do not carry source URLs; they only group review candidates for operator batch decisions.",
+      },
+      packets: [
+        {
+          packetId: "candidate-review-packet-0001",
+          sequence: 1,
+          status: "needs-review",
+          reviewAction: "batch-review-provider-candidates",
+          groupCount: 1,
+          candidateCount: 1,
+          profileCount: 1,
+          highestReviewConfidenceScore: 64,
+          profiles: ["youtube"],
+          providers: ["youtube"],
+          confidenceLevels: [{value: "low", count: 1}],
+          priorityGroups: [{value: "pdf-and-musicxml", count: 1}],
+          makamCounts: [{value: "Hicazkar", count: 1}],
+          formCounts: [{value: "Peşrev", count: 1}],
+          catalogIds: [catalog[0].id],
+          decisionTemplate: {
+            version: 1,
+            type: "candidate-review-group-decision-template",
+            policy: "Packet decisions may reject, defer, or mark conflict review groups; accepted sources must be imported through validated bulk candidate manifests.",
+            decisions: [
+              {
+                groupId: `${catalog[0].id}:review-group`,
+                catalogId: catalog[0].id,
+                sourceGroupFingerprint: getCandidateReviewGroupFingerprint({
+                  groupId: `${catalog[0].id}:review-group`,
+                  catalogId: catalog[0].id,
+                  status: "needs-review",
+                  reviewAction: "review-provider-candidates",
+                  candidateCount: 1,
+                  profileCount: 1,
+                  profiles: ["youtube"],
+                  providers: ["youtube"],
+                  confidenceLevels: ["low"],
+                  highestReviewConfidenceScore: 64,
+                  deferredFromNextBatch: false,
+                  makam: "Hicazkar",
+                  form: "Peşrev",
+                  usul: "Düyek",
+                  title: "Test Peşrev",
+                  composer: "Besteci",
+                  priorityGroup: "pdf-and-musicxml",
+                }),
+                status: "rejected",
+                reason: "batch-reviewed-no-safe-source",
+                reviewedAt: "2026-06-01",
+                reviewedBy: "local-operator",
+              },
+            ],
+          },
+        },
+      ],
+    },
     coverageMatrix: {
       version: 1,
       type: "external-reference-coverage-matrix",
@@ -215,6 +287,7 @@ function validRegistries() {
       candidateReviewGroupEntries: 1,
       candidateReviewGroupDecisionEntries: 0,
       candidateReviewGroupDecisionRecommendationEntries: 0,
+      candidateReviewBatchPlanEntries: 1,
       candidateReviewQueueByStatus: [{value: "needs-review", count: 1}],
       candidateReviewQueueByProfile: [{value: "youtube", count: 1}],
       candidateReviewGroupsByStatus: [{value: "needs-review", count: 1}],
@@ -242,6 +315,8 @@ function validRegistries() {
         generatedReviewCandidates: 1,
         generatedReviewGroups: 1,
         recommendedReviewGroupDecisions: 0,
+        plannedReviewPackets: 1,
+        plannedReviewGroups: 1,
         candidateReviewStatusCounts: [{value: "needs-review", count: 1}],
         duplicateAcceptedIdentityPolicy: "duplicate accepted URL identities fail validation before merge",
         autoAttachPolicy: "only accepted bulk candidates are counted as curated and eligible for auto-attach",
@@ -257,6 +332,7 @@ function validRegistries() {
           "candidate-review-group-drift",
           "candidate-review-group-decision-drift",
           "candidate-review-group-decision-recommendation-drift",
+          "candidate-review-batch-plan-drift",
           "coverage-matrix-drift",
           "dedupe-report-drift",
         ],
@@ -282,6 +358,7 @@ describe("source curation validation", () => {
           candidateReviewQueueEntries: 1,
           candidateReviewGroupEntries: 1,
           candidateReviewGroupDecisionRecommendationEntries: 0,
+          candidateReviewBatchPlanEntries: 1,
         }),
       }),
     );
@@ -448,6 +525,14 @@ describe("source curation validation", () => {
     registries.candidateReviewGroups[0].decisionReviewedBy = "local-operator";
     registries.coverageSummary.candidateReviewGroupDecisionEntries = 1;
     registries.coverageSummary.candidateReviewGroupsByStatus = [{value: "rejected", count: 1}];
+    registries.candidateReviewBatchPlan.summary.activeGroupCount = 0;
+    registries.candidateReviewBatchPlan.summary.packetCount = 0;
+    registries.candidateReviewBatchPlan.summary.plannedGroupCount = 0;
+    registries.candidateReviewBatchPlan.summary.plannedCandidateCount = 0;
+    registries.candidateReviewBatchPlan.packets = [];
+    registries.coverageSummary.candidateReviewBatchPlanEntries = 0;
+    registries.coverageSummary.batchReport.plannedReviewPackets = 0;
+    registries.coverageSummary.batchReport.plannedReviewGroups = 0;
 
     expect(validateSourceCurationRegistries(registries).errors).toEqual([]);
 
@@ -485,6 +570,14 @@ describe("source curation validation", () => {
     registries.coverageSummary.candidateReviewGroupDecisionRecommendationEntries = 1;
     registries.coverageSummary.batchReport.candidateReviewStatusCounts = [{value: "conflict", count: 1}];
     registries.coverageSummary.batchReport.recommendedReviewGroupDecisions = 1;
+    registries.candidateReviewBatchPlan.summary.activeGroupCount = 0;
+    registries.candidateReviewBatchPlan.summary.packetCount = 0;
+    registries.candidateReviewBatchPlan.summary.plannedGroupCount = 0;
+    registries.candidateReviewBatchPlan.summary.plannedCandidateCount = 0;
+    registries.candidateReviewBatchPlan.packets = [];
+    registries.coverageSummary.candidateReviewBatchPlanEntries = 0;
+    registries.coverageSummary.batchReport.plannedReviewPackets = 0;
+    registries.coverageSummary.batchReport.plannedReviewGroups = 0;
 
     expect(validateSourceCurationRegistries(registries).errors).toEqual([]);
 

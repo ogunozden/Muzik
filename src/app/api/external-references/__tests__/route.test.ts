@@ -294,6 +294,19 @@ const candidateReviewGroupsFixture = [
     priorityGroup: "pdf-and-musicxml",
   },
 ];
+const candidateReviewGroupDecisionsFixture = {
+  version: 1,
+  decisions: [
+    {
+      groupId: "rast--sarki--sofyan--ikinci_eser--ikinci_besteci:review-group",
+      catalogId: "rast--sarki--sofyan--ikinci_eser--ikinci_besteci",
+      status: "conflict",
+      reason: "batch-reviewed-source-mismatch",
+      reviewedAt: "2026-06-01",
+      reviewedBy: "local-operator",
+    },
+  ],
+};
 const OPS_TOKEN_HEADER = "x-external-reference-ops-token";
 
 function authedRequest(url: string, init: RequestInit = {}): Request {
@@ -348,6 +361,10 @@ function mockJsonFiles() {
 
     if (filePath.includes("external-reference-bulk-candidates.json")) {
       return JSON.stringify(bulkCandidatesFixture);
+    }
+
+    if (filePath.includes("candidate-review-group-decisions.json")) {
+      return JSON.stringify(candidateReviewGroupDecisionsFixture);
     }
 
     if (filePath.includes("symbtr-curated-reference-backlog.json")) {
@@ -414,6 +431,10 @@ describe("/api/external-references route", () => {
       groupCount: 2,
       visibleGroupCount: 2,
       artifactPath: "output/external-reference-coverage/symbtr-curated-reference-candidate-review-groups.json",
+    }));
+    expect(body.curation.candidateReviewGroupDecisionManifest).toEqual(expect.objectContaining({
+      decisionCount: 1,
+      artifactPath: "src/data/references/candidate-review-group-decisions.json",
     }));
     expect(body.curation.candidateReviewGroupPage).toEqual(expect.objectContaining({
       returnedCount: 2,
@@ -688,6 +709,45 @@ describe("/api/external-references route", () => {
       "--dry-run",
     ]);
     expect(unlink).toHaveBeenCalledWith(expect.stringContaining("ui-input"));
+  });
+
+  it("imports candidate review group decisions through a fixed batch script", async () => {
+    const request = authedRequest("http://localhost/api/external-references", {
+      method: "POST",
+      body: JSON.stringify({
+        action: "candidate-review-group-decision-import",
+        dryRun: false,
+        candidateReviewGroupDecisionManifestText: JSON.stringify({
+          version: 1,
+          decisions: [
+            {
+              groupId: `${CATALOG_ID}:review-group`,
+              catalogId: CATALOG_ID,
+              status: "rejected",
+              reason: "batch-reviewed-no-safe-source",
+              reviewedAt: "2026-06-01",
+              reviewedBy: "local-operator",
+            },
+          ],
+        }),
+      }),
+    });
+
+    const response = await POST(request);
+    const args = vi.mocked(execFile).mock.calls[0][1] as string[];
+    const [, writtenPayload] = vi.mocked(writeFile).mock.calls[0];
+
+    expect(response.status).toBe(200);
+    expect(JSON.parse(String(writtenPayload)).decisions[0]).toEqual(expect.objectContaining({
+      status: "rejected",
+      reason: "batch-reviewed-no-safe-source",
+    }));
+    expect(args).toEqual([
+      "scripts/import-candidate-review-group-decisions.mjs",
+      "--input",
+      expect.stringMatching(/^output\/external-reference-coverage\/ui-input\/.+\.json$/),
+      "--write",
+    ]);
   });
 
   it("rejects malformed candidate manifest JSON before writing a temp input file", async () => {

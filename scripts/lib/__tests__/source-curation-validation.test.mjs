@@ -142,6 +142,10 @@ function validRegistries() {
         priorityGroup: "pdf-and-musicxml",
       },
     ],
+    candidateReviewGroupDecisions: {
+      version: 1,
+      decisions: [],
+    },
     coverageSummary: {
       totalCatalogEntries: 2,
       curatedReferenceEntries: 1,
@@ -150,6 +154,7 @@ function validRegistries() {
       nextBatchSize: 1,
       candidateReviewQueueEntries: 1,
       candidateReviewGroupEntries: 1,
+      candidateReviewGroupDecisionEntries: 0,
       candidateReviewQueueByStatus: [{value: "needs-review", count: 1}],
       candidateReviewQueueByProfile: [{value: "youtube", count: 1}],
       candidateReviewGroupsByStatus: [{value: "needs-review", count: 1}],
@@ -189,6 +194,7 @@ function validRegistries() {
           "summary-count-drift",
           "metadata-strategy-profile-drift",
           "candidate-review-group-drift",
+          "candidate-review-group-decision-drift",
         ],
       },
     },
@@ -346,12 +352,43 @@ describe("source curation validation", () => {
         `candidate-review-groups: ${group.groupId} candidateCount must match review queue rows`,
         `candidate-review-groups: ${group.groupId} profileCount must match unique review profiles`,
         `candidate-review-groups: ${group.groupId} profiles must match review queue profiles`,
-        `candidate-review-groups: ${group.groupId} status must reflect review queue rows`,
+        `candidate-review-groups: ${group.groupId} status must reflect review queue rows or group decision`,
         `candidate-review-groups: ${group.groupId} highestReviewConfidenceScore must be between 0 and 100`,
         "coverage-summary: batchReport.generatedReviewGroups must match candidate review group rows",
         "coverage-summary: batchReport.generatedReviewGroups must equal missingAfterBatch",
       ]),
     );
+  });
+
+  it("validates batch review group decisions without allowing accepted source data", () => {
+    const registries = validRegistries();
+    registries.candidateReviewGroupDecisions.decisions.push({
+      groupId: `${catalog[0].id}:review-group`,
+      catalogId: catalog[0].id,
+      status: "rejected",
+      reason: "batch-reviewed-no-safe-source",
+      reviewedAt: "2026-06-01",
+      reviewedBy: "local-operator",
+    });
+    registries.candidateReviewGroups[0].status = "rejected";
+    registries.candidateReviewGroups[0].reviewAction = "batch-decision-rejected";
+    registries.candidateReviewGroups[0].decisionReason = "batch-reviewed-no-safe-source";
+    registries.candidateReviewGroups[0].decisionReviewedAt = "2026-06-01";
+    registries.candidateReviewGroups[0].decisionReviewedBy = "local-operator";
+    registries.coverageSummary.candidateReviewGroupDecisionEntries = 1;
+    registries.coverageSummary.candidateReviewGroupsByStatus = [{value: "rejected", count: 1}];
+
+    expect(validateSourceCurationRegistries(registries).errors).toEqual([]);
+
+    registries.candidateReviewGroupDecisions.decisions[0].status = "accepted";
+    registries.candidateReviewGroupDecisions.decisions[0].sourceUrl = "https://example.com/unsafe";
+    const result = validateSourceCurationRegistries(registries);
+
+    expect(result.errors).toEqual(expect.arrayContaining([
+      `candidate-review-group-decisions: ${catalog[0].id}:review-group invalid status accepted`,
+      `candidate-review-group-decisions: ${catalog[0].id}:review-group cannot accept sources without a validated source URL`,
+      `candidate-review-group-decisions: ${catalog[0].id}:review-group must not carry accepted source ids or source URLs`,
+    ]));
   });
 
   it("allows review-only candidates to carry needs-context confidence without widening auto-attached confidence", () => {

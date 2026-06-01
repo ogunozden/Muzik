@@ -6,6 +6,7 @@ import {
   buildBacklogRows,
   buildCandidateReviewGroups,
   buildCandidateReviewRows,
+  readCandidateReviewGroupDecisions,
   normalizeUrlForIdentity,
   readBulkReferenceCandidates,
   readResearchSourceProfiles,
@@ -273,6 +274,47 @@ describe("external reference audit", () => {
         searchUrl: expect.stringContaining("archive.org/search"),
       }),
     ]));
+  });
+
+  it("applies batch review group decisions without producing accepted sources", () => {
+    const root = createAuditRoot();
+    writeJson(root, "src/data/references/candidate-review-group-decisions.json", {
+      version: 1,
+      decisions: [
+        {
+          groupId: "rast--sarki--sofyan--baska_eser--diger_besteci:review-group",
+          catalogId: "rast--sarki--sofyan--baska_eser--diger_besteci",
+          status: "rejected",
+          reason: "batch-reviewed-no-safe-source",
+          reviewedAt: "2026-06-01",
+          reviewedBy: "local-operator",
+        },
+      ],
+    });
+    writeJson(root, "src/data/references/external-reference-bulk-candidates.json", {candidates: []});
+
+    const decisions = readCandidateReviewGroupDecisions(
+      catalogEntries,
+      path.join(root, "src/data/references/candidate-review-group-decisions.json"),
+    );
+    const rows = buildBacklogRows(catalogEntries, new Set(["ussak--ilahi--duyek--allah_emrin--zekai_dede"]), new Map());
+    const profiles = readResearchSourceProfiles(path.join(root, "src/data/references/research-source-profiles.json"));
+    const groups = buildCandidateReviewGroups(buildCandidateReviewRows(rows, profiles), decisions);
+    const summary = runExternalReferenceCoverageAudit({root, batchSize: 10});
+
+    expect(groups).toEqual(expect.arrayContaining([
+      expect.objectContaining({
+        catalogId: "rast--sarki--sofyan--baska_eser--diger_besteci",
+        status: "rejected",
+        reviewAction: "batch-decision-rejected",
+        decisionReason: "batch-reviewed-no-safe-source",
+      }),
+    ]));
+    expect(summary.candidateReviewGroupDecisionEntries).toBe(1);
+    expect(summary.candidateReviewGroupsByStatus).toEqual(expect.arrayContaining([
+      expect.objectContaining({value: "rejected", count: 1}),
+    ]));
+    expect(summary.acceptedBulkCandidateEntries).toBe(0);
   });
 
   it("rejects duplicate accepted bulk candidate identities", () => {

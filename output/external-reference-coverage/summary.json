@@ -4,6 +4,7 @@
   "curatedReferenceEntries": 22,
   "missingCuratedEntries": 2978,
   "curationDecisionEntries": 5,
+  "candidateReviewGroupDecisionEntries": 0,
   "deferredMissingEntries": 5,
   "bulkCandidateEntries": 7,
   "acceptedBulkCandidateEntries": 7,
@@ -61,6 +62,7 @@
       "count": 1
     }
   ],
+  "candidateReviewGroupDecisionsByStatus": [],
   "batchReport": {
     "version": 1,
     "flow": [
@@ -136,6 +138,7 @@
     ],
     "generatedReviewCandidates": 14890,
     "generatedReviewGroups": 2978,
+    "appliedReviewGroupDecisions": 0,
     "candidateReviewQueryFields": [
       "makam",
       "form",
@@ -179,7 +182,8 @@
       "profile-count-drift",
       "summary-count-drift",
       "metadata-strategy-profile-drift",
-      "candidate-review-group-drift"
+      "candidate-review-group-drift",
+      "candidate-review-group-decision-drift"
     ]
   },
   "catalogFormatCoverage": {
@@ -561,9 +565,11 @@
   "candidateReviewQueueJson": "output/external-reference-coverage/symbtr-curated-reference-candidate-review-queue.json",
   "candidateReviewGroupsCsv": "output/external-reference-coverage/symbtr-curated-reference-candidate-review-groups.csv",
   "candidateReviewGroupsJson": "output/external-reference-coverage/symbtr-curated-reference-candidate-review-groups.json",
+  "candidateReviewGroupDecisionsJson": "src/data/references/candidate-review-group-decisions.json",
   "policy": "No media is downloaded. Safe inline preview/embed is allowed only for validated HTTPS sources with provider-specific verification, sandbox, lazy loading and fallback links.",
   "curationRule": "Entries are prioritized by missing curated references, catalog-reported PDF/MusicXML/TXT source formats, named title/composer fields, and common form/usul groups. Search URLs are generated for review only; they are not evidence by themselves.",
   "nextBatchRule": "Rows with needs-disambiguation, source-mismatch, or deferred curation decisions remain in the backlog but are skipped from the next manual batch.",
   "bulkCandidateRule": "Accepted bulk candidates are counted as curated references only after catalog id, source URL policy, duplicate identity, status, and date checks pass.",
-  "candidateReviewRule": "Provider-profile search candidates are review queue entries, not source evidence; they stay needs-review or conflict until a validated source URL is imported and accepted."
+  "candidateReviewRule": "Provider-profile search candidates are review queue entries, not source evidence; they stay needs-review or conflict until a validated source URL is imported and accepted.",
+  "candidateReviewGroupDecisionRule": "Review group decisions may mark generated groups rejected, conflict, or deferred in batch; they never create accepted sources or auto-attach without a validated source URL."
 }

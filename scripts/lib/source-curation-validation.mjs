@@ -29,6 +29,8 @@ export const SOURCE_FEEDBACK_EVENT_TYPES = new Set([
 const CONFIDENCE_LEVELS = new Set(["high", "medium", "low", "conflict"]);
 const CANDIDATE_REVIEW_CONFIDENCE_LEVELS = new Set(["high", "medium", "low", "conflict", "needs-context"]);
 const CANDIDATE_REVIEW_STATUSES = new Set(["needs-review", "conflict"]);
+const CANDIDATE_REVIEW_GROUP_STATUSES = new Set(["needs-review", "conflict", "rejected", "deferred"]);
+const CANDIDATE_REVIEW_GROUP_DECISION_STATUSES = new Set(["rejected", "conflict", "deferred"]);
 const PROVIDERS = new Set(["score", "symbtr", "youtube", "archive", "github"]);
 const EMBED_CAPABILITIES = new Set(["none", "iframe", "pdf", "youtube"]);
 const EMBED_TYPES = new Set(["none", "iframe", "pdf", "youtube"]);
@@ -54,6 +56,7 @@ const REQUIRED_BATCH_VALIDATION_GATES = [
   "summary-count-drift",
   "metadata-strategy-profile-drift",
   "candidate-review-group-drift",
+  "candidate-review-group-decision-drift",
 ];
 
 function hasCatalogId(catalogIds, catalogId) {
@@ -262,6 +265,7 @@ export function validateSourceCurationRegistries({
   sources,
   candidateReviewQueue,
   candidateReviewGroups,
+  candidateReviewGroupDecisions,
   coverageSummary,
 }) {
   const errors = [];
@@ -504,6 +508,54 @@ export function validateSourceCurationRegistries({
       const candidateReviewStatusCounts = new Map();
       const candidateReviewProfileCounts = new Map();
       const candidateRowsByCatalogId = new Map();
+      const groupDecisionsByCatalogId = new Map();
+
+      if (candidateReviewGroupDecisions !== undefined) {
+        if (candidateReviewGroupDecisions?.version !== 1) {
+          errors.push("candidate-review-group-decisions: version must be 1");
+        }
+        if (!Array.isArray(candidateReviewGroupDecisions?.decisions)) {
+          errors.push("candidate-review-group-decisions: decisions must be an array");
+        } else {
+          validateUnique(
+            candidateReviewGroupDecisions.decisions.map((decision) => decision.groupId),
+            "candidate-review-group-decisions",
+            errors,
+          );
+
+          for (const decision of candidateReviewGroupDecisions.decisions) {
+            const decisionLabel = decision?.groupId ?? "<missing-group-id>";
+            if (!isNonEmptyString(decision?.groupId)) {
+              errors.push("candidate-review-group-decisions: groupId is required");
+            } else if (decision.groupId !== `${decision.catalogId}:review-group`) {
+              errors.push(`candidate-review-group-decisions: ${decisionLabel} groupId must match catalogId:review-group`);
+            }
+            if (!hasCatalogId(catalogIds, decision?.catalogId)) {
+              errors.push(`candidate-review-group-decisions: ${decisionLabel} unknown catalogId ${decision?.catalogId}`);
+            }
+            if (!CANDIDATE_REVIEW_GROUP_DECISION_STATUSES.has(decision?.status)) {
+              errors.push(`candidate-review-group-decisions: ${decisionLabel} invalid status ${decision?.status}`);
+            }
+            if (decision?.status === "accepted") {
+              errors.push(`candidate-review-group-decisions: ${decisionLabel} cannot accept sources without a validated source URL`);
+            }
+            if (decision?.sourceId !== undefined || decision?.sourceUrl !== undefined || decision?.url !== undefined) {
+              errors.push(`candidate-review-group-decisions: ${decisionLabel} must not carry accepted source ids or source URLs`);
+            }
+            if (!isNonEmptyString(decision?.reason)) {
+              errors.push(`candidate-review-group-decisions: ${decisionLabel} reason is required`);
+            }
+            if (!isNonEmptyString(decision?.reviewedBy)) {
+              errors.push(`candidate-review-group-decisions: ${decisionLabel} reviewedBy is required`);
+            }
+            validateIsoDate(`candidate-review-group-decisions: ${decisionLabel} reviewedAt`, decision?.reviewedAt ?? "", errors);
+            if (groupDecisionsByCatalogId.has(decision?.catalogId)) {
+              errors.push(`candidate-review-group-decisions: ${decisionLabel} duplicate catalog decision`);
+            }
+            groupDecisionsByCatalogId.set(decision?.catalogId, decision);
+          }
+        }
+      }
 
       for (const row of candidateReviewQueue) {
         const candidateLabel = row?.candidateId ?? "<missing-candidate-id>";
@@ -612,7 +664,9 @@ export function validateSourceCurationRegistries({
             const groupLabel = group?.groupId ?? "<missing-group-id>";
             const rowsForCatalog = candidateRowsByCatalogId.get(group?.catalogId) ?? [];
             const expectedProfiles = Array.from(new Set(rowsForCatalog.map((row) => row.profileId).filter(Boolean))).sort();
-            const expectedStatus = rowsForCatalog.some((row) => row.status === "conflict") ? "conflict" : "needs-review";
+            const decision = groupDecisionsByCatalogId.get(group?.catalogId);
+            const generatedStatus = rowsForCatalog.some((row) => row.status === "conflict") ? "conflict" : "needs-review";
+            const expectedStatus = decision?.status ?? generatedStatus;
             incrementCount(candidateReviewGroupStatusCounts, group?.status);
 
             if (!isNonEmptyString(group?.groupId)) {
@@ -623,7 +677,7 @@ export function validateSourceCurationRegistries({
             if (!hasCatalogId(catalogIds, group?.catalogId)) {
               errors.push(`candidate-review-groups: ${groupLabel} unknown catalogId ${group?.catalogId}`);
             }
-            if (!CANDIDATE_REVIEW_STATUSES.has(group?.status)) {
+            if (!CANDIDATE_REVIEW_GROUP_STATUSES.has(group?.status)) {
               errors.push(`candidate-review-groups: ${groupLabel} invalid status ${group?.status}`);
             }
             if (group?.sourceId !== undefined || group?.sourceUrl !== undefined || group?.url !== undefined) {
@@ -639,7 +693,15 @@ export function validateSourceCurationRegistries({
               errors.push(`candidate-review-groups: ${groupLabel} profiles must match review queue profiles`);
             }
             if (group.status !== expectedStatus) {
-              errors.push(`candidate-review-groups: ${groupLabel} status must reflect review queue rows`);
+              errors.push(`candidate-review-groups: ${groupLabel} status must reflect review queue rows or group decision`);
+            }
+            if (decision) {
+              if (group.reviewAction !== `batch-decision-${decision.status}`) {
+                errors.push(`candidate-review-groups: ${groupLabel} reviewAction must reflect group decision`);
+              }
+              if (group.decisionReason !== decision.reason || group.decisionReviewedAt !== decision.reviewedAt) {
+                errors.push(`candidate-review-groups: ${groupLabel} decision metadata must reflect group decision`);
+              }
             }
             if (!isNonEmptyString(group?.reviewAction)) {
               errors.push(`candidate-review-groups: ${groupLabel} reviewAction is required`);
@@ -652,6 +714,12 @@ export function validateSourceCurationRegistries({
           if (coverageSummary !== undefined) {
             validateCoverageCount(coverageSummary, "candidateReviewGroupEntries", candidateReviewGroups.length, errors);
             validateCoverageBreakdown(coverageSummary.candidateReviewGroupsByStatus, "candidateReviewGroupsByStatus", candidateReviewGroupStatusCounts, errors);
+            validateCoverageCount(
+              coverageSummary,
+              "candidateReviewGroupDecisionEntries",
+              Array.isArray(candidateReviewGroupDecisions?.decisions) ? candidateReviewGroupDecisions.decisions.length : 0,
+              errors,
+            );
           }
         }
       }
@@ -671,6 +739,9 @@ export function validateSourceCurationRegistries({
       sourceQualityStats: qualityStats?.stats?.length ?? 0,
       candidateReviewQueueEntries: Array.isArray(candidateReviewQueue) ? candidateReviewQueue.length : 0,
       candidateReviewGroupEntries: Array.isArray(candidateReviewGroups) ? candidateReviewGroups.length : 0,
+      candidateReviewGroupDecisionEntries: Array.isArray(candidateReviewGroupDecisions?.decisions)
+        ? candidateReviewGroupDecisions.decisions.length
+        : 0,
     },
   };
 }

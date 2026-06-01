@@ -25,6 +25,7 @@ const RESEARCH_PROFILES_FILE = path.join(PROJECT_ROOT, "src", "data", "reference
 const EMBED_STATES_FILE = path.join(PROJECT_ROOT, "src", "data", "references", "embed-states.json");
 const QUALITY_STATS_FILE = path.join(PROJECT_ROOT, "src", "data", "references", "source-quality-stats.generated.json");
 const BULK_CANDIDATES_FILE = path.join(PROJECT_ROOT, "src", "data", "references", "external-reference-bulk-candidates.json");
+const CANDIDATE_REVIEW_GROUP_DECISIONS_FILE = path.join(PROJECT_ROOT, "src", "data", "references", "candidate-review-group-decisions.json");
 const BACKLOG_FILE = path.join(PROJECT_ROOT, "output", "external-reference-coverage", "symbtr-curated-reference-backlog.json");
 const NEXT_BATCH_FILE = path.join(PROJECT_ROOT, "output", "external-reference-coverage", "symbtr-curated-reference-next-batch.json");
 const CANDIDATE_REVIEW_QUEUE_FILE = path.join(
@@ -66,6 +67,7 @@ type ExternalReferenceAction =
   | "candidate-import"
   | "candidate-review-export"
   | "candidate-review-group-export"
+  | "candidate-review-group-decision-import"
   | "curation-auto-attach"
   | "curation-stats"
   | "curation-validate"
@@ -83,6 +85,7 @@ const EXTERNAL_REFERENCE_ACTIONS = new Set<ExternalReferenceAction>([
   "candidate-import",
   "candidate-review-export",
   "candidate-review-group-export",
+  "candidate-review-group-decision-import",
   "curation-auto-attach",
   "curation-stats",
   "curation-validate",
@@ -115,6 +118,8 @@ interface OperationBody {
   dryRun?: boolean;
   candidateManifest?: unknown;
   candidateManifestText?: string;
+  candidateReviewGroupDecisionManifest?: unknown;
+  candidateReviewGroupDecisionManifestText?: string;
   candidateReviewQuery?: {
     query?: string;
     status?: string;
@@ -282,6 +287,21 @@ interface CandidateReviewGroup {
   title?: string;
   composer?: string;
   priorityGroup?: string;
+  decisionReason?: string;
+  decisionReviewedAt?: string;
+  decisionReviewedBy?: string;
+}
+
+interface CandidateReviewGroupDecisionManifest {
+  version?: number;
+  decisions?: Array<{
+    groupId?: string;
+    catalogId?: string;
+    status?: string;
+    reason?: string;
+    reviewedAt?: string;
+    reviewedBy?: string;
+  }>;
 }
 
 interface CurationStat {
@@ -722,6 +742,7 @@ async function getExternalReferenceState(request: Request) {
     embedStates,
     qualityStats,
     bulkCandidateManifest,
+    candidateReviewGroupDecisionManifest,
     candidateReviewQueue,
     candidateReviewGroups,
     fullBacklog,
@@ -753,6 +774,7 @@ async function getExternalReferenceState(request: Request) {
     readJsonOrNull<{states?: unknown[]}>(EMBED_STATES_FILE),
     readJsonOrNull<{generatedAt?: string | null; stats?: CurationStat[]}>(QUALITY_STATS_FILE),
     readJsonOrNull<BulkCandidateManifest>(BULK_CANDIDATES_FILE),
+    readJsonOrNull<CandidateReviewGroupDecisionManifest>(CANDIDATE_REVIEW_GROUP_DECISIONS_FILE),
     readJsonOrNull<CandidateReviewRow[]>(CANDIDATE_REVIEW_QUEUE_FILE),
     readJsonOrNull<CandidateReviewGroup[]>(CANDIDATE_REVIEW_GROUPS_FILE),
     readJsonOrNull<CurationBacklogRow[]>(BACKLOG_FILE),
@@ -868,6 +890,12 @@ async function getExternalReferenceState(request: Request) {
           : toProjectRelativePath(CANDIDATE_REVIEW_GROUPS_FILE),
         groupCount: candidateReviewGroupRows.length,
         visibleGroupCount: candidateReviewGroupPageRows.length,
+      },
+      candidateReviewGroupDecisionManifest: {
+        artifactPath: typeof coverage?.candidateReviewGroupDecisionsJson === "string"
+          ? coverage.candidateReviewGroupDecisionsJson
+          : toProjectRelativePath(CANDIDATE_REVIEW_GROUP_DECISIONS_FILE),
+        decisionCount: candidateReviewGroupDecisionManifest?.decisions?.length ?? 0,
       },
       candidateReviewGroupPage: {
         offset: candidateReviewGroupOffset,
@@ -993,6 +1021,34 @@ async function writeCandidateManifestInput(content: string): Promise<{filePath: 
     JSON.parse(trimmed);
   } catch {
     throw Object.assign(new Error("Aday manifest geçerli JSON olmalı."), {status: 400});
+  }
+
+  await mkdir(TEMP_INPUT_DIR, {recursive: true});
+  const filePath = path.join(TEMP_INPUT_DIR, `${randomUUID()}.json`);
+  await writeFile(filePath, trimmed);
+
+  return {
+    filePath,
+    relativePath: toProjectRelativePath(filePath),
+  };
+}
+
+async function writeCandidateReviewGroupDecisionInput(content: string): Promise<{filePath: string; relativePath: string}> {
+  const trimmed = content.trim();
+  if (!trimmed) {
+    throw Object.assign(new Error("Review grup karar JSON girdisi gerekli."), {status: 400});
+  }
+
+  if (trimmed.length > MAX_CANDIDATE_IMPORT_CHARS) {
+    throw Object.assign(new Error(`Review grup karar JSON girdisi ${MAX_CANDIDATE_IMPORT_CHARS} karakterden uzun olamaz.`), {
+      status: 413,
+    });
+  }
+
+  try {
+    JSON.parse(trimmed);
+  } catch {
+    throw Object.assign(new Error("Review grup karar girdisi geçerli JSON olmalı."), {status: 400});
   }
 
   await mkdir(TEMP_INPUT_DIR, {recursive: true});
@@ -1190,6 +1246,34 @@ async function importCandidateManifest(body: OperationBody): Promise<unknown> {
   }
 }
 
+async function importCandidateReviewGroupDecisionManifest(body: OperationBody): Promise<unknown> {
+  const manifestText = typeof body.candidateReviewGroupDecisionManifestText === "string"
+    ? body.candidateReviewGroupDecisionManifestText
+    : typeof body.candidateReviewGroupDecisionManifest === "object" && body.candidateReviewGroupDecisionManifest !== null
+      ? JSON.stringify(body.candidateReviewGroupDecisionManifest)
+      : "";
+  let tempInputFilePath: string | null = null;
+
+  try {
+    const tempInput = await writeCandidateReviewGroupDecisionInput(manifestText);
+    tempInputFilePath = tempInput.filePath;
+
+    const args = ["scripts/import-candidate-review-group-decisions.mjs", "--input", tempInput.relativePath];
+    if (!body.dryRun) args.push("--write");
+
+    return await runNodeScript(args);
+  } catch (error) {
+    if (error instanceof Error && "status" in error) {
+      return NextResponse.json({error: error.message}, {status: Number(error.status)});
+    }
+    throw error;
+  } finally {
+    if (tempInputFilePath) {
+      await unlink(tempInputFilePath).catch(() => undefined);
+    }
+  }
+}
+
 async function runCurationPayloadAction(
   action: "feedback" | "feedback-batch" | "manual-correction" | "embed-state",
   payload: unknown,
@@ -1341,6 +1425,8 @@ export async function POST(request: Request) {
         result = await exportCandidateReviewQueue(body);
       } else if (body.action === "candidate-review-group-export") {
         result = await exportCandidateReviewGroups(body);
+      } else if (body.action === "candidate-review-group-decision-import") {
+        result = await importCandidateReviewGroupDecisionManifest(body);
       } else {
         result = await runCurationOperation(body);
       }

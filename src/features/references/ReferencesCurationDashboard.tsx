@@ -10,6 +10,7 @@ type CurationAction =
   | "candidate-import"
   | "candidate-review-export"
   | "candidate-review-group-export"
+  | "candidate-review-group-decision-import"
   | "curation-auto-attach"
   | "curation-stats"
   | "curation-validate"
@@ -209,6 +210,10 @@ interface ExternalReferenceState {
       groupCount?: number;
       visibleGroupCount?: number;
     };
+    candidateReviewGroupDecisionManifest?: {
+      artifactPath?: string;
+      decisionCount?: number;
+    };
     candidateReviewGroupPage?: CandidateReviewGroupPage;
     candidateReviewGroupFacets?: {
       statuses?: BacklogFacet[];
@@ -397,6 +402,8 @@ export function ReferencesCurationDashboard() {
   const [candidateReviewExportText, setCandidateReviewExportText] = useState("");
   const [candidateImportDryRun, setCandidateImportDryRun] = useState(true);
   const [candidateGroupExportText, setCandidateGroupExportText] = useState("");
+  const [candidateGroupDecisionText, setCandidateGroupDecisionText] = useState("");
+  const [candidateGroupDecisionDryRun, setCandidateGroupDecisionDryRun] = useState(true);
   const [candidateGroupOffset, setCandidateGroupOffset] = useState(0);
   const [candidateGroupLimit, setCandidateGroupLimit] = useState(80);
   const [candidateGroupStatusFilter, setCandidateGroupStatusFilter] = useState(ALL_FILTER_VALUE);
@@ -660,6 +667,18 @@ export function ReferencesCurationDashboard() {
     });
   }, [candidateImportDryRun, candidateManifestText, runOperation]);
 
+  const importCandidateReviewGroupDecisions = useCallback(() => {
+    if (!candidateGroupDecisionText.trim()) {
+      setMessage("Review grup karar JSON girdisi gerekli.");
+      return;
+    }
+
+    void runOperation("candidate-review-group-decision-import", {
+      candidateReviewGroupDecisionManifestText: candidateGroupDecisionText,
+      dryRun: candidateGroupDecisionDryRun,
+    });
+  }, [candidateGroupDecisionDryRun, candidateGroupDecisionText, runOperation]);
+
   const filteredBacklog = useMemo(() => {
     const normalizedQuery = query.trim().toLocaleLowerCase("tr-TR");
 
@@ -731,6 +750,7 @@ export function ReferencesCurationDashboard() {
   const backlogPage = state.curation?.backlogPage;
   const candidateManifest = state.curation?.candidateManifest;
   const candidateReviewGroupManifest = state.curation?.candidateReviewGroupManifest;
+  const candidateReviewGroupDecisionManifest = state.curation?.candidateReviewGroupDecisionManifest;
   const candidateReviewGroupPage = state.curation?.candidateReviewGroupPage;
   const candidateReviewGroups = state.curation?.candidateReviewGroups ?? [];
   const candidateReviewPage = state.curation?.candidateReviewPage;
@@ -847,8 +867,13 @@ export function ReferencesCurationDashboard() {
                 {candidateReviewGroupManifest?.artifactPath && (
                   <code className="block break-all text-xs text-[var(--color-text-primary)]">{candidateReviewGroupManifest.artifactPath}</code>
                 )}
+                {candidateReviewGroupDecisionManifest?.artifactPath && (
+                  <code className="block break-all text-xs text-[var(--color-text-primary)]">
+                    {candidateReviewGroupDecisionManifest.artifactPath} · {formatNumber(candidateReviewGroupDecisionManifest.decisionCount)} karar
+                  </code>
+                )}
               </div>
-              <div className="grid w-full gap-2 sm:grid-cols-2 lg:max-w-5xl lg:grid-cols-6">
+              <div className="grid w-full gap-2 sm:grid-cols-2 lg:max-w-6xl lg:grid-cols-8">
                 <FilterSelect label="Grup durum" value={candidateGroupStatusFilter} options={filterOptions.candidateGroupStatuses} onChange={(value) => {
                   setCandidateGroupStatusFilter(value);
                   setCandidateGroupOffset(0);
@@ -885,6 +910,22 @@ export function ReferencesCurationDashboard() {
                 <Button variant="secondary" disabled={isBusy} onPress={() => void exportCandidateReviewGroups()}>
                   Grup dışa aktar
                 </Button>
+                <label className={`flex items-center gap-2 text-sm ${tokens.colors.text.secondary}`}>
+                  <input
+                    type="checkbox"
+                    checked={candidateGroupDecisionDryRun}
+                    onChange={(event) => setCandidateGroupDecisionDryRun(event.target.checked)}
+                    className="h-4 w-4"
+                  />
+                  Karar dry run
+                </label>
+                <Button
+                  variant="primary"
+                  disabled={isBusy || !candidateGroupDecisionText.trim()}
+                  onPress={importCandidateReviewGroupDecisions}
+                >
+                  Karar içe aktar
+                </Button>
               </div>
             </div>
             {candidateGroupExportText && (
@@ -900,6 +941,18 @@ export function ReferencesCurationDashboard() {
                 </label>
               </div>
             )}
+            <div className="border-b border-[var(--color-border)] px-4 py-3">
+              <label htmlFor="candidate-review-group-decision-json" className={`flex flex-col gap-1 text-sm ${tokens.colors.text.secondary}`}>
+                Review grup karar JSON
+                <textarea
+                  id="candidate-review-group-decision-json"
+                  value={candidateGroupDecisionText}
+                  onChange={(event) => setCandidateGroupDecisionText(event.target.value)}
+                  placeholder='{"version":1,"decisions":[{"groupId":"...:review-group","catalogId":"...","status":"rejected","reason":"batch-reviewed-no-safe-source","reviewedAt":"2026-06-01","reviewedBy":"local-operator"}]}'
+                  className={`min-h-28 w-full rounded-md border ${tokens.colors.border.base} bg-white px-3 py-2 font-mono text-xs ${tokens.colors.text.primary}`}
+                />
+              </label>
+            </div>
             <div className="w-full overflow-x-auto">
               <table className="w-full min-w-[980px] border-collapse text-sm">
                 <thead>
@@ -1454,6 +1507,10 @@ function getOperationMessage(action: CurationAction, result: unknown): string {
   if (action === "candidate-review-group-export") {
     const exportSummary = (summary.summary ?? {}) as Record<string, unknown>;
     return `Review grupları dışa aktarıldı: ${formatNumber(exportSummary.exportedCount)} grup.`;
+  }
+
+  if (action === "candidate-review-group-decision-import") {
+    return `Review grup kararları işlendi: ${formatNumber(summary.outputDecisionCount)} karar.`;
   }
 
   if (action === "candidate-import") {

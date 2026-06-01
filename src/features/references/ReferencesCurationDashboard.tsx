@@ -114,6 +114,8 @@ interface CandidateReviewRow {
   provider?: string;
   reviewConfidenceScore?: number;
   reviewConfidenceLevel?: string;
+  scoreReasons?: string[];
+  queryFields?: string[];
   searchQuery?: string;
   searchUrl?: string;
   makam?: string;
@@ -848,6 +850,9 @@ export function ReferencesCurationDashboard() {
                         </td>
                         <td className={`px-4 py-3 ${tokens.colors.text.secondary}`}>
                           {row.reviewConfidenceLevel ?? "-"} · {formatNumber(row.reviewConfidenceScore)}
+                          {row.scoreReasons && row.scoreReasons.length > 0 && (
+                            <div className="mt-1 text-xs">{row.scoreReasons.slice(0, 3).join(" / ")}</div>
+                          )}
                         </td>
                         <td className="px-4 py-3">
                           {row.searchUrl ? (
@@ -863,6 +868,9 @@ export function ReferencesCurationDashboard() {
                             <span className={tokens.colors.text.secondary}>-</span>
                           )}
                           {row.searchQuery && <div className={`mt-2 line-clamp-2 text-xs ${tokens.colors.text.secondary}`}>{row.searchQuery}</div>}
+                          {row.queryFields && row.queryFields.length > 0 && (
+                            <div className={`mt-1 text-xs ${tokens.colors.text.secondary}`}>Alanlar: {row.queryFields.join(" / ")}</div>
+                          )}
                         </td>
                       </tr>
                     ))

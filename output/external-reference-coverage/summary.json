@@ -101,7 +101,30 @@
         "count": 2978
       }
     ],
+    "candidateReviewConfidenceLevelCounts": [
+      {
+        "value": "low",
+        "count": 6496
+      },
+      {
+        "value": "medium",
+        "count": 5416
+      }
+    ],
     "generatedReviewCandidates": 11912,
+    "candidateReviewQueryFields": [
+      "makam",
+      "form",
+      "usul",
+      "title",
+      "composer"
+    ],
+    "candidateReviewScoringSignals": [
+      "profile-trust",
+      "catalog-formats",
+      "catalog-fields",
+      "curation-decision"
+    ],
     "duplicateAcceptedIdentityPolicy": "duplicate accepted URL identities fail validation before merge",
     "autoAttachPolicy": "only accepted bulk candidates are counted as curated and eligible for auto-attach",
     "acceptedCatalogIds": [

@@ -33,7 +33,7 @@ function tokenCoverage(needle, haystack) {
 }
 
 function canonicalEntryText(entry) {
-  return normalizeText(`${entry.makam} ${entry.form} ${entry.usul} ${entry.title} ${entry.composer} ${entry.id}`);
+  return normalizeText(`${entry.makam} ${entry.form} ${entry.usul} ${entry.title} ${entry.composer} ${entry.lyricist ?? ""} ${entry.id}`);
 }
 
 function compareCatalogField(sourceValue, catalogValue) {
@@ -57,6 +57,8 @@ export function scoreCatalogEntry(source, entry) {
       observed.form,
       observed.usul,
       observed.composer,
+      observed.lyricist,
+      observed.lyrics,
       source.sourceProvider,
     ].join(" "),
   );
@@ -87,11 +89,17 @@ export function scoreCatalogEntry(source, entry) {
 
   const titleCoverage = Math.max(tokenCoverage(entry.title, sourceText), tokenCoverage(observed.title, entryText));
   const composerCoverage = Math.max(tokenCoverage(entry.composer, sourceText), tokenCoverage(observed.composer, entryText));
+  const lyricistCoverage = Math.max(tokenCoverage(entry.lyricist, sourceText), tokenCoverage(observed.lyricist, entryText));
+  const lyricsCoverage = tokenCoverage(entry.title, observed.lyrics);
   score += Math.round(titleCoverage * 60);
   score += Math.round(composerCoverage * 45);
+  score += Math.round(lyricistCoverage * 25);
+  score += Math.round(lyricsCoverage * 15);
 
   if (titleCoverage >= 0.7) reasons.push("title:token-match");
   if (composerCoverage >= 0.6) reasons.push("composer:token-match");
+  if (lyricistCoverage >= 0.6) reasons.push("lyricist:token-match");
+  if (lyricsCoverage >= 0.5) reasons.push("lyrics:title-token-match");
 
   return {
     entry,
@@ -232,6 +240,8 @@ export function mapInboxSource(source, catalogEntries) {
       form: source.observed?.form ?? "",
       usul: source.observed?.usul ?? "",
       composer: source.observed?.composer ?? "",
+      lyricist: source.observed?.lyricist ?? "",
+      lyrics: source.observed?.lyrics ?? "",
       sourceProvider: inferSourceProvider(source),
     },
     alternatives: ranked.slice(0, 5).map((candidate) => ({
@@ -250,6 +260,8 @@ export function mapInboxSource(source, catalogEntries) {
         form: source.observed?.form ?? "",
         usul: source.observed?.usul ?? "",
         composer: source.observed?.composer ?? "",
+        lyricist: source.observed?.lyricist ?? "",
+        lyrics: source.observed?.lyrics ?? "",
         sourceProvider: inferSourceProvider(source),
       },
       source: referenceSource,

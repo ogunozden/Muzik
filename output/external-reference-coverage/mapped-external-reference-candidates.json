@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "generatedAt": "2026-05-31T17:35:58.174Z",
+  "generatedAt": "2026-06-01T00:11:55.241Z",
   "summary": {
     "input": "src/data/references/external-source-inbox.json",
     "output": "output/external-reference-coverage/mapped-external-reference-candidates.json",
@@ -26,6 +26,8 @@
         "form": "İlahi",
         "usul": "Düyek",
         "composer": "Dede Efendi",
+        "lyricist": "",
+        "lyrics": "",
         "sourceProvider": "DîvânMakam"
       },
       "source": {
@@ -50,6 +52,8 @@
         "form": "İlahi",
         "usul": "Sofyan",
         "composer": "Tahir Karagöz",
+        "lyricist": "",
+        "lyrics": "",
         "sourceProvider": "DîvânMakam"
       },
       "source": {
@@ -74,6 +78,8 @@
         "form": "İlahi",
         "usul": "Düyek",
         "composer": "Münir Nurettin Selçuk",
+        "lyricist": "",
+        "lyrics": "",
         "sourceProvider": "OGM Materyal"
       },
       "source": {
@@ -98,6 +104,8 @@
         "form": "İlahi",
         "usul": "Düyek",
         "composer": "Halis Efendi (Şeyh)",
+        "lyricist": "",
+        "lyrics": "",
         "sourceProvider": "DîvânMakam"
       },
       "source": {
@@ -122,6 +130,8 @@
         "form": "İlahi",
         "usul": "Düyek",
         "composer": "Selahattin Demirtaş",
+        "lyricist": "",
+        "lyrics": "",
         "sourceProvider": "DîvânMakam"
       },
       "source": {
@@ -146,6 +156,8 @@
         "form": "İlahi",
         "usul": "Düyek",
         "composer": "Zekai Dede",
+        "lyricist": "",
+        "lyrics": "",
         "sourceProvider": "OGM Materyal"
       },
       "source": {
@@ -170,6 +182,8 @@
         "form": "İlahi",
         "usul": "Sofyan",
         "composer": "Nafiz Bey (Hacı)",
+        "lyricist": "",
+        "lyrics": "",
         "sourceProvider": "DîvânMakam"
       },
       "source": {
@@ -194,6 +208,8 @@
         "form": "İlahi",
         "usul": "Düyek",
         "composer": "Dede Efendi",
+        "lyricist": "",
+        "lyrics": "",
         "sourceProvider": "DîvânMakam"
       },
       "source": {
@@ -224,6 +240,8 @@
         "form": "İlahi",
         "usul": "Düyek",
         "composer": "Dede Efendi",
+        "lyricist": "",
+        "lyrics": "",
         "sourceProvider": "DîvânMakam"
       },
       "alternatives": [
@@ -296,6 +314,8 @@
           "form": "İlahi",
           "usul": "Düyek",
           "composer": "Dede Efendi",
+          "lyricist": "",
+          "lyrics": "",
           "sourceProvider": "DîvânMakam"
         },
         "source": {
@@ -325,6 +345,8 @@
         "form": "İlahi",
         "usul": "Sofyan",
         "composer": "Tahir Karagöz",
+        "lyricist": "",
+        "lyrics": "",
         "sourceProvider": "DîvânMakam"
       },
       "alternatives": [
@@ -395,6 +417,8 @@
           "form": "İlahi",
           "usul": "Sofyan",
           "composer": "Tahir Karagöz",
+          "lyricist": "",
+          "lyrics": "",
           "sourceProvider": "DîvânMakam"
         },
         "source": {
@@ -424,6 +448,8 @@
         "form": "İlahi",
         "usul": "Düyek",
         "composer": "Münir Nurettin Selçuk",
+        "lyricist": "",
+        "lyrics": "",
         "sourceProvider": "OGM Materyal"
       },
       "alternatives": [
@@ -493,6 +519,8 @@
           "form": "İlahi",
           "usul": "Düyek",
           "composer": "Münir Nurettin Selçuk",
+          "lyricist": "",
+          "lyrics": "",
           "sourceProvider": "OGM Materyal"
         },
         "source": {
@@ -522,6 +550,8 @@
         "form": "İlahi",
         "usul": "Düyek",
         "composer": "Halis Efendi (Şeyh)",
+        "lyricist": "",
+        "lyrics": "",
         "sourceProvider": "DîvânMakam"
       },
       "alternatives": [
@@ -592,6 +622,8 @@
           "form": "İlahi",
           "usul": "Düyek",
           "composer": "Halis Efendi (Şeyh)",
+          "lyricist": "",
+          "lyrics": "",
           "sourceProvider": "DîvânMakam"
         },
         "source": {
@@ -621,6 +653,8 @@
         "form": "İlahi",
         "usul": "Düyek",
         "composer": "Selahattin Demirtaş",
+        "lyricist": "",
+        "lyrics": "",
         "sourceProvider": "DîvânMakam"
       },
       "alternatives": [
@@ -690,6 +724,8 @@
           "form": "İlahi",
           "usul": "Düyek",
           "composer": "Selahattin Demirtaş",
+          "lyricist": "",
+          "lyrics": "",
           "sourceProvider": "DîvânMakam"
         },
         "source": {
@@ -719,6 +755,8 @@
         "form": "İlahi",
         "usul": "Düyek",
         "composer": "Zekai Dede",
+        "lyricist": "",
+        "lyrics": "",
         "sourceProvider": "OGM Materyal"
       },
       "alternatives": [
@@ -790,6 +828,8 @@
           "form": "İlahi",
           "usul": "Düyek",
           "composer": "Zekai Dede",
+          "lyricist": "",
+          "lyrics": "",
           "sourceProvider": "OGM Materyal"
         },
         "source": {
@@ -819,6 +859,8 @@
         "form": "İlahi",
         "usul": "Sofyan",
         "composer": "Nafiz Bey (Hacı)",
+        "lyricist": "",
+        "lyrics": "",
         "sourceProvider": "DîvânMakam"
       },
       "alternatives": [
@@ -885,6 +927,8 @@
           "form": "İlahi",
           "usul": "Sofyan",
           "composer": "Nafiz Bey (Hacı)",
+          "lyricist": "",
+          "lyrics": "",
           "sourceProvider": "DîvânMakam"
         },
         "source": {
@@ -914,6 +958,8 @@
         "form": "İlahi",
         "usul": "Düyek",
         "composer": "Dede Efendi",
+        "lyricist": "",
+        "lyrics": "",
         "sourceProvider": "DîvânMakam"
       },
       "alternatives": [
@@ -986,6 +1032,8 @@
           "form": "İlahi",
           "usul": "Düyek",
           "composer": "Dede Efendi",
+          "lyricist": "",
+          "lyrics": "",
           "sourceProvider": "DîvânMakam"
         },
         "source": {

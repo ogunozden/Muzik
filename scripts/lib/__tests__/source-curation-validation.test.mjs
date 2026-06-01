@@ -107,6 +107,8 @@ function validRegistries() {
         trustWeight: 0.65,
         reviewConfidenceScore: 64,
         reviewConfidenceLevel: "low",
+        scoreReasons: ["profile-trust:0.65", "catalog-field:usul", "catalog-field:title", "catalog-field:composer"],
+        queryFields: ["makam", "form", "usul", "title", "composer"],
         searchQuery: "Test Peşrev YouTube",
         searchUrl: "https://www.youtube.com/results?search_query=Test%20Pe%C5%9Frev",
         makam: "Hicazkar",
@@ -252,6 +254,8 @@ describe("source curation validation", () => {
     candidate.status = "accepted";
     candidate.sourceId = "youtube-test";
     candidate.reviewConfidenceScore = 101;
+    candidate.scoreReasons = [];
+    candidate.queryFields = ["title"];
     registries.coverageSummary.candidateReviewQueueEntries = 2;
 
     const result = validateSourceCurationRegistries(registries);
@@ -261,6 +265,8 @@ describe("source curation validation", () => {
         `candidate-review-queue: ${candidate.candidateId} invalid status accepted`,
         `candidate-review-queue: ${candidate.candidateId} must not carry accepted source ids or source URLs`,
         `candidate-review-queue: ${candidate.candidateId} reviewConfidenceScore must be between 0 and 100`,
+        `candidate-review-queue: ${candidate.candidateId} scoreReasons must list scoring evidence`,
+        `candidate-review-queue: ${candidate.candidateId} queryFields must include every available catalog query field`,
         "coverage-summary: candidateReviewQueueEntries 2 does not match candidate review queue rows 1",
       ]),
     );

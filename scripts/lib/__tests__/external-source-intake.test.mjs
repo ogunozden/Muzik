@@ -35,6 +35,10 @@ describe("external source intake", () => {
       "Düyek",
       "--composer",
       "Dede Efendi",
+      "--lyricist",
+      "Yunus Emre",
+      "--lyrics",
+      "Toprakta yatacak teni tenim var",
       "--checked-at",
       "2026-05-10",
     ]);
@@ -49,6 +53,8 @@ describe("external source intake", () => {
           form: "İlahi",
           usul: "Düyek",
           composer: "Dede Efendi",
+          lyricist: "Yunus Emre",
+          lyrics: "Toprakta yatacak teni tenim var",
         },
       }),
     ]);

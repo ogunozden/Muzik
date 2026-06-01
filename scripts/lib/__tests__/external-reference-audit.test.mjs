@@ -227,6 +227,9 @@ describe("external reference audit", () => {
         status: "needs-review",
         provider: "score",
         reviewConfidenceScore: expect.any(Number),
+        scoreReasons: expect.arrayContaining(["catalog-field:usul", "catalog-field:title", "catalog-field:composer"]),
+        queryFields: expect.arrayContaining(["makam", "form", "usul", "title", "composer"]),
+        searchQuery: expect.stringContaining("Sofyan"),
       }),
       expect.objectContaining({
         candidateId: "hicaz--pesrev--devrikebir--ucuncu_eser--besteci:youtube:search",

@@ -316,7 +316,7 @@ function buildYoutubeSearchUrl(query) {
 
 function buildProfileSearchQuery(row, profile) {
   const suffix = profile.provider === "youtube" ? "icra kayıt" : "nota";
-  return [row.makam, row.form, row.title, row.composer, suffix].filter((part) => part && part !== "-").join(" ");
+  return [row.makam, row.form, row.usul, row.title, row.composer, suffix].filter((part) => part && part !== "-").join(" ");
 }
 
 function buildProfileSearchUrl(profile, query) {
@@ -336,17 +336,42 @@ function getCandidateReviewReason(row) {
   return "provider-profile-search-candidate";
 }
 
-function getCandidateReviewScore(row, profile) {
+function getCandidateReviewScoreDetails(row, profile) {
   const trustWeight = Number(profile.trustWeight ?? 0.5);
   let score = Math.round(trustWeight * 70);
-  if (row.hasPdf) score += 8;
-  if (row.hasMusicXml) score += 6;
-  if (row.hasTxt) score += 4;
-  if (row.title && row.title !== "-") score += 6;
-  if (row.composer && row.composer !== "-") score += 6;
-  if (row.deferredFromNextBatch) score -= 20;
+  const reasons = [`profile-trust:${trustWeight.toFixed(2)}`];
+  if (row.hasPdf) {
+    score += 8;
+    reasons.push("catalog-format:pdf");
+  }
+  if (row.hasMusicXml) {
+    score += 6;
+    reasons.push("catalog-format:musicxml");
+  }
+  if (row.hasTxt) {
+    score += 4;
+    reasons.push("catalog-format:txt");
+  }
+  if (row.title && row.title !== "-") {
+    score += 6;
+    reasons.push("catalog-field:title");
+  }
+  if (row.composer && row.composer !== "-") {
+    score += 6;
+    reasons.push("catalog-field:composer");
+  }
+  if (row.usul && row.usul !== "-") {
+    reasons.push("catalog-field:usul");
+  }
+  if (row.deferredFromNextBatch) {
+    score -= 20;
+    reasons.push("decision:deferred-penalty");
+  }
 
-  return Math.max(0, Math.min(100, score));
+  return {
+    score: Math.max(0, Math.min(100, score)),
+    reasons,
+  };
 }
 
 function getCandidateReviewLevel(score) {
@@ -466,7 +491,8 @@ export function buildCandidateReviewRows(backlogRows, researchProfiles) {
   for (const row of missingRows) {
     for (const profile of researchProfiles) {
       const searchQuery = buildProfileSearchQuery(row, profile);
-      const reviewConfidenceScore = getCandidateReviewScore(row, profile);
+      const scoreDetails = getCandidateReviewScoreDetails(row, profile);
+      const queryFields = ["makam", "form", "usul", "title", "composer"].filter((field) => row[field] && row[field] !== "-");
 
       rows.push({
         candidateId: `${row.catalogId}:${profile.id}:search`,
@@ -477,8 +503,10 @@ export function buildCandidateReviewRows(backlogRows, researchProfiles) {
         profileLabel: profile.label,
         provider: profile.provider ?? "score",
         trustWeight: profile.trustWeight ?? 0,
-        reviewConfidenceScore,
-        reviewConfidenceLevel: getCandidateReviewLevel(reviewConfidenceScore),
+        reviewConfidenceScore: scoreDetails.score,
+        reviewConfidenceLevel: getCandidateReviewLevel(scoreDetails.score),
+        scoreReasons: scoreDetails.reasons,
+        queryFields,
         searchQuery,
         searchUrl: buildProfileSearchUrl(profile, searchQuery),
         makam: row.makam,
@@ -594,6 +622,8 @@ export function renderCandidateReviewCsv(rows) {
     "trustWeight",
     "reviewConfidenceScore",
     "reviewConfidenceLevel",
+    "scoreReasons",
+    "queryFields",
     "searchQuery",
     "searchUrl",
     "makam",
@@ -606,7 +636,7 @@ export function renderCandidateReviewCsv(rows) {
     "curationDecisionStatus",
   ];
   const header = columns.map(csvValue).join(",");
-  const lines = rows.map((row) => columns.map((column) => csvValue(row[column])).join(","));
+  const lines = rows.map((row) => columns.map((column) => csvValue(Array.isArray(row[column]) ? row[column].join("|") : row[column])).join(","));
 
   return `${[header, ...lines].join("\n")}\n`;
 }
@@ -682,7 +712,10 @@ export function runExternalReferenceCoverageAudit({
     bulkCandidateStatusCounts: summarizeCounts(bulkCandidates, "status"),
     candidateReviewStatusCounts: summarizeCounts(candidateReviewRows, "status"),
     candidateReviewProfileCounts: summarizeCounts(candidateReviewRows, "profileId"),
+    candidateReviewConfidenceLevelCounts: summarizeCounts(candidateReviewRows, "reviewConfidenceLevel"),
     generatedReviewCandidates: candidateReviewRows.length,
+    candidateReviewQueryFields: ["makam", "form", "usul", "title", "composer"],
+    candidateReviewScoringSignals: ["profile-trust", "catalog-formats", "catalog-fields", "curation-decision"],
     duplicateAcceptedIdentityPolicy: "duplicate accepted URL identities fail validation before merge",
     autoAttachPolicy: "only accepted bulk candidates are counted as curated and eligible for auto-attach",
     acceptedCatalogIds: acceptedBulkCandidates.map((candidate) => candidate.catalogId),

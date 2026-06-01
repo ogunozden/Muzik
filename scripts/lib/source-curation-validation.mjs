@@ -490,6 +490,18 @@ export function validateSourceCurationRegistries({
         if (!CONFIDENCE_LEVELS.has(row?.reviewConfidenceLevel)) {
           errors.push(`candidate-review-queue: ${candidateLabel} has invalid reviewConfidenceLevel`);
         }
+        if (!Array.isArray(row?.scoreReasons) || row.scoreReasons.length === 0 || row.scoreReasons.some((reason) => !isNonEmptyString(reason))) {
+          errors.push(`candidate-review-queue: ${candidateLabel} scoreReasons must list scoring evidence`);
+        }
+        const requiredQueryFields = [];
+        if (isNonEmptyString(row?.makam) && row.makam !== "-") requiredQueryFields.push("makam");
+        if (isNonEmptyString(row?.form) && row.form !== "-") requiredQueryFields.push("form");
+        if (isNonEmptyString(row?.usul) && row.usul !== "-") requiredQueryFields.push("usul");
+        if (isNonEmptyString(row?.title) && row.title !== "-") requiredQueryFields.push("title");
+        if (isNonEmptyString(row?.composer) && row.composer !== "-") requiredQueryFields.push("composer");
+        if (!Array.isArray(row?.queryFields) || !requiredQueryFields.every((field) => row.queryFields.includes(field))) {
+          errors.push(`candidate-review-queue: ${candidateLabel} queryFields must include every available catalog query field`);
+        }
         if (!isNonEmptyString(row?.searchQuery)) {
           errors.push(`candidate-review-queue: ${candidateLabel} searchQuery is required`);
         }

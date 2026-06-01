@@ -4,7 +4,7 @@ import path from "node:path";
 const DEFAULT_ROOT = process.cwd();
 const DEFAULT_INBOX = "src/data/references/external-source-inbox.json";
 const ALLOWED_PROVIDERS = new Set(["archive", "github", "score", "symbtr", "youtube"]);
-const OBSERVED_FIELDS = new Set(["makam", "form", "usul", "composer"]);
+const OBSERVED_FIELDS = new Set(["makam", "form", "usul", "composer", "lyricist", "lyrics"]);
 
 export function parseCliOptions(args) {
   const options = new Map();
@@ -357,6 +357,8 @@ export function createSourcesFromCliOptions(options) {
       form: getOption(options, "form"),
       usul: getOption(options, "usul"),
       composer: getOption(options, "composer"),
+      lyricist: getOption(options, "lyricist"),
+      lyrics: getOption(options, "lyrics"),
     },
   };
 

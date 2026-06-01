@@ -83,6 +83,14 @@ tek kurala bağlamaktır.
       güfteci, güfte/söz parçası, kaynak başlığı, PDF/HTML metadata, YouTube
       oEmbed ve site güven puanı birlikte skorlanmalı; her otomatik eşleşme
       açıklanabilir gerekçe ve çelişki uyarıları üretmeli.
+      2026-06-01 ek batch dalgası: intake artık `lyricist` ve `lyrics`
+      gözlemlerini kabul eder; matcher kaynak başlığı, makam/form/usul,
+      besteci, varsa güfteci/söz token'ları ve profile/source metadata'sını
+      açıklanabilir score reason olarak taşır. Provider-profile review queue
+      arama query'leri artık usul sinyalini de içerir ve her satır
+      `queryFields` + `scoreReasons` ile hangi metadata alanlarından üretildiğini
+      makine-okunur raporlar. PDF/HTML metadata ve YouTube oEmbed sinyallerinin
+      daha fazla otomatik toplu verify/terfi akışı hâlâ açık kalır.
 - [x] Otomatik iliştirilen kaynaklar için kalıcı feedback/event log ekle.
       Kullanıcının `user-removed`, `delete-requested`, `deleted`,
       `user-prioritized`, `user-demoted`, `user-corrected`, `manual-entry`
@@ -177,6 +185,10 @@ tek kurala bağlamaktır.
       `conflict` kalmasını, accepted source id/URL taşımamasını, profile/provider
       uyumunu, bounded confidence değerlerini ve `summary.json` sayılarıyla
       birebir eşleşmesini doğrular.
+      2026-06-01 ek scoring kapısı: candidate review queue satırları artık
+      `scoreReasons` ve veri-duyarlı `queryFields` taşımak zorunda; validator
+      makam/form/usul/title/composer alanlarından mevcut olanların query içinde
+      temsil edildiğini ve scoring evidence listesinin boş olmadığını doğrular.
 - [ ] PDF vector ölçü adayları gerçek ölçü kutusuna terfi etmeden önce insan
       veya görsel regresyon doğrulaması bekliyor. Pipeline, review artifact'i,
       verification manifest'i ve Eser Takip UI yolu hazır; gerçek manifest şu

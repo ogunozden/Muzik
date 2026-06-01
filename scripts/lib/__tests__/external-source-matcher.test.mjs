@@ -14,6 +14,7 @@ const catalogEntries = [
     usul: "Duyek",
     title: "Allah Emrin Tutalım",
     composer: "Zekai Dede",
+    lyricist: "Yunus Emre",
   },
   {
     id: "rast--sarki--sofyan--baska_eser--diger_besteci",
@@ -98,6 +99,8 @@ describe("external source matcher", () => {
           form: "İlahi",
           usul: "Düyek",
           composer: "Zekai Dede",
+          lyricist: "Yunus Emre",
+          lyrics: "Allah emrin tutalım rahmetine batalım",
         },
       },
       catalogEntries[0],
@@ -105,6 +108,11 @@ describe("external source matcher", () => {
 
     expect(score.score).toBeGreaterThanOrEqual(190);
     expect(score.mismatches).toEqual([]);
-    expect(score.reasons).toEqual(expect.arrayContaining(["title:token-match", "composer:token-match"]));
+    expect(score.reasons).toEqual(expect.arrayContaining([
+      "title:token-match",
+      "composer:token-match",
+      "lyricist:token-match",
+      "lyrics:title-token-match",
+    ]));
   });
 });

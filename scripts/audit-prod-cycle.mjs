@@ -116,6 +116,7 @@ function collectErrors({
   coverageSummary,
   sourceIntakeDryRun,
   sourceDiscoveryVerification,
+  sourceProviderVerificationRun,
   pdfSummary,
   studioFollowAudit,
   referencesRuntimeAudit,
@@ -208,6 +209,29 @@ function collectErrors({
     }
     if ((summary.directAutoAttachCount ?? -1) !== 0) {
       errors.push("external source discovery directAutoAttachCount must be 0");
+    }
+  }
+
+  if (!sourceProviderVerificationRun) {
+    errors.push("external source provider verification run could not be read");
+  } else {
+    if (sourceProviderVerificationRun.ok !== true) {
+      errors.push("external source provider verification run must be ok");
+    }
+    if (sourceProviderVerificationRun.dryRun !== true) {
+      errors.push("external source provider verification must be dry-run only");
+    }
+    if ((sourceProviderVerificationRun.processedGroupCount ?? 0) <= 0) {
+      errors.push("external source provider verification must process at least one backlog group");
+    }
+    if ((sourceProviderVerificationRun.directAutoAttachCount ?? -1) !== 0) {
+      errors.push("external source provider verification directAutoAttachCount must be 0");
+    }
+    if ((sourceProviderVerificationRun.mediaDownloadCount ?? -1) !== 0) {
+      errors.push("external source provider verification must not download media");
+    }
+    if ((sourceProviderVerificationRun.sourceContentCopiedCount ?? -1) !== 0) {
+      errors.push("external source provider verification must not copy source content");
     }
   }
 
@@ -310,6 +334,7 @@ function buildSummary({
   sourceIntakeDryRun,
   sourceDiscoveryRun,
   sourceDiscoveryVerification,
+  sourceProviderVerificationRun,
   pdfSummary,
   studioFollowAudit,
   referencesRuntimeAudit,
@@ -320,6 +345,7 @@ function buildSummary({
     coverageSummary,
     sourceIntakeDryRun,
     sourceDiscoveryVerification,
+    sourceProviderVerificationRun,
     pdfSummary,
     studioFollowAudit,
     referencesRuntimeAudit,
@@ -371,6 +397,27 @@ function buildSummary({
       negativeCacheCount: sourceDiscoveryVerification?.summary?.negativeCacheCount ?? 0,
       directAutoAttachCount: sourceDiscoveryVerification?.summary?.directAutoAttachCount ?? null,
       targetScript: "npm run discover:external-sources && npm run verify:external-source-discovery",
+      providerVerification: {
+        artifactPath: "output/external-source-discovery/provider-verification-run.json",
+        evidenceArtifactPath: "output/external-source-discovery/provider-verification-evidence.json",
+        acceptedImportReadyArtifactPath: "output/external-source-discovery/provider-verification-accepted-import-ready.json",
+        lastRunOk: sourceProviderVerificationRun?.ok === true,
+        dryRun: sourceProviderVerificationRun?.dryRun === true,
+        providerProfileId: sourceProviderVerificationRun?.providerProfileId ?? null,
+        processedGroupCount: sourceProviderVerificationRun?.processedGroupCount ?? 0,
+        totalEligibleGroupCount: sourceProviderVerificationRun?.totalEligibleGroupCount ?? 0,
+        resultCount: sourceProviderVerificationRun?.resultCount ?? 0,
+        acceptedReadyCount: sourceProviderVerificationRun?.acceptedReadyCount ?? 0,
+        needsReviewCount: sourceProviderVerificationRun?.needsReviewCount ?? 0,
+        rejectedCount: sourceProviderVerificationRun?.rejectedCount ?? 0,
+        deferredCount: sourceProviderVerificationRun?.deferredCount ?? 0,
+        cacheHitCount: sourceProviderVerificationRun?.cacheHitCount ?? 0,
+        directAutoAttachCount: sourceProviderVerificationRun?.directAutoAttachCount ?? null,
+        mediaDownloadCount: sourceProviderVerificationRun?.mediaDownloadCount ?? null,
+        sourceContentCopiedCount: sourceProviderVerificationRun?.sourceContentCopiedCount ?? null,
+        warningCount: sourceProviderVerificationRun?.warnings?.length ?? 0,
+        targetScript: "npm run verify:external-source-providers",
+      },
     },
     pdfVerification: {
       candidateEntries: pdfSummary?.candidateEntries ?? 0,
@@ -419,6 +466,7 @@ function buildSummary({
       coverageSummary: "output/external-reference-coverage/summary.json",
       sourceDiscoveryRun: "output/external-source-discovery/discovery-run.json",
       sourceDiscoveryVerification: "output/external-source-discovery/discovery-verification.json",
+      sourceProviderVerificationRun: "output/external-source-discovery/provider-verification-run.json",
       sourceIntakeDryRun: "output/external-reference-coverage/source-intake-accepted-import-dry-run.json",
       pdfLayoutVerificationSummary: "output/symbtr-layout-review/layout-verification-summary.json",
       referencesRuntimeAudit: "output/playwright/references-curation-batch-runtime-audit-20260601.json",
@@ -445,6 +493,7 @@ export async function runProdCycleAudit({
     {id: "external-reference-audit", command: npmExecutable, args: ["run", "audit:external-references"]},
     {id: "external-source-discovery", command: npmExecutable, args: ["run", "discover:external-sources"], timeoutMs: 180_000},
     {id: "external-source-discovery-verification", command: npmExecutable, args: ["run", "verify:external-source-discovery"], timeoutMs: 120_000},
+    {id: "external-source-provider-verification", command: npmExecutable, args: ["run", "verify:external-source-providers"], timeoutMs: 180_000},
     {id: "source-intake-dry-run", command: npmExecutable, args: ["run", "verify:external-source-intake"]},
     {id: "pdf-empty-import-dry-run", command: npmExecutable, args: ["run", "verify:symbtr-layout-review-import"]},
     {id: "pdf-layout-verification", command: npmExecutable, args: ["run", "verify:symbtr-measures"]},
@@ -487,6 +536,11 @@ export async function runProdCycleAudit({
     "external source discovery verification",
     readErrors,
   );
+  const sourceProviderVerificationRun = readJson(
+    "output/external-source-discovery/provider-verification-run.json",
+    "external source provider verification run",
+    readErrors,
+  );
   const pdfSummary = readJson(
     "output/symbtr-layout-review/layout-verification-summary.json",
     "PDF layout verification summary",
@@ -510,6 +564,7 @@ export async function runProdCycleAudit({
     sourceIntakeDryRun,
     sourceDiscoveryRun,
     sourceDiscoveryVerification,
+    sourceProviderVerificationRun,
     pdfSummary,
     studioFollowAudit,
     referencesRuntimeAudit,

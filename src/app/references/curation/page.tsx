@@ -238,6 +238,29 @@ interface SourceDiscoveryCoverageDeltaManifest {
   afterDryRun?: Record<string, number>;
 }
 
+interface SourceProviderVerificationRunManifest {
+  generatedAt?: string;
+  ok?: boolean;
+  dryRun?: boolean;
+  providerProfileId?: string;
+  connector?: string;
+  processedGroupCount?: number;
+  totalEligibleGroupCount?: number;
+  resultCount?: number;
+  acceptedReadyCount?: number;
+  needsReviewCount?: number;
+  rejectedCount?: number;
+  deferredCount?: number;
+  cacheHitCount?: number;
+  directAutoAttachCount?: number;
+  mediaDownloadCount?: number;
+  sourceContentCopiedCount?: number;
+  warnings?: unknown[];
+  acceptedImportDryRun?: {
+    addedCandidateCount?: number;
+  } | null;
+}
+
 interface SourceIntakeAcceptedImportDryRunManifest {
   generatedAt?: string;
   type?: string;
@@ -366,6 +389,9 @@ async function buildReadOnlyInitialState(): Promise<ExternalReferenceState> {
   const sourceDiscoveryProviderCoveragePath = path.join(SOURCE_DISCOVERY_ROOT, "provider-coverage.json");
   const sourceDiscoveryNegativeCachePath = path.join(SOURCE_DISCOVERY_ROOT, "negative-cache.json");
   const sourceDiscoveryCoverageDeltaPath = path.join(SOURCE_DISCOVERY_ROOT, "coverage-delta.json");
+  const sourceProviderVerificationRunPath = path.join(SOURCE_DISCOVERY_ROOT, "provider-verification-run.json");
+  const sourceProviderVerificationEvidencePath = path.join(SOURCE_DISCOVERY_ROOT, "provider-verification-evidence.json");
+  const sourceProviderVerificationAcceptedImportReadyPath = path.join(SOURCE_DISCOVERY_ROOT, "provider-verification-accepted-import-ready.json");
   const mappingPath = path.join(COVERAGE_ROOT, "mapped-external-reference-candidates.json");
   const [
     coverage,
@@ -391,6 +417,7 @@ async function buildReadOnlyInitialState(): Promise<ExternalReferenceState> {
     sourceDiscoveryProviderCoverage,
     sourceDiscoveryNegativeCache,
     sourceDiscoveryCoverageDelta,
+    sourceProviderVerificationRun,
     candidateReviewQueueData,
     candidateReviewGroupsData,
     backlogData,
@@ -419,6 +446,7 @@ async function buildReadOnlyInitialState(): Promise<ExternalReferenceState> {
     readJsonOrNull<SourceDiscoveryProviderCoverageManifest>(sourceDiscoveryProviderCoveragePath),
     readJsonOrNull<SourceDiscoveryNegativeCacheManifest>(sourceDiscoveryNegativeCachePath),
     readJsonOrNull<SourceDiscoveryCoverageDeltaManifest>(sourceDiscoveryCoverageDeltaPath),
+    readJsonOrNull<SourceProviderVerificationRunManifest>(sourceProviderVerificationRunPath),
     readJsonOrNull<CandidateReviewRow[]>(candidateQueuePath),
     readJsonOrNull<CandidateReviewGroup[]>(candidateGroupsPath),
     readJsonOrNull<CurationBacklogRow[]>(backlogPath),
@@ -606,6 +634,30 @@ async function buildReadOnlyInitialState(): Promise<ExternalReferenceState> {
           ?? null,
         reasonWhenEmpty: sourceDiscoveryAcceptedImportReady?.summary?.reasonWhenEmpty ?? null,
         providerCoverage: sourceDiscoveryProviderCoverage?.providers?.slice(0, 12) ?? [],
+        providerVerification: {
+          artifactPath: toProjectPath(sourceProviderVerificationRunPath),
+          evidenceArtifactPath: toProjectPath(sourceProviderVerificationEvidencePath),
+          acceptedImportReadyArtifactPath: toProjectPath(sourceProviderVerificationAcceptedImportReadyPath),
+          generatedAt: sourceProviderVerificationRun?.generatedAt ?? null,
+          ok: sourceProviderVerificationRun?.ok === true,
+          dryRun: sourceProviderVerificationRun?.dryRun === true,
+          providerProfileId: sourceProviderVerificationRun?.providerProfileId ?? null,
+          connector: sourceProviderVerificationRun?.connector ?? null,
+          processedGroupCount: Number(sourceProviderVerificationRun?.processedGroupCount ?? 0),
+          totalEligibleGroupCount: Number(sourceProviderVerificationRun?.totalEligibleGroupCount ?? 0),
+          resultCount: Number(sourceProviderVerificationRun?.resultCount ?? 0),
+          acceptedReadyCount: Number(sourceProviderVerificationRun?.acceptedReadyCount ?? 0),
+          needsReviewCount: Number(sourceProviderVerificationRun?.needsReviewCount ?? 0),
+          rejectedCount: Number(sourceProviderVerificationRun?.rejectedCount ?? 0),
+          deferredCount: Number(sourceProviderVerificationRun?.deferredCount ?? 0),
+          cacheHitCount: Number(sourceProviderVerificationRun?.cacheHitCount ?? 0),
+          directAutoAttachCount: Number(sourceProviderVerificationRun?.directAutoAttachCount ?? 0),
+          mediaDownloadCount: Number(sourceProviderVerificationRun?.mediaDownloadCount ?? 0),
+          sourceContentCopiedCount: Number(sourceProviderVerificationRun?.sourceContentCopiedCount ?? 0),
+          warningCount: Array.isArray(sourceProviderVerificationRun?.warnings) ? sourceProviderVerificationRun.warnings.length : 0,
+          dryRunAddedCandidateCount: Number(sourceProviderVerificationRun?.acceptedImportDryRun?.addedCandidateCount ?? 0),
+          targetScript: "npm run verify:external-source-providers",
+        },
         coverageDelta: {
           before: sourceDiscoveryCoverageDelta?.before ?? null,
           afterDryRun: sourceDiscoveryCoverageDelta?.afterDryRun ?? null,

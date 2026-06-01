@@ -48,11 +48,19 @@ tek kurala bağlamaktır.
 ### Aktif Kalan Otomatik Kaynak Yönetimi / Kullanıcı Ayıklaması
 
 - [ ] Harici nota sayfası, PDF, arşiv ve YouTube/kayıt coverage'i için sistemi
-      "auto-attached + kullanıcı ayıklaması" modeline taşı. Sistem 2978 eksik
-      katalog satırı için derin kaynak analizi yapıp kaynakları doğru kabul
-      edilmiş gibi parça ekranına yerleştirecek; kullanıcı kaldırma, silme,
-      önceliklendirme, not düşme ve manuel düzeltme ile veri kalitesini
-      yönetecek.
+      "provider-verified accepted-only + kullanıcı ayıklaması" modeline taşı.
+      Sistem 2978 eksik katalog satırı için derin kaynak analizi yapacak, ancak
+      search-only adayları doğru kabul edilmiş gibi parça ekranına
+      yerleştirmeyecek. Yalnız HTTPS URL, provider profile match, catalog id
+      veya deterministik metadata match, duplicate-safe identity, checkedAt,
+      provider-specific verification ve metadata conflict-free kanıtlarını geçen
+      adaylar accepted import manifestine girecek; diğerleri review/conflict/
+      deferred/rejected queue'da kalacak. 2026-06-01 ek dalga:
+      `npm run verify:external-source-providers` Internet Archive resmi
+      structured search metadata endpoint'iyle ilk cache'li/dry-run provider
+      verification worker'ını üretir; doğrudan attach yapmaz, accepted-ready
+      manifestini yalnız import dry-run için yazar ve TODO.md kalan tamamlama
+      listesini canlı kaynak olarak günceller.
 - [x] `/references` ve yeni `/references/curation` akışlarının mimari yerini
       netleştir. `PRODUCT_ARCHITECTURE.md` kalıcı route listesi ile mevcut
       navigation'daki `references` route'u şu an farklı varsayımlara sahipti;

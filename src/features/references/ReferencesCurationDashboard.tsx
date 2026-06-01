@@ -376,6 +376,30 @@ export interface ExternalReferenceState {
         before?: Record<string, number> | null;
         afterDryRun?: Record<string, number> | null;
       };
+      providerVerification?: {
+        artifactPath?: string;
+        evidenceArtifactPath?: string;
+        acceptedImportReadyArtifactPath?: string;
+        generatedAt?: string | null;
+        ok?: boolean;
+        dryRun?: boolean;
+        providerProfileId?: string | null;
+        connector?: string | null;
+        processedGroupCount?: number;
+        totalEligibleGroupCount?: number;
+        resultCount?: number;
+        acceptedReadyCount?: number;
+        needsReviewCount?: number;
+        rejectedCount?: number;
+        deferredCount?: number;
+        cacheHitCount?: number;
+        directAutoAttachCount?: number;
+        mediaDownloadCount?: number;
+        sourceContentCopiedCount?: number;
+        warningCount?: number;
+        dryRunAddedCandidateCount?: number;
+        targetScript?: string | null;
+      };
     };
     candidateReviewGroupPage?: CandidateReviewGroupPage;
     candidateReviewGroupFacets?: {
@@ -744,6 +768,35 @@ function buildArtifactInventory(state: ExternalReferenceState): ArtifactInventor
     metrics: [
       `${formatNumber(sourceDiscovery.providerCount)} provider`,
       `${formatNumber(sourceDiscovery.negativeCacheCount)} negative cache`,
+    ],
+  } : null);
+
+  const providerVerification = sourceDiscovery?.providerVerification;
+  addItem(providerVerification?.artifactPath ? {
+    id: "provider-verification-run",
+    label: "Provider verification run",
+    category: "Verification",
+    status: providerVerification.ok ? "dry-run" : "needs-review",
+    path: providerVerification.artifactPath,
+    metrics: [
+      `${formatNumber(providerVerification.processedGroupCount)} grup işlendi`,
+      `${formatNumber(providerVerification.resultCount)} sonuç`,
+      `${formatNumber(providerVerification.acceptedReadyCount)} accepted-ready`,
+      `${formatNumber(providerVerification.directAutoAttachCount)} direct attach`,
+    ],
+    command: providerVerification.targetScript,
+  } : null);
+
+  addItem(providerVerification?.evidenceArtifactPath ? {
+    id: "provider-verification-evidence",
+    label: "Provider verification evidence",
+    category: "Verification",
+    status: "dry-run",
+    path: providerVerification.evidenceArtifactPath,
+    metrics: [
+      `${formatNumber(providerVerification.needsReviewCount)} review`,
+      `${formatNumber(providerVerification.rejectedCount)} rejected`,
+      `${formatNumber(providerVerification.cacheHitCount)} cache hit`,
     ],
   } : null);
 
@@ -1524,6 +1577,42 @@ export function ReferencesCurationDashboard({
                       </div>
                     </article>
                   ))}
+                </div>
+              )}
+              {sourceDiscovery.providerVerification && (
+                <div className="border-t border-[var(--color-border)] p-4">
+                  <div className="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
+                    <div>
+                      <h3 className={`text-sm font-semibold ${tokens.colors.text.primary}`}>Provider verification</h3>
+                      <p className={`mt-1 text-xs ${tokens.colors.text.secondary}`}>
+                        {sourceDiscovery.providerVerification.ok ? "Dry-run OK" : "Review"} · {sourceDiscovery.providerVerification.providerProfileId ?? "-"} · {formatNumber(sourceDiscovery.providerVerification.warningCount)} uyarı · {formatDate(sourceDiscovery.providerVerification.generatedAt)}
+                      </p>
+                      {sourceDiscovery.providerVerification.artifactPath && (
+                        <code className="mt-1 block break-all text-xs text-[var(--color-text-primary)]">{sourceDiscovery.providerVerification.artifactPath}</code>
+                      )}
+                      {sourceDiscovery.providerVerification.evidenceArtifactPath && (
+                        <code className="mt-1 block break-all text-xs text-[var(--color-text-primary)]">{sourceDiscovery.providerVerification.evidenceArtifactPath}</code>
+                      )}
+                    </div>
+                    <div className="grid w-full gap-2 text-sm sm:grid-cols-2 lg:max-w-4xl lg:grid-cols-4">
+                      <div>
+                        <div className={`text-xs uppercase ${tokens.colors.text.secondary}`}>Processed</div>
+                        <div className={tokens.colors.text.primary}>{formatNumber(sourceDiscovery.providerVerification.processedGroupCount)} / {formatNumber(sourceDiscovery.providerVerification.totalEligibleGroupCount)}</div>
+                      </div>
+                      <div>
+                        <div className={`text-xs uppercase ${tokens.colors.text.secondary}`}>Evidence</div>
+                        <div className={tokens.colors.text.primary}>{formatNumber(sourceDiscovery.providerVerification.resultCount)} sonuç · {formatNumber(sourceDiscovery.providerVerification.cacheHitCount)} cache</div>
+                      </div>
+                      <div>
+                        <div className={`text-xs uppercase ${tokens.colors.text.secondary}`}>Decision</div>
+                        <div className={tokens.colors.text.primary}>{formatNumber(sourceDiscovery.providerVerification.acceptedReadyCount)} ready · {formatNumber(sourceDiscovery.providerVerification.rejectedCount)} rejected</div>
+                      </div>
+                      <div>
+                        <div className={`text-xs uppercase ${tokens.colors.text.secondary}`}>Safety</div>
+                        <div className={tokens.colors.text.primary}>{formatNumber(sourceDiscovery.providerVerification.directAutoAttachCount)} attach · {formatNumber(sourceDiscovery.providerVerification.mediaDownloadCount)} media</div>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               )}
             </section>

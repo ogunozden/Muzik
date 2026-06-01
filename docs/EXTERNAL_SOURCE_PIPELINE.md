@@ -54,6 +54,7 @@ URLs as evidence:
 ```bash
 npm run discover:external-sources
 npm run verify:external-source-discovery
+npm run verify:external-source-providers
 npm run import:external-references -- --input output/external-source-discovery/accepted-import-ready.json --dry-run
 npm run audit:prod-cycle
 ```
@@ -66,6 +67,15 @@ Internet Archive structured search metadata, known-site metadata probes for
 DîvânMakam/OGM Materyal/Salih Bora, and YouTube oEmbed verification for
 operator-supplied YouTube URLs. YouTube Data API search remains optional because
 it needs credentials and quota management.
+
+Provider verification is the next evidence layer after search-lead discovery.
+`npm run verify:external-source-providers` currently implements the Internet
+Archive structured metadata pass with the official item search API documented at
+https://doc-tools.readthedocs.io/en/ia-test-gsod/item-search-apis.html. It
+writes `provider-verification-run.json`, `provider-verification-evidence.json`,
+`provider-verification-cache.json` and
+`provider-verification-accepted-import-ready.json`; it never downloads media,
+copies source content or attaches directly.
 
 Examples:
 

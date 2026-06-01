@@ -1,0 +1,17 @@
+{
+  "version": 1,
+  "type": "external-source-provider-verification-accepted-import-ready",
+  "generatedAt": "2026-06-01T00:00:00.000Z",
+  "dryRun": true,
+  "importContract": {
+    "directAutoAttach": false,
+    "targetScript": "npm run import:external-references -- --input output/external-source-discovery/provider-verification-accepted-import-ready.json --dry-run",
+    "acceptedOnlyAfterValidation": true
+  },
+  "summary": {
+    "acceptedReadyCount": 0,
+    "directAutoAttachCount": 0,
+    "providerProfileId": "internet-archive"
+  },
+  "candidates": []
+}

@@ -1,7 +1,7 @@
 {
   "version": 1,
   "type": "batch-first-prod-cycle-audit",
-  "generatedAt": "2026-06-01T14:50:50.364Z",
+  "generatedAt": "2026-06-01T16:18:42.792Z",
   "baseUrl": "http://localhost:4015",
   "ok": true,
   "errors": [],
@@ -12,7 +12,7 @@
       "command": "npm run audit:external-references",
       "ok": true,
       "exitCode": 0,
-      "durationMs": 1319,
+      "durationMs": 1359,
       "timedOut": false,
       "stdoutTail": [
         "  \"candidateReviewBatchPlanJson\": \"output/external-reference-coverage/symbtr-curated-reference-candidate-review-batch-plan.json\",",
@@ -35,7 +35,7 @@
       "command": "npm run discover:external-sources",
       "ok": true,
       "exitCode": 0,
-      "durationMs": 2442,
+      "durationMs": 2619,
       "timedOut": false,
       "stdoutTail": [
         "  \"artifacts\": {",
@@ -58,7 +58,7 @@
       "command": "npm run verify:external-source-discovery",
       "ok": true,
       "exitCode": 0,
-      "durationMs": 535,
+      "durationMs": 637,
       "timedOut": false,
       "stdoutTail": [
         "      \"input\": \"output/external-source-discovery/accepted-import-ready.json\",",
@@ -77,11 +77,34 @@
       "stderrTail": []
     },
     {
+      "id": "external-source-provider-verification",
+      "command": "npm run verify:external-source-providers",
+      "ok": true,
+      "exitCode": 0,
+      "durationMs": 446,
+      "timedOut": false,
+      "stdoutTail": [
+        "    \"incomingCandidateCount\": 0,",
+        "    \"addedCandidateCount\": 0,",
+        "    \"skippedDuplicateCount\": 0,",
+        "    \"outputCandidateCount\": 7,",
+        "    \"output\": \"src/data/references/external-reference-bulk-candidates.json\",",
+        "    \"addedCatalogIds\": []",
+        "  },",
+        "  \"source\": {",
+        "    \"documentation\": \"https://doc-tools.readthedocs.io/en/ia-test-gsod/item-search-apis.html\",",
+        "    \"endpoint\": \"https://archive.org/advancedsearch.php\"",
+        "  }",
+        "}"
+      ],
+      "stderrTail": []
+    },
+    {
       "id": "source-intake-dry-run",
       "command": "npm run verify:external-source-intake",
       "ok": true,
       "exitCode": 0,
-      "durationMs": 356,
+      "durationMs": 375,
       "timedOut": false,
       "stdoutTail": [
         "    \"dryRun\": true,",
@@ -104,7 +127,7 @@
       "command": "npm run verify:symbtr-layout-review-import",
       "ok": true,
       "exitCode": 0,
-      "durationMs": 451,
+      "durationMs": 504,
       "timedOut": false,
       "stdoutTail": [
         "  },",
@@ -127,7 +150,7 @@
       "command": "npm run verify:symbtr-measures",
       "ok": true,
       "exitCode": 0,
-      "durationMs": 334,
+      "durationMs": 382,
       "timedOut": false,
       "stdoutTail": [
         "  \"unresolvedCandidateEntries\": 1,",
@@ -150,7 +173,7 @@
       "command": "npm run curation:validate",
       "ok": true,
       "exitCode": 0,
-      "durationMs": 591,
+      "durationMs": 633,
       "timedOut": false,
       "stdoutTail": [
         "    \"researchSourceProfiles\": 5,",
@@ -173,7 +196,7 @@
       "command": "npm run audit:samples",
       "ok": true,
       "exitCode": 0,
-      "durationMs": 1559,
+      "durationMs": 1544,
       "timedOut": false,
       "stdoutTail": [
         "> muzik@0.1.0 audit:samples",
@@ -185,8 +208,8 @@
         "",
         " Test Files  3 passed (3)",
         "      Tests  11 passed (11)",
-        "   Start at  17:50:34",
-        "   Duration  930ms (transform 179ms, setup 0ms, import 275ms, tests 110ms, environment 1.86s)"
+        "   Start at  19:18:26",
+        "   Duration  943ms (transform 170ms, setup 0ms, import 270ms, tests 108ms, environment 1.89s)"
       ],
       "stderrTail": []
     },
@@ -195,7 +218,7 @@
       "command": "npm run audit:studio-follow",
       "ok": true,
       "exitCode": 0,
-      "durationMs": 6374,
+      "durationMs": 6379,
       "timedOut": false,
       "stdoutTail": [
         "        \"viewportHeight\": 844,",
@@ -218,16 +241,16 @@
       "command": "npm run audit:references-curation-runtime",
       "ok": true,
       "exitCode": 0,
-      "durationMs": 714,
+      "durationMs": 723,
       "timedOut": false,
       "stdoutTail": [
-        "    \"hasBacklogMetric\": true,",
-        "    \"hasCandidateQueueMetric\": true,",
-        "    \"hasProdCycleArtifact\": true,",
         "    \"hasProdCycleCommand\": true,",
         "    \"hasDiscoveryPanel\": true,",
         "    \"hasDiscoveryArtifact\": true,",
         "    \"hasDiscoveryCommand\": true,",
+        "    \"hasProviderVerificationPanel\": true,",
+        "    \"hasProviderVerificationArtifact\": true,",
+        "    \"hasProviderVerificationCommand\": true,",
         "    \"hasReadOnlySnapshotMessage\": true",
         "  },",
         "  \"ok\": true,",
@@ -241,7 +264,7 @@
       "command": "npm run guardrails:layout -- --base-url http://localhost:4015 --routes /references/curation,/studio/follow",
       "ok": true,
       "exitCode": 0,
-      "durationMs": 6418,
+      "durationMs": 6596,
       "timedOut": false,
       "stdoutTail": [
         "> muzik@0.1.0 guardrails:layout",
@@ -251,7 +274,7 @@
         "Routes: /references/curation, /studio/follow",
         "OK mobile  /references/curation Muzik - Türk Müziği Platformu; 8 clipped candidates within non-overflowing page",
         "OK desktop /references/curation Muzik - Türk Müziği Platformu",
-        "OK mobile  /studio/follow     Muzik - Türk Müziği Platformu; 8 clipped candidates within non-overflowing page",
+        "OK mobile  /studio/follow     Muzik - Türk Müziği Platformu",
         "OK desktop /studio/follow     Muzik - Türk Müziği Platformu; 8 clipped candidates within non-overflowing page",
         "Layout guard passed for 2 routes across 2 viewports."
       ],
@@ -262,7 +285,7 @@
       "command": "npm run audit:security",
       "ok": true,
       "exitCode": 0,
-      "durationMs": 1154,
+      "durationMs": 1291,
       "timedOut": false,
       "stdoutTail": [
         "> muzik@0.1.0 audit:security",
@@ -421,7 +444,28 @@
     "conflictCount": 4,
     "negativeCacheCount": 11912,
     "directAutoAttachCount": 0,
-    "targetScript": "npm run discover:external-sources && npm run verify:external-source-discovery"
+    "targetScript": "npm run discover:external-sources && npm run verify:external-source-discovery",
+    "providerVerification": {
+      "artifactPath": "output/external-source-discovery/provider-verification-run.json",
+      "evidenceArtifactPath": "output/external-source-discovery/provider-verification-evidence.json",
+      "acceptedImportReadyArtifactPath": "output/external-source-discovery/provider-verification-accepted-import-ready.json",
+      "lastRunOk": true,
+      "dryRun": true,
+      "providerProfileId": "internet-archive",
+      "processedGroupCount": 25,
+      "totalEligibleGroupCount": 2973,
+      "resultCount": 0,
+      "acceptedReadyCount": 0,
+      "needsReviewCount": 0,
+      "rejectedCount": 25,
+      "deferredCount": 0,
+      "cacheHitCount": 25,
+      "directAutoAttachCount": 0,
+      "mediaDownloadCount": 0,
+      "sourceContentCopiedCount": 0,
+      "warningCount": 0,
+      "targetScript": "npm run verify:external-source-providers"
+    }
   },
   "pdfVerification": {
     "candidateEntries": 1,
@@ -451,7 +495,7 @@
     "referencesCuration": {
       "ok": true,
       "targetUrl": "http://localhost:4015/references/curation",
-      "htmlBytes": 484162,
+      "htmlBytes": 485030,
       "hydratedCandidateIds": 100,
       "hydratedCatalogIds": 287,
       "hasRawPacketArrays": false,
@@ -480,6 +524,7 @@
     "coverageSummary": "output/external-reference-coverage/summary.json",
     "sourceDiscoveryRun": "output/external-source-discovery/discovery-run.json",
     "sourceDiscoveryVerification": "output/external-source-discovery/discovery-verification.json",
+    "sourceProviderVerificationRun": "output/external-source-discovery/provider-verification-run.json",
     "sourceIntakeDryRun": "output/external-reference-coverage/source-intake-accepted-import-dry-run.json",
     "pdfLayoutVerificationSummary": "output/symbtr-layout-review/layout-verification-summary.json",
     "referencesRuntimeAudit": "output/playwright/references-curation-batch-runtime-audit-20260601.json",

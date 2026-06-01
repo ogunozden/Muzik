@@ -1360,8 +1360,14 @@ calisma agacindaki bu guncelleme oncesi genis degisiklikleri de kapsadigindan
        envanteri üretir; coverage, backlog, candidate, review, decision, batch,
        intake, validation, PDF, runtime data, policy ve quality artifactleri
        kategori/durum/arama filtreleriyle görünür olur.
-4. [ ] `/studio/follow`, enstrüman, usul timing ve kaynak görüntüleme akışlarını
-       full browser audit ile doğrula.
+4. [x] `/studio/follow`, enstrüman, usul timing ve kaynak görüntüleme akışlarını
+       full browser audit ile doğrula. 2026-06-01 ek kapı:
+       `npm run audit:studio-follow` sabit `http://localhost:4015` üstünden
+       desktop/mobile headless browser audit çalıştırır; Hicazkar Peşrev,
+       makam/usul, Devr-i Kebir 28/4 cue, Türkçe solfej/SymbTr nota, Koma53,
+       görsel takip, SymbTr/PDF/kaynak görünürlüğü, aday/verified PDF ayrımı,
+       enstrüman kontrolleri, sample fallback, katalog arama, yatay taşma ve
+       console warning/error durumunu JSON + PNG kanıtıyla doğrular.
 
 ## 🏛 MİMARİ KURAL SETLERİ (RULE SETS)
 

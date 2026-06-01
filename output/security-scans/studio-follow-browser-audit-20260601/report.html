@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Studio Follow Browser Audit Security Diff Scan</title>
+  <style>
+    body { font-family: Arial, sans-serif; line-height: 1.5; margin: 32px; color: #1f2933; }
+    code { background: #f4f4f5; padding: 2px 4px; border-radius: 4px; }
+    h1, h2 { color: #111827; }
+    .result { padding: 12px 16px; background: #ecfdf3; border: 1px solid #b7ebc6; border-radius: 6px; }
+  </style>
+</head>
+<body>
+  <h1>Studio Follow Browser Audit Security Diff Scan</h1>
+  <p><strong>Date:</strong> 2026-06-01<br><strong>Branch:</strong> codex/batch-curation-pipeline<br><strong>Scope:</strong> local diff for <code>npm run audit:studio-follow</code>, browser evidence artifacts, and project-plan update.</p>
+  <h2>Threat Model</h2>
+  <p>The relevant assets are local real catalog data, SymbTr/PDF/source evidence, browser trust in <code>/studio/follow</code>, and operator confidence in instrument/usul/source audit evidence. The changed surface is a local validation script that launches a headless browser, reads <code>http://localhost:4015/studio/follow</code>, writes JSON/PNG evidence under <code>output/playwright</code>, and removes an isolated browser profile under <code>.layout-guard</code>.</p>
+  <h2>Discovery</h2>
+  <p>Reviewed <code>scripts/audit-studio-follow-browser.mjs</code>, <code>package.json</code>, <code>PROJECT_PLAN.md</code>, and generated browser evidence. Sink search covered child-process launch, filesystem writes/deletes, WebSocket/CDP usage, network fetches, runtime evaluation, screenshot capture, and path joins.</p>
+  <p>The script does not accept arbitrary remote targets by default, constrains summary/screenshot/profile paths to the project root, does not send source data to external services, and uses a fixed local route. The only process launched is an installed Chrome/Edge/Chromium executable with a temporary isolated profile. Filesystem removal is restricted by project-root containment checks.</p>
+  <h2>Candidate Findings</h2>
+  <p>No technically plausible security finding was discovered in this diff.</p>
+  <h2>Validation</h2>
+  <ul>
+    <li><code>npm run audit:studio-follow</code>: passed, desktop/mobile <code>ok: true</code>, browser warning/error count 0.</li>
+    <li>Targeted Vitest for studio follow, sample coverage, sample library, usul, notation, and rhythm schedule: 6 files, 52 tests passed.</li>
+    <li><code>npm run audit:samples</code>: 3 files, 11 tests passed.</li>
+    <li><code>npm run lint</code>, <code>npm run typecheck</code>, <code>npm run test:run</code>, <code>npm run build</code>, <code>npm run curation:validate</code>, and <code>npm run audit:security</code>: passed.</li>
+    <li>Layout guard passed for <code>/studio/follow</code> and <code>/references/curation</code>.</li>
+    <li><code>git diff --check</code>: passed.</li>
+  </ul>
+  <h2>Attack Path Analysis</h2>
+  <p>No surviving candidate reached attack-path analysis. A plausible concern would be arbitrary file deletion or external data transmission through the audit script. Path operations are project-root constrained, the browser profile lives under <code>.layout-guard</code>, output artifacts live under <code>output/playwright</code>, and network reads target the configured local app. The CDP <code>Runtime.evaluate</code> payload is fixed audit code, not operator-supplied code.</p>
+  <h2>Result</h2>
+  <p class="result"><strong>Final decision:</strong> no findings.</p>
+  <p><strong>Residual risk:</strong> if this audit script is later generalized to arbitrary URLs or arbitrary runtime expressions, that change needs a fresh security review before push.</p>
+</body>
+</html>

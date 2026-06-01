@@ -143,6 +143,17 @@ interface ExternalReferenceState {
     acceptedBulkCandidateEntries?: number;
     candidateReviewQueueEntries?: number;
     candidateReviewQueueJson?: string;
+    batchReport?: {
+      processedCatalogEntries?: number;
+      curatedBeforeBulkCandidates?: number;
+      newlyAcceptedCatalogEntries?: number;
+      curatedAfterBatch?: number;
+      missingAfterBatch?: number;
+      deferredMissingEntries?: number;
+      nextBatchSize?: number;
+      generatedReviewCandidates?: number;
+      validationGates?: string[];
+    };
   } | null;
   curation?: {
     summary?: {
@@ -314,10 +325,12 @@ function FilterSelect({
 function metricCards(state: ExternalReferenceState) {
   const summary = state.curation?.summary ?? {};
   const backlogPage = state.curation?.backlogPage ?? {};
+  const batchReport = state.coverage?.batchReport;
 
   return [
     {label: "Auto", value: formatNumber(summary.autoAttachedCount), meta: summary.matcherVersion ?? "matcher"},
     {label: "Backlog", value: formatNumber(state.coverage?.missingCuratedEntries), meta: `${formatNumber(backlogPage.returnedCount)} / ${formatNumber(backlogPage.filteredTotal)} sırada`},
+    {label: "Batch", value: formatNumber(batchReport?.processedCatalogEntries), meta: `${formatNumber(batchReport?.generatedReviewCandidates)} aday`},
     {label: "Conflict", value: formatNumber(summary.conflictCount), meta: "eşleşme"},
     {label: "Removed", value: formatNumber(summary.removedCount), meta: "kullanıcı"},
     {label: "Feedback", value: formatNumber(summary.feedbackEventCount), meta: "event"},
@@ -626,6 +639,7 @@ export function ReferencesCurationDashboard() {
   const candidateManifest = state.curation?.candidateManifest;
   const candidateReviewPage = state.curation?.candidateReviewPage;
   const candidateReviewRows = state.curation?.candidateReviewQueue ?? [];
+  const batchReport = state.coverage?.batchReport;
   const selectedReferenceCount = selectedReferences.length;
   const visibleSelectableCount = filteredReferences.filter((reference) => getReferenceKey(reference) !== ":").length;
   const allVisibleReferencesSelected = visibleSelectableCount > 0 && selectedReferenceCount >= visibleSelectableCount;
@@ -684,6 +698,11 @@ export function ReferencesCurationDashboard() {
                 <p className={`text-xs ${tokens.colors.text.secondary}`}>
                   {formatNumber(candidateManifest?.candidateCount)} aday · {formatNumber(candidateManifest?.acceptedCount)} accepted · {formatNumber(candidateManifest?.needsReviewCount)} review · {formatNumber(candidateManifest?.rejectedCount)} rejected · {formatNumber(candidateManifest?.conflictCount)} conflict · {formatNumber(state.coverage?.candidateReviewQueueEntries)} queue
                 </p>
+                {batchReport && (
+                  <p className={`mt-1 text-xs ${tokens.colors.text.secondary}`}>
+                    Batch raporu: {formatNumber(batchReport.processedCatalogEntries)} eser işlendi · {formatNumber(batchReport.curatedBeforeBulkCandidates)} önce · +{formatNumber(batchReport.newlyAcceptedCatalogEntries)} accepted · {formatNumber(batchReport.missingAfterBatch)} eksik · {formatNumber(batchReport.deferredMissingEntries)} deferred · {formatNumber(batchReport.validationGates?.length)} kapı
+                  </p>
+                )}
                 {candidateManifest?.artifactPath && (
                   <code className="mt-1 block break-all text-xs text-[var(--color-text-primary)]">{candidateManifest.artifactPath}</code>
                 )}

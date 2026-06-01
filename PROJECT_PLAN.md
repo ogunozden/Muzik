@@ -516,6 +516,16 @@ tek kurala bağlamaktır.
         `/references/curation` `Queue dışa aktar` kontrolüyle aktif filtreli
         review queue JSON'unu ayrı readonly alana alır; bu çıktı accepted
         manifest import kutusuna karışmaz ve review-only statüyü korur.
+62. [x] Her batch sonunda makine-okunur coverage/delta raporu eklendi:
+        `audit:external-references` `summary.json.batchReport` altında
+        ingest→normalize→dedupe→provider-profile-classify→candidate-generate→
+        confidence-score→status-assign→safe-auto-attach-accepted-only→validate→
+        coverage-report akışını, 3000 işlenen eser sayısını, önceki curated
+        sayısını, yeni accepted katalog id'lerini, missing/deferred/next batch
+        sayısını, status/profile kırılımlarını ve validation gate listesini
+        yazar. `curation:validate` bu batch raporunun summary ve 11912 review
+        queue satırıyla drift etmediğini doğrular; dashboard üst metriklerde
+        batch raporunu gösterir.
 
 ### Doğrulama Notu
 

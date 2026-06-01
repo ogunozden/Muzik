@@ -119,10 +119,27 @@ function validRegistries() {
       },
     ],
     coverageSummary: {
+      totalCatalogEntries: 2,
+      curatedReferenceEntries: 1,
       missingCuratedEntries: 1,
+      deferredMissingEntries: 0,
+      nextBatchSize: 1,
       candidateReviewQueueEntries: 1,
       candidateReviewQueueByStatus: [{value: "needs-review", count: 1}],
       candidateReviewQueueByProfile: [{value: "youtube", count: 1}],
+      batchReport: {
+        version: 1,
+        processedCatalogEntries: 2,
+        curatedBeforeBulkCandidates: 1,
+        newlyAcceptedCatalogEntries: 0,
+        curatedAfterBatch: 1,
+        missingAfterBatch: 1,
+        deferredMissingEntries: 0,
+        nextBatchSize: 1,
+        generatedReviewCandidates: 1,
+        candidateReviewStatusCounts: [{value: "needs-review", count: 1}],
+        validationGates: ["catalog-id", "candidate-review-only", "summary-count-drift"],
+      },
     },
   };
 }
@@ -245,6 +262,24 @@ describe("source curation validation", () => {
         `candidate-review-queue: ${candidate.candidateId} must not carry accepted source ids or source URLs`,
         `candidate-review-queue: ${candidate.candidateId} reviewConfidenceScore must be between 0 and 100`,
         "coverage-summary: candidateReviewQueueEntries 2 does not match candidate review queue rows 1",
+      ]),
+    );
+  });
+
+  it("rejects batch report drift from coverage and review queue counts", () => {
+    const registries = validRegistries();
+    registries.coverageSummary.batchReport.generatedReviewCandidates = 2;
+    registries.coverageSummary.batchReport.candidateReviewStatusCounts = [{value: "accepted", count: 1}];
+    registries.coverageSummary.batchReport.validationGates = [];
+
+    const result = validateSourceCurationRegistries(registries);
+
+    expect(result.errors).toEqual(
+      expect.arrayContaining([
+        "coverage-summary: batchReport.generatedReviewCandidates must match candidate review queue rows",
+        "coverage-summary: batchReport.generatedReviewCandidates must equal missingAfterBatch times enabled profile count",
+        "coverage-summary: batchReport candidateReviewStatusCounts must contain only review-only rows",
+        "coverage-summary: batchReport.validationGates must list validation gates",
       ]),
     );
   });

@@ -623,7 +623,12 @@ export function runExternalReferenceCoverageAudit({
   const researchProfiles = readResearchSourceProfiles(paths.researchProfiles);
   const acceptedBulkCandidates = bulkCandidates.filter((candidate) => candidate.status === "accepted");
   const curatedCatalogIds = readCuratedCatalogIds(entries, paths);
+  const curatedBeforeBulkCandidates = curatedCatalogIds.size;
+  const newlyAcceptedCatalogIds = [];
   for (const candidate of acceptedBulkCandidates) {
+    if (!curatedCatalogIds.has(candidate.catalogId)) {
+      newlyAcceptedCatalogIds.push(candidate.catalogId);
+    }
     curatedCatalogIds.add(candidate.catalogId);
   }
   const curationDecisionsByCatalogId = readCurationDecisions(entries, paths.curationDecisions);
@@ -653,6 +658,46 @@ export function runExternalReferenceCoverageAudit({
   writeFileSync(candidateReviewCsvPath, renderCandidateReviewCsv(candidateReviewRows));
   writeFileSync(candidateReviewJsonPath, `${JSON.stringify(candidateReviewRows, null, 2)}\n`);
 
+  const batchReport = {
+    version: 1,
+    flow: [
+      "ingest",
+      "normalize",
+      "dedupe",
+      "provider-profile-classify",
+      "candidate-generate",
+      "confidence-score",
+      "status-assign",
+      "safe-auto-attach-accepted-only",
+      "validate",
+      "coverage-report",
+    ],
+    processedCatalogEntries: rows.length,
+    curatedBeforeBulkCandidates,
+    newlyAcceptedCatalogEntries: newlyAcceptedCatalogIds.length,
+    curatedAfterBatch: rows.length - missingRows.length,
+    missingAfterBatch: missingRows.length,
+    deferredMissingEntries: deferredRows.length,
+    nextBatchSize: nextBatchRows.length,
+    bulkCandidateStatusCounts: summarizeCounts(bulkCandidates, "status"),
+    candidateReviewStatusCounts: summarizeCounts(candidateReviewRows, "status"),
+    candidateReviewProfileCounts: summarizeCounts(candidateReviewRows, "profileId"),
+    generatedReviewCandidates: candidateReviewRows.length,
+    duplicateAcceptedIdentityPolicy: "duplicate accepted URL identities fail validation before merge",
+    autoAttachPolicy: "only accepted bulk candidates are counted as curated and eligible for auto-attach",
+    acceptedCatalogIds: acceptedBulkCandidates.map((candidate) => candidate.catalogId),
+    newlyAcceptedCatalogIds,
+    validationGates: [
+      "catalog-id",
+      "https-url-policy",
+      "accepted-identity-dedupe",
+      "status-contract",
+      "candidate-review-only",
+      "profile-count-drift",
+      "summary-count-drift",
+    ],
+  };
+
   const summary = {
     totalCatalogEntries: rows.length,
     officialSymbTrMetadataEntries: rows.length,
@@ -667,6 +712,7 @@ export function runExternalReferenceCoverageAudit({
     candidateReviewQueueEntries: candidateReviewRows.length,
     candidateReviewQueueByStatus: summarizeCounts(candidateReviewRows, "status"),
     candidateReviewQueueByProfile: summarizeCounts(candidateReviewRows, "profileId"),
+    batchReport,
     catalogFormatCoverage: countCatalogFormats(entries),
     missingByPriorityGroup: summarizeCounts(missingRows, "priorityGroup"),
     topMissingByForm: summarizeCounts(missingRows, "form").slice(0, 20),

@@ -133,6 +133,72 @@ function validateCoverageBreakdown(summaryRows, label, actualCounts, errors) {
   }
 }
 
+function getCountFromSummaryRows(summaryRows, value) {
+  if (!Array.isArray(summaryRows)) return null;
+  const row = summaryRows.find((item) => item?.value === value);
+  return Number.isInteger(row?.count) ? row.count : 0;
+}
+
+function validateBatchReport(summary, actualCandidateReviewCount, enabledProfileCount, errors) {
+  const report = summary?.batchReport;
+  if (report === undefined) return;
+  if (!report || typeof report !== "object") {
+    errors.push("coverage-summary: batchReport must be an object");
+    return;
+  }
+
+  const integerFields = [
+    "processedCatalogEntries",
+    "curatedBeforeBulkCandidates",
+    "newlyAcceptedCatalogEntries",
+    "curatedAfterBatch",
+    "missingAfterBatch",
+    "deferredMissingEntries",
+    "nextBatchSize",
+    "generatedReviewCandidates",
+  ];
+  for (const field of integerFields) {
+    if (!Number.isInteger(report[field]) || report[field] < 0) {
+      errors.push(`coverage-summary: batchReport.${field} must be a non-negative integer`);
+    }
+  }
+
+  if (report.processedCatalogEntries !== summary?.totalCatalogEntries) {
+    errors.push("coverage-summary: batchReport.processedCatalogEntries must match totalCatalogEntries");
+  }
+  if (report.curatedAfterBatch !== summary?.curatedReferenceEntries) {
+    errors.push("coverage-summary: batchReport.curatedAfterBatch must match curatedReferenceEntries");
+  }
+  if (report.missingAfterBatch !== summary?.missingCuratedEntries) {
+    errors.push("coverage-summary: batchReport.missingAfterBatch must match missingCuratedEntries");
+  }
+  if (report.deferredMissingEntries !== summary?.deferredMissingEntries) {
+    errors.push("coverage-summary: batchReport.deferredMissingEntries must match deferredMissingEntries");
+  }
+  if (report.nextBatchSize !== summary?.nextBatchSize) {
+    errors.push("coverage-summary: batchReport.nextBatchSize must match nextBatchSize");
+  }
+  if (report.generatedReviewCandidates !== actualCandidateReviewCount) {
+    errors.push("coverage-summary: batchReport.generatedReviewCandidates must match candidate review queue rows");
+  }
+  if (report.generatedReviewCandidates !== report.missingAfterBatch * enabledProfileCount) {
+    errors.push("coverage-summary: batchReport.generatedReviewCandidates must equal missingAfterBatch times enabled profile count");
+  }
+  if (report.newlyAcceptedCatalogEntries > summary?.acceptedBulkCandidateEntries) {
+    errors.push("coverage-summary: batchReport.newlyAcceptedCatalogEntries cannot exceed acceptedBulkCandidateEntries");
+  }
+
+  const reviewOnlyCount =
+    getCountFromSummaryRows(report.candidateReviewStatusCounts, "needs-review") +
+    getCountFromSummaryRows(report.candidateReviewStatusCounts, "conflict");
+  if (reviewOnlyCount !== report.generatedReviewCandidates) {
+    errors.push("coverage-summary: batchReport candidateReviewStatusCounts must contain only review-only rows");
+  }
+  if (!Array.isArray(report.validationGates) || report.validationGates.length === 0) {
+    errors.push("coverage-summary: batchReport.validationGates must list validation gates");
+  }
+}
+
 export function validateSourceCurationRegistries({
   catalog,
   autoAttached,
@@ -448,6 +514,13 @@ export function validateSourceCurationRegistries({
             }
           }
         }
+
+        validateBatchReport(
+          coverageSummary,
+          candidateReviewQueue.length,
+          enabledResearchProfileIds.size,
+          errors,
+        );
       }
     }
   }

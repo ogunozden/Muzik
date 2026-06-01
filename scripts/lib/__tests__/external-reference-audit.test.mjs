@@ -176,6 +176,16 @@ describe("external reference audit", () => {
         candidateReviewQueueEntries: 2,
         nextBatchSize: 0,
         deferredCatalogIds: ["hicaz--pesrev--devrikebir--ucuncu_eser--besteci"],
+        batchReport: expect.objectContaining({
+          processedCatalogEntries: 3,
+          curatedBeforeBulkCandidates: 1,
+          newlyAcceptedCatalogEntries: 1,
+          curatedAfterBatch: 2,
+          missingAfterBatch: 1,
+          deferredMissingEntries: 1,
+          generatedReviewCandidates: 2,
+          validationGates: expect.arrayContaining(["candidate-review-only", "summary-count-drift"]),
+        }),
       }),
     );
 

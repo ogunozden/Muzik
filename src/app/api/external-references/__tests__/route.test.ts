@@ -473,6 +473,22 @@ const symbtrLayoutVerificationSummaryFixture = {
     packetCount: 10,
     candidateReviewRows: 49,
   },
+  emptyImportDryRun: {
+    path: "output/symbtr-layout-review/layout-verification-empty-import-dry-run.json",
+    input: "output/symbtr-layout-review/layout-verification-empty-import-template.json",
+    reviewTemplateEntryCount: 1,
+    reviewBatchPacketCount: 10,
+    dryRunInputEntryCount: 0,
+    dryRunVerifiedMeasureBoxCount: 0,
+  },
+  errors: [],
+};
+const symbtrLayoutEmptyImportDryRunFixture = {
+  version: 1,
+  type: "symbtr-pdf-layout-verification-empty-import-dry-run",
+  generatedAt: "2026-06-01",
+  dryRun: true,
+  input: "output/symbtr-layout-review/layout-verification-empty-import-template.json",
   errors: [],
 };
 const OPS_TOKEN_HEADER = "x-external-reference-ops-token";
@@ -501,6 +517,10 @@ function mockJsonFiles() {
 
     if (filePath.includes("layout-verification-summary.json")) {
       return JSON.stringify(symbtrLayoutVerificationSummaryFixture);
+    }
+
+    if (filePath.includes("layout-verification-empty-import-dry-run.json")) {
+      return JSON.stringify(symbtrLayoutEmptyImportDryRunFixture);
     }
 
     if (filePath.includes("summary.json")) {
@@ -671,9 +691,14 @@ describe("/api/external-references route", () => {
       candidateStatus: "unreviewed-candidates-only",
       reviewBatchPacketCount: 10,
       reviewBatchCandidateRows: 49,
+      emptyImportDryRunPath: "output/symbtr-layout-review/layout-verification-empty-import-dry-run.json",
+      emptyImportTemplatePath: "output/symbtr-layout-review/layout-verification-empty-import-template.json",
+      emptyImportDryRunInputEntries: 0,
+      emptyImportDryRunVerifiedMeasureBoxes: 0,
       validationErrorCount: 0,
       summaryPath: "output/symbtr-layout-review/layout-verification-summary.json",
       targetScript: "npm run import:symbtr-measure-verification -- --input <json>",
+      emptyImportDryRunScript: "npm run verify:symbtr-layout-review-import",
     }));
     expect(body.curation.candidateReviewGroupPage).toEqual(expect.objectContaining({
       returnedCount: 2,

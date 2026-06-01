@@ -1,4 +1,4 @@
-import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import path from "node:path";
 import {
   SYMBTR_LAYOUT_CANDIDATE_FINGERPRINT_ALGORITHM,
@@ -33,6 +33,12 @@ const REVIEW_BATCH_PLAN_PATH = path.join(
   "output",
   "symbtr-layout-review",
   "layout-verification-review-batch-plan.json",
+);
+const EMPTY_IMPORT_DRY_RUN_PATH = path.join(
+  PROJECT_ROOT,
+  "output",
+  "symbtr-layout-review",
+  "layout-verification-empty-import-dry-run.json",
 );
 
 const ALLOWED_METHODS = new Set(["human-reviewed", "visual-regression"]);
@@ -705,6 +711,78 @@ function validateReviewBatchPlan({
   };
 }
 
+function validateEmptyImportDryRun({
+  emptyImportDryRunData,
+  reviewTemplateSummary,
+  reviewBatchPlanSummary,
+  verificationEntryCount,
+  errors,
+}) {
+  if (emptyImportDryRunData === undefined) return null;
+  if (!isPlainObject(emptyImportDryRunData)) {
+    errors.push("layout-verification-empty-import-dry-run.json must be an object");
+    return null;
+  }
+
+  if (emptyImportDryRunData.version !== 1) {
+    errors.push("layout-verification-empty-import-dry-run.json version must be 1");
+  }
+  if (emptyImportDryRunData.type !== "symbtr-pdf-layout-verification-empty-import-dry-run") {
+    errors.push("layout-verification-empty-import-dry-run.json type must be symbtr-pdf-layout-verification-empty-import-dry-run");
+  }
+  if (emptyImportDryRunData.dryRun !== true) {
+    errors.push("layout-verification-empty-import-dry-run.json dryRun must be true");
+  }
+  if (!Array.isArray(emptyImportDryRunData.errors) || emptyImportDryRunData.errors.length !== 0) {
+    errors.push("layout-verification-empty-import-dry-run.json errors must be an empty array");
+  }
+
+  const requiredGates = [
+    "review-template-non-promoting",
+    "review-batch-plan-complete",
+    "empty-import-no-write",
+    "verified-manifest-unchanged",
+  ];
+  const gates = new Set(emptyImportDryRunData.validationGates ?? []);
+  for (const gate of requiredGates) {
+    if (!gates.has(gate)) {
+      errors.push(`layout-verification-empty-import-dry-run.json missing validation gate ${gate}`);
+    }
+  }
+
+  const summary = emptyImportDryRunData.summary ?? {};
+  if (summary.reviewTemplateEntryCount !== reviewTemplateSummary.entryCount) {
+    errors.push("layout-verification-empty-import-dry-run.json reviewTemplateEntryCount must match review template");
+  }
+  if (summary.reviewTemplateCandidateRows !== reviewTemplateSummary.candidateReviewRows) {
+    errors.push("layout-verification-empty-import-dry-run.json reviewTemplateCandidateRows must match review template");
+  }
+  if (summary.reviewBatchPacketCount !== reviewBatchPlanSummary.packetCount) {
+    errors.push("layout-verification-empty-import-dry-run.json reviewBatchPacketCount must match review batch plan");
+  }
+  if (summary.reviewBatchCandidateRows !== reviewBatchPlanSummary.candidateReviewRows) {
+    errors.push("layout-verification-empty-import-dry-run.json reviewBatchCandidateRows must match review batch plan");
+  }
+  if (summary.dryRunInputEntryCount !== 0) {
+    errors.push("layout-verification-empty-import-dry-run.json dryRunInputEntryCount must stay 0 for empty import proof");
+  }
+  if (summary.dryRunOutputEntryCount !== verificationEntryCount) {
+    errors.push("layout-verification-empty-import-dry-run.json dryRunOutputEntryCount must match current verification entries");
+  }
+  if (summary.dryRunVerifiedMeasureBoxCount !== 0) {
+    errors.push("layout-verification-empty-import-dry-run.json dryRunVerifiedMeasureBoxCount must stay 0 until explicit verified import");
+  }
+
+  return {
+    path: path.relative(PROJECT_ROOT, EMPTY_IMPORT_DRY_RUN_PATH).replace(/\\/g, "/"),
+    input: emptyImportDryRunData.input,
+    reviewTemplateEntryCount: summary.reviewTemplateEntryCount ?? 0,
+    reviewBatchPacketCount: summary.reviewBatchPacketCount ?? 0,
+    dryRunInputEntryCount: summary.dryRunInputEntryCount ?? 0,
+    dryRunVerifiedMeasureBoxCount: summary.dryRunVerifiedMeasureBoxCount ?? 0,
+  };
+}
+
 const errors = [];
 const options = parseCliOptions(process.argv.slice(2));
 const verificationPath = options.has("verification-path")
@@ -714,6 +792,9 @@ const layoutData = readJson(LAYOUT_PATH);
 const verificationData = readJson(verificationPath);
 const reviewTemplateData = readJson(REVIEW_TEMPLATE_PATH);
 const reviewBatchPlanData = readJson(REVIEW_BATCH_PLAN_PATH);
+const emptyImportDryRunData = existsSync(EMPTY_IMPORT_DRY_RUN_PATH)
+  ? readJson(EMPTY_IMPORT_DRY_RUN_PATH)
+  : undefined;
 
 validateTopLevel(layoutData, verificationData, errors);
 
@@ -792,6 +873,13 @@ const reviewBatchPlanSummary = validateReviewBatchPlan({
   reviewTemplateData,
   errors,
 });
+const emptyImportDryRunSummary = validateEmptyImportDryRun({
+  emptyImportDryRunData,
+  reviewTemplateSummary,
+  reviewBatchPlanSummary,
+  verificationEntryCount: Object.keys(verificationEntries).length,
+  errors,
+});
 
 const summary = {
   candidateEntries: candidateEntryIds.length,
@@ -802,6 +890,7 @@ const summary = {
   candidateStatus: verifiedMeasureBoxes > 0 ? "verified-measure-boxes-present" : "unreviewed-candidates-only",
   reviewTemplate: reviewTemplateSummary,
   reviewBatchPlan: reviewBatchPlanSummary,
+  emptyImportDryRun: emptyImportDryRunSummary,
   fingerprintAlgorithm: SYMBTR_LAYOUT_CANDIDATE_FINGERPRINT_ALGORITHM,
   unresolvedCandidateEntries: candidateEntryIds.filter(
     (catalogId) => !verificationEntries[catalogId],

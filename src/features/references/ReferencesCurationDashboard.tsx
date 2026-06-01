@@ -288,7 +288,12 @@ export interface ExternalReferenceState {
       reviewBatchPlanPath?: string;
       reviewBatchPacketCount?: number;
       reviewBatchCandidateRows?: number;
+      emptyImportDryRunPath?: string;
+      emptyImportTemplatePath?: string | null;
+      emptyImportDryRunInputEntries?: number;
+      emptyImportDryRunVerifiedMeasureBoxes?: number;
       targetScript?: string | null;
+      emptyImportDryRunScript?: string | null;
       validationErrorCount?: number;
     };
     candidateReviewGroupPage?: CandidateReviewGroupPage;
@@ -1192,9 +1197,24 @@ export function ReferencesCurationDashboard({
                       {symbtrLayoutVerificationManifest.reviewBatchPlanPath} · {formatNumber(symbtrLayoutVerificationManifest.reviewBatchPacketCount)} paket
                     </code>
                   )}
+                  {symbtrLayoutVerificationManifest.emptyImportDryRunPath && (
+                    <code className="break-all text-xs text-[var(--color-text-primary)]">
+                      {symbtrLayoutVerificationManifest.emptyImportDryRunPath} · {formatNumber(symbtrLayoutVerificationManifest.emptyImportDryRunInputEntries)} import girişi · {formatNumber(symbtrLayoutVerificationManifest.emptyImportDryRunVerifiedMeasureBoxes)} verified
+                    </code>
+                  )}
+                  {symbtrLayoutVerificationManifest.emptyImportTemplatePath && (
+                    <code className="break-all text-xs text-[var(--color-text-primary)]">
+                      {symbtrLayoutVerificationManifest.emptyImportTemplatePath}
+                    </code>
+                  )}
                   {symbtrLayoutVerificationManifest.targetScript && (
                     <code className="break-all text-xs text-[var(--color-text-primary)]">
                       {symbtrLayoutVerificationManifest.targetScript}
+                    </code>
+                  )}
+                  {symbtrLayoutVerificationManifest.emptyImportDryRunScript && (
+                    <code className="break-all text-xs text-[var(--color-text-primary)]">
+                      {symbtrLayoutVerificationManifest.emptyImportDryRunScript}
                     </code>
                   )}
                 </div>

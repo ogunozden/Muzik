@@ -174,7 +174,12 @@ const stateFixture = {
       reviewBatchPlanPath: "output/symbtr-layout-review/layout-verification-review-batch-plan.json",
       reviewBatchPacketCount: 10,
       reviewBatchCandidateRows: 49,
+      emptyImportDryRunPath: "output/symbtr-layout-review/layout-verification-empty-import-dry-run.json",
+      emptyImportTemplatePath: "output/symbtr-layout-review/layout-verification-empty-import-template.json",
+      emptyImportDryRunInputEntries: 0,
+      emptyImportDryRunVerifiedMeasureBoxes: 0,
       targetScript: "npm run import:symbtr-measure-verification -- --input <json>",
+      emptyImportDryRunScript: "npm run verify:symbtr-layout-review-import",
       validationErrorCount: 0,
     },
     candidateReviewGroupPage: {
@@ -432,6 +437,9 @@ describe("ReferencesCurationPage", () => {
     expect(screen.getByText(/layout-verification-summary\.json/)).toBeDefined();
     expect(screen.getByText(/layout-verification-review-template\.json/)).toBeDefined();
     expect(screen.getByText(/layout-verification-review-batch-plan\.json/)).toBeDefined();
+    expect(screen.getByText(/layout-verification-empty-import-dry-run\.json/)).toBeDefined();
+    expect(screen.getByText(/layout-verification-empty-import-template\.json/)).toBeDefined();
+    expect(screen.getByText(/npm run verify:symbtr-layout-review-import/)).toBeDefined();
     expect(screen.getAllByText(/0 hata/).length).toBeGreaterThan(0);
     expect(screen.getByText("review-provider-candidates")).toBeDefined();
     expect(screen.getByLabelText("Grup durum")).toBeDefined();

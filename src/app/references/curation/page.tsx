@@ -118,6 +118,14 @@ interface SymbTrLayoutVerificationSummary {
     packetCount?: number;
     candidateReviewRows?: number;
   };
+  emptyImportDryRun?: {
+    path?: string;
+    input?: string;
+    reviewTemplateEntryCount?: number;
+    reviewBatchPacketCount?: number;
+    dryRunInputEntryCount?: number;
+    dryRunVerifiedMeasureBoxCount?: number;
+  } | null;
   errors?: unknown[];
 }
 
@@ -242,6 +250,7 @@ async function buildReadOnlyInitialState(): Promise<ExternalReferenceState> {
   const sourceIntakeTemplatePath = path.join(COVERAGE_ROOT, "symbtr-curated-reference-source-intake-template.json");
   const sourceIntakeAcceptedDryRunPath = path.join(COVERAGE_ROOT, "source-intake-accepted-import-dry-run.json");
   const layoutVerificationSummaryPath = path.join(SYMBTR_LAYOUT_REVIEW_ROOT, "layout-verification-summary.json");
+  const layoutEmptyImportDryRunPath = path.join(SYMBTR_LAYOUT_REVIEW_ROOT, "layout-verification-empty-import-dry-run.json");
   const mappingPath = path.join(COVERAGE_ROOT, "mapped-external-reference-candidates.json");
   const [
     coverage,
@@ -259,6 +268,7 @@ async function buildReadOnlyInitialState(): Promise<ExternalReferenceState> {
     sourceIntakeTemplate,
     sourceIntakeAcceptedDryRun,
     layoutVerificationSummary,
+    layoutEmptyImportDryRun,
     candidateReviewQueueData,
     candidateReviewGroupsData,
     backlogData,
@@ -279,6 +289,7 @@ async function buildReadOnlyInitialState(): Promise<ExternalReferenceState> {
     readJsonOrNull<{policyVersion?: string; generatedAt?: string; summary?: Record<string, unknown>; importContract?: Record<string, unknown>; packets?: unknown[]}>(sourceIntakeTemplatePath),
     readJsonOrNull<SourceIntakeAcceptedImportDryRunManifest>(sourceIntakeAcceptedDryRunPath),
     readJsonOrNull<SymbTrLayoutVerificationSummary>(layoutVerificationSummaryPath),
+    readJsonOrNull<Record<string, unknown>>(layoutEmptyImportDryRunPath),
     readJsonOrNull<CandidateReviewRow[]>(candidateQueuePath),
     readJsonOrNull<CandidateReviewGroup[]>(candidateGroupsPath),
     readJsonOrNull<CurationBacklogRow[]>(backlogPath),
@@ -387,7 +398,15 @@ async function buildReadOnlyInitialState(): Promise<ExternalReferenceState> {
         reviewBatchPlanPath: layoutVerificationSummary?.reviewBatchPlan?.path ?? toProjectPath(path.join(SYMBTR_LAYOUT_REVIEW_ROOT, "layout-verification-review-batch-plan.json")),
         reviewBatchPacketCount: Number(layoutVerificationSummary?.reviewBatchPlan?.packetCount ?? 0),
         reviewBatchCandidateRows: Number(layoutVerificationSummary?.reviewBatchPlan?.candidateReviewRows ?? 0),
+        emptyImportDryRunPath: layoutVerificationSummary?.emptyImportDryRun?.path
+          ?? toProjectPath(layoutEmptyImportDryRunPath),
+        emptyImportTemplatePath: typeof layoutEmptyImportDryRun?.input === "string"
+          ? layoutEmptyImportDryRun.input
+          : null,
+        emptyImportDryRunInputEntries: Number(layoutVerificationSummary?.emptyImportDryRun?.dryRunInputEntryCount ?? 0),
+        emptyImportDryRunVerifiedMeasureBoxes: Number(layoutVerificationSummary?.emptyImportDryRun?.dryRunVerifiedMeasureBoxCount ?? 0),
         targetScript: "npm run import:symbtr-measure-verification -- --input <json>",
+        emptyImportDryRunScript: "npm run verify:symbtr-layout-review-import",
         validationErrorCount: Array.isArray(layoutVerificationSummary?.errors) ? layoutVerificationSummary.errors.length : 0,
       },
       candidateReviewGroupPage: {

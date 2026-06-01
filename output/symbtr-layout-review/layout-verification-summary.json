@@ -15,6 +15,14 @@
     "packetCount": 10,
     "candidateReviewRows": 49
   },
+  "emptyImportDryRun": {
+    "path": "output/symbtr-layout-review/layout-verification-empty-import-dry-run.json",
+    "input": "output/symbtr-layout-review/layout-verification-empty-import-template.json",
+    "reviewTemplateEntryCount": 1,
+    "reviewBatchPacketCount": 10,
+    "dryRunInputEntryCount": 0,
+    "dryRunVerifiedMeasureBoxCount": 0
+  },
   "fingerprintAlgorithm": "sha256:symbtr-layout-candidate-geometry-v1",
   "unresolvedCandidateEntries": 1,
   "scoreMeasureSummaries": [

@@ -1346,8 +1346,14 @@ calisma agacindaki bu guncelleme oncesi genis degisiklikleri de kapsadigindan
        dry-run no-write importer kapılarından geçirip
        `output/external-reference-coverage/source-intake-accepted-import-dry-run.json`
        artifact'ini üretir; `/references/curation` bunu operatöre gösterir.
-2. [ ] PDF layout review packetleri için aynı boş-template/import/validation
-       disiplinini kur; verified manifest hâlâ 0.
+2. [x] PDF layout review packetleri için aynı boş-template/import/validation
+       disiplinini kur; verified manifest hâlâ 0. 2026-06-01 ek kapı:
+       `npm run verify:symbtr-layout-review-import` mevcut review template ve
+       batch packet kapsamını `layout-verification-empty-import-template.json`
+       üzerinden no-write import dry-run ile doğrular; review artifactlerinde
+       `verified` confidence veya measure box varsa hata verir, verified manifest
+       değişmeden 0 kalır ve `/references/curation` operatöre dry-run artifact,
+       boş import template, 0 import girişi ve 0 verified kanıtını gösterir.
 3. [ ] `/references/curation` üzerinde tüm arka plan artifactlerini daha
        görünür ve filtrelenebilir hale getir.
 4. [ ] `/studio/follow`, enstrüman, usul timing ve kaynak görüntüleme akışlarını

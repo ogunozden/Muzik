@@ -105,6 +105,12 @@ const SYMBTR_LAYOUT_REVIEW_BATCH_PLAN_FILE = path.join(
   "symbtr-layout-review",
   "layout-verification-review-batch-plan.json",
 );
+const SYMBTR_LAYOUT_EMPTY_IMPORT_DRY_RUN_FILE = path.join(
+  PROJECT_ROOT,
+  "output",
+  "symbtr-layout-review",
+  "layout-verification-empty-import-dry-run.json",
+);
 const TEMP_INPUT_DIR = path.join(PROJECT_ROOT, "output", "external-reference-coverage", "ui-input");
 const JSON_MAX_BUFFER_BYTES = 1024 * 1024 * 12;
 const MAX_BULK_TEXT_CHARS = 100_000;
@@ -311,6 +317,14 @@ interface SymbTrLayoutVerificationSummary {
     packetCount?: number;
     candidateReviewRows?: number;
   };
+  emptyImportDryRun?: {
+    path?: string;
+    input?: string;
+    reviewTemplateEntryCount?: number;
+    reviewBatchPacketCount?: number;
+    dryRunInputEntryCount?: number;
+    dryRunVerifiedMeasureBoxCount?: number;
+  } | null;
   errors?: unknown[];
 }
 
@@ -538,6 +552,7 @@ async function getExternalReferenceState(request: Request) {
     sourceIntakeTemplateManifest,
     sourceIntakeAcceptedDryRunManifest,
     symbtrLayoutVerificationSummary,
+    symbtrLayoutEmptyImportDryRunManifest,
     candidateReviewQueue,
     candidateReviewGroups,
     fullBacklog,
@@ -575,6 +590,7 @@ async function getExternalReferenceState(request: Request) {
     readJsonOrNull<SourceIntakeTemplateManifest>(SOURCE_INTAKE_TEMPLATE_FILE),
     readJsonOrNull<SourceIntakeAcceptedImportDryRunManifest>(SOURCE_INTAKE_ACCEPTED_DRY_RUN_FILE),
     readJsonOrNull<SymbTrLayoutVerificationSummary>(SYMBTR_LAYOUT_VERIFICATION_SUMMARY_FILE),
+    readJsonOrNull<Record<string, unknown>>(SYMBTR_LAYOUT_EMPTY_IMPORT_DRY_RUN_FILE),
     readJsonOrNull<CandidateReviewRow[]>(CANDIDATE_REVIEW_QUEUE_FILE),
     readJsonOrNull<CandidateReviewGroup[]>(CANDIDATE_REVIEW_GROUPS_FILE),
     readJsonOrNull<CurationBacklogRow[]>(BACKLOG_FILE),
@@ -727,7 +743,16 @@ async function getExternalReferenceState(request: Request) {
         reviewBatchPlanPath: symbtrLayoutVerificationSummary?.reviewBatchPlan?.path ?? toProjectRelativePath(SYMBTR_LAYOUT_REVIEW_BATCH_PLAN_FILE),
         reviewBatchPacketCount: symbtrLayoutVerificationSummary?.reviewBatchPlan?.packetCount ?? 0,
         reviewBatchCandidateRows: symbtrLayoutVerificationSummary?.reviewBatchPlan?.candidateReviewRows ?? 0,
+        emptyImportDryRunPath: symbtrLayoutVerificationSummary?.emptyImportDryRun?.path
+          ?? toProjectRelativePath(SYMBTR_LAYOUT_EMPTY_IMPORT_DRY_RUN_FILE),
+        emptyImportTemplatePath: typeof symbtrLayoutEmptyImportDryRunManifest?.input === "string"
+          ? symbtrLayoutEmptyImportDryRunManifest.input
+          : null,
+        emptyImportDryRunInputEntries: symbtrLayoutVerificationSummary?.emptyImportDryRun?.dryRunInputEntryCount ?? 0,
+        emptyImportDryRunVerifiedMeasureBoxes:
+          symbtrLayoutVerificationSummary?.emptyImportDryRun?.dryRunVerifiedMeasureBoxCount ?? 0,
         targetScript: "npm run import:symbtr-measure-verification -- --input <json>",
+        emptyImportDryRunScript: "npm run verify:symbtr-layout-review-import",
         validationErrorCount: Array.isArray(symbtrLayoutVerificationSummary?.errors)
           ? symbtrLayoutVerificationSummary.errors.length
           : 0,

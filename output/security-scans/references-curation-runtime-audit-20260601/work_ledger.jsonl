@@ -1,0 +1,6 @@
+{"path":"scripts/audit-references-curation-runtime.mjs","phase":"finding-discovery","status":"completed","evidence":"Read-only GET to fixed localhost route, local JSON output under output/playwright, nonzero exit on threshold failures, no token handling or mutation path."}
+{"path":"package.json","phase":"finding-discovery","status":"completed","evidence":"Adds npm script that invokes the read-only audit against http://localhost:4015; no lifecycle hooks or production command changes."}
+{"path":"PROJECT_PLAN.md","phase":"finding-discovery","status":"completed","evidence":"Documents the runtime payload gate; documentation only."}
+{"path":"output/playwright/references-curation-batch-runtime-audit-20260601.json","phase":"finding-discovery","status":"completed","evidence":"Runtime artifact reports HTTP 200, 480454 bytes, bounded hydrated identifiers, no raw packets/sourceFields, ok true."}
+{"path":"output/playwright/references-curation-runtime-audit-20260601.png","phase":"finding-discovery","status":"completed","evidence":"Browser screenshot evidence only; no executable content."}
+

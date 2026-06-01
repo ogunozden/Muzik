@@ -360,6 +360,15 @@ tek kurala bağlamaktır.
       sayısı, queue row count, aktif group drift'i ve source-field yasağını
       doğrular; `/references/curation` packet plan path/count bilgisini salt
       okunur snapshot ve tokenlı API state içinde gösterir.
+      2026-06-01 büyük liste runtime kapısı:
+      `npm run audit:references-curation-runtime` sabit `http://localhost:4015`
+      üstünden `/references/curation` read-only snapshot HTML payload'ını ölçer;
+      ilk render 750 KB altında kalmak, 14.890 candidate queue ve 2.973 source
+      intake satırını raw packet/sourceFields olarak hydrate etmemek, yalnız
+      bounded 100/80/100 satırlık görünür slice ve artifact metriklerini taşımak
+      zorundadır. Özet artifact'i
+      `output/playwright/references-curation-batch-runtime-audit-20260601.json`
+      içine yazılır.
 - [ ] PDF vector ölçü adayları gerçek ölçü kutusuna terfi etmeden önce insan
       veya görsel regresyon doğrulaması bekliyor. Pipeline, review artifact'i,
       verification manifest'i ve Eser Takip UI yolu hazır; gerçek manifest şu

@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Security Diff Scan Report</title>
+  <style>
+    body { font-family: system-ui, sans-serif; max-width: 920px; margin: 40px auto; line-height: 1.5; color: #1f2933; }
+    h1, h2 { color: #111827; }
+    code { background: #f3f4f6; padding: 0.1rem 0.25rem; border-radius: 4px; }
+    .result { padding: 12px 16px; border: 1px solid #a7f3d0; background: #ecfdf5; border-radius: 8px; }
+  </style>
+</head>
+<body>
+  <h1>Security Diff Scan Report</h1>
+  <p><strong>Scan:</strong> references-curation-runtime-audit-20260601</p>
+  <p><strong>Repository:</strong> Muzik</p>
+  <p><strong>Target:</strong> local working-tree diff</p>
+  <p class="result"><strong>Result:</strong> no findings</p>
+  <h2>Security Outcome</h2>
+  <p>No vulnerability was introduced by this diff. The new audit strengthens runtime assurance for the read-only curation dashboard by ensuring the first render stays bounded and does not hydrate raw packet or source intake field arrays.</p>
+  <h2>Evidence</h2>
+  <ul>
+    <li><code>npm run audit:references-curation-runtime</code>: ok true, 0 errors.</li>
+    <li><code>npm run audit:security</code>: 0 vulnerabilities.</li>
+    <li><code>npm run lint</code>, <code>npm run typecheck</code>, <code>npm run test:run</code>: passed.</li>
+    <li>Browser <code>/references/curation</code>: 0 warning/error logs and no horizontal overflow.</li>
+  </ul>
+</body>
+</html>

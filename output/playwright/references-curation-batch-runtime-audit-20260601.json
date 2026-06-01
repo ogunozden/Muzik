@@ -1,0 +1,30 @@
+{
+  "version": 1,
+  "type": "references-curation-batch-runtime-audit",
+  "generatedAt": "2026-06-01T13:24:15.728Z",
+  "targetUrl": "http://localhost:4015/references/curation",
+  "route": "/references/curation",
+  "status": 200,
+  "durationMs": 412,
+  "thresholds": {
+    "maxHtmlBytes": 750000,
+    "maxHydratedCandidateIds": 120,
+    "maxHydratedCatalogIds": 320
+  },
+  "metrics": {
+    "htmlBytes": 480454,
+    "hydratedCandidateIds": 100,
+    "hydratedCatalogIds": 287,
+    "hasRawPacketArrays": false,
+    "hasSourceIntakeRowFields": false
+  },
+  "evidence": {
+    "hasSourceIntakeArtifactPath": true,
+    "hasSourceIntakeArtifactFile": true,
+    "hasBacklogMetric": true,
+    "hasCandidateQueueMetric": true,
+    "hasReadOnlySnapshotMessage": true
+  },
+  "ok": true,
+  "errors": []
+}

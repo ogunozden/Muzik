@@ -82,6 +82,8 @@ const coverageFixture = {
   candidateReviewQueueJson: "output/external-reference-coverage/symbtr-curated-reference-candidate-review-queue.json",
   candidateReviewGroupEntries: 2978,
   candidateReviewGroupsJson: "output/external-reference-coverage/symbtr-curated-reference-candidate-review-groups.json",
+  candidateReviewGroupDecisionRecommendationEntries: 1,
+  candidateReviewGroupDecisionRecommendationsJson: "output/external-reference-coverage/symbtr-curated-reference-candidate-review-group-decision-recommendations.json",
 };
 const autoAttachedFixture = {
   version: 1,
@@ -307,6 +309,37 @@ const candidateReviewGroupDecisionsFixture = {
     },
   ],
 };
+const candidateReviewGroupDecisionRecommendationsFixture = {
+  version: 1,
+  type: "candidate-review-group-decision-recommendations",
+  policyVersion: "candidate-review-group-decision-recommendations-v1",
+  generatedAt: "2026-06-01T00:00:00.000Z",
+  summary: {
+    totalGroups: 2,
+    recommendedDecisionCount: 1,
+  },
+  decisions: [
+    {
+      groupId: "rast--sarki--sofyan--ikinci_eser--ikinci_besteci:review-group",
+      catalogId: "rast--sarki--sofyan--ikinci_eser--ikinci_besteci",
+      status: "conflict",
+      reason: "batch-recommend-source-mismatch-conflict",
+      reviewedAt: "2026-06-01",
+      reviewedBy: "batch-policy",
+      recommendationRule: "generated-conflict-review-group",
+      sourceGroupStatus: "conflict",
+      highestReviewConfidenceScore: 45,
+      candidateCount: 1,
+      profileCount: 1,
+      makam: "Rast",
+      form: "Şarkı",
+      usul: "Sofyan",
+      title: "İkinci Eser",
+      composer: "İkinci Besteci",
+      priorityGroup: "pdf-and-musicxml",
+    },
+  ],
+};
 const OPS_TOKEN_HEADER = "x-external-reference-ops-token";
 
 function authedRequest(url: string, init: RequestInit = {}): Request {
@@ -365,6 +398,10 @@ function mockJsonFiles() {
 
     if (filePath.includes("candidate-review-group-decisions.json")) {
       return JSON.stringify(candidateReviewGroupDecisionsFixture);
+    }
+
+    if (filePath.includes("candidate-review-group-decision-recommendations.json")) {
+      return JSON.stringify(candidateReviewGroupDecisionRecommendationsFixture);
     }
 
     if (filePath.includes("symbtr-curated-reference-backlog.json")) {
@@ -435,6 +472,11 @@ describe("/api/external-references route", () => {
     expect(body.curation.candidateReviewGroupDecisionManifest).toEqual(expect.objectContaining({
       decisionCount: 1,
       artifactPath: "src/data/references/candidate-review-group-decisions.json",
+    }));
+    expect(body.curation.candidateReviewGroupDecisionRecommendationManifest).toEqual(expect.objectContaining({
+      decisionCount: 1,
+      artifactPath: "output/external-reference-coverage/symbtr-curated-reference-candidate-review-group-decision-recommendations.json",
+      policyVersion: "candidate-review-group-decision-recommendations-v1",
     }));
     expect(body.curation.candidateReviewGroupPage).toEqual(expect.objectContaining({
       returnedCount: 2,
@@ -723,6 +765,50 @@ describe("/api/external-references route", () => {
       reason: "batch-reviewed-no-safe-source",
       reviewedAt: "2026-06-01",
       reviewedBy: "local-operator",
+    }));
+    expect(execFile).not.toHaveBeenCalled();
+  });
+
+  it("exports filtered candidate review group decision recommendations without accepted source data", async () => {
+    const request = authedRequest("http://localhost/api/external-references", {
+      method: "POST",
+      body: JSON.stringify({
+        action: "candidate-review-group-decision-recommendation-export",
+        candidateReviewGroupQuery: {
+          status: "conflict",
+          composer: "İkinci Besteci",
+        },
+      }),
+    });
+
+    const response = await POST(request);
+    const body = await response.json();
+
+    expect(response.status).toBe(200);
+    expect(body.result.summary).toEqual(expect.objectContaining({
+      totalRows: 1,
+      exportedCount: 1,
+      policyVersion: "candidate-review-group-decision-recommendations-v1",
+      filters: expect.objectContaining({
+        status: "conflict",
+        composer: "İkinci Besteci",
+      }),
+    }));
+    expect(body.result.manifest).toEqual(expect.objectContaining({
+      type: "candidate-review-group-decision-recommendation-export",
+      decisions: [
+        expect.objectContaining({
+          catalogId: "rast--sarki--sofyan--ikinci_eser--ikinci_besteci",
+          status: "conflict",
+          reason: "batch-recommend-source-mismatch-conflict",
+          recommendationRule: "generated-conflict-review-group",
+        }),
+      ],
+    }));
+    expect(body.result.manifest.decisions[0]).toEqual(expect.not.objectContaining({
+      sourceId: expect.anything(),
+      sourceUrl: expect.anything(),
+      url: expect.anything(),
     }));
     expect(execFile).not.toHaveBeenCalled();
   });

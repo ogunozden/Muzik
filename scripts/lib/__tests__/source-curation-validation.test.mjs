@@ -146,6 +146,17 @@ function validRegistries() {
       version: 1,
       decisions: [],
     },
+    candidateReviewGroupDecisionRecommendations: {
+      version: 1,
+      type: "candidate-review-group-decision-recommendations",
+      policyVersion: "candidate-review-group-decision-recommendations-v1",
+      generatedAt: "2026-06-01T00:00:00.000Z",
+      summary: {
+        totalGroups: 1,
+        recommendedDecisionCount: 0,
+      },
+      decisions: [],
+    },
     coverageSummary: {
       totalCatalogEntries: 2,
       curatedReferenceEntries: 1,
@@ -155,6 +166,7 @@ function validRegistries() {
       candidateReviewQueueEntries: 1,
       candidateReviewGroupEntries: 1,
       candidateReviewGroupDecisionEntries: 0,
+      candidateReviewGroupDecisionRecommendationEntries: 0,
       candidateReviewQueueByStatus: [{value: "needs-review", count: 1}],
       candidateReviewQueueByProfile: [{value: "youtube", count: 1}],
       candidateReviewGroupsByStatus: [{value: "needs-review", count: 1}],
@@ -181,6 +193,7 @@ function validRegistries() {
         nextBatchSize: 1,
         generatedReviewCandidates: 1,
         generatedReviewGroups: 1,
+        recommendedReviewGroupDecisions: 0,
         candidateReviewStatusCounts: [{value: "needs-review", count: 1}],
         duplicateAcceptedIdentityPolicy: "duplicate accepted URL identities fail validation before merge",
         autoAttachPolicy: "only accepted bulk candidates are counted as curated and eligible for auto-attach",
@@ -195,6 +208,7 @@ function validRegistries() {
           "metadata-strategy-profile-drift",
           "candidate-review-group-drift",
           "candidate-review-group-decision-drift",
+          "candidate-review-group-decision-recommendation-drift",
         ],
       },
     },
@@ -213,6 +227,7 @@ describe("source curation validation", () => {
           researchSourceProfiles: 1,
           candidateReviewQueueEntries: 1,
           candidateReviewGroupEntries: 1,
+          candidateReviewGroupDecisionRecommendationEntries: 0,
         }),
       }),
     );
@@ -388,6 +403,41 @@ describe("source curation validation", () => {
       `candidate-review-group-decisions: ${catalog[0].id}:review-group invalid status accepted`,
       `candidate-review-group-decisions: ${catalog[0].id}:review-group cannot accept sources without a validated source URL`,
       `candidate-review-group-decisions: ${catalog[0].id}:review-group must not carry accepted source ids or source URLs`,
+    ]));
+  });
+
+  it("validates batch review group decision recommendations without allowing accepted source data", () => {
+    const registries = validRegistries();
+    registries.candidateReviewGroups[0].status = "conflict";
+    registries.candidateReviewGroups[0].reviewAction = "resolve-conflict-before-import";
+    registries.candidateReviewQueue[0].status = "conflict";
+    registries.candidateReviewQueue[0].statusReason = "source-mismatch";
+    registries.candidateReviewGroupDecisionRecommendations.decisions.push({
+      groupId: `${catalog[0].id}:review-group`,
+      catalogId: catalog[0].id,
+      status: "conflict",
+      reason: "batch-recommend-source-mismatch-conflict",
+      reviewedAt: "2026-06-01",
+      reviewedBy: "batch-policy",
+      recommendationRule: "generated-conflict-review-group",
+      sourceGroupStatus: "conflict",
+    });
+    registries.coverageSummary.candidateReviewQueueByStatus = [{value: "conflict", count: 1}];
+    registries.coverageSummary.candidateReviewGroupsByStatus = [{value: "conflict", count: 1}];
+    registries.coverageSummary.candidateReviewGroupDecisionRecommendationEntries = 1;
+    registries.coverageSummary.batchReport.candidateReviewStatusCounts = [{value: "conflict", count: 1}];
+    registries.coverageSummary.batchReport.recommendedReviewGroupDecisions = 1;
+
+    expect(validateSourceCurationRegistries(registries).errors).toEqual([]);
+
+    registries.candidateReviewGroupDecisionRecommendations.decisions[0].status = "accepted";
+    registries.candidateReviewGroupDecisionRecommendations.decisions[0].sourceUrl = "https://example.com/unsafe";
+    const result = validateSourceCurationRegistries(registries);
+
+    expect(result.errors).toEqual(expect.arrayContaining([
+      `candidate-review-group-decision-recommendations: ${catalog[0].id}:review-group invalid status accepted`,
+      `candidate-review-group-decision-recommendations: ${catalog[0].id}:review-group cannot recommend accepted without a validated source URL`,
+      `candidate-review-group-decision-recommendations: ${catalog[0].id}:review-group must not carry accepted source ids or source URLs`,
     ]));
   });
 

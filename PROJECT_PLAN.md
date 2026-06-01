@@ -603,8 +603,30 @@ tek kurala bağlamaktır.
         yazar. `curation:validate` bu batch raporunun summary ve 14890 review
         queue satırıyla drift etmediğini doğrular; dashboard üst metriklerde
         batch raporunu gösterir.
+63. [x] Candidate review group karar önerisi batch artifact'i eklendi:
+        `audit:external-references` artık
+        `symbtr-curated-reference-candidate-review-group-decision-recommendations.json`
+        dosyasını üretir. Öneriler yalnız `conflict` ve mevcut deferred karar
+        izlerinden `conflict/deferred` manifest satırı çıkarır; `accepted`,
+        source id veya source URL taşımaz. `curation:validate` öneri count,
+        status, source-field yasağı, generated group drift'i ve
+        `batchReport.recommendedReviewGroupDecisions` alanını doğrular.
+        `/references/curation` `Karar önerisi` kontrolü mevcut filtrelerle
+        öneri manifestini JSON alanına alır; import hâlâ dry-run/write ayrımıyla
+        mevcut karar import script'inden geçer.
 
 ### Doğrulama Notu
+
+- 2026-06-01 candidate review group öneri doğrulaması:
+  `npx vitest run scripts/lib/__tests__/external-reference-audit.test.mjs scripts/lib/__tests__/source-curation-validation.test.mjs src/app/api/external-references/__tests__/route.test.ts src/app/references/curation/__tests__/page.test.tsx`
+  geçti: 4 dosya, 52 test. `npm run audit:external-references` 5 öneri
+  üretti (4 deferred, 1 conflict), `npm run curation:validate` 3000 katalog /
+  14890 queue / 2978 grup / 5 öneri ile temiz geçti. Browser QA
+  `/references/curation` üzerinde `Karar önerisi` export ve dry-run import'u
+  5 karar olarak doğruladı; `candidate-review-group-decisions.json` değişmedi.
+  Codex Security diff scan:
+  `output/security-scans/candidate-review-group-decision-recommendations-20260601/report.md`
+  ve `.html`, bulgu yok.
 
 - 2026-05-31 ek doğrulama: `npx vitest run src/data/references/__tests__/external-sources.test.ts scripts/lib/__tests__/next-config-security.test.mjs scripts/lib/__tests__/external-source-intake.test.mjs`
   geçti: 3 dosya, 17 test. Merkezi external reference policy, Next CSP

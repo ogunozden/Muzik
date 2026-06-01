@@ -1,0 +1,118 @@
+{
+  "version": 1,
+  "type": "candidate-review-group-decision-recommendations",
+  "policyVersion": "candidate-review-group-decision-recommendations-v1",
+  "generatedAt": "2026-05-10T00:00:00.000Z",
+  "summary": {
+    "totalGroups": 2978,
+    "recommendedDecisionCount": 5,
+    "recommendedByStatus": [
+      {
+        "value": "deferred",
+        "count": 4
+      },
+      {
+        "value": "conflict",
+        "count": 1
+      }
+    ],
+    "policy": "Recommendations may only produce rejected, conflict, or deferred review group decisions; accepted sources require validated source URLs through the bulk candidate pipeline."
+  },
+  "decisions": [
+    {
+      "groupId": "muhayyer--ilahi--sofyan--duseli_bu_askin--dede_efendi:review-group",
+      "catalogId": "muhayyer--ilahi--sofyan--duseli_bu_askin--dede_efendi",
+      "status": "conflict",
+      "reason": "batch-recommend-source-mismatch-conflict",
+      "reviewedAt": "2026-05-10",
+      "reviewedBy": "batch-policy",
+      "recommendationRule": "generated-conflict-review-group",
+      "sourceGroupStatus": "conflict",
+      "highestReviewConfidenceScore": 74,
+      "candidateCount": 5,
+      "profileCount": 5,
+      "makam": "Muhayyer",
+      "form": "İlahi",
+      "usul": "Sofyan",
+      "title": "Duseli Bu Askin",
+      "composer": "Dede Efendi",
+      "priorityGroup": "pdf-and-musicxml"
+    },
+    {
+      "groupId": "cargah--ilahi--devrikebir--kudumun_rahmeti--aziz_mahmud_hudai:review-group",
+      "catalogId": "cargah--ilahi--devrikebir--kudumun_rahmeti--aziz_mahmud_hudai",
+      "status": "deferred",
+      "reason": "batch-recommend-existing-curation-deferred",
+      "reviewedAt": "2026-05-10",
+      "reviewedBy": "batch-policy",
+      "recommendationRule": "existing-curation-decision-deferred-from-next-batch",
+      "sourceGroupStatus": "needs-review",
+      "highestReviewConfidenceScore": 74,
+      "candidateCount": 5,
+      "profileCount": 5,
+      "makam": "Cargah",
+      "form": "İlahi",
+      "usul": "Devrikebir",
+      "title": "Kudumun Rahmeti",
+      "composer": "Aziz Mahmud Hudai",
+      "priorityGroup": "pdf-and-musicxml"
+    },
+    {
+      "groupId": "hicaz_uzzal--ilahi--duyek--eya_alemlerin--dede_efendi:review-group",
+      "catalogId": "hicaz_uzzal--ilahi--duyek--eya_alemlerin--dede_efendi",
+      "status": "deferred",
+      "reason": "batch-recommend-existing-curation-deferred",
+      "reviewedAt": "2026-05-10",
+      "reviewedBy": "batch-policy",
+      "recommendationRule": "existing-curation-decision-deferred-from-next-batch",
+      "sourceGroupStatus": "needs-review",
+      "highestReviewConfidenceScore": 74,
+      "candidateCount": 5,
+      "profileCount": 5,
+      "makam": "Hicaz Uzzal",
+      "form": "İlahi",
+      "usul": "Duyek",
+      "title": "Eya Alemlerin",
+      "composer": "Dede Efendi",
+      "priorityGroup": "pdf-and-musicxml"
+    },
+    {
+      "groupId": "hicaz_uzzal--ilahi--sofyan--gelin_gidelim--dede_efendi:review-group",
+      "catalogId": "hicaz_uzzal--ilahi--sofyan--gelin_gidelim--dede_efendi",
+      "status": "deferred",
+      "reason": "batch-recommend-existing-curation-deferred",
+      "reviewedAt": "2026-05-10",
+      "reviewedBy": "batch-policy",
+      "recommendationRule": "existing-curation-decision-deferred-from-next-batch",
+      "sourceGroupStatus": "needs-review",
+      "highestReviewConfidenceScore": 74,
+      "candidateCount": 5,
+      "profileCount": 5,
+      "makam": "Hicaz Uzzal",
+      "form": "İlahi",
+      "usul": "Sofyan",
+      "title": "Gelin Gidelim",
+      "composer": "Dede Efendi",
+      "priorityGroup": "pdf-and-musicxml"
+    },
+    {
+      "groupId": "hicaz_zirgule--ilahi--sofyan--hic_bulunmaz--husnu_sarier:review-group",
+      "catalogId": "hicaz_zirgule--ilahi--sofyan--hic_bulunmaz--husnu_sarier",
+      "status": "deferred",
+      "reason": "batch-recommend-existing-curation-deferred",
+      "reviewedAt": "2026-05-10",
+      "reviewedBy": "batch-policy",
+      "recommendationRule": "existing-curation-decision-deferred-from-next-batch",
+      "sourceGroupStatus": "needs-review",
+      "highestReviewConfidenceScore": 74,
+      "candidateCount": 5,
+      "profileCount": 5,
+      "makam": "Hicaz Zirgule",
+      "form": "İlahi",
+      "usul": "Sofyan",
+      "title": "Hic Bulunmaz",
+      "composer": "Husnu Sarier",
+      "priorityGroup": "pdf-and-musicxml"
+    }
+  ]
+}

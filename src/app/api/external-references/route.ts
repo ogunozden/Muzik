@@ -40,6 +40,12 @@ const CANDIDATE_REVIEW_GROUPS_FILE = path.join(
   "external-reference-coverage",
   "symbtr-curated-reference-candidate-review-groups.json",
 );
+const CANDIDATE_REVIEW_GROUP_DECISION_RECOMMENDATIONS_FILE = path.join(
+  PROJECT_ROOT,
+  "output",
+  "external-reference-coverage",
+  "symbtr-curated-reference-candidate-review-group-decision-recommendations.json",
+);
 const TEMP_INPUT_DIR = path.join(PROJECT_ROOT, "output", "external-reference-coverage", "ui-input");
 const JSON_MAX_BUFFER_BYTES = 1024 * 1024 * 12;
 const MAX_BULK_TEXT_CHARS = 100_000;
@@ -69,6 +75,7 @@ type ExternalReferenceAction =
   | "candidate-import"
   | "candidate-review-export"
   | "candidate-review-group-export"
+  | "candidate-review-group-decision-recommendation-export"
   | "candidate-review-group-decision-template-export"
   | "candidate-review-group-decision-import"
   | "curation-auto-attach"
@@ -88,6 +95,7 @@ const EXTERNAL_REFERENCE_ACTIONS = new Set<ExternalReferenceAction>([
   "candidate-import",
   "candidate-review-export",
   "candidate-review-group-export",
+  "candidate-review-group-decision-recommendation-export",
   "candidate-review-group-decision-template-export",
   "candidate-review-group-decision-import",
   "curation-auto-attach",
@@ -312,6 +320,23 @@ interface CandidateReviewGroupDecisionManifest {
     reviewedAt?: string;
     reviewedBy?: string;
   }>;
+}
+
+interface CandidateReviewGroupDecisionRecommendation extends CandidateReviewGroup {
+  reason?: string;
+  reviewedAt?: string;
+  reviewedBy?: string;
+  recommendationRule?: string;
+  sourceGroupStatus?: string;
+}
+
+interface CandidateReviewGroupDecisionRecommendationManifest {
+  version?: number;
+  type?: string;
+  policyVersion?: string;
+  generatedAt?: string;
+  summary?: Record<string, unknown>;
+  decisions?: CandidateReviewGroupDecisionRecommendation[];
 }
 
 interface CurationStat {
@@ -772,6 +797,7 @@ async function getExternalReferenceState(request: Request) {
     qualityStats,
     bulkCandidateManifest,
     candidateReviewGroupDecisionManifest,
+    candidateReviewGroupDecisionRecommendationManifest,
     candidateReviewQueue,
     candidateReviewGroups,
     fullBacklog,
@@ -804,6 +830,7 @@ async function getExternalReferenceState(request: Request) {
     readJsonOrNull<{generatedAt?: string | null; stats?: CurationStat[]}>(QUALITY_STATS_FILE),
     readJsonOrNull<BulkCandidateManifest>(BULK_CANDIDATES_FILE),
     readJsonOrNull<CandidateReviewGroupDecisionManifest>(CANDIDATE_REVIEW_GROUP_DECISIONS_FILE),
+    readJsonOrNull<CandidateReviewGroupDecisionRecommendationManifest>(CANDIDATE_REVIEW_GROUP_DECISION_RECOMMENDATIONS_FILE),
     readJsonOrNull<CandidateReviewRow[]>(CANDIDATE_REVIEW_QUEUE_FILE),
     readJsonOrNull<CandidateReviewGroup[]>(CANDIDATE_REVIEW_GROUPS_FILE),
     readJsonOrNull<CurationBacklogRow[]>(BACKLOG_FILE),
@@ -925,6 +952,15 @@ async function getExternalReferenceState(request: Request) {
           ? coverage.candidateReviewGroupDecisionsJson
           : toProjectRelativePath(CANDIDATE_REVIEW_GROUP_DECISIONS_FILE),
         decisionCount: candidateReviewGroupDecisionManifest?.decisions?.length ?? 0,
+      },
+      candidateReviewGroupDecisionRecommendationManifest: {
+        artifactPath: typeof coverage?.candidateReviewGroupDecisionRecommendationsJson === "string"
+          ? coverage.candidateReviewGroupDecisionRecommendationsJson
+          : toProjectRelativePath(CANDIDATE_REVIEW_GROUP_DECISION_RECOMMENDATIONS_FILE),
+        decisionCount: candidateReviewGroupDecisionRecommendationManifest?.decisions?.length ?? 0,
+        policyVersion: candidateReviewGroupDecisionRecommendationManifest?.policyVersion ?? null,
+        generatedAt: candidateReviewGroupDecisionRecommendationManifest?.generatedAt ?? null,
+        summary: candidateReviewGroupDecisionRecommendationManifest?.summary ?? null,
       },
       candidateReviewGroupPage: {
         offset: candidateReviewGroupOffset,
@@ -1247,6 +1283,51 @@ async function exportCandidateReviewGroups(body: OperationBody): Promise<unknown
   };
 }
 
+async function exportCandidateReviewGroupDecisionRecommendations(body: OperationBody): Promise<unknown> {
+  const manifest = await readJsonOrNull<CandidateReviewGroupDecisionRecommendationManifest>(
+    CANDIDATE_REVIEW_GROUP_DECISION_RECOMMENDATIONS_FILE,
+  ) ?? {version: 1, type: "candidate-review-group-decision-recommendations", decisions: []};
+  const rows = manifest.decisions ?? [];
+  const query = readCandidateReviewGroupExportQuery(body);
+  const filteredRows = applyCandidateReviewGroupQuery(rows, query);
+
+  if (filteredRows.length > MAX_CANDIDATE_REVIEW_GROUP_DECISION_TEMPLATE_ROWS) {
+    return NextResponse.json(
+      {error: `Review grup karar önerisi ${MAX_CANDIDATE_REVIEW_GROUP_DECISION_TEMPLATE_ROWS} satır ile sınırlıdır. Filtreleri daraltın.`},
+      {status: 413},
+    );
+  }
+
+  return {
+    summary: {
+      artifactPath: toProjectRelativePath(CANDIDATE_REVIEW_GROUP_DECISION_RECOMMENDATIONS_FILE),
+      targetArtifactPath: toProjectRelativePath(CANDIDATE_REVIEW_GROUP_DECISIONS_FILE),
+      totalRows: rows.length,
+      exportedCount: filteredRows.length,
+      policyVersion: manifest.policyVersion,
+      filters: {
+        query: query.query,
+        status: query.status,
+        composer: query.composer,
+        priorityGroup: query.priorityGroup,
+      },
+    },
+    manifest: {
+      version: 1,
+      type: "candidate-review-group-decision-recommendation-export",
+      policyVersion: manifest.policyVersion,
+      generatedAt: manifest.generatedAt,
+      filters: {
+        query: query.query,
+        status: query.status,
+        composer: query.composer,
+        priorityGroup: query.priorityGroup,
+      },
+      decisions: filteredRows,
+    },
+  };
+}
+
 async function exportCandidateReviewGroupDecisionTemplate(body: OperationBody): Promise<unknown> {
   const rows = await readJsonOrNull<CandidateReviewGroup[]>(CANDIDATE_REVIEW_GROUPS_FILE) ?? [];
   const query = readCandidateReviewGroupExportQuery(body);
@@ -1519,6 +1600,8 @@ export async function POST(request: Request) {
         result = await exportCandidateReviewQueue(body);
       } else if (body.action === "candidate-review-group-export") {
         result = await exportCandidateReviewGroups(body);
+      } else if (body.action === "candidate-review-group-decision-recommendation-export") {
+        result = await exportCandidateReviewGroupDecisionRecommendations(body);
       } else if (body.action === "candidate-review-group-decision-template-export") {
         result = await exportCandidateReviewGroupDecisionTemplate(body);
       } else if (body.action === "candidate-review-group-decision-import") {

@@ -4,6 +4,7 @@ import path from "node:path";
 import {describe, expect, it} from "vitest";
 import {
   buildBacklogRows,
+  buildCandidateReviewGroupDecisionRecommendations,
   buildCandidateReviewGroups,
   buildCandidateReviewRows,
   readCandidateReviewGroupDecisions,
@@ -213,6 +214,17 @@ describe("external reference audit", () => {
     const candidateReviewGroupJson = JSON.parse(
       readFileSync(path.join(root, "output", "external-reference-coverage", "symbtr-curated-reference-candidate-review-groups.json"), "utf8"),
     );
+    const candidateReviewGroupRecommendationsJson = JSON.parse(
+      readFileSync(
+        path.join(
+          root,
+          "output",
+          "external-reference-coverage",
+          "symbtr-curated-reference-candidate-review-group-decision-recommendations.json",
+        ),
+        "utf8",
+      ),
+    );
     expect(nextBatchJson).toEqual([]);
     expect(backlogJson).toHaveLength(3);
     expect(candidateReviewJson).toHaveLength(3);
@@ -232,6 +244,24 @@ describe("external reference audit", () => {
     expect(summary.backlogJson).toBe("output/external-reference-coverage/symbtr-curated-reference-backlog.json");
     expect(summary.candidateReviewQueueJson).toBe("output/external-reference-coverage/symbtr-curated-reference-candidate-review-queue.json");
     expect(summary.candidateReviewGroupsJson).toBe("output/external-reference-coverage/symbtr-curated-reference-candidate-review-groups.json");
+    expect(summary.candidateReviewGroupDecisionRecommendationsJson).toBe(
+      "output/external-reference-coverage/symbtr-curated-reference-candidate-review-group-decision-recommendations.json",
+    );
+    expect(summary.candidateReviewGroupDecisionRecommendationEntries).toBe(1);
+    expect(candidateReviewGroupRecommendationsJson).toEqual(expect.objectContaining({
+      type: "candidate-review-group-decision-recommendations",
+      summary: expect.objectContaining({
+        recommendedDecisionCount: 1,
+      }),
+      decisions: [
+        expect.objectContaining({
+          catalogId: "hicaz--pesrev--devrikebir--ucuncu_eser--besteci",
+          status: "deferred",
+          reason: "batch-recommend-existing-curation-deferred",
+          reviewedBy: "batch-policy",
+        }),
+      ],
+    }));
   });
 
   it("builds provider-profile search candidates as review-only queue rows", () => {
@@ -272,6 +302,64 @@ describe("external reference audit", () => {
         status: "needs-review",
         provider: "archive",
         searchUrl: expect.stringContaining("archive.org/search"),
+      }),
+    ]));
+  });
+
+  it("builds safe review group decision recommendations without accepted source fields", () => {
+    const groups = [
+      {
+        groupId: "hicaz--pesrev--devrikebir--ucuncu_eser--besteci:review-group",
+        catalogId: "hicaz--pesrev--devrikebir--ucuncu_eser--besteci",
+        status: "conflict",
+        candidateCount: 3,
+        profileCount: 3,
+        highestReviewConfidenceScore: 74,
+      },
+      {
+        groupId: "rast--sarki--sofyan--baska_eser--diger_besteci:review-group",
+        catalogId: "rast--sarki--sofyan--baska_eser--diger_besteci",
+        status: "needs-review",
+        deferredFromNextBatch: true,
+        candidateCount: 3,
+        profileCount: 3,
+        highestReviewConfidenceScore: 74,
+      },
+      {
+        groupId: "ussak--ilahi--duyek--allah_emrin--zekai_dede:review-group",
+        catalogId: "ussak--ilahi--duyek--allah_emrin--zekai_dede",
+        status: "needs-review",
+        deferredFromNextBatch: false,
+        candidateCount: 3,
+        profileCount: 3,
+        highestReviewConfidenceScore: 94,
+      },
+    ];
+
+    const recommendations = buildCandidateReviewGroupDecisionRecommendations(groups, "2026-06-01");
+
+    expect(recommendations).toHaveLength(2);
+    expect(recommendations).toEqual(expect.arrayContaining([
+      expect.objectContaining({
+        catalogId: "hicaz--pesrev--devrikebir--ucuncu_eser--besteci",
+        status: "conflict",
+        reason: "batch-recommend-source-mismatch-conflict",
+      }),
+      expect.objectContaining({
+        catalogId: "rast--sarki--sofyan--baska_eser--diger_besteci",
+        status: "deferred",
+        reason: "batch-recommend-existing-curation-deferred",
+      }),
+    ]));
+    expect(recommendations).not.toEqual(expect.arrayContaining([
+      expect.objectContaining({
+        status: "accepted",
+      }),
+      expect.objectContaining({
+        sourceUrl: expect.anything(),
+      }),
+      expect.objectContaining({
+        sourceId: expect.anything(),
       }),
     ]));
   });

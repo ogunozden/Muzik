@@ -20,6 +20,7 @@
   "researchSourceProfileEntries": 5,
   "candidateReviewQueueEntries": 14890,
   "candidateReviewGroupEntries": 2978,
+  "candidateReviewGroupDecisionRecommendationEntries": 5,
   "candidateReviewQueueByStatus": [
     {
       "value": "needs-review",
@@ -56,6 +57,16 @@
     {
       "value": "needs-review",
       "count": 2977
+    },
+    {
+      "value": "conflict",
+      "count": 1
+    }
+  ],
+  "candidateReviewGroupDecisionRecommendationsByStatus": [
+    {
+      "value": "deferred",
+      "count": 4
     },
     {
       "value": "conflict",
@@ -139,6 +150,7 @@
     "generatedReviewCandidates": 14890,
     "generatedReviewGroups": 2978,
     "appliedReviewGroupDecisions": 0,
+    "recommendedReviewGroupDecisions": 5,
     "candidateReviewQueryFields": [
       "makam",
       "form",
@@ -153,6 +165,7 @@
       "catalog-fields",
       "curation-decision"
     ],
+    "candidateReviewGroupDecisionRecommendationPolicy": "candidate-review-group-decision-recommendations-v1",
     "duplicateAcceptedIdentityPolicy": "duplicate accepted URL identities fail validation before merge",
     "autoAttachPolicy": "only accepted bulk candidates are counted as curated and eligible for auto-attach",
     "acceptedCatalogIds": [
@@ -183,7 +196,8 @@
       "summary-count-drift",
       "metadata-strategy-profile-drift",
       "candidate-review-group-drift",
-      "candidate-review-group-decision-drift"
+      "candidate-review-group-decision-drift",
+      "candidate-review-group-decision-recommendation-drift"
     ]
   },
   "catalogFormatCoverage": {
@@ -565,11 +579,12 @@
   "candidateReviewQueueJson": "output/external-reference-coverage/symbtr-curated-reference-candidate-review-queue.json",
   "candidateReviewGroupsCsv": "output/external-reference-coverage/symbtr-curated-reference-candidate-review-groups.csv",
   "candidateReviewGroupsJson": "output/external-reference-coverage/symbtr-curated-reference-candidate-review-groups.json",
+  "candidateReviewGroupDecisionRecommendationsJson": "output/external-reference-coverage/symbtr-curated-reference-candidate-review-group-decision-recommendations.json",
   "candidateReviewGroupDecisionsJson": "src/data/references/candidate-review-group-decisions.json",
   "policy": "No media is downloaded. Safe inline preview/embed is allowed only for validated HTTPS sources with provider-specific verification, sandbox, lazy loading and fallback links.",
   "curationRule": "Entries are prioritized by missing curated references, catalog-reported PDF/MusicXML/TXT source formats, named title/composer fields, and common form/usul groups. Search URLs are generated for review only; they are not evidence by themselves.",
   "nextBatchRule": "Rows with needs-disambiguation, source-mismatch, or deferred curation decisions remain in the backlog but are skipped from the next manual batch.",
   "bulkCandidateRule": "Accepted bulk candidates are counted as curated references only after catalog id, source URL policy, duplicate identity, status, and date checks pass.",
   "candidateReviewRule": "Provider-profile search candidates are review queue entries, not source evidence; they stay needs-review or conflict until a validated source URL is imported and accepted.",
-  "candidateReviewGroupDecisionRule": "Review group decisions may mark generated groups rejected, conflict, or deferred in batch; they never create accepted sources or auto-attach without a validated source URL."
+  "candidateReviewGroupDecisionRule": "Review group decisions and recommendations may mark generated groups rejected, conflict, or deferred in batch; they never create accepted sources or auto-attach without a validated source URL."
 }

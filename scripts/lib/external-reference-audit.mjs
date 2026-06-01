@@ -10,6 +10,7 @@ const ALLOWED_CURATION_DECISION_STATUSES = new Set(["needs-disambiguation", "sou
 const NEXT_BATCH_DEFER_STATUSES = new Set(["needs-disambiguation", "source-mismatch", "deferred"]);
 const ALLOWED_BULK_CANDIDATE_STATUSES = new Set(["accepted", "needs-review", "rejected", "conflict"]);
 const ALLOWED_CANDIDATE_REVIEW_GROUP_DECISION_STATUSES = new Set(["needs-review", "rejected", "conflict", "deferred"]);
+const CANDIDATE_REVIEW_GROUP_DECISION_RECOMMENDATION_VERSION = "candidate-review-group-decision-recommendations-v1";
 const SCORE_SOURCE_HINTS = [
   "site:neyzen.com nota",
   "site:defteriniz.com nota",
@@ -624,6 +625,67 @@ function applyCandidateReviewGroupDecisionStatus(group, decision) {
   };
 }
 
+function getLatestIsoDate(values, fallback = "1970-01-01") {
+  return values
+    .filter((value) => /^\d{4}-\d{2}-\d{2}$/.test(String(value ?? "")))
+    .sort()
+    .at(-1) ?? fallback;
+}
+
+function getCandidateReviewGroupDecisionRecommendation(group) {
+  if (group.status === "conflict") {
+    return {
+      status: "conflict",
+      reason: "batch-recommend-source-mismatch-conflict",
+      recommendationRule: "generated-conflict-review-group",
+    };
+  }
+
+  if (group.deferredFromNextBatch) {
+    return {
+      status: "deferred",
+      reason: "batch-recommend-existing-curation-deferred",
+      recommendationRule: "existing-curation-decision-deferred-from-next-batch",
+    };
+  }
+
+  return null;
+}
+
+export function buildCandidateReviewGroupDecisionRecommendations(candidateReviewGroups, reviewedAt) {
+  const decisions = [];
+
+  for (const group of candidateReviewGroups) {
+    const recommendation = getCandidateReviewGroupDecisionRecommendation(group);
+    if (!recommendation) continue;
+
+    decisions.push({
+      groupId: group.groupId,
+      catalogId: group.catalogId,
+      status: recommendation.status,
+      reason: recommendation.reason,
+      reviewedAt,
+      reviewedBy: "batch-policy",
+      recommendationRule: recommendation.recommendationRule,
+      sourceGroupStatus: group.status,
+      highestReviewConfidenceScore: group.highestReviewConfidenceScore,
+      candidateCount: group.candidateCount,
+      profileCount: group.profileCount,
+      makam: group.makam,
+      form: group.form,
+      usul: group.usul,
+      title: group.title,
+      composer: group.composer,
+      priorityGroup: group.priorityGroup,
+    });
+  }
+
+  return decisions.sort((left, right) => (
+    left.status.localeCompare(right.status, "en") ||
+    left.catalogId.localeCompare(right.catalogId, "en")
+  ));
+}
+
 export function buildCandidateReviewGroups(candidateReviewRows, groupDecisionsByCatalogId = new Map()) {
   const grouped = candidateReviewRows.reduce((groups, row) => {
     const catalogId = row.catalogId ?? "";
@@ -857,6 +919,31 @@ export function runExternalReferenceCoverageAudit({
   const candidateReviewJsonPath = path.join(safeOutDir, "symbtr-curated-reference-candidate-review-queue.json");
   const candidateReviewGroupCsvPath = path.join(safeOutDir, "symbtr-curated-reference-candidate-review-groups.csv");
   const candidateReviewGroupJsonPath = path.join(safeOutDir, "symbtr-curated-reference-candidate-review-groups.json");
+  const candidateReviewGroupRecommendationJsonPath = path.join(
+    safeOutDir,
+    "symbtr-curated-reference-candidate-review-group-decision-recommendations.json",
+  );
+  const recommendationReviewedAt = getLatestIsoDate(
+    Array.from(curationDecisionsByCatalogId.values()).map((decision) => decision.reviewedAt),
+  );
+  const generatedAt = `${recommendationReviewedAt}T00:00:00.000Z`;
+  const candidateReviewGroupDecisionRecommendations = buildCandidateReviewGroupDecisionRecommendations(
+    candidateReviewGroups,
+    recommendationReviewedAt,
+  );
+  const candidateReviewGroupDecisionRecommendationManifest = {
+    version: 1,
+    type: "candidate-review-group-decision-recommendations",
+    policyVersion: CANDIDATE_REVIEW_GROUP_DECISION_RECOMMENDATION_VERSION,
+    generatedAt,
+    summary: {
+      totalGroups: candidateReviewGroups.length,
+      recommendedDecisionCount: candidateReviewGroupDecisionRecommendations.length,
+      recommendedByStatus: summarizeCounts(candidateReviewGroupDecisionRecommendations, "status"),
+      policy: "Recommendations may only produce rejected, conflict, or deferred review group decisions; accepted sources require validated source URLs through the bulk candidate pipeline.",
+    },
+    decisions: candidateReviewGroupDecisionRecommendations,
+  };
   writeFileSync(csvPath, renderCsv(rows));
   writeFileSync(backlogJsonPath, `${JSON.stringify(rows, null, 2)}\n`);
   writeFileSync(nextBatchCsvPath, renderCsv(nextBatchRows));
@@ -867,6 +954,10 @@ export function runExternalReferenceCoverageAudit({
   writeFileSync(candidateReviewJsonPath, `${JSON.stringify(candidateReviewRows, null, 2)}\n`);
   writeFileSync(candidateReviewGroupCsvPath, renderCandidateReviewGroupCsv(candidateReviewGroups));
   writeFileSync(candidateReviewGroupJsonPath, `${JSON.stringify(candidateReviewGroups, null, 2)}\n`);
+  writeFileSync(
+    candidateReviewGroupRecommendationJsonPath,
+    `${JSON.stringify(candidateReviewGroupDecisionRecommendationManifest, null, 2)}\n`,
+  );
 
   const batchReport = {
     version: 1,
@@ -896,8 +987,10 @@ export function runExternalReferenceCoverageAudit({
     generatedReviewCandidates: candidateReviewRows.length,
     generatedReviewGroups: candidateReviewGroups.length,
     appliedReviewGroupDecisions: candidateReviewGroupDecisionsByCatalogId.size,
+    recommendedReviewGroupDecisions: candidateReviewGroupDecisionRecommendations.length,
     candidateReviewQueryFields: ["makam", "form", "usul", "title", "composer"],
     candidateReviewScoringSignals: ["profile-trust", "profile-metadata-strategy", "catalog-formats", "catalog-fields", "curation-decision"],
+    candidateReviewGroupDecisionRecommendationPolicy: CANDIDATE_REVIEW_GROUP_DECISION_RECOMMENDATION_VERSION,
     duplicateAcceptedIdentityPolicy: "duplicate accepted URL identities fail validation before merge",
     autoAttachPolicy: "only accepted bulk candidates are counted as curated and eligible for auto-attach",
     acceptedCatalogIds: acceptedBulkCandidates.map((candidate) => candidate.catalogId),
@@ -913,6 +1006,7 @@ export function runExternalReferenceCoverageAudit({
       "metadata-strategy-profile-drift",
       "candidate-review-group-drift",
       "candidate-review-group-decision-drift",
+      "candidate-review-group-decision-recommendation-drift",
     ],
   };
 
@@ -930,9 +1024,14 @@ export function runExternalReferenceCoverageAudit({
     researchSourceProfileEntries: researchProfiles.length,
     candidateReviewQueueEntries: candidateReviewRows.length,
     candidateReviewGroupEntries: candidateReviewGroups.length,
+    candidateReviewGroupDecisionRecommendationEntries: candidateReviewGroupDecisionRecommendations.length,
     candidateReviewQueueByStatus: summarizeCounts(candidateReviewRows, "status"),
     candidateReviewQueueByProfile: summarizeCounts(candidateReviewRows, "profileId"),
     candidateReviewGroupsByStatus: summarizeCounts(candidateReviewGroups, "status"),
+    candidateReviewGroupDecisionRecommendationsByStatus: summarizeCounts(
+      candidateReviewGroupDecisionRecommendations,
+      "status",
+    ),
     candidateReviewGroupDecisionsByStatus: summarizeCounts(
       Array.from(candidateReviewGroupDecisionsByCatalogId.values()),
       "status",
@@ -956,6 +1055,9 @@ export function runExternalReferenceCoverageAudit({
     candidateReviewQueueJson: toProjectPath(path.relative(root, candidateReviewJsonPath)),
     candidateReviewGroupsCsv: toProjectPath(path.relative(root, candidateReviewGroupCsvPath)),
     candidateReviewGroupsJson: toProjectPath(path.relative(root, candidateReviewGroupJsonPath)),
+    candidateReviewGroupDecisionRecommendationsJson: toProjectPath(
+      path.relative(root, candidateReviewGroupRecommendationJsonPath),
+    ),
     candidateReviewGroupDecisionsJson: toProjectPath(path.relative(root, paths.candidateReviewGroupDecisions)),
     policy:
       "No media is downloaded. Safe inline preview/embed is allowed only for validated HTTPS sources with provider-specific verification, sandbox, lazy loading and fallback links.",
@@ -968,7 +1070,7 @@ export function runExternalReferenceCoverageAudit({
     candidateReviewRule:
       "Provider-profile search candidates are review queue entries, not source evidence; they stay needs-review or conflict until a validated source URL is imported and accepted.",
     candidateReviewGroupDecisionRule:
-      "Review group decisions may mark generated groups rejected, conflict, or deferred in batch; they never create accepted sources or auto-attach without a validated source URL.",
+      "Review group decisions and recommendations may mark generated groups rejected, conflict, or deferred in batch; they never create accepted sources or auto-attach without a validated source URL.",
   };
 
   writeFileSync(path.join(safeOutDir, "summary.json"), `${JSON.stringify(summary, null, 2)}\n`);

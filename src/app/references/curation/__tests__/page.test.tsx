@@ -15,6 +15,18 @@ const stateFixture = {
     missingCuratedEntries: 2978,
     candidateReviewQueueEntries: 14890,
     candidateReviewQueueJson: "output/external-reference-coverage/symbtr-curated-reference-candidate-review-queue.json",
+    candidateReviewGroupDecisionRecommendationEntries: 1,
+    candidateReviewGroupDecisionRecommendationsJson: "output/external-reference-coverage/symbtr-curated-reference-candidate-review-group-decision-recommendations.json",
+    batchReport: {
+      processedCatalogEntries: 3000,
+      curatedBeforeBulkCandidates: 15,
+      newlyAcceptedCatalogEntries: 7,
+      missingAfterBatch: 2978,
+      deferredMissingEntries: 5,
+      generatedReviewCandidates: 14890,
+      recommendedReviewGroupDecisions: 1,
+      validationGates: ["candidate-review-group-decision-recommendation-drift"],
+    },
   },
   curation: {
     summary: {
@@ -89,6 +101,13 @@ const stateFixture = {
     candidateReviewGroupDecisionManifest: {
       artifactPath: "src/data/references/candidate-review-group-decisions.json",
       decisionCount: 0,
+    },
+    candidateReviewGroupDecisionRecommendationManifest: {
+      artifactPath: "output/external-reference-coverage/symbtr-curated-reference-candidate-review-group-decision-recommendations.json",
+      decisionCount: 1,
+      policyVersion: "candidate-review-group-decision-recommendations-v1",
+      generatedAt: "2026-06-01T00:00:00.000Z",
+      summary: {recommendedDecisionCount: 1},
     },
     candidateReviewGroupPage: {
       offset: 0,
@@ -234,6 +253,25 @@ function mockFetch() {
               }
           : body.action === "candidate-review-group-decision-import"
             ? {dryRun: body.dryRun, outputDecisionCount: 1, addedDecisionCount: 1}
+          : body.action === "candidate-review-group-decision-recommendation-export"
+            ? {
+                summary: {exportedCount: 1},
+                manifest: {
+                  version: 1,
+                  type: "candidate-review-group-decision-recommendation-export",
+                  decisions: [
+                    {
+                      groupId: `${catalogId}:review-group`,
+                      catalogId,
+                      status: "deferred",
+                      reason: "batch-recommend-existing-curation-deferred",
+                      reviewedAt: "2026-06-01",
+                      reviewedBy: "batch-policy",
+                      recommendationRule: "existing-curation-decision-deferred-from-next-batch",
+                    },
+                  ],
+                },
+              }
           : body.action === "candidate-review-group-decision-template-export"
             ? {
                 summary: {exportedCount: 1},
@@ -308,6 +346,7 @@ describe("ReferencesCurationPage", () => {
     expect(screen.getAllByText("output/external-reference-coverage/symbtr-curated-reference-candidate-review-queue.json").length).toBeGreaterThan(0);
     expect(screen.getByText("output/external-reference-coverage/symbtr-curated-reference-candidate-review-groups.json")).toBeDefined();
     expect(screen.getByText(/candidate-review-group-decisions\.json/)).toBeDefined();
+    expect(screen.getByText(/candidate-review-group-decision-recommendations\.json/)).toBeDefined();
     expect(screen.getByText("review-provider-candidates")).toBeDefined();
     expect(screen.getByLabelText("Grup durum")).toBeDefined();
     expect(screen.getByLabelText("Karar durum")).toBeDefined();
@@ -327,6 +366,22 @@ describe("ReferencesCurationPage", () => {
     expect(JSON.parse(String(groupExportCall?.[1]?.body))).toEqual(
       expect.objectContaining({
         action: "candidate-review-group-export",
+        candidateReviewGroupQuery: expect.objectContaining({
+          status: "conflict",
+          composer: "Ali Rifat Cagatay",
+        }),
+      }),
+    );
+
+    fireEvent.click(screen.getByRole("button", {name: "Karar önerisi"}));
+    await screen.findByDisplayValue(/candidate-review-group-decision-recommendation-export/);
+    const groupDecisionRecommendationCall = fetchMock.mock.calls.find(([, init]) => (
+      init?.method === "POST" &&
+      JSON.parse(String(init.body)).action === "candidate-review-group-decision-recommendation-export"
+    ));
+    expect(JSON.parse(String(groupDecisionRecommendationCall?.[1]?.body))).toEqual(
+      expect.objectContaining({
+        action: "candidate-review-group-decision-recommendation-export",
         candidateReviewGroupQuery: expect.objectContaining({
           status: "conflict",
           composer: "Ali Rifat Cagatay",

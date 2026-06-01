@@ -10,6 +10,7 @@ type CurationAction =
   | "candidate-import"
   | "candidate-review-export"
   | "candidate-review-group-export"
+  | "candidate-review-group-decision-recommendation-export"
   | "candidate-review-group-decision-template-export"
   | "candidate-review-group-decision-import"
   | "curation-auto-attach"
@@ -178,8 +179,11 @@ interface ExternalReferenceState {
       deferredMissingEntries?: number;
       nextBatchSize?: number;
       generatedReviewCandidates?: number;
+      recommendedReviewGroupDecisions?: number;
       validationGates?: string[];
     };
+    candidateReviewGroupDecisionRecommendationEntries?: number;
+    candidateReviewGroupDecisionRecommendationsJson?: string;
   } | null;
   curation?: {
     summary?: {
@@ -214,6 +218,13 @@ interface ExternalReferenceState {
     candidateReviewGroupDecisionManifest?: {
       artifactPath?: string;
       decisionCount?: number;
+    };
+    candidateReviewGroupDecisionRecommendationManifest?: {
+      artifactPath?: string;
+      decisionCount?: number;
+      policyVersion?: string | null;
+      generatedAt?: string | null;
+      summary?: Record<string, unknown> | null;
     };
     candidateReviewGroupPage?: CandidateReviewGroupPage;
     candidateReviewGroupFacets?: {
@@ -664,6 +675,21 @@ export function ReferencesCurationDashboard() {
     }
   }, [candidateGroupStatusFilter, composerFilter, priorityGroupFilter, query, runOperation]);
 
+  const exportCandidateReviewGroupDecisionRecommendations = useCallback(async () => {
+    const result = await runOperation("candidate-review-group-decision-recommendation-export", {
+      candidateReviewGroupQuery: {
+        query,
+        status: candidateGroupStatusFilter,
+        composer: composerFilter,
+        priorityGroup: priorityGroupFilter,
+      },
+    });
+
+    if (result && typeof result === "object" && "manifest" in result) {
+      setCandidateGroupDecisionText(JSON.stringify(result.manifest, null, 2));
+    }
+  }, [candidateGroupStatusFilter, composerFilter, priorityGroupFilter, query, runOperation]);
+
   const exportCandidateReviewGroupDecisionTemplate = useCallback(async () => {
     const result = await runOperation("candidate-review-group-decision-template-export", {
       candidateReviewGroupQuery: {
@@ -790,6 +816,7 @@ export function ReferencesCurationDashboard() {
   const candidateManifest = state.curation?.candidateManifest;
   const candidateReviewGroupManifest = state.curation?.candidateReviewGroupManifest;
   const candidateReviewGroupDecisionManifest = state.curation?.candidateReviewGroupDecisionManifest;
+  const candidateReviewGroupDecisionRecommendationManifest = state.curation?.candidateReviewGroupDecisionRecommendationManifest;
   const candidateReviewGroupPage = state.curation?.candidateReviewGroupPage;
   const candidateReviewGroups = state.curation?.candidateReviewGroups ?? [];
   const candidateReviewPage = state.curation?.candidateReviewPage;
@@ -856,6 +883,7 @@ export function ReferencesCurationDashboard() {
                 {batchReport && (
                   <p className={`mt-1 text-xs ${tokens.colors.text.secondary}`}>
                     Batch raporu: {formatNumber(batchReport.processedCatalogEntries)} eser işlendi · {formatNumber(batchReport.curatedBeforeBulkCandidates)} önce · +{formatNumber(batchReport.newlyAcceptedCatalogEntries)} accepted · {formatNumber(batchReport.missingAfterBatch)} eksik · {formatNumber(batchReport.deferredMissingEntries)} deferred · {formatNumber(batchReport.validationGates?.length)} kapı
+                    {typeof batchReport.recommendedReviewGroupDecisions === "number" && ` · ${formatNumber(batchReport.recommendedReviewGroupDecisions)} öneri`}
                   </p>
                 )}
                 {candidateManifest?.artifactPath && (
@@ -911,8 +939,13 @@ export function ReferencesCurationDashboard() {
                     {candidateReviewGroupDecisionManifest.artifactPath} · {formatNumber(candidateReviewGroupDecisionManifest.decisionCount)} karar
                   </code>
                 )}
+                {candidateReviewGroupDecisionRecommendationManifest?.artifactPath && (
+                  <code className="block break-all text-xs text-[var(--color-text-primary)]">
+                    {candidateReviewGroupDecisionRecommendationManifest.artifactPath} · {formatNumber(candidateReviewGroupDecisionRecommendationManifest.decisionCount)} öneri
+                  </code>
+                )}
               </div>
-              <div className="grid w-full gap-2 sm:grid-cols-2 lg:max-w-6xl lg:grid-cols-8">
+              <div className="grid w-full gap-2 sm:grid-cols-2 lg:max-w-6xl lg:grid-cols-9">
                 <FilterSelect label="Grup durum" value={candidateGroupStatusFilter} options={filterOptions.candidateGroupStatuses} onChange={(value) => {
                   setCandidateGroupStatusFilter(value);
                   setCandidateGroupOffset(0);
@@ -948,6 +981,9 @@ export function ReferencesCurationDashboard() {
                 </Button>
                 <Button variant="secondary" disabled={isBusy} onPress={() => void exportCandidateReviewGroups()}>
                   Grup dışa aktar
+                </Button>
+                <Button variant="secondary" disabled={isBusy} onPress={() => void exportCandidateReviewGroupDecisionRecommendations()}>
+                  Karar önerisi
                 </Button>
                 <FilterSelect
                   label="Karar durum"
@@ -1582,6 +1618,11 @@ function getOperationMessage(action: CurationAction, result: unknown): string {
   if (action === "candidate-review-group-decision-template-export") {
     const exportSummary = (summary.summary ?? {}) as Record<string, unknown>;
     return `Review grup karar şablonu üretildi: ${formatNumber(exportSummary.exportedCount)} karar.`;
+  }
+
+  if (action === "candidate-review-group-decision-recommendation-export") {
+    const exportSummary = (summary.summary ?? {}) as Record<string, unknown>;
+    return `Review grup karar önerileri üretildi: ${formatNumber(exportSummary.exportedCount)} karar.`;
   }
 
   if (action === "candidate-review-group-decision-import") {

@@ -31,6 +31,7 @@ const CANDIDATE_REVIEW_CONFIDENCE_LEVELS = new Set(["high", "medium", "low", "co
 const CANDIDATE_REVIEW_STATUSES = new Set(["needs-review", "conflict"]);
 const CANDIDATE_REVIEW_GROUP_STATUSES = new Set(["needs-review", "conflict", "rejected", "deferred"]);
 const CANDIDATE_REVIEW_GROUP_DECISION_STATUSES = new Set(["rejected", "conflict", "deferred"]);
+const CANDIDATE_REVIEW_GROUP_DECISION_RECOMMENDATION_TYPE = "candidate-review-group-decision-recommendations";
 const PROVIDERS = new Set(["score", "symbtr", "youtube", "archive", "github"]);
 const EMBED_CAPABILITIES = new Set(["none", "iframe", "pdf", "youtube"]);
 const EMBED_TYPES = new Set(["none", "iframe", "pdf", "youtube"]);
@@ -57,6 +58,7 @@ const REQUIRED_BATCH_VALIDATION_GATES = [
   "metadata-strategy-profile-drift",
   "candidate-review-group-drift",
   "candidate-review-group-decision-drift",
+  "candidate-review-group-decision-recommendation-drift",
 ];
 
 function hasCatalogId(catalogIds, catalogId) {
@@ -196,6 +198,7 @@ function validateBatchReport(summary, actualCandidateReviewCount, actualCandidat
     "nextBatchSize",
     "generatedReviewCandidates",
     "generatedReviewGroups",
+    "recommendedReviewGroupDecisions",
   ];
   for (const field of integerFields) {
     if (!Number.isInteger(report[field]) || report[field] < 0) {
@@ -229,6 +232,9 @@ function validateBatchReport(summary, actualCandidateReviewCount, actualCandidat
   }
   if (report.generatedReviewGroups !== report.missingAfterBatch) {
     errors.push("coverage-summary: batchReport.generatedReviewGroups must equal missingAfterBatch");
+  }
+  if (report.recommendedReviewGroupDecisions !== summary?.candidateReviewGroupDecisionRecommendationEntries) {
+    errors.push("coverage-summary: batchReport.recommendedReviewGroupDecisions must match candidateReviewGroupDecisionRecommendationEntries");
   }
   if (report.newlyAcceptedCatalogEntries > summary?.acceptedBulkCandidateEntries) {
     errors.push("coverage-summary: batchReport.newlyAcceptedCatalogEntries cannot exceed acceptedBulkCandidateEntries");
@@ -266,6 +272,7 @@ export function validateSourceCurationRegistries({
   candidateReviewQueue,
   candidateReviewGroups,
   candidateReviewGroupDecisions,
+  candidateReviewGroupDecisionRecommendations,
   coverageSummary,
 }) {
   const errors = [];
@@ -509,6 +516,7 @@ export function validateSourceCurationRegistries({
       const candidateReviewProfileCounts = new Map();
       const candidateRowsByCatalogId = new Map();
       const groupDecisionsByCatalogId = new Map();
+      const groupRecommendationsByCatalogId = new Map();
 
       if (candidateReviewGroupDecisions !== undefined) {
         if (candidateReviewGroupDecisions?.version !== 1) {
@@ -553,6 +561,63 @@ export function validateSourceCurationRegistries({
               errors.push(`candidate-review-group-decisions: ${decisionLabel} duplicate catalog decision`);
             }
             groupDecisionsByCatalogId.set(decision?.catalogId, decision);
+          }
+        }
+      }
+
+      if (candidateReviewGroupDecisionRecommendations !== undefined) {
+        if (candidateReviewGroupDecisionRecommendations?.version !== 1) {
+          errors.push("candidate-review-group-decision-recommendations: version must be 1");
+        }
+        if (candidateReviewGroupDecisionRecommendations?.type !== CANDIDATE_REVIEW_GROUP_DECISION_RECOMMENDATION_TYPE) {
+          errors.push(`candidate-review-group-decision-recommendations: type must be ${CANDIDATE_REVIEW_GROUP_DECISION_RECOMMENDATION_TYPE}`);
+        }
+        if (!Array.isArray(candidateReviewGroupDecisionRecommendations?.decisions)) {
+          errors.push("candidate-review-group-decision-recommendations: decisions must be an array");
+        } else {
+          validateUnique(
+            candidateReviewGroupDecisionRecommendations.decisions.map((decision) => decision.groupId),
+            "candidate-review-group-decision-recommendations",
+            errors,
+          );
+
+          for (const recommendation of candidateReviewGroupDecisionRecommendations.decisions) {
+            const recommendationLabel = recommendation?.groupId ?? "<missing-group-id>";
+            if (!isNonEmptyString(recommendation?.groupId)) {
+              errors.push("candidate-review-group-decision-recommendations: groupId is required");
+            } else if (recommendation.groupId !== `${recommendation.catalogId}:review-group`) {
+              errors.push(`candidate-review-group-decision-recommendations: ${recommendationLabel} groupId must match catalogId:review-group`);
+            }
+            if (!hasCatalogId(catalogIds, recommendation?.catalogId)) {
+              errors.push(`candidate-review-group-decision-recommendations: ${recommendationLabel} unknown catalogId ${recommendation?.catalogId}`);
+            }
+            if (!CANDIDATE_REVIEW_GROUP_DECISION_STATUSES.has(recommendation?.status)) {
+              errors.push(`candidate-review-group-decision-recommendations: ${recommendationLabel} invalid status ${recommendation?.status}`);
+            }
+            if (recommendation?.status === "accepted") {
+              errors.push(`candidate-review-group-decision-recommendations: ${recommendationLabel} cannot recommend accepted without a validated source URL`);
+            }
+            if (recommendation?.sourceId !== undefined || recommendation?.sourceUrl !== undefined || recommendation?.url !== undefined) {
+              errors.push(`candidate-review-group-decision-recommendations: ${recommendationLabel} must not carry accepted source ids or source URLs`);
+            }
+            if (!isNonEmptyString(recommendation?.reason)) {
+              errors.push(`candidate-review-group-decision-recommendations: ${recommendationLabel} reason is required`);
+            }
+            if (!isNonEmptyString(recommendation?.reviewedBy)) {
+              errors.push(`candidate-review-group-decision-recommendations: ${recommendationLabel} reviewedBy is required`);
+            }
+            if (!isNonEmptyString(recommendation?.recommendationRule)) {
+              errors.push(`candidate-review-group-decision-recommendations: ${recommendationLabel} recommendationRule is required`);
+            }
+            validateIsoDate(
+              `candidate-review-group-decision-recommendations: ${recommendationLabel} reviewedAt`,
+              recommendation?.reviewedAt ?? "",
+              errors,
+            );
+            if (groupRecommendationsByCatalogId.has(recommendation?.catalogId)) {
+              errors.push(`candidate-review-group-decision-recommendations: ${recommendationLabel} duplicate catalog recommendation`);
+            }
+            groupRecommendationsByCatalogId.set(recommendation?.catalogId, recommendation);
           }
         }
       }
@@ -665,6 +730,7 @@ export function validateSourceCurationRegistries({
             const rowsForCatalog = candidateRowsByCatalogId.get(group?.catalogId) ?? [];
             const expectedProfiles = Array.from(new Set(rowsForCatalog.map((row) => row.profileId).filter(Boolean))).sort();
             const decision = groupDecisionsByCatalogId.get(group?.catalogId);
+            const recommendation = groupRecommendationsByCatalogId.get(group?.catalogId);
             const generatedStatus = rowsForCatalog.some((row) => row.status === "conflict") ? "conflict" : "needs-review";
             const expectedStatus = decision?.status ?? generatedStatus;
             incrementCount(candidateReviewGroupStatusCounts, group?.status);
@@ -703,6 +769,17 @@ export function validateSourceCurationRegistries({
                 errors.push(`candidate-review-groups: ${groupLabel} decision metadata must reflect group decision`);
               }
             }
+            if (recommendation) {
+              if (recommendation.sourceGroupStatus !== group.status) {
+                errors.push(`candidate-review-group-decision-recommendations: ${groupLabel} sourceGroupStatus must match the generated review group status`);
+              }
+              if (recommendation.status === "conflict" && group.status !== "conflict") {
+                errors.push(`candidate-review-group-decision-recommendations: ${groupLabel} conflict recommendations require a conflict review group`);
+              }
+              if (recommendation.status === "deferred" && group.deferredFromNextBatch !== true) {
+                errors.push(`candidate-review-group-decision-recommendations: ${groupLabel} deferred recommendations require deferredFromNextBatch`);
+              }
+            }
             if (!isNonEmptyString(group?.reviewAction)) {
               errors.push(`candidate-review-groups: ${groupLabel} reviewAction is required`);
             }
@@ -718,6 +795,14 @@ export function validateSourceCurationRegistries({
               coverageSummary,
               "candidateReviewGroupDecisionEntries",
               Array.isArray(candidateReviewGroupDecisions?.decisions) ? candidateReviewGroupDecisions.decisions.length : 0,
+              errors,
+            );
+            validateCoverageCount(
+              coverageSummary,
+              "candidateReviewGroupDecisionRecommendationEntries",
+              Array.isArray(candidateReviewGroupDecisionRecommendations?.decisions)
+                ? candidateReviewGroupDecisionRecommendations.decisions.length
+                : 0,
               errors,
             );
           }
@@ -741,6 +826,9 @@ export function validateSourceCurationRegistries({
       candidateReviewGroupEntries: Array.isArray(candidateReviewGroups) ? candidateReviewGroups.length : 0,
       candidateReviewGroupDecisionEntries: Array.isArray(candidateReviewGroupDecisions?.decisions)
         ? candidateReviewGroupDecisions.decisions.length
+        : 0,
+      candidateReviewGroupDecisionRecommendationEntries: Array.isArray(candidateReviewGroupDecisionRecommendations?.decisions)
+        ? candidateReviewGroupDecisionRecommendations.decisions.length
         : 0,
     },
   };

@@ -1,0 +1,4 @@
+path,area,preview
+src/app/references/curation/__tests__/page.test.tsx,diff,"import {fireEvent, render, screen, waitFor} from ""@testing-library/react""; import type {ReactNode} from ""react""; import {afterEach, beforeEach, describe, expect, it, vi} from ""vitest""; import {Referen"
+src/app/references/curation/page.tsx,diff,"import {readFile} from ""node:fs/promises""; import path from ""node:path""; import {buildCurationState, getCatalogMetadata, type CurationStat, type ExternalReferenceSource} from ""@/app/api/external-refer"
+src/features/references/ReferencesCurationDashboard.tsx,diff,"""use client"";  import {useCallback, useMemo, useState} from ""react""; import Link from ""next/link""; import {Button, Input, UnifiedLayout} from ""@/shared/ui""; import {tokens} from ""@/shared/tokens"";  ty"

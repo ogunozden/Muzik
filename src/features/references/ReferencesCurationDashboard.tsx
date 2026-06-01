@@ -162,7 +162,7 @@ interface CandidateReviewGroup {
   priorityGroup?: string;
 }
 
-interface ExternalReferenceState {
+export interface ExternalReferenceState {
   coverage?: {
     totalCatalogEntries?: number;
     curatedReferenceEntries?: number;
@@ -407,11 +407,17 @@ function metricCards(state: ExternalReferenceState) {
   ];
 }
 
-export function ReferencesCurationDashboard() {
-  const [state, setState] = useState<ExternalReferenceState>(emptyState);
+export function ReferencesCurationDashboard({
+  initialState = emptyState,
+  initialMessage = "",
+}: {
+  initialState?: ExternalReferenceState;
+  initialMessage?: string;
+}) {
+  const [state, setState] = useState<ExternalReferenceState>(initialState);
   const [opsToken, setOpsToken] = useState("");
   const [activeOperation, setActiveOperation] = useState<CurationAction | "refresh" | null>(null);
-  const [message, setMessage] = useState("");
+  const [message, setMessage] = useState(initialMessage);
   const [statusFilter, setStatusFilter] = useState(ALL_FILTER_VALUE);
   const [providerFilter, setProviderFilter] = useState(ALL_FILTER_VALUE);
   const [makamFilter, setMakamFilter] = useState(ALL_FILTER_VALUE);

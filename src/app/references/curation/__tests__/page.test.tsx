@@ -1,7 +1,7 @@
 import {fireEvent, render, screen, waitFor} from "@testing-library/react";
 import type {ReactNode} from "react";
 import {afterEach, beforeEach, describe, expect, it, vi} from "vitest";
-import ReferencesCurationPage from "../page";
+import {ReferencesCurationDashboard} from "@/features/references/ReferencesCurationDashboard";
 
 vi.mock("@/components/layout/UnifiedLayout", () => ({
   UnifiedLayout: ({children}: {children: ReactNode}) => <main>{children}</main>,
@@ -330,7 +330,7 @@ describe("ReferencesCurationPage", () => {
     const fetchMock = mockFetch();
     vi.stubGlobal("fetch", fetchMock);
 
-    render(<ReferencesCurationPage />);
+    render(<ReferencesCurationDashboard />);
 
     await screen.findByRole("heading", {name: "Kaynak kürasyonu"});
     fireEvent.change(screen.getByLabelText("Ops token"), {
@@ -570,4 +570,26 @@ describe("ReferencesCurationPage", () => {
       }),
     );
   }, 15000);
+
+  it("renders the server-provided read-only batch snapshot before an ops token is entered", async () => {
+    const fetchMock = mockFetch();
+    vi.stubGlobal("fetch", fetchMock);
+
+    render(
+      <ReferencesCurationDashboard
+        initialState={stateFixture}
+        initialMessage="Read-only batch snapshot yüklendi. Yazma, import/export ve yenileme operasyonları ops token ister."
+      />,
+    );
+
+    await screen.findByRole("heading", {name: "Kaynak kürasyonu"});
+
+    expect(screen.getByText(/Read-only batch snapshot/)).toBeDefined();
+    expect(screen.getByText("2.978")).toBeDefined();
+    expect(screen.getByText(/14\.890 queue/)).toBeDefined();
+    expect(screen.getAllByText(catalogId).length).toBeGreaterThan(0);
+    expect(screen.getByRole("heading", {name: "Aday review grupları"})).toBeDefined();
+    expect(screen.getByRole("heading", {name: "Sıradaki kaynak backlog batch listesi"})).toBeDefined();
+    expect(fetchMock).not.toHaveBeenCalled();
+  });
 });

@@ -317,6 +317,14 @@ tek kurala bağlamaktır.
       runtime üzerinde de 200 döner. PostCSS, Next'in object/string plugin
       sözleşmesine uygun CJS UnoCSS adapter ile çalışır; tema `@import` kuralı
       CSS standardına uygun biçimde `@unocss all` öncesine alınmıştır.
+      2026-06-01 read-only snapshot kapısı: `/references/curation` artık API
+      operasyon token'ı olmadan ilk ekranda server-rendered batch snapshot
+      gösterir; 3000 eser, 2978 backlog, 14.890 review queue, 350 coverage
+      kırılımı, 0 duplicate ve 5 profile metrikleri görünür. API state ve tüm
+      yazma/import/export operasyonları token korumasını korur; snapshot yalnız
+      mevcut batch artifact'lerinden okunur ve browser kanıtı
+      `output/playwright/references-curation-readonly-snapshot-20260601.png`
+      olarak saklanır.
       2026-06-01 ek accepted import profile kapısı: bulk accepted kaynak import'u
       artık `research-source-profiles.json` içindeki etkin profile host'una
       eşleşmeyen URL'leri ve eşleşen profile provider'ıyla uyuşmayan source

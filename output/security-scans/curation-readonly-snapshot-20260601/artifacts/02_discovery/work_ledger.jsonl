@@ -1,0 +1,3 @@
+{"row":"src/app/references/curation/page.tsx","status":"reviewed","result":"no_reportable_finding","notes":"Fixed local-path server snapshot; sanitized source URLs, feedback events, manual corrections, and embed states before client hydration."}
+{"row":"src/features/references/ReferencesCurationDashboard.tsx","status":"reviewed","result":"no_reportable_finding","notes":"Initial state only hydrates dashboard; protected operations still go through API calls requiring ops token."}
+{"row":"src/app/references/curation/__tests__/page.test.tsx","status":"reviewed","result":"no_reportable_finding","notes":"Regression covers tokenless read-only render without fetching protected API state; existing API tests retain token assertions."}

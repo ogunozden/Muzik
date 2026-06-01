@@ -85,8 +85,30 @@ for (const relativePath of legacyRedirectRoutes) {
 const navigationConfigPath = "src/shared/config/navigation.config.ts";
 if (exists(navigationConfigPath)) {
   const navigationConfig = fs.readFileSync(path.join(root, navigationConfigPath), "utf8");
-  if (/id:\s*["']references["']/.test(navigationConfig)) {
-    failures.push("Admin route must stay out of main navigation: references");
+  const requiredVisibleRouteKeys = [
+    "home",
+    "studio",
+    "studioFollow",
+    "references",
+    "referencesCuration",
+    "archive",
+    "rhythm",
+    "samples",
+    "makam",
+    "usul",
+    "nota",
+    "notaEditor",
+    "recording",
+    "sesler",
+    "eserTakip",
+  ];
+
+  for (const routeKey of requiredVisibleRouteKeys) {
+    const idPattern = new RegExp(`id:\\s*["']${routeKey}["']`);
+    const hrefPattern = new RegExp(`href:\\s*routes\\.${routeKey}\\b`);
+    if (!idPattern.test(navigationConfig) || !hrefPattern.test(navigationConfig)) {
+      failures.push(`Static app route must be visible in main navigation: ${routeKey}`);
+    }
   }
 }
 

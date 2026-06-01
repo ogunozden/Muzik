@@ -19,6 +19,11 @@ interface UnifiedLayoutProps {
 export function UnifiedLayout({children}: UnifiedLayoutProps) {
   const {t} = useTranslation();
   const pathname = usePathname();
+  const activeHref = navigation
+    .map((item) => item.href)
+    .filter((href): href is string => Boolean(href))
+    .filter((href) => href === pathname || (href !== "/" && pathname.startsWith(`${href}/`)))
+    .sort((a, b) => b.length - a.length)[0];
 
   return (
     <div className="min-h-screen flex flex-col" style={{backgroundColor: "var(--color-bg-base)"}}>
@@ -46,12 +51,12 @@ export function UnifiedLayout({children}: UnifiedLayoutProps) {
 
           {/* Navigation */}
           <nav 
-            className="flex w-full items-center gap-1 overflow-x-auto pb-1 md:w-auto md:overflow-visible md:pb-0"
+            className="flex min-w-0 flex-1 items-center gap-1 overflow-x-auto pb-1 md:w-auto md:justify-end md:pb-0"
             role="navigation" 
             aria-label="Main navigation"
           >
             {navigation.map((item) => {
-              const isActive = pathname === item.href;
+              const isActive = item.href === activeHref;
               return (
                 <Link
                   key={item.id}

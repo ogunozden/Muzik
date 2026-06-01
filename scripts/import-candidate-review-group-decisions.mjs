@@ -5,6 +5,7 @@ import {
   normalizeCandidateReviewGroupDecision,
   readCandidateReviewGroupDecisions,
 } from "./lib/external-reference-audit.mjs";
+import {getCandidateReviewGroupFingerprint} from "../src/data/references/candidate-review-group-fingerprint.mjs";
 
 const root = process.cwd();
 const outputPath = path.join(root, "src", "data", "references", "candidate-review-group-decisions.json");
@@ -76,15 +77,24 @@ function readCandidateReviewGroups(filePath) {
 }
 
 function validateIncomingDecisionsAgainstGroups(decisions, candidateReviewGroups) {
-  const knownGroupPairs = new Set(
-    candidateReviewGroups.map((group) => `${group.groupId}\u0000${group.catalogId}`),
+  const knownGroups = new Map(
+    candidateReviewGroups.map((group) => [
+      `${group.groupId}\u0000${group.catalogId}`,
+      group,
+    ]),
   );
   const errors = [];
 
   for (const decision of decisions) {
     const label = decision.groupId || decision.catalogId || "<missing>";
-    if (!knownGroupPairs.has(`${decision.groupId}\u0000${decision.catalogId}`)) {
+    const sourceGroup = knownGroups.get(`${decision.groupId}\u0000${decision.catalogId}`);
+    if (!sourceGroup) {
       errors.push(`${label}: review group decision does not match a generated candidate review group`);
+      continue;
+    }
+
+    if (decision.sourceGroupFingerprint !== getCandidateReviewGroupFingerprint(sourceGroup)) {
+      errors.push(`${label}: review group decision sourceGroupFingerprint must match the generated candidate review group`);
     }
   }
 

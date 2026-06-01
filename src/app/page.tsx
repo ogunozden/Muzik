@@ -5,6 +5,7 @@ import Link from "next/link";
 import {UnifiedLayout} from "@/components/layout/UnifiedLayout";
 import {MAKAM_DATA} from "@/engines/makam/data";
 import {USUL_DATA} from "@/engines/usul/data";
+import {navigation} from "@/shared/config";
 import {tokens} from "@/shared/tokens";
 
 export default function HomePage() {
@@ -113,16 +114,19 @@ export default function HomePage() {
 
         {/* Quick Links */}
         <div className="mt-20 pt-8 border-t border-[var(--color-border)]">
-          <div className="flex flex-wrap gap-6 text-sm">
-            <Link href="/archive" className="text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors">
-              📚 Arşiv
-            </Link>
-            <Link href="/studio/follow" className="text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors">
-              🎧 Eser Takip
-            </Link>
-            <Link href="/samples" className="text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors">
-              🎹 Sesler
-            </Link>
+          <div className="flex flex-wrap gap-x-6 gap-y-3 text-sm">
+            {navigation
+              .filter((item) => item.href && item.href !== "/")
+              .map((item) => (
+                <Link
+                  key={item.id}
+                  href={item.href ?? "/"}
+                  className="text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors"
+                >
+                  {item.icon && <span aria-hidden="true">{item.icon} </span>}
+                  {t(item.label)}
+                </Link>
+              ))}
           </div>
         </div>
       </div>

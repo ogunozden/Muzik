@@ -1,0 +1,11 @@
+- generic [active] [ref=e1]:
+  - button "Open Next.js Dev Tools" [ref=e8] [cursor=pointer]:
+    - img [ref=e9]
+  - alert [ref=e12]
+  - generic [ref=e13]:
+    - banner [ref=e14]:
+      - generic [ref=e15]
+    - main [ref=e38]:
+      - generic [ref=e40]
+    - contentinfo [ref=e262]:
+      - paragraph [ref=e264]: © 2026 Muzik - Türk Müziği Platformu

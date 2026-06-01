@@ -334,9 +334,11 @@ Son doğrulama kayıtları `PROJECT_PLAN.md` içinde tutuluyor:
   source metadata'sını da validator'a geçirir; `auto-attached.profileId` source
   URL host'undan beklenen profile ile uyuşmazsa validation kırılır. Hedefli
   regresyonla 4 dosya, 27 test geçti; gerçek 3000 katalog validation'ı temiz.
-- 2026-05-31 ek wave: `/references` ana kullanıcı header navigation'ından
-  çıkarıldı; route ve layout guard kapsamı korunuyor, ancak local/admin kaynak
-  operasyon yüzeyi artık ürün nav'ında görünmüyor.
+- 2026-06-01 ek wave: arka planda kalan statik route'lar ana ön yüzde görünür
+  hale getirildi. `/references`, `/references/curation` ve legacy redirect
+  route'ları merkezi `routes.config.ts` + `navigation.config.ts` üzerinden
+  header ve ana sayfa hızlı linklerinde listelenir; `validate-architecture.mjs`
+  bu görünürlüğü release kapısı olarak zorunlu tutar.
 - 2026-05-31 ek wave: `next.config.mjs` `/_next/static/:path*` için custom
   `Cache-Control` header'ı üretmiyor; Next static asset cache yönetimi Next.js'e
   bırakıldı. `scripts/lib/__tests__/next-config-security.test.mjs` production

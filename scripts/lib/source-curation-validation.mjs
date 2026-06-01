@@ -1,3 +1,5 @@
+import {getCandidateReviewGroupFingerprint} from "../../src/data/references/candidate-review-group-fingerprint.mjs";
+
 const KEBAB_ID_PATTERN = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 const ISO_DATE_PATTERN = /^\d{4}-\d{2}-\d{2}$/;
 const ISO_DATE_TIME_PATTERN = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d{3})?Z$/;
@@ -783,6 +785,9 @@ export function validateSourceCurationRegistries({
             if (!isNonEmptyString(decision?.reviewedBy)) {
               errors.push(`candidate-review-group-decisions: ${decisionLabel} reviewedBy is required`);
             }
+            if (!/^[a-f0-9]{64}$/.test(String(decision?.sourceGroupFingerprint ?? ""))) {
+              errors.push(`candidate-review-group-decisions: ${decisionLabel} sourceGroupFingerprint must be a SHA-256 hex string`);
+            }
             validateIsoDate(`candidate-review-group-decisions: ${decisionLabel} reviewedAt`, decision?.reviewedAt ?? "", errors);
             if (groupDecisionsByCatalogId.has(decision?.catalogId)) {
               errors.push(`candidate-review-group-decisions: ${decisionLabel} duplicate catalog decision`);
@@ -832,6 +837,9 @@ export function validateSourceCurationRegistries({
             }
             if (!isNonEmptyString(recommendation?.reviewedBy)) {
               errors.push(`candidate-review-group-decision-recommendations: ${recommendationLabel} reviewedBy is required`);
+            }
+            if (!/^[a-f0-9]{64}$/.test(String(recommendation?.sourceGroupFingerprint ?? ""))) {
+              errors.push(`candidate-review-group-decision-recommendations: ${recommendationLabel} sourceGroupFingerprint must be a SHA-256 hex string`);
             }
             if (!isNonEmptyString(recommendation?.recommendationRule)) {
               errors.push(`candidate-review-group-decision-recommendations: ${recommendationLabel} recommendationRule is required`);
@@ -1004,14 +1012,28 @@ export function validateSourceCurationRegistries({
               errors.push(`candidate-review-groups: ${groupLabel} status must reflect review queue rows or group decision`);
             }
             if (decision) {
+              const undecidedGroup = {
+                ...group,
+                status: generatedStatus,
+                reviewAction: generatedStatus === "conflict" ? "resolve-conflict-before-import" : "review-provider-candidates",
+                decisionReason: undefined,
+                decisionReviewedAt: undefined,
+                decisionReviewedBy: undefined,
+              };
               if (group.reviewAction !== `batch-decision-${decision.status}`) {
                 errors.push(`candidate-review-groups: ${groupLabel} reviewAction must reflect group decision`);
               }
               if (group.decisionReason !== decision.reason || group.decisionReviewedAt !== decision.reviewedAt) {
                 errors.push(`candidate-review-groups: ${groupLabel} decision metadata must reflect group decision`);
               }
+              if (decision.sourceGroupFingerprint !== getCandidateReviewGroupFingerprint(undecidedGroup)) {
+                errors.push(`candidate-review-group-decisions: ${groupLabel} sourceGroupFingerprint must match the generated review group before decisions`);
+              }
             }
             if (recommendation) {
+              if (recommendation.sourceGroupFingerprint !== getCandidateReviewGroupFingerprint(group)) {
+                errors.push(`candidate-review-group-decision-recommendations: ${groupLabel} sourceGroupFingerprint must match the generated review group`);
+              }
               if (recommendation.sourceGroupStatus !== group.status) {
                 errors.push(`candidate-review-group-decision-recommendations: ${groupLabel} sourceGroupStatus must match the generated review group status`);
               }

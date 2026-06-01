@@ -129,17 +129,20 @@ Kalici route'lar:
 - `/archive`: Eser arsivi.
 - `/rhythm`: Bagimsiz usul/perkusyon calisma.
 - `/samples`: Enstruman ve sample yonetimi.
+- `/references`: Harici kaynak staging/map/sync/audit operasyon paneli.
+- `/references/curation`: 3000 eserlik kaynak kurasyon dashboard'u.
 - `/api/scores`: Arsiv API.
 - `/api/samples`: Sample API.
 
-Gecici mevcut route'lar urunu bozmayacak sekilde tutulabilir, ancak nav ve ana
-akista sadece kalici route'lar gorunmelidir.
+Gecici mevcut route'lar urunu bozmayacak sekilde tutulabilir. 2026-06-01 urun
+karariyla arka planda kalan statik route'lar da on yuzde gorunur tutulur; legacy
+route'lar kanonik hedeflerine redirect eder ama merkezi navigation'da
+kesfedilebilir kalir.
 
-Yerel/admin operasyon route'lari ana kullanici nav akisi degildir. `/references`
-harici kaynak staging/map/sync/audit paneli, `/references/curation` kaynak
-kurasyon dashboard'u, `/references/curation/[catalogId]` parca merkezli kaynak
-detay ekrani ve `/api/external-references` token korumali sabit operasyon API'si
-olarak tutulabilir.
+Yerel/admin operasyon route'lari genel kullanici aksiyonlarindan token ve policy
+ile ayrilir, ancak on yuzde gorunur olmalidir. `/references/curation/[catalogId]`
+parca merkezli kaynak detay ekrani ve `/api/external-references` token korumali
+sabit operasyon API'si olarak tutulur.
 
 ## Bitti Kabul Kriterleri
 

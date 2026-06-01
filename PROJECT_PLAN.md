@@ -55,9 +55,12 @@ tek kurala bağlamaktır.
       yönetecek.
 - [x] `/references` ve yeni `/references/curation` akışlarının mimari yerini
       netleştir. `PRODUCT_ARCHITECTURE.md` kalıcı route listesi ile mevcut
-      navigation'daki `references` route'u şu an farklı varsayımlara sahip;
-      bu alan local/admin kaynak operasyon yüzeyi olarak tanımlandı ve ana
-      kullanıcı nav'ı dışı route olarak ayrıldı.
+      navigation'daki `references` route'u şu an farklı varsayımlara sahipti;
+      2026-06-01 yeni ürün kararıyla local/admin kaynak operasyon yüzeyi ana
+      ön yüzde de görünür hale getirildi. `navigation.config.ts`,
+      `routes.config.ts` ve `validate-architecture.mjs` artık statik app
+      route'larının merkezi nav'da görünmesini release kapısı olarak zorunlu
+      tutar.
 - [x] Yeni kaynak yönetim kodunu kanonik klasör sınırlarına göre yaz. Mevcut
       `src/app/references/page.tsx` ve `src/app/studio/follow/page.tsx` zaten
       büyük sayfalar; curation dashboard, parça detayı, embed preview, feedback
@@ -312,6 +315,12 @@ tek kurala bağlamaktır.
       provider değerlerini reddeder. Review/conflict/rejected adaylar yine
       auto-attach edilmeyen güvenli queue verisi olarak source URL zorunluluğu
       olmadan taşınabilir.
+      2026-06-01 ek review group stale-proof kapısı: candidate review group
+      decision template, recommendation artifact ve import hattı artık
+      `sha256:external-reference-candidate-review-group-v1`
+      `sourceGroupFingerprint` taşır. `curation:validate` ve import script'i,
+      operator kararının güncel generated review group ile aynı candidate setine
+      ait olduğunu doğrulamadan karar manifest'ine yazmaz.
 - [ ] PDF vector ölçü adayları gerçek ölçü kutusuna terfi etmeden önce insan
       veya görsel regresyon doğrulaması bekliyor. Pipeline, review artifact'i,
       verification manifest'i ve Eser Takip UI yolu hazır; gerçek manifest şu

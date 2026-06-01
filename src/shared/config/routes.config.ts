@@ -11,9 +11,17 @@ export type RoutePath =
   | "studio"
   | "studioFollow"
   | "references"
+  | "referencesCuration"
   | "archive"
   | "rhythm"
   | "samples"
+  | "makam"
+  | "usul"
+  | "nota"
+  | "notaEditor"
+  | "recording"
+  | "sesler"
+  | "eserTakip"
   | "apiSamples"
   | "notFound";
 
@@ -40,9 +48,17 @@ export const routes = {
   studio: "/studio",
   studioFollow: "/studio/follow",
   references: "/references",
+  referencesCuration: "/references/curation",
   archive: "/archive",
   rhythm: "/rhythm",
   samples: "/samples",
+  makam: "/makam",
+  usul: "/usul",
+  nota: "/nota",
+  notaEditor: "/nota-editor",
+  recording: "/recording",
+  sesler: "/sesler",
+  eserTakip: "/eser-takip",
   apiSamples: "/api/samples",
   notFound: "/404",
 } as const satisfies Record<RoutePath, string>;
@@ -74,6 +90,12 @@ export const routeMetadata: Record<RoutePath, Route> = {
     titleKey: "nav.references",
     description: "Harici nota, kayıt ve arşiv kaynaklarını yönetme",
   },
+  referencesCuration: {
+    path: routes.referencesCuration,
+    name: "referencesCuration",
+    titleKey: "nav.referencesCuration",
+    description: "3000 eserlik katalog için batch kaynak kürasyon kuyruğu",
+  },
   archive: {
     path: routes.archive,
     name: "archive",
@@ -89,8 +111,50 @@ export const routeMetadata: Record<RoutePath, Route> = {
   samples: {
     path: routes.samples,
     name: "samples",
-    titleKey: "nav.sounds",
+    titleKey: "nav.samples",
     description: "Enstrüman ve ses seçimi",
+  },
+  makam: {
+    path: routes.makam,
+    name: "makam",
+    titleKey: "nav.makam",
+    description: "Makam çalışma yönlendirmesi",
+  },
+  usul: {
+    path: routes.usul,
+    name: "usul",
+    titleKey: "nav.usul",
+    description: "Usul çalışma yönlendirmesi",
+  },
+  nota: {
+    path: routes.nota,
+    name: "nota",
+    titleKey: "nav.nota",
+    description: "Nota çalışma yönlendirmesi",
+  },
+  notaEditor: {
+    path: routes.notaEditor,
+    name: "notaEditor",
+    titleKey: "nav.notaEditor",
+    description: "Nota editör yönlendirmesi",
+  },
+  recording: {
+    path: routes.recording,
+    name: "recording",
+    titleKey: "nav.recording",
+    description: "Kayıt çalışma yönlendirmesi",
+  },
+  sesler: {
+    path: routes.sesler,
+    name: "sesler",
+    titleKey: "nav.sesler",
+    description: "Sesler yönlendirmesi",
+  },
+  eserTakip: {
+    path: routes.eserTakip,
+    name: "eserTakip",
+    titleKey: "nav.eserTakip",
+    description: "Eser takip yönlendirmesi",
   },
   apiSamples: {
     path: routes.apiSamples,

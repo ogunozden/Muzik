@@ -1,4 +1,5 @@
 import {describe, expect, it} from "vitest";
+import {getCandidateReviewGroupFingerprint} from "../../../src/data/references/candidate-review-group-fingerprint.mjs";
 import {validateSourceCurationRegistries} from "../source-curation-validation.mjs";
 
 const catalog = [{id: "hicazkar--pesrev--duyek--test--besteci"}];
@@ -430,9 +431,11 @@ describe("source curation validation", () => {
 
   it("validates batch review group decisions without allowing accepted source data", () => {
     const registries = validRegistries();
+    const sourceGroupFingerprint = getCandidateReviewGroupFingerprint(registries.candidateReviewGroups[0]);
     registries.candidateReviewGroupDecisions.decisions.push({
       groupId: `${catalog[0].id}:review-group`,
       catalogId: catalog[0].id,
+      sourceGroupFingerprint,
       status: "rejected",
       reason: "batch-reviewed-no-safe-source",
       reviewedAt: "2026-06-01",
@@ -465,9 +468,11 @@ describe("source curation validation", () => {
     registries.candidateReviewGroups[0].reviewAction = "resolve-conflict-before-import";
     registries.candidateReviewQueue[0].status = "conflict";
     registries.candidateReviewQueue[0].statusReason = "source-mismatch";
+    const sourceGroupFingerprint = getCandidateReviewGroupFingerprint(registries.candidateReviewGroups[0]);
     registries.candidateReviewGroupDecisionRecommendations.decisions.push({
       groupId: `${catalog[0].id}:review-group`,
       catalogId: catalog[0].id,
+      sourceGroupFingerprint,
       status: "conflict",
       reason: "batch-recommend-source-mismatch-conflict",
       reviewedAt: "2026-06-01",

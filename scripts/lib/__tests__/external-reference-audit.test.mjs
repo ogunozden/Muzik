@@ -15,6 +15,7 @@ import {
   readResearchSourceProfiles,
   runExternalReferenceCoverageAudit,
 } from "../external-reference-audit.mjs";
+import {getCandidateReviewGroupFingerprint} from "../../../src/data/references/candidate-review-group-fingerprint.mjs";
 
 const catalogEntries = [
   {
@@ -468,12 +469,18 @@ describe("external reference audit", () => {
 
   it("applies batch review group decisions without producing accepted sources", () => {
     const root = createAuditRoot();
+    const rows = buildBacklogRows(catalogEntries, new Set(["ussak--ilahi--duyek--allah_emrin--zekai_dede"]), new Map());
+    const profiles = readResearchSourceProfiles(path.join(root, "src/data/references/research-source-profiles.json"));
+    const sourceGroup = buildCandidateReviewGroups(buildCandidateReviewRows(rows, profiles))
+      .find((group) => group.catalogId === "rast--sarki--sofyan--baska_eser--diger_besteci");
+
     writeJson(root, "src/data/references/candidate-review-group-decisions.json", {
       version: 1,
       decisions: [
         {
           groupId: "rast--sarki--sofyan--baska_eser--diger_besteci:review-group",
           catalogId: "rast--sarki--sofyan--baska_eser--diger_besteci",
+          sourceGroupFingerprint: getCandidateReviewGroupFingerprint(sourceGroup),
           status: "rejected",
           reason: "batch-reviewed-no-safe-source",
           reviewedAt: "2026-06-01",
@@ -487,8 +494,6 @@ describe("external reference audit", () => {
       catalogEntries,
       path.join(root, "src/data/references/candidate-review-group-decisions.json"),
     );
-    const rows = buildBacklogRows(catalogEntries, new Set(["ussak--ilahi--duyek--allah_emrin--zekai_dede"]), new Map());
-    const profiles = readResearchSourceProfiles(path.join(root, "src/data/references/research-source-profiles.json"));
     const groups = buildCandidateReviewGroups(buildCandidateReviewRows(rows, profiles), decisions);
     const summary = runExternalReferenceCoverageAudit({root, batchSize: 10});
 

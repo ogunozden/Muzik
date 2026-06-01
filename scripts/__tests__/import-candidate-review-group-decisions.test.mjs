@@ -3,11 +3,20 @@ import {mkdtempSync, mkdirSync, readFileSync, writeFileSync} from "node:fs";
 import {tmpdir} from "node:os";
 import path from "node:path";
 import {describe, expect, it} from "vitest";
+import {getCandidateReviewGroupFingerprint} from "../../src/data/references/candidate-review-group-fingerprint.mjs";
 
 const scriptPath = path.resolve("scripts/import-candidate-review-group-decisions.mjs");
 const catalogId = "ussak--ilahi--duyek--dostun_senden--ali_rifat_cagatay";
 const secondCatalogId = "hicaz--sarki--sofyan--bir_ihtimal_daha_var--yesari_asim_arsoy";
 const unknownCatalogId = "rast--sarki--sofyan--unknown--besteci";
+
+function reviewGroupFor(id) {
+  return {
+    groupId: `${id}:review-group`,
+    catalogId: id,
+    status: "needs-review",
+  };
+}
 
 function writeJson(root, projectPath, value) {
   const filePath = path.join(root, projectPath);
@@ -25,16 +34,8 @@ function createRoot() {
     ],
   });
   writeJson(root, "output/external-reference-coverage/symbtr-curated-reference-candidate-review-groups.json", [
-    {
-      groupId: `${catalogId}:review-group`,
-      catalogId,
-      status: "needs-review",
-    },
-    {
-      groupId: `${secondCatalogId}:review-group`,
-      catalogId: secondCatalogId,
-      status: "needs-review",
-    },
+    reviewGroupFor(catalogId),
+    reviewGroupFor(secondCatalogId),
   ]);
   writeJson(root, "src/data/references/candidate-review-group-decisions.json", {
     version: 1,
@@ -60,6 +61,7 @@ describe("import-candidate-review-group-decisions", () => {
         {
           groupId: `${catalogId}:review-group`,
           catalogId,
+          sourceGroupFingerprint: getCandidateReviewGroupFingerprint(reviewGroupFor(catalogId)),
           status: "rejected",
           reason: "batch-reviewed-no-safe-source",
           reviewedAt: "2026-06-01",
@@ -96,6 +98,7 @@ describe("import-candidate-review-group-decisions", () => {
         {
           groupId: `${unknownCatalogId}:review-group`,
           catalogId: unknownCatalogId,
+          sourceGroupFingerprint: "0".repeat(64),
           status: "rejected",
           reason: "batch-reviewed-no-safe-source",
           reviewedAt: "2026-06-01",
@@ -117,6 +120,7 @@ describe("import-candidate-review-group-decisions", () => {
         {
           groupId: `${secondCatalogId}:review-group`,
           catalogId,
+          sourceGroupFingerprint: getCandidateReviewGroupFingerprint(reviewGroupFor(secondCatalogId)),
           status: "rejected",
           reason: "batch-reviewed-no-safe-source",
           reviewedAt: "2026-06-01",
@@ -127,6 +131,28 @@ describe("import-candidate-review-group-decisions", () => {
 
     expect(() => runScript(root, "input/decisions.json", true)).toThrow(
       "review group decision does not match a generated candidate review group",
+    );
+  });
+
+  it("rejects stale decisions whose fingerprint no longer matches the generated group", () => {
+    const root = createRoot();
+    writeJson(root, "input/decisions.json", {
+      version: 1,
+      decisions: [
+        {
+          groupId: `${catalogId}:review-group`,
+          catalogId,
+          sourceGroupFingerprint: "0".repeat(64),
+          status: "rejected",
+          reason: "batch-reviewed-no-safe-source",
+          reviewedAt: "2026-06-01",
+          reviewedBy: "local-operator",
+        },
+      ],
+    });
+
+    expect(() => runScript(root, "input/decisions.json", true)).toThrow(
+      "sourceGroupFingerprint must match the generated candidate review group",
     );
   });
 });

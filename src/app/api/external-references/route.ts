@@ -26,6 +26,7 @@ import {
   type CandidateReviewRow,
   type CurationBacklogRow,
 } from "./curation-query";
+import {getCandidateReviewGroupFingerprint} from "@/data/references/candidate-review-group-fingerprint.mjs";
 import {getLocalOperationAccessError} from "@/shared/security";
 
 export const runtime = "nodejs";
@@ -945,6 +946,7 @@ async function exportCandidateReviewGroupDecisionTemplate(body: OperationBody): 
   const decisions = filteredRows.map((group) => ({
     groupId: group.groupId,
     catalogId: group.catalogId,
+    sourceGroupFingerprint: getCandidateReviewGroupFingerprint(group),
     status: template.status,
     reason: template.reason,
     reviewedAt: template.reviewedAt,

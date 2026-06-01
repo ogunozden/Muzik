@@ -66,12 +66,17 @@ Yerel proje kanıtları:
 ## Mimari Uyum Kararları
 
 `PRODUCT_ARCHITECTURE.md` kalıcı route listesini Studio, Follow, Archive,
-Rhythm ve Samples olarak tanımlar. Mevcut kodda `/references` route'u vardır ve
-navigation'a eklenmiştir. Bu plan için karar:
+Rhythm ve Samples olarak tanımlar. 2026-06-01 ürün kararıyla arka planda kalan
+statik route'lar da ön yüzde görünür tutulur; bu plan için karar:
 
-- `/references` local/admin operasyon paneli olarak kalır;
-- `/references/curation` parça merkezli kaynak yönetim dashboard'u olur;
+- `/references` local/admin operasyon paneli olarak kalır ve ana ön yüzde
+  görünür;
+- `/references/curation` parça merkezli kaynak yönetim dashboard'u olur ve ana
+  ön yüzde görünür;
 - `/references/curation/[catalogId]` tek parça kaynak yönetim ekranı olur;
+- legacy redirect route'ları (`/makam`, `/usul`, `/nota`, `/nota-editor`,
+  `/recording`, `/sesler`, `/eser-takip`) merkezi nav'da görünür ama iş
+  mantığını kanonik hedeflerinde tutar;
 - ana pratik deneyimi `/studio/follow` içinde kaynakları tüketebilir, ama
   curation operasyon mantığını taşımaz;
 - yeni bileşenler `features/references` veya `features/curation` altında

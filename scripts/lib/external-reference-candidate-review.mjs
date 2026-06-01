@@ -1,3 +1,5 @@
+import {getCandidateReviewGroupFingerprint} from "../../src/data/references/candidate-review-group-fingerprint.mjs";
+
 export const CANDIDATE_REVIEW_GROUP_DECISION_RECOMMENDATION_VERSION = "candidate-review-group-decision-recommendations-v1";
 
 function buildProfileSearchQuery(row, profile) {
@@ -159,6 +161,7 @@ export function buildCandidateReviewGroupDecisionRecommendations(candidateReview
     decisions.push({
       groupId: group.groupId,
       catalogId: group.catalogId,
+      sourceGroupFingerprint: getCandidateReviewGroupFingerprint(group),
       status: recommendation.status,
       reason: recommendation.reason,
       reviewedAt,

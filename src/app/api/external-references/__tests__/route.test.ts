@@ -1,6 +1,7 @@
 import {afterEach, beforeEach, describe, expect, it, vi} from "vitest";
 import {execFile} from "node:child_process";
 import {mkdir, readFile, unlink, writeFile} from "node:fs/promises";
+import {getCandidateReviewGroupFingerprint} from "@/data/references/candidate-review-group-fingerprint.mjs";
 import {GET, POST} from "../route";
 
 const CATALOG_ID = "ussak--ilahi--duyek--dostun_senden--ali_rifat_cagatay";
@@ -308,6 +309,7 @@ const candidateReviewGroupDecisionsFixture = {
     {
       groupId: "rast--sarki--sofyan--ikinci_eser--ikinci_besteci:review-group",
       catalogId: "rast--sarki--sofyan--ikinci_eser--ikinci_besteci",
+      sourceGroupFingerprint: getCandidateReviewGroupFingerprint(candidateReviewGroupsFixture[1]),
       status: "conflict",
       reason: "batch-reviewed-source-mismatch",
       reviewedAt: "2026-06-01",
@@ -328,6 +330,7 @@ const candidateReviewGroupDecisionRecommendationsFixture = {
     {
       groupId: "rast--sarki--sofyan--ikinci_eser--ikinci_besteci:review-group",
       catalogId: "rast--sarki--sofyan--ikinci_eser--ikinci_besteci",
+      sourceGroupFingerprint: getCandidateReviewGroupFingerprint(candidateReviewGroupsFixture[1]),
       status: "conflict",
       reason: "batch-recommend-source-mismatch-conflict",
       reviewedAt: "2026-06-01",
@@ -775,6 +778,7 @@ describe("/api/external-references route", () => {
       reason: "batch-reviewed-no-safe-source",
       reviewedAt: "2026-06-01",
       reviewedBy: "local-operator",
+      sourceGroupFingerprint: expect.stringMatching(/^[a-f0-9]{64}$/),
     }));
     expect(execFile).not.toHaveBeenCalled();
   });

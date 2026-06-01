@@ -49,6 +49,20 @@ export const navigation: NavItem[] = [
     icon: "🎧",
   },
   {
+    id: "references",
+    label: "nav.references",
+    href: routes.references,
+    type: "link",
+    icon: "🔗",
+  },
+  {
+    id: "referencesCuration",
+    label: "nav.referencesCuration",
+    href: routes.referencesCuration,
+    type: "link",
+    icon: "🧭",
+  },
+  {
     id: "rhythm",
     label: "nav.rhythm",
     href: routes.rhythm,
@@ -64,10 +78,59 @@ export const navigation: NavItem[] = [
   },
   {
     id: "samples",
-    label: "nav.sounds",
+    label: "nav.samples",
     href: routes.samples,
     type: "link",
     icon: "🎹",
+  },
+  {
+    id: "makam",
+    label: "nav.makam",
+    href: routes.makam,
+    type: "link",
+    icon: "🎙️",
+  },
+  {
+    id: "usul",
+    label: "nav.usul",
+    href: routes.usul,
+    type: "link",
+    icon: "⏱️",
+  },
+  {
+    id: "nota",
+    label: "nav.nota",
+    href: routes.nota,
+    type: "link",
+    icon: "♩",
+  },
+  {
+    id: "notaEditor",
+    label: "nav.notaEditor",
+    href: routes.notaEditor,
+    type: "link",
+    icon: "✏️",
+  },
+  {
+    id: "recording",
+    label: "nav.recording",
+    href: routes.recording,
+    type: "link",
+    icon: "⏺",
+  },
+  {
+    id: "sesler",
+    label: "nav.sesler",
+    href: routes.sesler,
+    type: "link",
+    icon: "🎚️",
+  },
+  {
+    id: "eserTakip",
+    label: "nav.eserTakip",
+    href: routes.eserTakip,
+    type: "link",
+    icon: "📍",
   },
 ];
 
@@ -75,6 +138,8 @@ export const navigation: NavItem[] = [
  * Footer linkleri
  */
 export const footerLinks = [
+  { id: "references", label: "Kaynaklar", href: routes.references },
+  { id: "referencesCuration", label: "Kürasyon", href: routes.referencesCuration },
   { id: "archive", label: "Arşiv", href: routes.archive },
   { id: "studio", label: "Studio", href: routes.studio },
   { id: "rhythm", label: "Ritim", href: routes.rhythm },

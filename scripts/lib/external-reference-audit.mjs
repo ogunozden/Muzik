@@ -161,6 +161,7 @@ export function readCurationDecisions(entries, curationDecisionsPath) {
 export function normalizeCandidateReviewGroupDecision(decision) {
   const catalogId = String(decision.catalogId ?? "").trim();
   const groupId = String(decision.groupId ?? `${catalogId}:review-group`).trim();
+  const sourceGroupFingerprint = String(decision.sourceGroupFingerprint ?? "").trim();
 
   return {
     groupId,
@@ -169,6 +170,7 @@ export function normalizeCandidateReviewGroupDecision(decision) {
     reason: String(decision.reason ?? "").trim(),
     reviewedAt: String(decision.reviewedAt ?? "").trim(),
     reviewedBy: String(decision.reviewedBy ?? "local-operator").trim(),
+    sourceGroupFingerprint,
   };
 }
 
@@ -213,6 +215,10 @@ export function readCandidateReviewGroupDecisions(entries, decisionsPath) {
 
     if (!decision.reviewedBy) {
       errors.push(`${label}: review group decision reviewedBy is empty`);
+    }
+
+    if (!/^[a-f0-9]{64}$/.test(decision.sourceGroupFingerprint)) {
+      errors.push(`${label}: review group decision sourceGroupFingerprint must be a SHA-256 hex string`);
     }
 
     if (rawDecision.sourceId !== undefined || rawDecision.sourceUrl !== undefined || rawDecision.url !== undefined) {

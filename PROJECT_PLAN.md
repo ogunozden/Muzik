@@ -323,6 +323,12 @@ tek kurala bağlamaktır.
       varsayılan olarak tüm mevcut PDF candidate entry'lerini üretir;
       validator review template'in candidate entry kapsamından eksik veya
       fazla satır taşımasını hata sayar.
+      2026-06-01 ek batch karar import güvenliği: review group karar import
+      script'i artık yalnız `symbtr-curated-reference-candidate-review-groups.json`
+      içinde üretilmiş grup id/catalog id çiftlerine karar yazabilir. Böylece
+      3000 katalogdan review queue kapsamına girmeyen veya stale/elle uydurulmuş
+      kararlar gerçek karar manifest'ine batch olarak taşınmadan fail-closed
+      kalır; script testi valid import ve unknown group reddini kapsar.
 
 ### Tamamlanan Otomasyon ve Altyapı Kanıtları (TODO Dışı)
 

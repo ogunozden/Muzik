@@ -9,6 +9,12 @@ import {
 const root = process.cwd();
 const outputPath = path.join(root, "src", "data", "references", "candidate-review-group-decisions.json");
 const catalogPath = path.join(root, "src", "data", "symbtr", "catalog.generated.json");
+const candidateReviewGroupsPath = path.join(
+  root,
+  "output",
+  "external-reference-coverage",
+  "symbtr-curated-reference-candidate-review-groups.json",
+);
 
 function parseArgs(argv) {
   const args = {write: false};
@@ -60,12 +66,41 @@ function readInputDecisions(filePath) {
   return rows.map(normalizeCandidateReviewGroupDecision);
 }
 
+function readCandidateReviewGroups(filePath) {
+  const rows = readJson(filePath, []);
+  if (!Array.isArray(rows)) {
+    throw new Error("Candidate review groups artifact must be an array. Run npm run audit:external-references first.");
+  }
+
+  return rows;
+}
+
+function validateIncomingDecisionsAgainstGroups(decisions, candidateReviewGroups) {
+  const knownGroupPairs = new Set(
+    candidateReviewGroups.map((group) => `${group.groupId}\u0000${group.catalogId}`),
+  );
+  const errors = [];
+
+  for (const decision of decisions) {
+    const label = decision.groupId || decision.catalogId || "<missing>";
+    if (!knownGroupPairs.has(`${decision.groupId}\u0000${decision.catalogId}`)) {
+      errors.push(`${label}: review group decision does not match a generated candidate review group`);
+    }
+  }
+
+  if (errors.length > 0) {
+    throw new Error(`Invalid candidate review group decision import scope:\n${errors.join("\n")}`);
+  }
+}
+
 const args = parseArgs(process.argv.slice(2));
 const inputPath = assertProjectInput(args.input);
 const catalog = readJson(catalogPath, {entries: []});
 const catalogEntries = Array.isArray(catalog.entries) ? catalog.entries : [];
+const candidateReviewGroups = readCandidateReviewGroups(candidateReviewGroupsPath);
 const current = readJson(outputPath, {version: 1, decisions: []});
 const incomingDecisions = readInputDecisions(inputPath);
+validateIncomingDecisionsAgainstGroups(incomingDecisions, candidateReviewGroups);
 const mergedByCatalogId = new Map(
   (Array.isArray(current.decisions) ? current.decisions : [])
     .map(normalizeCandidateReviewGroupDecision)

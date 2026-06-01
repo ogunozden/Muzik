@@ -230,6 +230,13 @@ tek kurala bağlamaktır.
       orkestrasyonu artık candidate review policy ayrıntılarını taşımak zorunda
       değildir; yeni modül review-only adayların accepted source id/URL alanı
       üretmediğini doğrudan test eder.
+      2026-06-01 Faz 9: coverage matrix, provider/status kırılım raporu,
+      dedupe policy ve özet count üretimi
+      `scripts/lib/external-reference-reporting.mjs` modülüne ayrıldı.
+      `external-reference-audit.mjs` eski `buildCoverageMatrix`,
+      `buildDedupeReport` ve `summarizeCounts` export yüzeyini korur; dedupe
+      accepted URL identity normalizasyonunu audit katmanından enjekte ederek
+      circular bağımlılık üretmeden aynı validation davranışını sürdürür.
 - [ ] Yeni model için validation/test kapılarını ekle: auto-attached kaynak
       sözleşmesi, feedback event bütünlüğü, silme/geri alma akışı, embed
       allowlist/fallback, filtre sonuçları, ops token davranışı, büyük liste

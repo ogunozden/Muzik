@@ -1,0 +1,4 @@
+path,area,preview
+scripts/lib/__tests__/external-reference-reporting.test.mjs,diff,"import {describe, expect, it} from ""vitest""; import {   buildCoverageMatrix,   buildDedupeReport,   summarizeCounts, } from ""../external-reference-reporting.mjs"";  describe(""external-reference-reporti"
+scripts/lib/external-reference-audit.mjs,diff,"import {existsSync, mkdirSync, readFileSync, writeFileSync} from ""node:fs""; import path from ""node:path""; import {   CANDIDATE_REVIEW_GROUP_DECISION_RECOMMENDATION_VERSION,   buildCandidateReviewGroup"
+scripts/lib/external-reference-reporting.mjs,diff,"export const COVERAGE_MATRIX_VERSION = ""external-reference-coverage-matrix-v1""; export const DEDUPE_REPORT_VERSION = ""external-reference-dedupe-report-v1"";  export function summarizeCounts(rows, field"

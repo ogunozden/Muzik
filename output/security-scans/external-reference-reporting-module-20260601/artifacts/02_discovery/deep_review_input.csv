@@ -1,0 +1,4 @@
+path,area
+scripts/lib/__tests__/external-reference-reporting.test.mjs,diff
+scripts/lib/external-reference-audit.mjs,diff
+scripts/lib/external-reference-reporting.mjs,diff

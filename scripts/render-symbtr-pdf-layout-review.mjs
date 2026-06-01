@@ -1,11 +1,15 @@
 import {mkdirSync, readFileSync, writeFileSync} from "node:fs";
 import path from "node:path";
 import {fileURLToPath} from "node:url";
+import {getSymbTrMeasureIndexSummary} from "./lib/symbtr-score-measures.mjs";
 import {readZipEntry} from "./lib/zip-entry-reader.mjs";
 
 const root = process.cwd();
 const DEFAULT_CATALOG_ID = "hicazkar--pesrev--devrikebir----tanburi_buyuk_osman_bey";
 const DEFAULT_OUT_DIR = "output/symbtr-layout-review";
+const DEFAULT_GENERATED_AT = "2026-06-01";
+const DEFAULT_REVIEWER = "local-reviewer";
+const verificationTemplatePolicy = "This file is a batch review template only. Do not copy rows into layout-verification.generated.json until every selected candidate is human-reviewed or visual-regression-approved and converted into measureBoxes with confidence verified.";
 const layoutPath = path.join(root, "src", "data", "symbtr", "layout.generated.json");
 const pdfZipPath = path.join(root, "symb", "pdf_v3.zip");
 
@@ -106,9 +110,9 @@ function renderSvg(entry) {
     .candidate-label { fill: #92400e; font: 7px ui-monospace, SFMono-Regular, Consolas, monospace; text-anchor: middle; }
   </style>
   <rect x="0" y="0" width="${page.width}" height="${page.height}" class="page" />
-  ${staffBands}
-  ${staffLines}
-  ${measureBoxes}
+${staffBands}
+${staffLines}
+${measureBoxes}
 </svg>`;
 }
 
@@ -300,8 +304,65 @@ function renderHtml(entry, svgFileName, pdfFileName) {
 </html>`;
 }
 
-function renderReviewArtifact(catalogId, outDir) {
-  const layoutData = JSON.parse(readFileSync(layoutPath, "utf8"));
+function buildCandidateReviewRows(entry) {
+  return entry.measureCandidates.map((candidate) => ({
+    sourceCandidateRowIndex: candidate.rowIndex,
+    sourceCandidateIndexInRow: candidate.candidateIndexInRow,
+    candidateLabel: `row-${candidate.rowIndex + 1}-candidate-${candidate.candidateIndexInRow + 1}`,
+    suggestedMeasureIndex: null,
+    leftPercent: candidate.leftPercent,
+    topPercent: candidate.topPercent,
+    widthPercent: candidate.widthPercent,
+    heightPercent: candidate.heightPercent,
+    confidence: candidate.confidence,
+  }));
+}
+
+function buildVerificationTemplateEntry({entry, layoutData, reviewer, scoreMeasureSummary}) {
+  return {
+    catalogId: entry.catalogId,
+    sourceLayoutGeneratedAt: layoutData.generatedAt,
+    sourceArchiveMemberPath: entry.source.archiveMemberPath,
+    sourceMeasureCandidateCount: entry.measureCandidates.length,
+    reviewer,
+    method: "human-reviewed",
+    scoreMeasureSummary: {
+      sourceArchiveMemberPath: scoreMeasureSummary.sourceArchiveMemberPath,
+      noteEventCount: scoreMeasureSummary.noteEventCount,
+      measureCount: scoreMeasureSummary.measureCount,
+      maxMeasureIndex: scoreMeasureSummary.maxMeasureIndex,
+      measureIndexes: scoreMeasureSummary.measureIndexes,
+      missingMeasureIndexes: scoreMeasureSummary.missingMeasureIndexes,
+    },
+    candidateReviewRows: buildCandidateReviewRows(entry),
+    measureBoxes: [],
+  };
+}
+
+function buildVerificationReviewTemplate({layoutData, artifacts, generatedAt, reviewer}) {
+  return {
+    schemaVersion: 1,
+    type: "symbtr-pdf-layout-verification-review-template",
+    generatedAt,
+    policy: verificationTemplatePolicy,
+    reviewer,
+    entryCount: artifacts.length,
+    entries: Object.fromEntries(
+      artifacts.map((artifact) => [artifact.catalogId, artifact.verificationTemplateEntry]),
+    ),
+    artifactIndex: artifacts.map((artifact) => ({
+      catalogId: artifact.catalogId,
+      html: artifact.html,
+      svg: artifact.svg,
+      pdf: artifact.pdf,
+      sourceLayoutGeneratedAt: layoutData.generatedAt,
+      sourceMeasureCandidateCount: artifact.measureCandidateCount,
+      scoreMeasureCount: artifact.verificationTemplateEntry.scoreMeasureSummary.measureCount,
+    })),
+  };
+}
+
+function renderReviewArtifact(catalogId, outDir, layoutData, reviewer) {
   const entry = layoutData.entries?.[catalogId];
   if (!entry) {
     throw new Error(`No PDF layout candidate entry found for catalog id: ${catalogId}`);
@@ -318,6 +379,7 @@ function renderReviewArtifact(catalogId, outDir) {
   const htmlPath = path.join(safeOutDir, htmlFileName);
   const pdfPath = path.join(safeOutDir, pdfFileName);
   const sourcePdf = readZipEntry(pdfZipPath, entry.source.archiveMemberPath);
+  const scoreMeasureSummary = getSymbTrMeasureIndexSummary({catalogId});
 
   writeFileSync(pdfPath, sourcePdf);
   writeFileSync(svgPath, `${renderSvg(entry)}\n`);
@@ -331,6 +393,12 @@ function renderReviewArtifact(catalogId, outDir) {
     staffRowCount: entry.summary.staffRowCount,
     measureCandidateCount: entry.summary.measureCandidateCount,
     warning: entry.summary.warning,
+    verificationTemplateEntry: buildVerificationTemplateEntry({
+      entry,
+      layoutData,
+      reviewer,
+      scoreMeasureSummary,
+    }),
   };
 }
 
@@ -338,10 +406,46 @@ const isMain = process.argv[1] && path.resolve(process.argv[1]) === fileURLToPat
 
 if (isMain) {
   const options = parseCliOptions(process.argv.slice(2));
-  const result = renderReviewArtifact(
-    options.get("catalog-id") ?? DEFAULT_CATALOG_ID,
-    options.get("out-dir") ?? DEFAULT_OUT_DIR,
-  );
+  const layoutData = JSON.parse(readFileSync(layoutPath, "utf8"));
+  const outDir = options.get("out-dir") ?? DEFAULT_OUT_DIR;
+  const reviewer = options.get("reviewer") ?? DEFAULT_REVIEWER;
+  const generatedAt = options.get("generated-at") ?? DEFAULT_GENERATED_AT;
+  const candidateEntries = Object.values(layoutData.entries ?? {})
+    .filter((entry) => Array.isArray(entry.measureCandidates) && entry.measureCandidates.length > 0)
+    .map((entry) => entry.catalogId)
+    .sort();
+  const requestedCatalogIds = options.has("all")
+    ? candidateEntries
+    : [options.get("catalog-id") ?? DEFAULT_CATALOG_ID];
+  const limit = Number(options.get("limit") ?? requestedCatalogIds.length);
+  const catalogIds = requestedCatalogIds.slice(0, Number.isInteger(limit) && limit > 0 ? limit : requestedCatalogIds.length);
+  const artifacts = catalogIds.map((catalogId) => renderReviewArtifact(catalogId, outDir, layoutData, reviewer));
+  const template = buildVerificationReviewTemplate({layoutData, artifacts, generatedAt, reviewer});
+  const safeOutDir = assertInsideProject(path.resolve(root, outDir));
+  const templateFileName = options.get("template-file") ?? "layout-verification-review-template.json";
+  const templatePath = path.join(safeOutDir, templateFileName);
 
-  console.log(JSON.stringify(result, null, 2));
+  writeFileSync(templatePath, `${JSON.stringify(template, null, 2)}\n`);
+
+  console.log(JSON.stringify({
+    generatedAt,
+    outDir: toProjectPath(path.relative(root, safeOutDir)),
+    entryCount: artifacts.length,
+    reviewTemplate: toProjectPath(path.relative(root, templatePath)),
+    artifacts: artifacts.map((artifact) => ({
+      catalogId: artifact.catalogId,
+      html: artifact.html,
+      svg: artifact.svg,
+      pdf: artifact.pdf,
+      staffRowCount: artifact.staffRowCount,
+      measureCandidateCount: artifact.measureCandidateCount,
+      warning: artifact.warning,
+    })),
+    promotionPolicy: verificationTemplatePolicy,
+  }, null, 2));
 }
+
+export {
+  buildVerificationReviewTemplate,
+  renderReviewArtifact,
+};

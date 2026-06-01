@@ -5,6 +5,11 @@
   "verifiedMeasureBoxes": 0,
   "promotionPolicy": "Only human-reviewed or visual-regression-approved PDF measure boxes may be promoted from pdf-vector-candidate to verified.",
   "candidateStatus": "unreviewed-candidates-only",
+  "reviewTemplate": {
+    "path": "output/symbtr-layout-review/layout-verification-review-template.json",
+    "entryCount": 1,
+    "candidateReviewRows": 49
+  },
   "unresolvedCandidateEntries": 1,
   "scoreMeasureSummaries": [
     {

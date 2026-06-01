@@ -296,6 +296,15 @@ tek kurala bağlamaktır.
       `output/symbtr-layout-review/layout-verification-summary.json` üretir;
       `promotionPolicy`, `candidateStatus`, unresolved candidate entry ve
       verified box sayıları kalıcı makine-okunur artifact olarak saklanır.
+      2026-06-01 ek batch review template: `npm run review:symbtr-measures`
+      artık tek tek manuel satır kopyalama yerine
+      `layout-verification-review-template.json` üretir. Şablon PDF vector
+      adaylarını kaynak SymbTr TXT ölçü indeks özetiyle eşler, `measureBoxes`
+      alanını boş bırakır ve yalnız insan/görsel regresyon onayından sonra
+      verification manifest'e terfi ettirilecek non-promoting review satırları
+      taşır. `npm run verify:symbtr-measures` bu şablonu da okuyup kaynak
+      PDF aday sayısı, TXT ölçü özeti, review satır geometrisi ve boş
+      `measureBoxes` politikasını drift'e karşı doğrular.
 
 ### Tamamlanan Otomasyon ve Altyapı Kanıtları (TODO Dışı)
 
@@ -398,6 +407,10 @@ tek kurala bağlamaktır.
         HTML/SVG overlay'i `output/symbtr-layout-review/` altında üretir. Bu
         artifact adayları doğrulamaya hazırlar, ancak tek başına doğrulanmış
         ölçü kutusu kararı değildir.
+        2026-06-01 genişletmesi: aynı komut batch review template JSON'u da
+        üretir; 49 PDF vector adayını 28 SymbTr TXT ölçü indeksiyle birlikte
+        review-only satır olarak listeler ve `measureBoxes: []` ile otomatik
+        terfiyi fail-closed bırakır.
 30. [x] Tüm SymbTr kataloğu için kürasyonlu dış kaynak backlog'u üret:
         `scripts/audit-external-reference-coverage.mjs` ve
         `npm run audit:external-references` resmi SymbTr metadata coverage'i

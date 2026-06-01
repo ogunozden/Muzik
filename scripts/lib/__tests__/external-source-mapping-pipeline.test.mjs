@@ -73,6 +73,15 @@ describe("external source mapping pipeline", () => {
             <head>
               <meta property="og:title" content="Allah Emrin Tutalım">
               <meta name="description" content="Uşşak ilahi notası">
+              <script type="application/ld+json">
+                {
+                  "@context": "https://schema.org",
+                  "@type": "MusicComposition",
+                  "name": "Allah Emrin Tutalım",
+                  "composer": {"name": "Zekai Dede"},
+                  "lyricist": {"name": "Yunus Emre"}
+                }
+              </script>
             </head>
           </html>
         `,
@@ -97,9 +106,16 @@ describe("external source mapping pipeline", () => {
     expect(enriched.metadata.signals).toEqual(expect.arrayContaining([
       "html:og-title",
       "html:description",
+      "schema:musiccomposition",
+      "schema:composer",
       "youtube:oembed-title",
       "youtube:oembed-author",
     ]));
+    expect(enriched.metadata).toEqual(expect.objectContaining({
+      schemaName: "Allah Emrin Tutalım",
+      schemaComposer: "Zekai Dede",
+      schemaLyricist: "Yunus Emre",
+    }));
   });
 
   it("merges only new accepted candidates by catalog source id or accepted URL identity", () => {

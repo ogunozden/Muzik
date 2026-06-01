@@ -12,6 +12,11 @@ const METADATA_FIELD_BY_HEADER = {
   oembedtitle: "oembedTitle",
   oembedauthor: "oembedAuthor",
   oembedprovider: "oembedProvider",
+  schemaname: "schemaName",
+  schemacomposer: "schemaComposer",
+  schemalyricist: "schemaLyricist",
+  schemalyrics: "schemaLyrics",
+  schemabyartist: "schemaByArtist",
 };
 
 export function parseCliOptions(args) {
@@ -360,6 +365,11 @@ function normalizeMetadata(metadata) {
     oembedTitle: text(metadata.oembedTitle),
     oembedAuthor: text(metadata.oembedAuthor),
     oembedProvider: text(metadata.oembedProvider),
+    schemaName: text(metadata.schemaName),
+    schemaComposer: text(metadata.schemaComposer),
+    schemaLyricist: text(metadata.schemaLyricist),
+    schemaLyrics: text(metadata.schemaLyrics),
+    schemaByArtist: text(metadata.schemaByArtist),
     signals: Array.isArray(metadata.signals)
       ? metadata.signals.map((signal) => String(signal).trim()).filter(Boolean)
       : undefined,
@@ -411,6 +421,11 @@ export function createSourcesFromCliOptions(options) {
         oembedTitle: getOption(options, "oembed-title"),
         oembedAuthor: getOption(options, "oembed-author"),
         oembedProvider: getOption(options, "oembed-provider"),
+        schemaName: getOption(options, "schema-name"),
+        schemaComposer: getOption(options, "schema-composer"),
+        schemaLyricist: getOption(options, "schema-lyricist"),
+        schemaLyrics: getOption(options, "schema-lyrics"),
+        schemaByArtist: getOption(options, "schema-by-artist"),
         signals: getOptionValues(options, "metadata-signal"),
       }),
     },

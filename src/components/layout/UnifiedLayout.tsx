@@ -51,7 +51,7 @@ export function UnifiedLayout({children}: UnifiedLayoutProps) {
 
           {/* Navigation */}
           <nav 
-            className="flex min-w-0 flex-1 items-center gap-1 overflow-x-auto pb-1 md:w-auto md:justify-end md:pb-0"
+            className="flex min-w-0 flex-1 flex-wrap items-center gap-1 md:w-auto md:justify-end"
             role="navigation" 
             aria-label="Main navigation"
           >
@@ -62,7 +62,7 @@ export function UnifiedLayout({children}: UnifiedLayoutProps) {
                   key={item.id}
                   href={item.href ?? "/"}
                   className={`
-                    shrink-0 px-3 py-1.5 text-sm rounded-md transition-all duration-150
+                    min-w-0 px-2.5 py-1.5 text-xs rounded-md transition-all duration-150 sm:px-3 sm:text-sm
                     ${isActive
                       ? "bg-white/20 font-medium text-white"
                       : "text-white/80 hover:bg-white/10 hover:text-white"
@@ -70,9 +70,9 @@ export function UnifiedLayout({children}: UnifiedLayoutProps) {
                   `}
                   aria-current={isActive ? "page" : undefined}
                 >
-                  <span className="flex items-center gap-2">
+                  <span className="flex min-w-0 items-center gap-1.5">
                     {item.icon && <span aria-hidden="true">{item.icon}</span>}
-                    {t(item.label)}
+                    <span className="truncate">{t(item.label)}</span>
                   </span>
                 </Link>
               );

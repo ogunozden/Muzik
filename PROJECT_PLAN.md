@@ -1328,6 +1328,11 @@ calisma agacindaki bu guncelleme oncesi genis degisiklikleri de kapsadigindan
   aktif review gruplarıyla, candidate queue sayılarıyla ve
   `sourceGroupFingerprint` değerleriyle eşleşmek zorundadır; URL/source id veya
   accepted kaçarsa validation hata verir.
+- 2026-06-01 schema metadata dalgası: HTML metadata fetch artık schema.org
+  `MusicComposition`/`MusicRecording` JSON-LD alanlarından başlık, besteci,
+  güfteci, güfte ve icracı sinyallerini çıkarır; intake/mapping/accepted
+  metadata sözleşmesi bu alanları korur ve matcher bunları açıklanabilir
+  `schema-*` skor gerekçeleriyle batch confidence hesabına katar.
 
 ### Kanıt
 

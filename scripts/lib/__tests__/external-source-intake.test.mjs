@@ -45,6 +45,12 @@ describe("external source intake", () => {
       "Toprakta Yatacak Teni Tenim Var",
       "--oembed-author",
       "Dede Efendi",
+      "--schema-name",
+      "Toprakta Yatacak Teni Tenim Var",
+      "--schema-composer",
+      "Dede Efendi",
+      "--schema-lyricist",
+      "Yunus Emre",
       "--metadata-signal",
       "html:og-title",
       "--metadata-signal",
@@ -70,6 +76,9 @@ describe("external source intake", () => {
           htmlTitle: "Toprakta Yatacak Teni Tenim Var - DîvânMakam",
           oembedTitle: "Toprakta Yatacak Teni Tenim Var",
           oembedAuthor: "Dede Efendi",
+          schemaName: "Toprakta Yatacak Teni Tenim Var",
+          schemaComposer: "Dede Efendi",
+          schemaLyricist: "Yunus Emre",
           signals: ["html:og-title", "youtube:oembed-title"],
         },
         observed: {
@@ -110,6 +119,8 @@ describe("external source intake", () => {
           htmlDescription: "",
           oembedTitle: "Allah Emrin Tutalım Zekai Dede",
           oembedAuthor: "Zekai Dede",
+          schemaName: "Allah Emrin Tutalım",
+          schemaComposer: "Zekai Dede",
           signals: ["html:og-title", "", "youtube:oembed-author"],
         },
       }),
@@ -121,6 +132,8 @@ describe("external source intake", () => {
           htmlTitle: "Allah Emrin Tutalım",
           oembedTitle: "Allah Emrin Tutalım Zekai Dede",
           oembedAuthor: "Zekai Dede",
+          schemaName: "Allah Emrin Tutalım",
+          schemaComposer: "Zekai Dede",
           signals: ["html:og-title", "youtube:oembed-author"],
         },
       }),
@@ -130,8 +143,8 @@ describe("external source intake", () => {
   it("parses CSV source batches", () => {
     const sources = parseSourceInput(
       [
-        "url,title,makam,form,usul,composer,checked_at,html_title,oembed_title,oembed_author,metadata_signals,oembed_verified",
-        "https://example.com/score,Example Title,Uşşak,İlahi,Düyek,Zekai Dede,2026-05-10,Example HTML Title,Example oEmbed Title,Zekai Dede,html:title;youtube:oembed-title,true",
+        "url,title,makam,form,usul,composer,checked_at,html_title,oembed_title,oembed_author,schema_name,schema_composer,metadata_signals,oembed_verified",
+        "https://example.com/score,Example Title,Uşşak,İlahi,Düyek,Zekai Dede,2026-05-10,Example HTML Title,Example oEmbed Title,Zekai Dede,Example Schema Title,Zekai Dede,html:title;schema:name,true",
       ].join("\n"),
       "sources.csv",
     );
@@ -146,7 +159,9 @@ describe("external source intake", () => {
           htmlTitle: "Example HTML Title",
           oembedTitle: "Example oEmbed Title",
           oembedAuthor: "Zekai Dede",
-          signals: ["html:title", "youtube:oembed-title"],
+          schemaName: "Example Schema Title",
+          schemaComposer: "Zekai Dede",
+          signals: ["html:title", "schema:name"],
         },
         observed: {
           makam: "Uşşak",

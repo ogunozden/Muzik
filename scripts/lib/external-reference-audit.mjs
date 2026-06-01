@@ -311,7 +311,19 @@ export function validateBulkCandidateSource(catalogId, source) {
 
   if (source?.metadata !== undefined) {
     const metadata = source.metadata;
-    const metadataFields = ["htmlTitle", "htmlDescription", "htmlAuthor", "oembedTitle", "oembedAuthor", "oembedProvider"];
+    const metadataFields = [
+      "htmlTitle",
+      "htmlDescription",
+      "htmlAuthor",
+      "oembedTitle",
+      "oembedAuthor",
+      "oembedProvider",
+      "schemaName",
+      "schemaComposer",
+      "schemaLyricist",
+      "schemaLyrics",
+      "schemaByArtist",
+    ];
     if (!metadata || typeof metadata !== "object" || Array.isArray(metadata)) {
       errors.push(`${catalogId}: bulk candidate metadata must be an object`);
     } else {

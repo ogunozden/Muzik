@@ -81,6 +81,11 @@ export async function enrichExternalSource(source, {
         htmlTitle: metadata.title,
         htmlDescription: metadata.description,
         htmlAuthor: metadata.author,
+        schemaName: metadata.schemaName,
+        schemaComposer: metadata.schemaComposer,
+        schemaLyricist: metadata.schemaLyricist,
+        schemaLyrics: metadata.schemaLyrics,
+        schemaByArtist: metadata.schemaByArtist,
         signals: mergeMetadataSignals(enrichedSource.metadata?.signals, metadata.metadataSignals),
       },
     };

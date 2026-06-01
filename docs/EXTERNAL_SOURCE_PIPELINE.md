@@ -69,7 +69,10 @@ npm run map:external-references -- --fetch-page-metadata
 ```
 
 That option reads HTML page metadata (`og:title` / `<title>`) and uses it in the
-catalog matcher. It still does not download score PDFs, audio or media.
+catalog matcher. It also extracts schema.org JSON-LD music metadata when a page
+publishes `MusicComposition`, `MusicRecording` or `CreativeWork` fields such as
+name, composer, lyricist and lyrics. It still does not download score PDFs,
+audio or media.
 
 ## Input Contract
 
@@ -92,7 +95,12 @@ metadata:
     "oembedTitle": "oEmbed title",
     "oembedAuthor": "oEmbed author",
     "oembedProvider": "YouTube",
-    "signals": ["html:og-title", "youtube:oembed-title"]
+    "schemaName": "schema.org composition title",
+    "schemaComposer": "schema.org composer",
+    "schemaLyricist": "schema.org lyricist",
+    "schemaLyrics": "schema.org lyric text",
+    "schemaByArtist": "schema.org performer",
+    "signals": ["html:og-title", "youtube:oembed-title", "schema:musiccomposition"]
   },
   "observed": {
     "title": "Piece title",

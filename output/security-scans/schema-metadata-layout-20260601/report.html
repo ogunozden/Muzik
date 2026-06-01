@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Schema Metadata + Layout Diff Security Scan</title>
+  </head>
+  <body>
+    <h1>Schema Metadata + Layout Diff Security Scan</h1>
+    <p><strong>Date:</strong> 2026-06-01</p>
+    <p><strong>Scope:</strong> local working-tree diff for schema.org metadata extraction, external source mapping/intake metadata preservation, accepted bulk-candidate metadata validation, and shared navigation layout CSS.</p>
+    <h2>Result</h2>
+    <p>No findings.</p>
+    <h2>Evidence</h2>
+    <ul>
+      <li>Targeted tests: 5 files, 29 tests passed.</li>
+      <li><code>npm run curation:validate</code>: ok true, 0 errors.</li>
+      <li><code>npm run audit:external-references</code>: 3000 catalog entries, duplicate rows 0, accepted bulk candidates 7.</li>
+      <li><code>npm run audit:security</code>: found 0 vulnerabilities.</li>
+      <li>Browser evidence for <code>/references/curation</code>: warning/error logs 0; fixed mobile nav overflow.</li>
+    </ul>
+    <h2>Closed Classes</h2>
+    <ul>
+      <li>SSRF: HTTPS/private-host/content-type/timeout/byte-limit controls remain in place.</li>
+      <li>XSS: schema values are parsed as JSON strings and not rendered as HTML.</li>
+      <li>Unsafe auto-attach: schema metadata is only scoring evidence; accepted-only policy remains unchanged.</li>
+      <li>DoS: metadata fetch remains bounded by timeout and byte limits.</li>
+    </ul>
+  </body>
+</html>

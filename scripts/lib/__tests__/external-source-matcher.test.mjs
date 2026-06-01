@@ -140,4 +140,29 @@ describe("external source matcher", () => {
       "metadata-signal:youtube:oembed-title",
     ]));
   });
+
+  it("uses schema.org music metadata as structured scoring evidence", () => {
+    const score = scoreCatalogEntry(
+      {
+        url: "https://example.com/schema-score",
+        metadata: {
+          schemaName: "Allah Emrin Tutalım",
+          schemaComposer: "Zekai Dede",
+          schemaLyricist: "Yunus Emre",
+          schemaLyrics: "Allah emrin tutalım rahmetine batalım",
+          signals: ["schema:musiccomposition", "schema:composer", "schema:lyrics"],
+        },
+      },
+      catalogEntries[0],
+    );
+
+    expect(score.score).toBeGreaterThanOrEqual(100);
+    expect(score.reasons).toEqual(expect.arrayContaining([
+      "schema-title:token-match",
+      "schema-composer:token-match",
+      "schema-lyricist:token-match",
+      "schema-lyrics:token-match",
+      "metadata-signal:schema:musiccomposition",
+    ]));
+  });
 });

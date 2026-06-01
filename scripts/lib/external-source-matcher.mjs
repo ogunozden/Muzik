@@ -45,6 +45,11 @@ function metadataText(source) {
     metadata.oembedTitle,
     metadata.oembedAuthor,
     metadata.oembedProvider,
+    metadata.schemaName,
+    metadata.schemaComposer,
+    metadata.schemaLyricist,
+    metadata.schemaLyrics,
+    metadata.schemaByArtist,
   ].join(" ");
 }
 
@@ -116,12 +121,23 @@ export function scoreCatalogEntry(source, entry) {
     tokenCoverage(entry.composer, source.metadata?.htmlAuthor),
     tokenCoverage(entry.composer, source.metadata?.oembedAuthor),
   );
+  const schemaTitleCoverage = tokenCoverage(entry.title, source.metadata?.schemaName);
+  const schemaComposerCoverage = tokenCoverage(entry.composer, source.metadata?.schemaComposer);
+  const schemaLyricistCoverage = tokenCoverage(entry.lyricist, source.metadata?.schemaLyricist);
+  const schemaLyricsCoverage = Math.max(
+    tokenCoverage(entry.title, source.metadata?.schemaLyrics),
+    tokenCoverage(observed.lyrics, source.metadata?.schemaLyrics),
+  );
   score += Math.round(titleCoverage * 60);
   score += Math.round(composerCoverage * 45);
   score += Math.round(lyricistCoverage * 25);
   score += Math.round(lyricsCoverage * 15);
   score += Math.round(metadataTitleCoverage * 20);
   score += Math.round(metadataAuthorCoverage * 12);
+  score += Math.round(schemaTitleCoverage * 24);
+  score += Math.round(schemaComposerCoverage * 18);
+  score += Math.round(schemaLyricistCoverage * 12);
+  score += Math.round(schemaLyricsCoverage * 10);
 
   if (titleCoverage >= 0.7) reasons.push("title:token-match");
   if (composerCoverage >= 0.6) reasons.push("composer:token-match");
@@ -129,6 +145,10 @@ export function scoreCatalogEntry(source, entry) {
   if (lyricsCoverage >= 0.5) reasons.push("lyrics:title-token-match");
   if (metadataTitleCoverage >= 0.7) reasons.push("metadata-title:token-match");
   if (metadataAuthorCoverage >= 0.6) reasons.push("metadata-author:token-match");
+  if (schemaTitleCoverage >= 0.7) reasons.push("schema-title:token-match");
+  if (schemaComposerCoverage >= 0.6) reasons.push("schema-composer:token-match");
+  if (schemaLyricistCoverage >= 0.6) reasons.push("schema-lyricist:token-match");
+  if (schemaLyricsCoverage >= 0.5) reasons.push("schema-lyrics:token-match");
   for (const signal of metadataSignals(source)) {
     reasons.push(`metadata-signal:${signal}`);
   }

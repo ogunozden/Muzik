@@ -69,6 +69,81 @@ function validateMetadataUrl(value) {
   return {ok: true, url};
 }
 
+function asText(value) {
+  if (typeof value === "string") return value.replace(/\s+/g, " ").trim();
+  if (typeof value === "number") return String(value);
+  if (Array.isArray(value)) return value.map(asText).filter(Boolean).join(" ");
+  if (value && typeof value === "object") return asText(value.name ?? value.text ?? value["@id"]);
+  return "";
+}
+
+function asArray(value) {
+  if (Array.isArray(value)) return value;
+  return value === undefined || value === null ? [] : [value];
+}
+
+function getJsonLdNodes(value) {
+  if (Array.isArray(value)) return value.flatMap(getJsonLdNodes);
+  if (!value || typeof value !== "object") return [];
+
+  const graphNodes = Array.isArray(value["@graph"]) ? value["@graph"].flatMap(getJsonLdNodes) : [];
+  return [value, ...graphNodes];
+}
+
+function isMusicSchemaNode(node) {
+  const types = asArray(node?.["@type"]).map((type) => String(type).toLocaleLowerCase("en-US"));
+  return types.some((type) => ["musiccomposition", "musicrecording", "creativework"].includes(type));
+}
+
+function firstText(...values) {
+  return values.map(asText).find(Boolean) ?? "";
+}
+
+function extractJsonLdMetadata(html) {
+  const scripts = [...String(html).matchAll(/<script\b[^>]*type=["']application\/ld\+json["'][^>]*>([\s\S]*?)<\/script>/gi)];
+  const nodes = [];
+  const signals = [];
+
+  for (const script of scripts) {
+    try {
+      nodes.push(...getJsonLdNodes(JSON.parse(script[1])));
+    } catch {
+      signals.push("schema:jsonld-parse-error");
+    }
+  }
+
+  const musicNode = nodes.find(isMusicSchemaNode);
+  if (!musicNode) {
+    return {
+      metadata: {},
+      signals,
+    };
+  }
+
+  const recordingOf = musicNode.recordingOf ?? {};
+  const metadata = {
+    schemaName: firstText(musicNode.name, musicNode.alternateName, recordingOf.name),
+    schemaComposer: firstText(musicNode.composer, recordingOf.composer),
+    schemaLyricist: firstText(musicNode.lyricist, recordingOf.lyricist),
+    schemaLyrics: firstText(musicNode.lyrics, recordingOf.lyrics),
+    schemaByArtist: firstText(musicNode.byArtist, musicNode.performer, musicNode.author),
+  };
+  const typeSignals = asArray(musicNode["@type"]).map((type) => `schema:${String(type).replace(/[^a-z0-9]+/gi, "-").toLocaleLowerCase("en-US")}`);
+
+  return {
+    metadata: Object.fromEntries(Object.entries(metadata).filter(([, value]) => value)),
+    signals: [
+      ...typeSignals,
+      metadata.schemaName ? "schema:name" : "",
+      metadata.schemaComposer ? "schema:composer" : "",
+      metadata.schemaLyricist ? "schema:lyricist" : "",
+      metadata.schemaLyrics ? "schema:lyrics" : "",
+      metadata.schemaByArtist ? "schema:by-artist" : "",
+      ...signals,
+    ].filter(Boolean),
+  };
+}
+
 export function extractHtmlMetadata(html) {
   const metaTitle =
     html.match(/<meta\s+[^>]*(?:property|name)=["']og:title["'][^>]*content=["']([^"']+)["'][^>]*>/i)?.[1] ??
@@ -80,15 +155,18 @@ export function extractHtmlMetadata(html) {
   const author =
     html.match(/<meta\s+[^>]*name=["']author["'][^>]*content=["']([^"']+)["'][^>]*>/i)?.[1] ??
     html.match(/<meta\s+[^>]*content=["']([^"']+)["'][^>]*name=["']author["'][^>]*>/i)?.[1];
+  const jsonLd = extractJsonLdMetadata(html);
 
   return {
     title: (metaTitle ?? pageTitle ?? "").replace(/\s+/g, " ").trim(),
     description: (description ?? "").replace(/\s+/g, " ").trim(),
     author: (author ?? "").replace(/\s+/g, " ").trim(),
+    ...jsonLd.metadata,
     metadataSignals: [
       metaTitle ? "html:og-title" : pageTitle ? "html:title" : "",
       description ? "html:description" : "",
       author ? "html:author" : "",
+      ...jsonLd.signals,
     ].filter(Boolean),
   };
 }

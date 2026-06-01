@@ -107,6 +107,14 @@ tek kurala bağlamaktır.
       `profile-metadata-strategy` scoring sinyalini doğrulanabilir kapı olarak
       raporlar. PDF içi metadata parse ve doğrulanmış otomatik terfi hâlâ
       review/validation işi olarak açık kalır.
+      2026-06-01 metadata intake kapısı: `stage-external-sources` JSON/CSV/CLI
+      hattı artık `html_title`, `html_description`, `html_author`,
+      `oembed_title`, `oembed_author`, `oembed_provider`, `metadata_signals`,
+      `oembed_verified`, `author` ve `thumbnail_url` alanlarını normalize edip
+      inbox manifest'inde korur. Accepted bulk candidate validator'ı metadata
+      alanlarını boş/bozuk tiplerle kabul etmez; böylece HTML/oEmbed sinyali
+      ingest/normalize aşamasında düşmeden matcher skoruna ve audit kapısına
+      ulaşır.
       2026-06-01 archive coverage dalgası: merkezi
       `research-source-profiles.json` içine `internet-archive` profili eklendi.
       Eksik 2978 eser için archive provider arama adayları da review-only queue'ya

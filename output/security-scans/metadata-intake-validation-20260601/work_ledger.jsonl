@@ -1,0 +1,5 @@
+{"phase":"discovery","status":"completed","path":"scripts/lib/__tests__/external-reference-audit.test.mjs","disposition":"no_issue_found","evidence":"negative/positive validation coverage","reviewed":"full_file"}
+{"phase":"discovery","status":"completed","path":"scripts/lib/__tests__/external-source-intake.test.mjs","disposition":"no_issue_found","evidence":"negative/positive validation coverage","reviewed":"full_file"}
+{"phase":"discovery","status":"completed","path":"scripts/lib/external-reference-audit.mjs","disposition":"no_issue_found","evidence":"accepted bulk candidate validation and auto-attach gate","reviewed":"full_file"}
+{"phase":"discovery","status":"completed","path":"scripts/lib/external-source-intake.mjs","disposition":"no_issue_found","evidence":"external source metadata ingestion and filesystem-safe staging","reviewed":"full_file"}
+{"phase":"discovery","status":"completed","path":"src/app/references/curation/__tests__/page.test.tsx","disposition":"no_issue_found","evidence":"UI test timeout only; no runtime surface","reviewed":"full_file"}

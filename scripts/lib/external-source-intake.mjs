@@ -5,6 +5,14 @@ const DEFAULT_ROOT = process.cwd();
 const DEFAULT_INBOX = "src/data/references/external-source-inbox.json";
 const ALLOWED_PROVIDERS = new Set(["archive", "github", "score", "symbtr", "youtube"]);
 const OBSERVED_FIELDS = new Set(["makam", "form", "usul", "composer", "lyricist", "lyrics"]);
+const METADATA_FIELD_BY_HEADER = {
+  htmltitle: "htmlTitle",
+  htmldescription: "htmlDescription",
+  htmlauthor: "htmlAuthor",
+  oembedtitle: "oembedTitle",
+  oembedauthor: "oembedAuthor",
+  oembedprovider: "oembedProvider",
+};
 
 export function parseCliOptions(args) {
   const options = new Map();
@@ -182,6 +190,7 @@ function normalizeHeader(value) {
 function mapFlatSource(record) {
   const source = {};
   const observed = {};
+  const metadata = {};
 
   for (const [rawKey, value] of Object.entries(record)) {
     if (value === undefined || value === null || value === "") continue;
@@ -199,12 +208,19 @@ function mapFlatSource(record) {
       observed.title = value;
     } else if (OBSERVED_FIELDS.has(key)) {
       observed[key] = value;
+    } else if (METADATA_FIELD_BY_HEADER[key]) {
+      metadata[METADATA_FIELD_BY_HEADER[key]] = value;
+    } else if (key === "metadatasignals") {
+      metadata.signals = String(value).split(/[|;]/).map((signal) => signal.trim()).filter(Boolean);
+    } else if (key === "oembedverified") {
+      source.oembedVerified = ["1", "true", "yes", "evet"].includes(String(value).toLocaleLowerCase("tr-TR"));
     } else {
       source[key] = value;
     }
   }
 
   if (Object.keys(observed).length > 0) source.observed = observed;
+  if (Object.keys(metadata).length > 0) source.metadata = metadata;
   return source;
 }
 
@@ -308,6 +324,10 @@ export function normalizeIncomingSource(source, existingIds = new Set()) {
     sourceProvider: inferSourceProvider(source),
     checkedAt,
     observed: source.observed,
+    metadata: normalizeMetadata(source.metadata),
+    oembedVerified: source.oembedVerified === true ? true : undefined,
+    author: source.author,
+    thumbnailUrl: source.thumbnailUrl,
     referenceId: source.referenceId,
     label: source.label,
     notes: source.notes,
@@ -319,10 +339,33 @@ function compactSource(source) {
   return Object.fromEntries(
     Object.entries(source).filter(([, value]) => {
       if (value === undefined || value === null || value === "") return false;
+      if (Array.isArray(value) && value.length === 0) return false;
       if (typeof value === "object" && Object.keys(value).length === 0) return false;
       return true;
     }),
   );
+}
+
+function normalizeMetadata(metadata) {
+  if (!metadata || typeof metadata !== "object" || Array.isArray(metadata)) return undefined;
+  const text = (value) => {
+    const normalized = String(value ?? "").trim();
+    return normalized || undefined;
+  };
+
+  const normalized = compactSource({
+    htmlTitle: text(metadata.htmlTitle),
+    htmlDescription: text(metadata.htmlDescription),
+    htmlAuthor: text(metadata.htmlAuthor),
+    oembedTitle: text(metadata.oembedTitle),
+    oembedAuthor: text(metadata.oembedAuthor),
+    oembedProvider: text(metadata.oembedProvider),
+    signals: Array.isArray(metadata.signals)
+      ? metadata.signals.map((signal) => String(signal).trim()).filter(Boolean)
+      : undefined,
+  });
+
+  return Object.keys(normalized).length > 0 ? normalized : undefined;
 }
 
 function mergeSource(existing, incoming) {
@@ -333,6 +376,14 @@ function mergeSource(existing, incoming) {
     observed: compactSource({
       ...(existing.observed ?? {}),
       ...(incoming.observed ?? {}),
+    }),
+    metadata: normalizeMetadata({
+      ...(existing.metadata ?? {}),
+      ...(incoming.metadata ?? {}),
+      signals: [
+        ...(existing.metadata?.signals ?? []),
+        ...(incoming.metadata?.signals ?? []),
+      ],
     }),
   });
 }
@@ -350,6 +401,18 @@ export function createSourcesFromCliOptions(options) {
       label: getOption(options, "label"),
       notes: getOption(options, "notes"),
       access: getOption(options, "access"),
+      author: getOption(options, "author"),
+      thumbnailUrl: getOption(options, "thumbnail-url"),
+      oembedVerified: options.has("oembed-verified") ? true : undefined,
+      metadata: normalizeMetadata({
+        htmlTitle: getOption(options, "html-title"),
+        htmlDescription: getOption(options, "html-description"),
+        htmlAuthor: getOption(options, "html-author"),
+        oembedTitle: getOption(options, "oembed-title"),
+        oembedAuthor: getOption(options, "oembed-author"),
+        oembedProvider: getOption(options, "oembed-provider"),
+        signals: getOptionValues(options, "metadata-signal"),
+      }),
     },
     observed: {
       title: getOption(options, "observed-title"),

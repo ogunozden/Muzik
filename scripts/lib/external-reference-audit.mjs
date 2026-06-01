@@ -302,6 +302,25 @@ export function validateBulkCandidateSource(catalogId, source) {
     errors.push(`${catalogId}: bulk candidate verifiedAt must use YYYY-MM-DD`);
   }
 
+  if (source?.metadata !== undefined) {
+    const metadata = source.metadata;
+    const metadataFields = ["htmlTitle", "htmlDescription", "htmlAuthor", "oembedTitle", "oembedAuthor", "oembedProvider"];
+    if (!metadata || typeof metadata !== "object" || Array.isArray(metadata)) {
+      errors.push(`${catalogId}: bulk candidate metadata must be an object`);
+    } else {
+      for (const field of metadataFields) {
+        if (metadata[field] !== undefined && (typeof metadata[field] !== "string" || !metadata[field].trim())) {
+          errors.push(`${catalogId}: bulk candidate metadata.${field} must be a non-empty string when present`);
+        }
+      }
+      if (metadata.signals !== undefined) {
+        if (!Array.isArray(metadata.signals) || metadata.signals.some((signal) => typeof signal !== "string" || !signal.trim())) {
+          errors.push(`${catalogId}: bulk candidate metadata.signals must be non-empty strings`);
+        }
+      }
+    }
+  }
+
   return errors;
 }
 

@@ -550,6 +550,35 @@ describe("external reference audit", () => {
     ).toThrow("duplicate accepted bulk candidate URL identity");
   });
 
+  it("rejects malformed accepted bulk candidate metadata", () => {
+    const root = createAuditRoot();
+    writeJson(root, "src/data/references/external-reference-bulk-candidates.json", {
+      candidates: [
+        {
+          catalogId: "rast--sarki--sofyan--baska_eser--diger_besteci",
+          status: "accepted",
+          checkedAt: "2026-05-10",
+          source: {
+            id: "youtube-bad-metadata",
+            provider: "youtube",
+            label: "Bad metadata",
+            url: "https://youtu.be/NwbNZN75bR8",
+            verification: "oembed",
+            verifiedAt: "2026-05-10",
+            metadata: {
+              oembedTitle: "",
+              signals: ["youtube:oembed-title", ""],
+            },
+          },
+        },
+      ],
+    });
+
+    expect(() =>
+      readBulkReferenceCandidates(catalogEntries, path.join(root, "src/data/references/external-reference-bulk-candidates.json")),
+    ).toThrow("bulk candidate metadata.oembedTitle must be a non-empty string");
+  });
+
   it("keeps conflict bulk candidates in the manifest without counting them as curated", () => {
     const root = createAuditRoot();
     writeJson(root, "src/data/references/external-reference-bulk-candidates.json", {

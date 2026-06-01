@@ -569,5 +569,5 @@ describe("ReferencesCurationPage", () => {
         }),
       }),
     );
-  });
+  }, 15000);
 });

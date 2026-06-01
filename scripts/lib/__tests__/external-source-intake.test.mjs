@@ -39,6 +39,21 @@ describe("external source intake", () => {
       "Yunus Emre",
       "--lyrics",
       "Toprakta yatacak teni tenim var",
+      "--html-title",
+      "Toprakta Yatacak Teni Tenim Var - DîvânMakam",
+      "--oembed-title",
+      "Toprakta Yatacak Teni Tenim Var",
+      "--oembed-author",
+      "Dede Efendi",
+      "--metadata-signal",
+      "html:og-title",
+      "--metadata-signal",
+      "youtube:oembed-title",
+      "--oembed-verified",
+      "--author",
+      "Dede Efendi",
+      "--thumbnail-url",
+      "https://i.ytimg.com/vi/NwbNZN75bR8/hqdefault.jpg",
       "--checked-at",
       "2026-05-10",
     ]);
@@ -48,6 +63,15 @@ describe("external source intake", () => {
         url: "https://divanmakam.com/forum/toprakta-yatacak.35720/",
         title: "Toprakta Yatacak Teni Tenim Var",
         checkedAt: "2026-05-10",
+        author: "Dede Efendi",
+        thumbnailUrl: "https://i.ytimg.com/vi/NwbNZN75bR8/hqdefault.jpg",
+        oembedVerified: true,
+        metadata: {
+          htmlTitle: "Toprakta Yatacak Teni Tenim Var - DîvânMakam",
+          oembedTitle: "Toprakta Yatacak Teni Tenim Var",
+          oembedAuthor: "Dede Efendi",
+          signals: ["html:og-title", "youtube:oembed-title"],
+        },
         observed: {
           makam: "Muhayyer",
           form: "İlahi",
@@ -75,11 +99,39 @@ describe("external source intake", () => {
     );
   });
 
+  it("preserves structured metadata through source normalization", () => {
+    expect(
+      normalizeIncomingSource({
+        url: "https://www.youtube.com/watch?v=NwbNZN75bR8",
+        checkedAt: "2026-05-10",
+        oembedVerified: true,
+        metadata: {
+          htmlTitle: "Allah Emrin Tutalım",
+          htmlDescription: "",
+          oembedTitle: "Allah Emrin Tutalım Zekai Dede",
+          oembedAuthor: "Zekai Dede",
+          signals: ["html:og-title", "", "youtube:oembed-author"],
+        },
+      }),
+    ).toEqual(
+      expect.objectContaining({
+        provider: "youtube",
+        oembedVerified: true,
+        metadata: {
+          htmlTitle: "Allah Emrin Tutalım",
+          oembedTitle: "Allah Emrin Tutalım Zekai Dede",
+          oembedAuthor: "Zekai Dede",
+          signals: ["html:og-title", "youtube:oembed-author"],
+        },
+      }),
+    );
+  });
+
   it("parses CSV source batches", () => {
     const sources = parseSourceInput(
       [
-        "url,title,makam,form,usul,composer,checked_at",
-        "https://example.com/score,Example Title,Uşşak,İlahi,Düyek,Zekai Dede,2026-05-10",
+        "url,title,makam,form,usul,composer,checked_at,html_title,oembed_title,oembed_author,metadata_signals,oembed_verified",
+        "https://example.com/score,Example Title,Uşşak,İlahi,Düyek,Zekai Dede,2026-05-10,Example HTML Title,Example oEmbed Title,Zekai Dede,html:title;youtube:oembed-title,true",
       ].join("\n"),
       "sources.csv",
     );
@@ -89,6 +141,13 @@ describe("external source intake", () => {
         url: "https://example.com/score",
         title: "Example Title",
         checkedAt: "2026-05-10",
+        oembedVerified: true,
+        metadata: {
+          htmlTitle: "Example HTML Title",
+          oembedTitle: "Example oEmbed Title",
+          oembedAuthor: "Zekai Dede",
+          signals: ["html:title", "youtube:oembed-title"],
+        },
         observed: {
           makam: "Uşşak",
           form: "İlahi",

@@ -44,6 +44,7 @@ Examples:
 
 ```bash
 npm run stage:external-source -- --url https://divanmakam.com/forum/example.1/ --title "Visible title" --makam Uşşak --form İlahi --usul Düyek --composer "Zekai Dede"
+npm run stage:external-source -- --url https://www.youtube.com/watch?v=example --oembed-verified --oembed-title "Visible recording title" --oembed-author "Performer" --metadata-signal youtube:oembed-title
 npm run stage:external-sources -- --input docs/new-source-links.md
 ```
 
@@ -84,6 +85,15 @@ metadata:
   "title": "Visible source title",
   "sourceProvider": "Provider name",
   "checkedAt": "2026-05-10",
+  "metadata": {
+    "htmlTitle": "HTML or OpenGraph title",
+    "htmlDescription": "HTML or OpenGraph description",
+    "htmlAuthor": "HTML author",
+    "oembedTitle": "oEmbed title",
+    "oembedAuthor": "oEmbed author",
+    "oembedProvider": "YouTube",
+    "signals": ["html:og-title", "youtube:oembed-title"]
+  },
   "observed": {
     "title": "Piece title",
     "makam": "Uşşak",
@@ -104,6 +114,9 @@ Bulk inputs are accepted as:
 
 - JSON: an array, `{ "sources": [...] }`, or one source object.
 - CSV: header columns such as `url,title,makam,form,usul,composer,checked_at`.
+  Metadata columns are also preserved: `html_title`, `html_description`,
+  `html_author`, `oembed_title`, `oembed_author`, `oembed_provider`,
+  `metadata_signals`, `oembed_verified`, `author`, and `thumbnail_url`.
 - Markdown/TXT: every HTTPS URL in the document is extracted and staged.
 
 ## Acceptance Rules

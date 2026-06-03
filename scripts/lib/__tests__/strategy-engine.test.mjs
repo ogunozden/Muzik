@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeAll } from "vitest";
-import { readFileSync, writeFileSync, mkdirSync, existsSync } from "node:fs";
+import { readFileSync, writeFileSync, existsSync } from "node:fs";
 import { getStrategy, buildArchiveSearchUrlWithStrategy } from "../strategy-engine.mjs";
 import path from "node:path";
 

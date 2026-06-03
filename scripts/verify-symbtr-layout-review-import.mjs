@@ -139,7 +139,7 @@ function runImportDryRun({root, importTemplatePath}) {
       toProjectPath(importTemplatePath, root),
       "--dry-run",
     ],
-    {cwd: root, encoding: "utf8", stdio: ["ignore", "pipe", "pipe"]},
+    {cwd: root, encoding: "utf8", stdio: ["ignore", "pipe", "pipe"], maxBuffer: 100 * 1024 * 1024},
   );
 
   return JSON.parse(stdout);

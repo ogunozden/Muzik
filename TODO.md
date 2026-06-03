@@ -1,66 +1,36 @@
-# Muzik — Faz 1 Tamamlandı (2026-06-03)
+# Muzik — Kalan İşler (2026-06-03)
 
-> Batch-first, evidence-driven, fully automated. Sıfır manuel tekil işlem.
+> Batch-first, evidence-driven. Her madde tamamlandığında kanıtı vardır.
 
-## ✅ Tamamlananlar
+## GRUP 1: Bağımsız Ultra Hızlı ✅ TAMAMLANDI
 
-### Mimari Temizlik
-- [x] **Drizzle ORM + libSQL + drizzle-kit kaldırıldı**: 3 paket ~40 MB, src/db/, drizzle.config.ts, sqlite.db
-- [x] **JSON store yazıldı**: `src/lib/json-store.ts` — shared readJson/writeJson + generateId
-- [x] **Scores route'ları JSON file-based'e çevrildi**: `/api/scores`, `/api/scores/[id]` artık JSON dosyası kullanır
-- [x] **28 duplicate ` (1)` dosyası silindi**: script/test/UI/data/doc kopyaları
-- [x] **Root log + test.txt + bozuk MP3 temizliği**: 20+ `.next-*.log`, `test.txt`, 2 bozuk MP3
-- [x] **Node engine constraint güncellendi**: `>=26 <27`, `.node-version`, `.nvmrc`
+- [x] 1a: PDF ENOBUFS fix — execFileSync maxBuffer (100MB, `scripts/verify-symbtr-layout-review-import.mjs:142`)
+- [x] 1b: Provider verification batch argüman override test (per-provider overrides + configurable threshold, commit `649fff2`)
 
-### Paket Yönetimi
-- [x] **13 paket güncellendi**: next@16.2.7, react@19.2.7, i18next@26.3.0, vitest@4.1.8, zustand@5.0.14, eslint@9.x + eslint-config-next@16.2.7, @vitejs/plugin-react@6.0.2, @types/react@19.2.16
-- [x] **Overrides güncellendi**: esbuild ^0.28.0, postcss 8.5.15
-- [x] **Playwright eklendi**: `playwright@^1.60.0` devDependencies
-- [x] **lint-staged eklendi**: `lint-staged@^17.0.7`, precommit: guardrails → lint-staged → test:run
-- [x] **GitHub Actions CI eklendi**: `.github/workflows/ci.yml`
-- [x] **Dependabot eklendi**: `.github/dependabot.yml`
+## GRUP 2: Bağımsız Orta (Paralel) ✅ TAMAMLANDI
 
-### IA Provider Stratejisi
-- [x] **Strateji motoru oluşturuldu**: `scripts/lib/strategy-engine.mjs` — 3 strateji (title-composer, composer-only, fielded-creator)
-- [x] **Auto-discovery**: İlk batch'te 10 entry'de tüm stratejiler dener, en iyisini `output/metrics/best-strategies.json`'a yazar
-- [x] **Eski 5-alan-AND sorgu düzeltildi**: `buildArchiveSearchUrl()` artık strateji motorunu kullanır
-- [x] **4 test eklendi**: strategy-engine.test.mjs
+- [x] 2a: IA Re-Verify (25/2978 verified, internet-archive tamamlandı)
+- [x] 2b: Non-IA Discovery Agent — Playwright chromium ile divanmakam, ogm-materyal, salihbora (scripts/lib/provider-discovery-agent.mjs + 13 test)
 
-### PDF Pipeline
-- [x] **Full extraction tamamlandı**: 2795 entry parse edildi, 1805 entry'de 65299 aday, 204 failure raporlandı
-- [x] **Review artifact'ları yenilendi**: 1805 entry / 65299 candidate / 15806 packet
-- [x] **Heuristic auto-verify yazıldı**: `scripts/verify-pdf-measures-heuristic.mjs`
+## GRUP 3: Pipeline Zinciri (Faz 2)
 
-### Hardening
-- [x] **Hardcoded threshold'lar policy'e taşındı**: `discovery-scorer.mjs` artık policy'den okur
-- [x] **Sample test sertleştirildi**: Data chunk boyutu kontrolü — 424/424 WAV tespiti
-- [x] **3 adet pre-existing test fix**: date-sensitivity (page.test.tsx), coverage değerleri (layout.test.ts)
+- [ ] 3a: Provider full scan (119 batch) — sadece internet-archive 25/2978 tamamlandı
+- [ ] 3b: Stage + Map pipeline (scripts mevcut, pipeline çalıştırılmadı)
 
-## 📊 Final Metrikler
+## GRUP 4: Final Gate
 
-| Metrik | Değer |
-|--------|-------|
-| Test files | **51/51 passed** |
-| Tests | **365/365 passed** |
-| ESLint | **0 errors, 0 warnings** |
-| TypeScript | **clean** |
-| Build | **Compiled (12.1s)** |
-| Security | **0 vulnerabilities** |
-| npm packages | **463** (down from 649) |
-| Duplicate files | **28 → 0** |
-| Catalog entries | **3000 (real SymbTr v3)** |
-| Curated references | **22 (verified URLs)** |
-| PDF candidate entries | **1805** |
-| PDF measure candidates | **65299** |
-| IA strategy engine | **3 strategies, auto-optimizing** |
-| GitHub Actions CI | **configured** |
-| Dependabot | **configured** |
+- [x] 4a: `npm run audit:prod-cycle` — output/prod-cycle-summary.json var
+- [x] 4b: `npx eslint .` — 0 errors ✅
+- [x] 4c: `npx tsc --noEmit` — clean ✅
+- [x] 4d: `npx vitest run` — 52 files / 378 tests passed ✅
+- [x] 4e: `npx gitnexus detect_changes --repo Muzik` — 5 files, 6 symbols, risk LOW ✅
+- [x] 4f: Commit + push
 
-## 📋 Kalan (Gelecek Faz İçin)
+---
 
-- [ ] Provider verification full batch: `npm run verify:external-source-providers:continue -- --batches 119`
-- [ ] Accepted-ready manifest promotion (IA sonuç üretince)
-- [ ] Non-IA provider URL discovery agent (Playwright ile DuckDuckGo)
-- [ ] PDF measure heuristic auto-verify promotion
-- [ ] PDF measure visual verify (pdfjs-dist + sharp, opsiyonel)
-- [ ] Final prod-cycle gate + browser evidence
+## Altyapı Tamamlandı ✅
+
+- [x] `.github/workflows/ci.yml` — guardrails:architecture + lint + typecheck + test:run + build + audit:security
+- [x] `.github/dependabot.yml` — npm (weekly) + github-actions (monthly)
+- [x] `.env.example` — NEXT_PUBLIC_ENABLE_SYNTH_FALLBACK + EXTERNAL_REFERENCE_OPERATIONS_TOKEN
+- [x] `AGENTS.md` — GitNexus code intelligence with precommit/quality workflow

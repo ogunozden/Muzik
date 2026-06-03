@@ -60,12 +60,10 @@
         "makamWeight": 10,
         "usulWeight": 10,
         "formWeight": 5,
-        "titleThreshold": 0.5,
-        "composerThreshold": 0.4,
-        "makamSignalThreshold": 0.3,
-        "usulSignalThreshold": 0.3,
-        "completeEvidenceTitle": 0.5,
-        "completeEvidenceComposer": 0.4
+        "titleThreshold": 0.1,
+        "composerThreshold": 0.1,
+        "completeEvidenceTitle": 0.1,
+        "completeEvidenceComposer": 0.1
       },
       "verificationRequiredForAccepted": ["archive-metadata-title", "archive-item-identifier"]
     },

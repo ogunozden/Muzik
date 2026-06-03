@@ -1,3 +1,0 @@
-path,area,preview
-output/external-reference-coverage/mapped-external-reference-candidates.json,diff,"{   ""version"": 1,   ""generatedAt"": ""2026-06-01T01:24:41.008Z"",   ""summary"": {     ""input"": ""src/data/references/external-source-inbox.json"",     ""output"": ""output/external-reference-coverage/mapped-ex"
-scripts/map-external-source-inbox.mjs,diff,"import {   DEFAULT_MAPPING_CSV_OUTPUT,   DEFAULT_MAPPING_INPUT,   DEFAULT_MAPPING_OUTPUT,   runExternalSourceMappingPipeline, } from ""./lib/external-source-mapping-pipeline.mjs"";  function parseCliOpt"

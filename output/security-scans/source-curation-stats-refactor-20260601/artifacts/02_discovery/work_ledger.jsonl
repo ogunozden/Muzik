@@ -1,4 +1,0 @@
-{"path":"PROJECT_PLAN.md","area":"diff","status":"completed","outcome":"not_applicable","notes":"Documentation-only TODO/evidence update; no executable behavior."}
-{"path":"scripts/lib/source-curation-events.mjs","area":"diff","status":"completed","outcome":"no_issue_found","notes":"Stats code removed from event mutation module; remaining mutation paths still validate before writes."}
-{"path":"scripts/lib/source-curation-operations.mjs","area":"diff","status":"completed","outcome":"no_issue_found","notes":"Backward-compatible re-export changed only to source stats from the new module."}
-{"path":"scripts/lib/source-curation-stats.mjs","area":"diff","status":"completed","outcome":"no_issue_found","notes":"Moved stats generator keeps central profile mapping, validateCurrent gate, and fixed qualityStats write path."}

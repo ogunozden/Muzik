@@ -1,4 +1,0 @@
-path,area,preview
-package.json,diff,"{   ""name"": ""muzik"",   ""version"": ""0.1.0"",   ""private"": true,   ""engines"": {     ""node"": "">=24 <25"",     ""npm"": "">=10""   },   ""scripts"": {     ""dev"": ""next dev --turbopack"",     ""build"": ""next build -"
-scripts/render-symbtr-pdf-layout-review.mjs,diff,"import {mkdirSync, readFileSync, writeFileSync} from ""node:fs""; import path from ""node:path""; import {fileURLToPath} from ""node:url""; import {getSymbTrMeasureIndexSummary} from ""./lib/symbtr-score-mea"
-scripts/validate-symbtr-layout-verification.mjs,diff,"import { mkdirSync, readFileSync, writeFileSync } from ""node:fs""; import path from ""node:path""; import { getSymbTrMeasureIndexSummary } from ""./lib/symbtr-score-measures.mjs"";  const PROJECT_ROOT = pr"

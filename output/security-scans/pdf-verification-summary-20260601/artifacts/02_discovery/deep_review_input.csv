@@ -1,6 +1,0 @@
-path,area
-scripts/validate-symbtr-layout-verification.mjs,diff
-package.json,diff
-PROJECT_PLAN.md,docs
-output/symbtr-layout-review/layout-verification-summary.json,evidence
-output/playwright/studio-follow-pdf-verification-summary-20260601.png,evidence

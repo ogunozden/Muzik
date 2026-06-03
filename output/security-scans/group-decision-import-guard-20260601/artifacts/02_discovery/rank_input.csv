@@ -1,3 +1,0 @@
-path,area,preview
-scripts/__tests__/import-candidate-review-group-decisions.test.mjs,diff,"import {execFileSync} from ""node:child_process""; import {mkdtempSync, mkdirSync, readFileSync, writeFileSync} from ""node:fs""; import {tmpdir} from ""node:os""; import path from ""node:path""; import {desc"
-scripts/import-candidate-review-group-decisions.mjs,diff,"#!/usr/bin/env node import {existsSync, mkdirSync, readFileSync, rmSync, writeFileSync} from ""node:fs""; import path from ""node:path""; import {   normalizeCandidateReviewGroupDecision,   readCandidateR"

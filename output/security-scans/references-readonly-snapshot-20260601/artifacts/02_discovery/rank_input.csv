@@ -1,4 +1,0 @@
-path,area,preview
-src/app/references/__tests__/page.test.tsx,diff,"import {fireEvent, render, screen, waitFor} from ""@testing-library/react""; import type {ReactNode} from ""react""; import {afterEach, beforeEach, describe, expect, it, vi} from ""vitest""; import {Referen"
-src/app/references/page.tsx,diff,"import {readFile} from ""node:fs/promises""; import path from ""node:path""; import {   ReferencesOperationsDashboard,   type ExternalReferenceMapping,   type ExternalReferenceState,   type ExternalSource"
-src/features/references/ReferencesOperationsDashboard.tsx,diff,""

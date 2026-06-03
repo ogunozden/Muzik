@@ -1,5 +1,0 @@
-path,area,preview
-PROJECT_PLAN.md,diff,"Project plan documents the stats/event module split for source curation pipeline maintainability."
-scripts/lib/source-curation-events.mjs,diff,"Removes source quality stats generation from the event mutation module; feedback/manual correction/embed-state behavior remains."
-scripts/lib/source-curation-operations.mjs,diff,"Keeps backward-compatible re-export surface and routes generateSourceQualityStats to the new stats module."
-scripts/lib/source-curation-stats.mjs,diff,"New module contains the existing profile-based source quality stats generation and validator-gated optional write behavior."

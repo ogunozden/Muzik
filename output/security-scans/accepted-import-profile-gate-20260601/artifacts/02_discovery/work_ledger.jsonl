@@ -1,3 +1,0 @@
-{"path":"PROJECT_PLAN.md","area":"diff","status":"completed","outcome":"not_applicable","notes":"Documentation-only evidence for the new accepted import profile gate."}
-{"path":"scripts/import-external-reference-candidates.mjs","area":"diff","status":"completed","outcome":"no_issue_found","notes":"Accepted import validation now requires URL host to match an enabled research profile and provider to match that profile; no new sink or trust bypass."}
-{"path":"scripts/__tests__/import-external-reference-candidates.test.mjs","area":"diff","status":"completed","outcome":"no_issue_found","notes":"Regression tests cover profile fixtures, unknown accepted source host rejection, and provider mismatch rejection."}

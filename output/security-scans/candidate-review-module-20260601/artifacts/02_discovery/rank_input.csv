@@ -1,4 +1,0 @@
-path,area,preview
-scripts/lib/__tests__/external-reference-candidate-review.test.mjs,diff,"import {describe, expect, it} from ""vitest""; import {   buildCandidateReviewGroupDecisionRecommendations,   buildCandidateReviewGroups,   buildCandidateReviewRows, } from ""../external-reference-candid"
-scripts/lib/external-reference-audit.mjs,diff,"import {existsSync, mkdirSync, readFileSync, writeFileSync} from ""node:fs""; import path from ""node:path""; import {   CANDIDATE_REVIEW_GROUP_DECISION_RECOMMENDATION_VERSION,   buildCandidateReviewGroup"
-scripts/lib/external-reference-candidate-review.mjs,diff,"export const CANDIDATE_REVIEW_GROUP_DECISION_RECOMMENDATION_VERSION = ""candidate-review-group-decision-recommendations-v1"";  function buildProfileSearchQuery(row, profile) {   const suffix = profile.p"

@@ -1,4 +1,0 @@
-path,area,preview
-PROJECT_PLAN.md,diff,"Project plan records the accepted bulk import profile validation gate."
-scripts/import-external-reference-candidates.mjs,diff,"Accepted candidate import now reads research source profiles and rejects accepted URLs outside enabled profile hosts or provider mismatches."
-scripts/__tests__/import-external-reference-candidates.test.mjs,diff,"Tests cover central profile fixtures, unknown-host accepted imports, and provider mismatch rejection."

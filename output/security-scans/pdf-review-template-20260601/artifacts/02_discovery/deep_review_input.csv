@@ -1,6 +1,0 @@
-path,area
-output/symbtr-layout-review/layout-verification-review-template.json,diff
-output/symbtr-layout-review/layout-verification-summary.json,diff
-scripts/__tests__/render-symbtr-pdf-layout-review.test.mjs,diff
-scripts/render-symbtr-pdf-layout-review.mjs,diff
-scripts/validate-symbtr-layout-verification.mjs,diff

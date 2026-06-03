@@ -1,5 +1,0 @@
-path,change_type,reason
-src/app/api/external-references/route.ts,modified,Route imports centralized batch query and facet helpers
-src/app/api/external-references/curation-query.ts,added,Centralized backlog candidate review and review group filtering facets and pagination helpers
-src/app/api/external-references/__tests__/curation-query.test.ts,added,Direct coverage for query helper policy and pagination behavior
-PROJECT_PLAN.md,modified,Documents query helper extraction phase

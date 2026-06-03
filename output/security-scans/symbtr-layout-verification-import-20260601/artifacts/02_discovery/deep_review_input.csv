@@ -1,5 +1,0 @@
-path,area
-package.json,diff
-scripts/__tests__/import-symbtr-layout-verification.test.mjs,diff
-scripts/import-symbtr-layout-verification.mjs,diff
-scripts/validate-symbtr-layout-verification.mjs,diff

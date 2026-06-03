@@ -1,7 +1,0 @@
-path,reason,status
-scripts/audit-references-curation-runtime.mjs,new runtime audit script that fetches local page and writes evidence,reviewed
-package.json,new npm audit command surface,reviewed
-PROJECT_PLAN.md,new project-plan evidence gate,reviewed
-output/playwright/references-curation-batch-runtime-audit-20260601.json,new runtime audit evidence artifact,reviewed
-output/playwright/references-curation-runtime-audit-20260601.png,new browser screenshot evidence artifact,reviewed
-

@@ -1,3 +1,0 @@
-path,area,preview
-src/app/references/curation/[catalogId]/__tests__/page.test.tsx,diff,"import {fireEvent, render, screen, waitFor} from ""@testing-library/react""; import type {ReactNode} from ""react""; import {afterEach, beforeEach, describe, expect, it, vi} from ""vitest""; import Referenc"
-src/features/references/ReferencesCurationDetail.tsx,diff,"""use client"";  import {FormEvent, useCallback, useMemo, useState} from ""react""; import Link from ""next/link""; import {UnifiedLayout} from ""@/components/layout/UnifiedLayout""; import {Button, Input} fr"

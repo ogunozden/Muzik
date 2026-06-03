@@ -1,4 +1,0 @@
-path,area
-scripts/lib/__tests__/external-reference-candidate-review.test.mjs,diff
-scripts/lib/external-reference-audit.mjs,diff
-scripts/lib/external-reference-candidate-review.mjs,diff

@@ -1,9 +1,0 @@
-{
-  "schemaVersion": 1,
-  "type": "symbtr-pdf-layout-verification-empty-import-template",
-  "generatedAt": "2026-06-01",
-  "policy": "Empty import template proves that PDF layout review packets do not promote candidates until verified measureBoxes are explicitly supplied.",
-  "sourceReviewTemplate": "output/symbtr-layout-review/layout-verification-review-template.json",
-  "sourceReviewBatchPlan": "output/symbtr-layout-review/layout-verification-review-batch-plan.json",
-  "entries": {}
-}

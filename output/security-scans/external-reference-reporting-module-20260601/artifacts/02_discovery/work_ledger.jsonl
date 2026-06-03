@@ -1,3 +1,0 @@
-{"path":"scripts/lib/__tests__/external-reference-reporting.test.mjs","phase":"discovery","status":"completed","outcome":"no_issue_found","notes":"Regression tests cover coverage matrix safety and duplicate accepted identity reporting."}
-{"path":"scripts/lib/external-reference-audit.mjs","phase":"discovery","status":"completed","outcome":"no_issue_found","notes":"Audit module delegates reporting and injects existing getReferenceIdentity behavior; no changed API or filesystem boundary beyond existing artifact writes."}
-{"path":"scripts/lib/external-reference-reporting.mjs","phase":"discovery","status":"completed","outcome":"no_issue_found","notes":"Pure reporting helpers do not read secrets, execute commands, fetch network resources, or promote review candidates."}

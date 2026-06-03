@@ -1,3 +1,0 @@
-{"path":"scripts/lib/__tests__/external-reference-candidate-review.test.mjs","phase":"discovery","status":"completed","outcome":"no_issue_found","notes":"Test fixture asserts review-only candidates and no sourceId/sourceUrl promotion fields."}
-{"path":"scripts/lib/external-reference-audit.mjs","phase":"discovery","status":"completed","outcome":"no_issue_found","notes":"Refactor imports and re-exports extracted helpers; no changed API access control, script execution, or file sink behavior."}
-{"path":"scripts/lib/external-reference-candidate-review.mjs","phase":"discovery","status":"completed","outcome":"no_issue_found","notes":"Module performs deterministic candidate scoring/grouping only; search URL query is encoded and candidates remain needs-review/conflict."}

@@ -1,6 +1,0 @@
-path,area
-scripts/lib/source-curation-operations.mjs,diff
-src/data/references/source-quality-stats.generated.json,diff
-scripts/lib/source-curation-events.mjs,diff-untracked
-scripts/lib/source-curation-registry.mjs,diff-untracked
-output/playwright/references-curation-event-stats-module-20260601.png,evidence

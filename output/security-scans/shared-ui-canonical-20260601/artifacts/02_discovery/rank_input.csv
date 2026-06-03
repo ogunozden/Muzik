@@ -1,5 +1,0 @@
-path,area,preview
-scripts/validate-architecture.mjs,diff,"import fs from ""node:fs""; import path from ""node:path"";  const root = process.cwd(); const failures = [];  function exists(relativePath) {   return fs.existsSync(path.join(root, relativePath)); }  fun"
-src/features/references/ReferencesCurationDashboard.tsx,diff,"""use client"";  import {useCallback, useMemo, useState} from ""react""; import Link from ""next/link""; import {Button, Input, UnifiedLayout} from ""@/shared/ui""; import {tokens} from ""@/shared/tokens"";  ty"
-src/features/references/ReferencesCurationDetail.tsx,diff,"""use client"";  import {FormEvent, useCallback, useMemo, useState} from ""react""; import Link from ""next/link""; import {Button, Input, UnifiedLayout} from ""@/shared/ui""; import {tokens} from ""@/shared/t"
-src/shared/ui/index.ts,diff,"export {Badge} from ""@/components/atoms/Badge""; export {Button} from ""@/components/atoms/Button""; export {Card, CardBody, CardHeader} from ""@/components/atoms/Card""; export {Input} from ""@/components/"

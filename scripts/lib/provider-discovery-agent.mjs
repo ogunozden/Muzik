@@ -114,11 +114,17 @@ export async function main() {
 
   const rawCatalog = JSON.parse(readFileSync(CATALOG_FILE, "utf8"));
   const catalog = getCatalogEntries(rawCatalog);
-  const inbox = existsSync(INBOX_FILE) ? JSON.parse(readFileSync(INBOX_FILE, "utf8")) : [];
+  const raw = existsSync(INBOX_FILE) ? JSON.parse(readFileSync(INBOX_FILE, "utf8")) : {};
+  const inbox = (raw.sources ?? raw) || [];
 
-  const limit = 5;
-  const entries = catalog.slice(0, limit);
+  const limit = Number(process.argv.find(a => a.startsWith('--limit='))?.split('=')[1] || process.argv[process.argv.indexOf('--limit') + 1]) || 5;
+  const MAX_ENTRIES = 1000;
+  const effectiveLimit = Math.min(limit, MAX_ENTRIES, catalog.length);
+  const entries = catalog.slice(0, effectiveLimit);
   const results = [];
+  const failures = [];
+  let processed = 0;
+  const total = entries.length;
 
   for (const entry of entries) {
     for (const profile of DISCOVERY_PROFILES) {
@@ -126,29 +132,38 @@ export async function main() {
       const query = buildSearchQuery(entry, profile);
       if (!query.includes('"') && entry.title === "1") continue;
 
-      const urls = await searchWithFallback(query);
-      for (const url of urls) {
-        if (isAlreadyInInbox(inbox, entry.id, url)) continue;
-        inbox.push({
-          id: `${entry.id}:${profile.id}:${Date.now()}`,
-          catalogId: entry.id,
-          sourceUrl: url,
-          sourceTitle: "",
-          provider: profile.id,
-          status: "pending",
-          submittedAt: new Date().toISOString(),
-          notes: `auto-discovered via ${profile.id}`,
-        });
-        results.push({ catalogId: entry.id, provider: profile.id, url, query });
+      try {
+        const urls = await searchWithFallback(query);
+        for (const url of urls) {
+          if (isAlreadyInInbox(inbox, entry.id, url)) continue;
+          inbox.push({
+            id: `${entry.id}:${profile.id}:${Date.now()}`,
+            catalogId: entry.id,
+            sourceUrl: url,
+            sourceTitle: "",
+            provider: profile.id,
+            status: "pending",
+            submittedAt: new Date().toISOString(),
+            notes: `auto-discovered via ${profile.id}`,
+          });
+          results.push({ catalogId: entry.id, provider: profile.id, url, query });
+        }
+      } catch (err) {
+        failures.push({ entry: entry.id, profile: profile.id, error: err.message });
       }
       await delay(2000);
+    }
+    processed++;
+    if (processed % 10 === 0) {
+      console.log(`[discovery-agent] Progress: ${processed}/${total} entries, ${inbox.length} inbox sources`);
     }
   }
 
   mkdirSync(OUTPUT_DIR, { recursive: true });
   writeFileSync(RESULTS_FILE, JSON.stringify(results, null, 2));
-  writeFileSync(INBOX_FILE, JSON.stringify(inbox, null, 2));
-  console.log(`[discovery-agent] Processed ${limit} entries, found ${results.length} URLs, inbox now ${inbox.length} entries`);
+  writeFileSync(INBOX_FILE, JSON.stringify({version: 1, sources: inbox}, null, 2));
+  console.log(`[discovery-agent] Processed ${processed} entries, found ${results.length} URLs, inbox now ${inbox.length} entries`);
+  console.log(`[discovery-agent] ${failures.length} entries failed out of ${processed}`);
 }
 
 const modulePath = path.resolve(fileURLToPath(import.meta.url));

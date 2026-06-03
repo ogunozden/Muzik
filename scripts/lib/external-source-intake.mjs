@@ -306,6 +306,10 @@ export function normalizeIncomingSource(source, existingIds = new Set()) {
     throw new Error(`Unsupported external source provider "${provider}" for ${url}`);
   }
 
+  if (provider === "score" && !source.catalogId) {
+    throw new Error(`External source with provider "score" must have a catalogId: ${url}`);
+  }
+
   const checkedAt = source.checkedAt ?? todayIsoDate();
   if (!/^\d{4}-\d{2}-\d{2}$/.test(checkedAt)) {
     throw new Error(`External source checkedAt must use YYYY-MM-DD: ${checkedAt}`);
@@ -337,6 +341,7 @@ export function normalizeIncomingSource(source, existingIds = new Set()) {
     label: source.label,
     notes: source.notes,
     access: source.access,
+    status: source.status ?? "staged",
   };
 }
 
@@ -448,6 +453,17 @@ export function loadSourcesFromInput(inputPath, root = DEFAULT_ROOT) {
   return parseSourceInput(readFileSync(safeInputPath, "utf8"), safeInputPath);
 }
 
+function migrateDiscoveryEntry(source) {
+  const migrated = {...source};
+  if (!migrated.url && migrated.sourceUrl) {
+    migrated.url = migrated.sourceUrl;
+  }
+  if (!migrated.title && migrated.sourceTitle) {
+    migrated.title = migrated.sourceTitle;
+  }
+  return migrated;
+}
+
 export function stageExternalSources({
   root = DEFAULT_ROOT,
   inboxPath = DEFAULT_INBOX,
@@ -458,7 +474,8 @@ export function stageExternalSources({
 } = {}) {
   const safeInboxPath = assertInsideProject(inboxPath, root, "source inbox");
   const inboxData = readJsonFile(safeInboxPath, "external source inbox");
-  const existingSources = Array.isArray(inboxData.sources) ? inboxData.sources : [];
+  const inboxSources = Array.isArray(inboxData) ? inboxData : (Array.isArray(inboxData.sources) ? inboxData.sources : []);
+  const existingSources = inboxSources.map(migrateDiscoveryEntry);
   const inputSources = inputPath ? loadSourcesFromInput(inputPath, root) : [];
   const incomingSources = [...inputSources, ...cliSources];
 

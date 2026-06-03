@@ -7,7 +7,7 @@ import {
   parseSourceInput,
   stageExternalSources,
 } from "../external-source-intake.mjs";
-import {mkdtempSync, mkdirSync, writeFileSync} from "node:fs";
+import {mkdtempSync, mkdirSync, readFileSync, writeFileSync} from "node:fs";
 import {tmpdir} from "node:os";
 import path from "node:path";
 
@@ -200,6 +200,7 @@ describe("external source intake", () => {
         },
         {
           url: "https://divanmakam.com/forum/example.1/",
+          catalogId: "test-catalog-id",
           title: "Example",
           checkedAt: "2026-05-10",
         },
@@ -214,5 +215,108 @@ describe("external source intake", () => {
         outputSourceCount: 2,
       }),
     );
+  });
+
+  it("normalizeIncomingSource adds status:'staged'", () => {
+    const source = normalizeIncomingSource({
+      url: "https://divanmakam.com/forum/example.1/",
+      catalogId: "test-catalog-id",
+      title: "Example",
+      checkedAt: "2026-05-10",
+    });
+
+    expect(source).toEqual(
+      expect.objectContaining({
+        provider: "score",
+        status: "staged",
+      }),
+    );
+  });
+
+  it("stageExternalSources reads and writes {version,sources} envelope", () => {
+    const root = mkdtempSync(path.join(tmpdir(), "muzik-external-source-intake-env-"));
+    mkdirSync(path.join(root, "src", "data", "references"), {recursive: true});
+    const inboxPath = path.join(root, "src", "data", "references", "external-source-inbox.json");
+
+    writeFileSync(
+      inboxPath,
+      JSON.stringify([
+        {
+          id: "bare-array-source",
+          provider: "score",
+          url: "https://example.com/bare-array",
+          checkedAt: "2026-05-10",
+        },
+      ]),
+    );
+
+    stageExternalSources({
+      root,
+      cliSources: [
+        {
+          url: "https://divanmakam.com/forum/new-example.1/",
+          catalogId: "new-test-catalog",
+          title: "New Example",
+          checkedAt: "2026-05-10",
+        },
+      ],
+    });
+
+    const written = JSON.parse(readFileSync(inboxPath, "utf8"));
+    expect(written).toEqual(
+      expect.objectContaining({
+        version: 1,
+        sources: expect.arrayContaining([
+          expect.objectContaining({id: "bare-array-source"}),
+          expect.objectContaining({title: "New Example"}),
+        ]),
+      }),
+    );
+  });
+
+  it("id format compatibility with discovery agent", () => {
+    const root = mkdtempSync(path.join(tmpdir(), "muzik-external-source-intake-disc-"));
+    mkdirSync(path.join(root, "src", "data", "references"), {recursive: true});
+    const inboxPath = path.join(root, "src", "data", "references", "external-source-inbox.json");
+
+    writeFileSync(
+      inboxPath,
+      JSON.stringify({
+        version: 1,
+        sources: [
+          {
+            id: "test-entry-1:divanmakam:1749000000000",
+            catalogId: "test-entry-1",
+            sourceUrl: "https://divanmakam.com/forum/auto-discovered.12345/",
+            sourceTitle: "Auto Discovered Title",
+            provider: "divanmakam",
+            status: "pending",
+            submittedAt: "2026-06-03T00:00:00.000Z",
+            notes: "auto-discovered via divanmakam",
+          },
+        ],
+      }),
+    );
+
+    const summary = stageExternalSources({
+      root,
+      cliSources: [
+        {
+          url: "https://divanmakam.com/forum/new-score.99999/",
+          catalogId: "another-catalog-id",
+          title: "New Score",
+          checkedAt: "2026-06-03",
+        },
+      ],
+    });
+
+    const written = JSON.parse(readFileSync(inboxPath, "utf8"));
+
+    const migrated = written.sources.find((s) => s.id === "test-entry-1:divanmakam:1749000000000");
+    expect(migrated).toBeDefined();
+    expect(migrated.url).toBe("https://divanmakam.com/forum/auto-discovered.12345/");
+    expect(migrated.title).toBe("Auto Discovered Title");
+    expect(summary.addedCount).toBe(1);
+    expect(written.sources).toHaveLength(2);
   });
 });

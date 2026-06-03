@@ -335,6 +335,32 @@ function buildDeferredProviderResult({group, provider, checkedAt, reason, candid
   };
 }
 
+const CONNECTOR_IMPORTS = {
+  "internet-archive": null, // handled inline
+  "known-site-search-url": {
+    divanmakam: () => import("./connectors/divanmakam-probe.mjs").then(m => m.verifyDivanMakamGroup),
+    "ogm-materyal": () => import("./connectors/ogm-materyal-probe.mjs").then(m => m.verifyOgmMateryalGroup),
+    "salihbora": () => import("./connectors/salihbora-probe.mjs").then(m => m.verifySalihBoraGroup),
+  },
+  "youtube-oembed-verifier": () => import("./connectors/youtube-oembed-verifier.mjs").then(m => m.verifyYouTubeOEmbedGroup),
+};
+
+async function resolveConnector(provider) {
+  if (provider.connector === "internet-archive") return verifyInternetArchiveGroup;
+
+  if (provider.connector === "known-site-search-url") {
+    const loader = CONNECTOR_IMPORTS["known-site-search-url"]?.[provider.id];
+    return loader ? loader() : null;
+  }
+
+  if (provider.connector === "youtube-oembed-verifier") {
+    const loader = CONNECTOR_IMPORTS["youtube-oembed-verifier"];
+    return loader ? loader() : null;
+  }
+
+  return null;
+}
+
 function discoveryCandidateLookup(candidates) {
   const lookup = new Map();
   for (const candidate of candidates) {
@@ -367,18 +393,12 @@ async function verifyProviderGroup({
     });
   }
 
-  if (provider.id === "internet-archive") {
-    return verifyInternetArchiveGroup({
-      group,
-      provider,
-      checkedAt,
-      timeoutMs,
-      maxResponseBytes,
-      rows,
-      cache,
-      rateLimitState,
-      respectRateLimit,
-      acceptedThreshold,
+  const verifyFn = await resolveConnector(provider);
+
+  if (verifyFn) {
+    return verifyFn({
+      group, provider, checkedAt, timeoutMs, maxResponseBytes, rows, cache,
+      rateLimitState, respectRateLimit, acceptedThreshold,
     });
   }
 

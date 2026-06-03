@@ -75,8 +75,8 @@
       "allowedHosts": ["divanmakam.com"],
       "provider": "score",
       "enabled": true,
-      "rateLimitPerSecond": 0.5,
-      "verificationRequiredForAccepted": ["html-title-or-og-title", "catalog-metadata-match"]
+      "rateLimitPerSecond": 1,
+      "scoringOverrides": { "acceptedThreshold": 80 }
     },
     {
       "id": "ogm-materyal",
@@ -86,31 +86,31 @@
       "allowedHosts": ["ogmmateryal.eba.gov.tr"],
       "provider": "score",
       "enabled": true,
-      "rateLimitPerSecond": 0.5,
-      "verificationRequiredForAccepted": ["html-title", "catalog-metadata-match"]
+      "rateLimitPerSecond": 1,
+      "scoringOverrides": { "acceptedThreshold": 80 }
     },
     {
       "id": "salihbora",
       "connector": "known-site-search-url",
       "mode": "metadata-probe",
       "baseUrl": "https://www.salihbora.com",
-      "allowedHosts": ["www.salihbora.com", "salihbora.com"],
+      "allowedHosts": ["salihbora.com"],
       "provider": "score",
       "enabled": true,
-      "rateLimitPerSecond": 0.5,
-      "verificationRequiredForAccepted": ["html-title", "catalog-metadata-match"]
+      "rateLimitPerSecond": 1,
+      "scoringOverrides": { "acceptedThreshold": 80 }
     },
     {
       "id": "youtube-oembed",
       "connector": "youtube-oembed-verifier",
       "mode": "verification-only",
       "baseUrl": "https://www.youtube.com",
-      "allowedHosts": ["www.youtube.com", "youtube.com", "youtu.be"],
+      "allowedHosts": ["youtube.com", "www.youtube.com", "youtu.be"],
       "provider": "youtube",
       "enabled": true,
-      "discoverBySearch": false,
       "rateLimitPerSecond": 1,
-      "verificationRequiredForAccepted": ["youtube-oembed-title", "youtube-oembed-provider"]
+      "discoverBySearch": false,
+      "verificationRequiredForAccepted": true
     }
   ]
 }

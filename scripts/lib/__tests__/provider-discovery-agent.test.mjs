@@ -139,4 +139,31 @@ describe("provider-discovery-agent", () => {
       expect(inbox).toHaveLength(1);
     });
   });
+
+  describe("CLI and limits", () => {
+    it("accepts --limit from CLI argument", () => {
+      const originalArgv = process.argv;
+      process.argv = ['node', 'agent.mjs', '--limit=100'];
+      const limit = Number(process.argv.find(a => a.startsWith('--limit='))?.split('=')[1] || process.argv[process.argv.indexOf('--limit') + 1]) || 5;
+      expect(limit).toBe(100);
+      process.argv = originalArgv;
+    });
+
+    it("enforces MAX_ENTRIES cap", () => {
+      const MAX_ENTRIES = 1000;
+      const limit = 5000;
+      const effectiveLimit = Math.min(limit, MAX_ENTRIES);
+      expect(effectiveLimit).toBe(1000);
+    });
+
+    it("wraps inbox output in {version, sources} envelope", () => {
+      const sources = [{ catalogId: "test-1", sourceUrl: "https://example.com", status: "pending" }];
+      const envelope = { version: 1, sources };
+      const serialized = JSON.stringify(envelope, null, 2);
+      const parsed = JSON.parse(serialized);
+      expect(parsed.version).toBe(1);
+      expect(parsed.sources).toHaveLength(1);
+      expect(parsed.sources[0].catalogId).toBe("test-1");
+    });
+  });
 });

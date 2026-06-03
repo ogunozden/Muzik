@@ -40,4 +40,22 @@ This project is indexed by GitNexus as **Muzik** (5876 symbols, 9954 relationshi
 | Tools, resources, schema reference | `.claude/skills/gitnexus/gitnexus-guide/SKILL.md` |
 | Index, status, clean, wiki CLI commands | `.claude/skills/gitnexus/gitnexus-cli/SKILL.md` |
 
+## Precommit
+
+```bash
+npm run precommit
+```
+
+This runs:
+- `guardrails:architecture` — architecture validation
+- `lint-staged` — ESLint on staged files only
+- `test:run` — full Vitest suite
+
+## Quality
+
+```bash
+npm run quality
+```
+
+This runs precommit + `npm run audit:security`.
 <!-- gitnexus:end -->

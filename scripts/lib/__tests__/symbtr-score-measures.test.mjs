@@ -1,3 +1,4 @@
+import {existsSync} from "node:fs";
 import path from "node:path";
 import {describe, expect, it} from "vitest";
 import {
@@ -33,6 +34,8 @@ describe("SymbTr score measure index summaries", () => {
   });
 
   it("reports the Hicazkar reference score measure indexes from the local SymbTr archive", () => {
+    const txtZip = path.join(process.cwd(), "symb", "txt_v3.zip");
+    if (!existsSync(txtZip)) return; // skip in CI (symb/ is gitignored)
     const summary = getSymbTrMeasureIndexSummary({
       catalogId: HICAZKAR_CATALOG_ID,
       txtZipPath: path.join(process.cwd(), "symb", "txt_v3.zip"),

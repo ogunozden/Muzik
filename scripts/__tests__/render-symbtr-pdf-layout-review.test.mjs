@@ -1,4 +1,4 @@
-import {mkdtempSync, readFileSync, rmSync} from "node:fs";
+import {existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync} from "node:fs";
 import path from "node:path";
 import {afterEach, describe, expect, it} from "vitest";
 import {
@@ -18,6 +18,10 @@ describe("render-symbtr-pdf-layout-review", () => {
   });
 
   it("renders review artifacts with a non-promoting verification template entry", () => {
+    const symbDir = path.join(process.cwd(), "symb");
+    if (!existsSync(symbDir)) return; // skip in CI (symb/ is gitignored)
+    const outputDir = path.join(process.cwd(), "output");
+    if (!existsSync(outputDir)) mkdirSync(outputDir, { recursive: true });
     const outDir = mkdtempSync(path.join(process.cwd(), "output", "test-pdf-review-"));
     tempDirs.push(outDir);
     const layoutData = JSON.parse(readFileSync(path.join(process.cwd(), "src/data/symbtr/layout.generated.json"), "utf8"));

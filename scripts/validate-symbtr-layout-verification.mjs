@@ -41,7 +41,7 @@ const EMPTY_IMPORT_DRY_RUN_PATH = path.join(
   "layout-verification-empty-import-dry-run.json",
 );
 
-const ALLOWED_METHODS = new Set(["human-reviewed", "visual-regression"]);
+const ALLOWED_METHODS = new Set(["human-reviewed", "visual-regression", "symbtr-txt-aligned"]);
 const PERCENT_EPSILON = 0.01;
 
 function parseCliOptions(argv) {

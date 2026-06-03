@@ -80,12 +80,12 @@ function scoreTopMatch(group, doc) {
   const composerTokens = normalizeText(group.composer || "").split(/\s+/).filter(Boolean);
   let score = 0;
   for (const token of titleTokens) {
-    if (normalizedText.includes(token)) score += 10;
+    if (normalizedText.includes(token)) score += 50;
   }
   for (const token of composerTokens) {
-    if (normalizedText.includes(token)) score += 15;
+    if (normalizedText.includes(token)) score += 25;
   }
-  return titleTokens.length > 0 ? Math.round((score / (titleTokens.length * 10 + Math.max(composerTokens.length, 1) * 15)) * 100) : 0;
+  return titleTokens.length > 0 ? Math.round((score / (titleTokens.length * 50 + Math.max(composerTokens.length, 1) * 25)) * 100) : 0;
 }
 
 function readBestStrategies() {

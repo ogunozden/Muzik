@@ -195,7 +195,7 @@ tek kurala bağlamaktır.
       hata örüntüleri, embed başarı oranı ve kullanıcı düzeltme yoğunluğu
       `curation:stats` komutu ve `/references/curation` site kalite tablosu ile
       görünür olur.
-- [ ] Dış kaynak pipeline scriptlerini büyümeden modülleştir.
+- [x] Dış kaynak pipeline scriptlerini büyümeden modülleştir.
       `map-external-source-inbox.mjs`, `audit-external-reference-coverage.mjs`
       ve `external-source-intake.mjs` yeni derin analiz, site profili, feedback
       event ve stats işleri gelmeden matcher, source profile, event log ve
@@ -261,7 +261,7 @@ tek kurala bağlamaktır.
       `buildDedupeReport` ve `summarizeCounts` export yüzeyini korur; dedupe
       accepted URL identity normalizasyonunu audit katmanından enjekte ederek
       circular bağımlılık üretmeden aynı validation davranışını sürdürür.
-- [ ] Yeni model için validation/test kapılarını ekle: auto-attached kaynak
+- [x] Yeni model için validation/test kapılarını ekle: auto-attached kaynak
       sözleşmesi, feedback event bütünlüğü, silme/geri alma akışı, embed
       allowlist/fallback, filtre sonuçları, ops token davranışı, büyük liste
       performansı ve mobil/desktop layout guard kapsamda olmalı.

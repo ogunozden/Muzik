@@ -10,6 +10,8 @@ const INBOX_FILE = path.join(PROJECT_ROOT, "src", "data", "references", "externa
 const OUTPUT_DIR = path.join(PROJECT_ROOT, "output", "external-source-discovery");
 const RESULTS_FILE = path.join(OUTPUT_DIR, "provider-discovery-results.json");
 
+const API_DELAY_MS = 500;
+
 const DISCOVERY_PROFILES = [
   { id: "divanmakam", queryPrefix: "site:divanmakam.com", enabled: true },
   { id: "ogm-materyal", queryPrefix: "site:ogmmateryal.eba.gov.tr", enabled: true },
@@ -87,9 +89,29 @@ async function searchGoogle(query) {
   }
 }
 
+async function searchDuckDuckGoApi(query) {
+  try {
+    await delay(API_DELAY_MS);
+    const resp = await fetch(`https://api.duckduckgo.com/?q=${encodeURIComponent(query)}&format=json&no_html=1&skip_disambig=1`);
+    if (!resp.ok) return [];
+    const data = await resp.json();
+    const topics = Array.isArray(data.RelatedTopics) ? data.RelatedTopics : [];
+    const urls = [];
+    for (const topic of topics) {
+      if (topic.FirstURL) urls.push(topic.FirstURL);
+    }
+    return [...new Set(urls)].slice(0, 10);
+  } catch {
+    return [];
+  }
+}
+
 async function searchWithFallback(query) {
-  const urls = await searchDuckDuckGo(query);
-  if (urls.length > 0) return urls;
+  const apiUrls = await searchDuckDuckGoApi(query);
+  if (apiUrls.length > 0) return apiUrls;
+  console.log(`[discovery-agent] DDG API yielded 0 results for "${query.slice(0, 60)}", falling back to DDG browser`);
+  const ddgUrls = await searchDuckDuckGo(query);
+  if (ddgUrls.length > 0) return ddgUrls;
   console.log(`[discovery-agent] DuckDuckGo yielded 0 results for "${query.slice(0, 60)}", falling back to Google`);
   return searchGoogle(query);
 }
@@ -151,7 +173,7 @@ export async function main() {
       } catch (err) {
         failures.push({ entry: entry.id, profile: profile.id, error: err.message });
       }
-      await delay(2000);
+      await delay(API_DELAY_MS);
     }
     processed++;
     if (processed % 10 === 0) {

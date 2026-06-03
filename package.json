@@ -41,6 +41,7 @@
     "import:symbtr-measure-verification": "node scripts/import-symbtr-layout-verification.mjs",
     "verify:symbtr-layout-review-import": "node scripts/verify-symbtr-layout-review-import.mjs --summary-output output/symbtr-layout-review/layout-verification-empty-import-dry-run.json",
     "verify:symbtr-measures": "node scripts/validate-symbtr-layout-verification.mjs --summary-output output/symbtr-layout-review/layout-verification-summary.json",
+    "verify:symbtr-measures:aligned": "node scripts/verify-pdf-measures-symbtr-aligned.mjs",
     "precommit": "npm run guardrails:architecture && npx lint-staged && npm run test:run",
     "quality": "npm run precommit && npm run audit:security",
     "audit:security": "npm audit --audit-level=moderate",

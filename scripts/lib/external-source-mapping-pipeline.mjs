@@ -1,6 +1,6 @@
 import {existsSync, mkdirSync, readFileSync, writeFileSync} from "node:fs";
 import path from "node:path";
-import {fetchExternalHtmlMetadata} from "./external-metadata-fetch.mjs";
+import {extractPdfMetadata, fetchExternalHtmlMetadata} from "./external-metadata-fetch.mjs";
 import {inferProvider, mapInboxSource} from "./external-source-matcher.mjs";
 
 export const DEFAULT_MAPPING_INPUT = "src/data/references/external-source-inbox.json";
@@ -10,6 +10,10 @@ export const ACCEPTED_STATUSES_FOR_WRITE = new Set(["accepted"]);
 
 function catalogPath(root) {
   return path.join(root, "src", "data", "symbtr", "catalog.generated.json");
+}
+
+function profilesPath(root) {
+  return path.join(root, "src", "data", "references", "research-source-profiles.json");
 }
 
 function bulkCandidatesPath(root) {
@@ -66,9 +70,14 @@ export async function enrichExternalSource(source, {
   verifyYoutubeOembed = false,
   fetchPageMetadataEnabled = false,
   fetchImpl = fetch,
+  pdfBuffer = undefined,
+  profiles = [],
 } = {}) {
   const provider = inferProvider(source);
-  let enrichedSource = source;
+  const sourceHost = (() => { try { return new URL(source.url).hostname; } catch { return ""; } })();
+  const matchedProfile = sourceHost ? profiles.find((p) => sourceHost.includes(p.baseUrl?.replace("https://", "").replace("http://", "")) || (p.id === "youtube" && (sourceHost.endsWith("youtube.com") || sourceHost === "youtu.be")) || (p.id === "internet-archive" && sourceHost === "archive.org")) : null;
+  const trustWeight = matchedProfile?.trustWeight ?? 0.5;
+  let enrichedSource = {...source, trustWeight: source.trustWeight ?? trustWeight};
 
   if (fetchPageMetadataEnabled && !source.title) {
     const metadata = await fetchPageMetadata(source, fetchImpl);
@@ -87,6 +96,20 @@ export async function enrichExternalSource(source, {
         schemaLyrics: metadata.schemaLyrics,
         schemaByArtist: metadata.schemaByArtist,
         signals: mergeMetadataSignals(enrichedSource.metadata?.signals, metadata.metadataSignals),
+      },
+    };
+  }
+
+  if (fetchPageMetadataEnabled && pdfBuffer) {
+    const pdfMetadata = extractPdfMetadata(pdfBuffer);
+    enrichedSource = {
+      ...enrichedSource,
+      metadata: {
+        ...(enrichedSource.metadata ?? {}),
+        pdfTitle: pdfMetadata.title,
+        pdfAuthor: pdfMetadata.author,
+        pdfSubject: pdfMetadata.subject,
+        signals: mergeMetadataSignals(enrichedSource.metadata?.signals, pdfMetadata.signals),
       },
     };
   }
@@ -240,6 +263,7 @@ export async function runExternalSourceMappingPipeline({
   const inboxData = readJsonFile(safeInputPath, "external source inbox");
   const sources = Array.isArray(inboxData.sources) ? inboxData.sources : [];
   const catalogEntries = catalogData.entries ?? [];
+  const profiles = (() => { try { return JSON.parse(readFileSync(profilesPath(root), "utf8")).profiles ?? []; } catch { return []; } })();
   const enrichedSources = [];
 
   for (const source of sources) {
@@ -247,6 +271,7 @@ export async function runExternalSourceMappingPipeline({
       verifyYoutubeOembed,
       fetchPageMetadataEnabled,
       fetchImpl,
+      profiles,
     }));
   }
 

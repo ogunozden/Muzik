@@ -210,6 +210,54 @@ async function readTextWithLimit(response, maxBytes) {
   return {ok: true, text: new TextDecoder("utf-8", {fatal: false}).decode(buffer)};
 }
 
+function decodePdfString(str) {
+  return str
+    .replace(/\\([()\\nrt])/g, (_, c) => {
+      if (c === "n") return "\n";
+      if (c === "r") return "\r";
+      if (c === "t") return "\t";
+      return c;
+    })
+    .replace(/\\([0-7]{1,3})/g, (_, oct) => String.fromCharCode(parseInt(oct, 8)));
+}
+
+function extractPdfStringField(text, fieldName) {
+  const parenRegex = new RegExp(`/${fieldName}\\s*\\(([^)]*)\\)`, "i");
+  const parenMatch = text.match(parenRegex);
+  if (parenMatch) return decodePdfString(parenMatch[1]).replace(/\s+/g, " ").trim();
+
+  const hexRegex = new RegExp(`/${fieldName}\\s*<([0-9a-fA-F]*)>`, "i");
+  const hexMatch = text.match(hexRegex);
+  if (hexMatch) {
+    try {
+      return Buffer.from(hexMatch[1], "hex").toString("utf8").replace(/\0/g, "").replace(/\s+/g, " ").trim();
+    } catch {
+      return "";
+    }
+  }
+
+  return "";
+}
+
+export function extractPdfMetadata(pdfBuffer) {
+  try {
+    const size = Math.min(pdfBuffer.length, 10240);
+    const text = pdfBuffer.toString("latin1", 0, size);
+    const title = extractPdfStringField(text, "Title");
+    const author = extractPdfStringField(text, "Author");
+    const subject = extractPdfStringField(text, "Subject");
+    const signals = [
+      title ? "pdf:info-title" : "",
+      author ? "pdf:info-author" : "",
+      subject ? "pdf:info-subject" : "",
+    ].filter(Boolean);
+
+    return {title, author, subject, signals};
+  } catch {
+    return {title: "", author: "", subject: "", signals: []};
+  }
+}
+
 export async function fetchExternalHtmlMetadata(source, {
   fetchImpl = fetch,
   timeoutMs = DEFAULT_TIMEOUT_MS,

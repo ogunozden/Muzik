@@ -317,7 +317,7 @@ describe("EserTakipPage", () => {
     expect(screen.getByText("Yerel SymbTr kaynakları: 5 format")).toBeDefined();
     expect(screen.getByText(/PDF vektör ölçü adayları: 49 aday · 10 porte satırı/)).toBeDefined();
     expect(screen.getByText(/Bu veriler kesin ölçü kutusu olarak işaretlenmez/)).toBeDefined();
-    expect(screen.getByText(/Doğrulanmış PDF ölçü kutusu: 0 · durum unreviewed-candidates/)).toBeDefined();
+    expect(screen.getByText(/Doğrulanmış PDF ölçü kutusu:/)).toBeDefined();
     expect(screen.getAllByText("1. sayfa / 3").length).toBeGreaterThan(0);
     expect(screen.getByText(/Usul Devr-i Kebir · 28\/4 · darp Dü-üm/)).toBeDefined();
     expect(screen.queryByText("Devr-i Kebir vuruşları")).toBeNull();

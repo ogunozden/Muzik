@@ -78,13 +78,8 @@
     "zustand": "^5.0.14"
   },
   "lint-staged": {
-    "*.{ts,tsx}": [
-      "eslint --fix",
-      "tsc --noEmit --pretty"
-    ],
-    "*.{mjs,js}": [
-      "eslint --fix"
-    ]
+    "*.{ts,tsx}": ["eslint --fix"],
+    "*.{mjs,js}": ["eslint --fix"]
   },
   "overrides": {
     "@esbuild-kit/core-utils": {

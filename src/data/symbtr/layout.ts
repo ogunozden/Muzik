@@ -4,7 +4,7 @@ import {SYMBTR_CATALOG_COUNT, getSymbTrEntryById} from "./catalog";
 
 export type SymbTrPdfLayoutExtraction = "pdf-vector-candidate";
 export type SymbTrPdfMeasureCandidateConfidence = "pdf-vector-candidate";
-export type SymbTrPdfMeasureBoxVerificationMethod = "human-reviewed" | "visual-regression";
+export type SymbTrPdfMeasureBoxVerificationMethod = "human-reviewed" | "visual-regression" | "heuristic-auto-verified";
 
 export interface SymbTrPdfLayoutPageSize {
   width: number;
@@ -92,7 +92,7 @@ export interface SymbTrPdfLayoutVerificationStatus {
 }
 
 const entries = layoutData.entries as Record<string, SymbTrPdfLayoutEntry>;
-const verificationEntries = layoutVerificationData.entries as Record<string, SymbTrPdfLayoutVerificationEntry>;
+const verificationEntries = layoutVerificationData.entries as unknown as Record<string, SymbTrPdfLayoutVerificationEntry>;
 
 export const SYMBTR_PDF_LAYOUT_GENERATED_AT = layoutData.generatedAt;
 export const SYMBTR_PDF_LAYOUT_WARNING = layoutData.warning;

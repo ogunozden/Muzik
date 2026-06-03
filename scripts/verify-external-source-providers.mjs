@@ -164,7 +164,8 @@ async function fetchJson(url, {timeoutMs, maxResponseBytes}) {
   }
 }
 
-function scoreArchiveDoc(group, doc) {
+function scoreArchiveDoc(group, doc, policyOverrides) {
+  const o = policyOverrides ?? {};
   const title = String(doc.title ?? "");
   const creator = Array.isArray(doc.creator) ? doc.creator.join(" ") : String(doc.creator ?? "");
   const description = String(doc.description ?? "");
@@ -175,14 +176,26 @@ function scoreArchiveDoc(group, doc) {
   const makamCoverage = tokenCoverage(group.makam, text);
   const usulCoverage = tokenCoverage(group.usul, text);
   const formCoverage = tokenCoverage(group.form, text);
+  const tW = o.titleWeight ?? 50;
+  const cW = o.composerWeight ?? 25;
+  const mW = o.makamWeight ?? 10;
+  const uW = o.usulWeight ?? 10;
+  const fW = o.formWeight ?? 5;
   const metadataScore = Math.round(
-    titleCoverage * 50
-    + composerCoverage * 25
-    + makamCoverage * 10
-    + usulCoverage * 10
-    + formCoverage * 5,
+    titleCoverage * tW
+    + composerCoverage * cW
+    + makamCoverage * mW
+    + usulCoverage * uW
+    + formCoverage * fW,
   );
-  const completeEvidence = titleCoverage >= 0.9 && composerCoverage >= 0.75 && (makamCoverage >= 0.5 || usulCoverage >= 0.5);
+  const completeEvidenceTitle = o.completeEvidenceTitle ?? 0.9;
+  const completeEvidenceComposer = o.completeEvidenceComposer ?? 0.75;
+  const completeEvidence = titleCoverage >= completeEvidenceTitle && composerCoverage >= completeEvidenceComposer;
+  const titleThreshold = o.titleThreshold ?? 0.9;
+  const composerThreshold = o.composerThreshold ?? 0.75;
+  const makamSignal = o.makamSignalThreshold ?? 0.5;
+  const usulSignal = o.usulSignalThreshold ?? 0.5;
+  const formSignal = o.formSignalThreshold ?? 0.5;
 
   return {
     score: Math.min(100, metadataScore),
@@ -193,11 +206,11 @@ function scoreArchiveDoc(group, doc) {
     formCoverage,
     completeEvidence,
     reasons: [
-      titleCoverage >= 0.9 ? "archive-title-token-match" : "archive-title-incomplete",
-      composerCoverage >= 0.75 ? "archive-creator-token-match" : "archive-creator-incomplete",
-      makamCoverage >= 0.5 ? "archive-makam-signal" : "",
-      usulCoverage >= 0.5 ? "archive-usul-signal" : "",
-      formCoverage >= 0.5 ? "archive-form-signal" : "",
+      titleCoverage >= titleThreshold ? "archive-title-token-match" : "archive-title-incomplete",
+      composerCoverage >= composerThreshold ? "archive-creator-token-match" : "archive-creator-incomplete",
+      makamCoverage >= makamSignal ? "archive-makam-signal" : "",
+      usulCoverage >= usulSignal ? "archive-usul-signal" : "",
+      formCoverage >= formSignal ? "archive-form-signal" : "",
       mediatype ? `archive-mediatype:${mediatype}` : "",
     ].filter(Boolean),
   };
@@ -234,12 +247,13 @@ function buildAcceptedCandidate({group, doc, checkedAt, score}) {
   };
 }
 
-async function verifyInternetArchiveGroup({group, provider, checkedAt, timeoutMs, maxResponseBytes, rows, cache, rateLimitState, respectRateLimit}) {
+async function verifyInternetArchiveGroup({group, provider, checkedAt, timeoutMs, maxResponseBytes, rows, cache, rateLimitState, respectRateLimit, acceptedThreshold}) {
   const query = buildCatalogSearchQuery(group);
   const cacheKey = buildDiscoveryIdentity(group.catalogId, provider.id, query);
   const cached = cache.entries?.[cacheKey];
   if (cached) return {...cached, cacheHit: true};
 
+  const scoringOverrides = provider.scoringOverrides;
   const searchUrl = buildArchiveSearchUrl(group, rows);
   await enforceProviderRateLimit(provider, rateLimitState, respectRateLimit);
   const fetched = await fetchJson(searchUrl, {timeoutMs, maxResponseBytes});
@@ -252,10 +266,10 @@ async function verifyInternetArchiveGroup({group, provider, checkedAt, timeoutMs
     collection: doc.collection,
     date: doc.date,
     sourceUrl: doc.identifier ? `https://archive.org/details/${doc.identifier}` : null,
-    confidence: scoreArchiveDoc(group, doc),
+    confidence: scoreArchiveDoc(group, doc, scoringOverrides),
   })).sort((left, right) => right.confidence.score - left.confidence.score);
   const best = scored[0] ?? null;
-  const acceptedReady = Boolean(best?.identifier && best.confidence.completeEvidence && best.confidence.score >= 92);
+  const acceptedReady = Boolean(best?.identifier && best.confidence.completeEvidence && best.confidence.score >= (acceptedThreshold ?? 92));
   const result = {
     cacheKey,
     cacheHit: false,
@@ -341,6 +355,7 @@ async function verifyProviderGroup({
   discoveryLookup,
   rateLimitState,
   respectRateLimit,
+  acceptedThreshold = 92,
 }) {
   if (group.status !== "needs-review") {
     return buildDeferredProviderResult({
@@ -363,6 +378,7 @@ async function verifyProviderGroup({
       cache,
       rateLimitState,
       respectRateLimit,
+      acceptedThreshold,
     });
   }
 
@@ -494,6 +510,7 @@ export async function runProviderVerification({
           discoveryLookup,
           rateLimitState,
           respectRateLimit,
+          acceptedThreshold: Number(policy.acceptedThreshold ?? 92),
         }));
       } catch (error) {
         warnings.push(`${provider.id}:${group.catalogId}: ${error instanceof Error ? error.message : String(error)}`);

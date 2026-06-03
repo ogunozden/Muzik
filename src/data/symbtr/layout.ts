@@ -4,7 +4,7 @@ import {SYMBTR_CATALOG_COUNT, getSymbTrEntryById} from "./catalog";
 
 export type SymbTrPdfLayoutExtraction = "pdf-vector-candidate";
 export type SymbTrPdfMeasureCandidateConfidence = "pdf-vector-candidate";
-export type SymbTrPdfMeasureBoxVerificationMethod = "human-reviewed" | "visual-regression" | "heuristic-auto-verified";
+export type SymbTrPdfMeasureBoxVerificationMethod = "human-reviewed" | "visual-regression" | "symbtr-txt-aligned";
 
 export interface SymbTrPdfLayoutPageSize {
   width: number;

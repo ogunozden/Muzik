@@ -50,6 +50,9 @@ function metadataText(source) {
     metadata.schemaLyricist,
     metadata.schemaLyrics,
     metadata.schemaByArtist,
+    metadata.pdfTitle,
+    metadata.pdfAuthor,
+    metadata.pdfSubject,
   ].join(" ");
 }
 
@@ -66,7 +69,7 @@ function compareCatalogField(sourceValue, catalogValue) {
   return "mismatch";
 }
 
-export function scoreCatalogEntry(source, entry) {
+export function scoreCatalogEntry(source, entry, trustWeight = 0.5) {
   const observed = source.observed ?? {};
   const sourceTitle = source.title ?? observed.title ?? "";
   const sourceText = normalizeText(
@@ -128,6 +131,8 @@ export function scoreCatalogEntry(source, entry) {
     tokenCoverage(entry.title, source.metadata?.schemaLyrics),
     tokenCoverage(observed.lyrics, source.metadata?.schemaLyrics),
   );
+  const pdfTitleCoverage = tokenCoverage(entry.title, source.metadata?.pdfTitle);
+  const pdfAuthorCoverage = tokenCoverage(entry.composer, source.metadata?.pdfAuthor);
   score += Math.round(titleCoverage * 60);
   score += Math.round(composerCoverage * 45);
   score += Math.round(lyricistCoverage * 25);
@@ -138,6 +143,8 @@ export function scoreCatalogEntry(source, entry) {
   score += Math.round(schemaComposerCoverage * 18);
   score += Math.round(schemaLyricistCoverage * 12);
   score += Math.round(schemaLyricsCoverage * 10);
+  score += Math.round(pdfTitleCoverage * 18);
+  score += Math.round(pdfAuthorCoverage * 12);
 
   if (titleCoverage >= 0.7) reasons.push("title:token-match");
   if (composerCoverage >= 0.6) reasons.push("composer:token-match");
@@ -149,9 +156,15 @@ export function scoreCatalogEntry(source, entry) {
   if (schemaComposerCoverage >= 0.6) reasons.push("schema-composer:token-match");
   if (schemaLyricistCoverage >= 0.6) reasons.push("schema-lyricist:token-match");
   if (schemaLyricsCoverage >= 0.5) reasons.push("schema-lyrics:token-match");
+  if (pdfTitleCoverage >= 0.7) reasons.push("pdf-metadata:title-match");
+  if (pdfAuthorCoverage >= 0.6) reasons.push("pdf-metadata:author-match");
   for (const signal of metadataSignals(source)) {
     reasons.push(`metadata-signal:${signal}`);
   }
+
+  const trustBonus = Math.round((trustWeight - 0.5) * 50);
+  score += trustBonus;
+  reasons.push(`profile-trust:${trustWeight.toFixed(2)}`);
 
   return {
     entry,
@@ -223,6 +236,11 @@ export function buildSource(source, provider, status) {
   };
 }
 
+function shouldAutoPromoteYoutube(source, best, gap) {
+  const provider = inferProvider(source);
+  return provider === "youtube" && source.oembedVerified && best.score >= 100 && gap >= 10;
+}
+
 export function classifyMapping(best, secondBest, source) {
   const gap = best.score - (secondBest?.score ?? 0);
   const hasBlockingMismatch = best.mismatches.length > 0;
@@ -232,6 +250,13 @@ export function classifyMapping(best, secondBest, source) {
     return {
       status: "needs-review",
       reason: "YouTube source needs oEmbed metadata before it can be accepted.",
+    };
+  }
+
+  if (shouldAutoPromoteYoutube(source, best, gap)) {
+    return {
+      status: "accepted",
+      reason: "YouTube oEmbed verified auto-promotion.",
     };
   }
 
@@ -270,8 +295,9 @@ export function classifyMapping(best, secondBest, source) {
 }
 
 export function mapInboxSource(source, catalogEntries) {
+  const trustWeight = source.trustWeight ?? 0.5;
   const ranked = catalogEntries
-    .map((entry) => scoreCatalogEntry(source, entry))
+    .map((entry) => scoreCatalogEntry(source, entry, trustWeight))
     .sort((left, right) => right.score - left.score || left.entry.id.localeCompare(right.entry.id, "en"));
   const best = ranked[0];
   const secondBest = ranked[1];

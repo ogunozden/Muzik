@@ -7,7 +7,7 @@ const root = process.cwd();
 const outputPath = path.join(root, "src", "data", "symbtr", "layout-verification.generated.json");
 const layoutPath = path.join(root, "src", "data", "symbtr", "layout.generated.json");
 const previewPath = path.join(root, "output", "symbtr-layout-review", "layout-verification.import-preview.json");
-const allowedMethods = new Set(["human-reviewed", "visual-regression"]);
+const allowedMethods = new Set(["human-reviewed", "visual-regression", "symbtr-txt-aligned"]);
 
 function parseArgs(argv) {
   const args = {write: false};
@@ -175,6 +175,11 @@ const incomingEntries = normalizeEntries(incoming);
 
 validateIncomingEntries({incomingEntries, layoutData});
 
+const existingBoxCount = Object.values(isObject(current.entries) ? current.entries : {})
+  .reduce((total, entry) => total + (Array.isArray(entry.measureBoxes) ? entry.measureBoxes.length : 0), 0);
+const newBoxCount = Object.values(incomingEntries)
+  .reduce((total, entry) => total + (Array.isArray(entry.measureBoxes) ? entry.measureBoxes.length : 0), 0);
+
 const nextManifest = {
   schemaVersion: 1,
   generatedAt: incoming.generatedAt ?? new Date().toISOString().slice(0, 10),
@@ -224,5 +229,6 @@ console.log(JSON.stringify({
   outputEntryCount: Object.keys(nextManifest.entries).length,
   verifiedMeasureBoxCount: Object.values(nextManifest.entries)
     .reduce((total, entry) => total + (Array.isArray(entry.measureBoxes) ? entry.measureBoxes.length : 0), 0),
+  newVerifiedMeasureBoxCount: newBoxCount,
   outputPath: path.relative(root, outputPath).split(path.sep).join("/"),
 }, null, 2));

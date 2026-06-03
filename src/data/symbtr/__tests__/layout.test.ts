@@ -53,15 +53,30 @@ describe("SymbTr PDF layout candidates", () => {
     expect(coverage.unresolvedCandidateEntries).toBeGreaterThanOrEqual(0);
   });
 
-  it("auto-verifies entries with sufficient candidates via heuristic", () => {
+  it("keeps Hicazkar candidates unreviewed when candidate-to-TXT ratio exceeds tolerance", () => {
     const layout = getSymbTrPdfLayout(HICAZKAR_CATALOG_ID);
     console.log('[DEBUG] layout exists:', !!layout, 'candidates:', layout?.summary?.measureCandidateCount);
     const boxes = getSymbTrVerifiedPdfMeasureBoxes(HICAZKAR_CATALOG_ID);
     console.log('[DEBUG] verified boxes:', boxes?.length);
-    expect(boxes.length).toBeGreaterThan(0);
+    expect(boxes.length).toBe(0);
     const status = getSymbTrPdfLayoutVerificationStatus(HICAZKAR_CATALOG_ID);
+    expect(status.candidateCount).toBeGreaterThan(0);
+    expect(status.verifiedMeasureBoxCount).toBe(0);
+    expect(status.status).toBe("unreviewed-candidates");
+  });
+
+  it("auto-verifies entries with matching candidate-to-TXT measure count via symbtr-txt-aligned", () => {
+    const VERIFIED_CATALOG_ID = "acem--seyir--sofyan--1--erol_bingol";
+    const boxes = getSymbTrVerifiedPdfMeasureBoxes(VERIFIED_CATALOG_ID);
+    expect(boxes.length).toBeGreaterThan(0);
+    const status = getSymbTrPdfLayoutVerificationStatus(VERIFIED_CATALOG_ID);
     expect(status.candidateCount).toBeGreaterThan(0);
     expect(status.verifiedMeasureBoxCount).toBeGreaterThan(0);
     expect(status.status).toBe("verified");
+    for (const box of boxes) {
+      expect(box.confidence).toBe("verified");
+      expect(box.method).toBe("symbtr-txt-aligned");
+      expect(box.measureIndex).toBeGreaterThanOrEqual(1);
+    }
   });
 });

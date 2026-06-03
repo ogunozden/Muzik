@@ -206,7 +206,7 @@ export function buildSymbTrLayoutReviewImportDryRun({
       reviewBatchCandidateRows: inputSummary.batchRows,
       dryRunInputEntryCount: dryRunResult.inputEntryCount,
       dryRunOutputEntryCount: dryRunResult.outputEntryCount,
-      dryRunVerifiedMeasureBoxCount: dryRunResult.verifiedMeasureBoxCount,
+      dryRunVerifiedMeasureBoxCount: dryRunResult.newVerifiedMeasureBoxCount ?? 0,
       verificationManifestBeforeSha256,
       verificationManifestAfterSha256,
       verificationManifestUnchanged: verificationManifestBeforeSha256 === verificationManifestAfterSha256,

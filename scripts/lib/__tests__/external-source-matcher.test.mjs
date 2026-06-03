@@ -55,7 +55,7 @@ describe("external source matcher", () => {
     expect(mapping.alternatives[0]).toEqual(
       expect.objectContaining({
         catalogId: source.catalogId,
-        reasons: expect.arrayContaining(["makam:exact", "form:exact", "usul:exact", "title:token-match", "composer:token-match"]),
+        reasons: expect.arrayContaining(["makam:exact", "form:exact", "usul:exact", "title:token-match", "composer:token-match", "profile-trust:0.50"]),
       }),
     );
   });
@@ -113,6 +113,7 @@ describe("external source matcher", () => {
       "composer:token-match",
       "lyricist:token-match",
       "lyrics:title-token-match",
+      "profile-trust:0.50",
     ]));
   });
 
@@ -138,6 +139,7 @@ describe("external source matcher", () => {
       "metadata-author:token-match",
       "metadata-signal:html:og-title",
       "metadata-signal:youtube:oembed-title",
+      "profile-trust:0.50",
     ]));
   });
 
@@ -163,6 +165,7 @@ describe("external source matcher", () => {
       "schema-lyricist:token-match",
       "schema-lyrics:token-match",
       "metadata-signal:schema:musiccomposition",
+      "profile-trust:0.50",
     ]));
   });
 });

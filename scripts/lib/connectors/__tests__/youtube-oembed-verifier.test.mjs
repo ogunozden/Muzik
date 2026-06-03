@@ -1,5 +1,5 @@
 import { describe, expect, it, vi, beforeEach, afterEach } from "vitest";
-import { tokenCoverage, scoreOembedTitle, findYouTubeUrl, fetchOembed } from "../youtube-oembed-verifier.mjs";
+import { tokenCoverage, scoreOembedTitle, findYouTubeUrl } from "../youtube-oembed-verifier.mjs";
 
 describe("youtube-oembed-verifier", () => {
   beforeEach(() => {

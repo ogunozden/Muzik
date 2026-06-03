@@ -52,18 +52,19 @@
       "baseUrl": "https://archive.org",
       "allowedHosts": ["archive.org"],
       "provider": "archive",
-      "enabled": true,
+      "enabled": false,
       "rateLimitPerSecond": 1,
+      "acceptedThreshold": 60,
       "scoringOverrides": {
         "titleWeight": 50,
-        "composerWeight": 25,
-        "makamWeight": 10,
-        "usulWeight": 10,
+        "composerWeight": 30,
+        "makamWeight": 5,
+        "usulWeight": 5,
         "formWeight": 5,
-        "titleThreshold": 0.1,
-        "composerThreshold": 0.1,
-        "completeEvidenceTitle": 0.1,
-        "completeEvidenceComposer": 0.1
+        "titleThreshold": 0.6,
+        "composerThreshold": 0.5,
+        "completeEvidenceTitle": 0.6,
+        "completeEvidenceComposer": 0.5
       },
       "verificationRequiredForAccepted": ["archive-metadata-title", "archive-item-identifier"]
     },

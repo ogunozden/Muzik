@@ -164,6 +164,14 @@ async function fetchJson(url, {timeoutMs, maxResponseBytes}) {
   }
 }
 
+function detectCollectionLevelMatch(doc) {
+  const signals = ["archive", "collection", "reels", "lp", "full", "musicrepublic", "symbtr", "compilation"];
+  const id = normalizeText(doc.identifier ?? "");
+  const title = normalizeText(doc.title ?? "");
+  const desc = normalizeText(doc.description ?? "");
+  return signals.some((signal) => id.includes(signal) || title.includes(signal) || desc.includes(signal));
+}
+
 function scoreArchiveDoc(group, doc, policyOverrides) {
   const o = policyOverrides ?? {};
   const title = String(doc.title ?? "");
@@ -196,6 +204,7 @@ function scoreArchiveDoc(group, doc, policyOverrides) {
   const makamSignal = o.makamSignalThreshold ?? 0.5;
   const usulSignal = o.usulSignalThreshold ?? 0.5;
   const formSignal = o.formSignalThreshold ?? 0.5;
+  const isCollectionLevel = detectCollectionLevelMatch(doc);
 
   return {
     score: Math.min(100, metadataScore),
@@ -205,6 +214,7 @@ function scoreArchiveDoc(group, doc, policyOverrides) {
     usulCoverage,
     formCoverage,
     completeEvidence,
+    isCollectionLevel,
     reasons: [
       titleCoverage >= titleThreshold ? "archive-title-token-match" : "archive-title-incomplete",
       composerCoverage >= composerThreshold ? "archive-creator-token-match" : "archive-creator-incomplete",
@@ -212,6 +222,7 @@ function scoreArchiveDoc(group, doc, policyOverrides) {
       usulCoverage >= usulSignal ? "archive-usul-signal" : "",
       formCoverage >= formSignal ? "archive-form-signal" : "",
       mediatype ? `archive-mediatype:${mediatype}` : "",
+      isCollectionLevel ? "flag:collection-level-match" : "",
     ].filter(Boolean),
   };
 }
@@ -269,7 +280,9 @@ async function verifyInternetArchiveGroup({group, provider, checkedAt, timeoutMs
     confidence: scoreArchiveDoc(group, doc, scoringOverrides),
   })).sort((left, right) => right.confidence.score - left.confidence.score);
   const best = scored[0] ?? null;
-  const acceptedReady = Boolean(best?.identifier && best.confidence.completeEvidence && best.confidence.score >= (acceptedThreshold ?? 92));
+  const providerThreshold = Number(provider.acceptedThreshold ?? acceptedThreshold ?? 92);
+  const hasCompleteEvidence = best?.confidence?.completeEvidence && !best?.confidence?.isCollectionLevel;
+  const acceptedReady = Boolean(best?.identifier && hasCompleteEvidence && best.confidence.score >= providerThreshold);
   const result = {
     cacheKey,
     cacheHit: false,
@@ -338,11 +351,11 @@ function buildDeferredProviderResult({group, provider, checkedAt, reason, candid
 const CONNECTOR_IMPORTS = {
   "internet-archive": null, // handled inline
   "known-site-search-url": {
-    divanmakam: () => import("./connectors/divanmakam-probe.mjs").then(m => m.verifyDivanMakamGroup),
-    "ogm-materyal": () => import("./connectors/ogm-materyal-probe.mjs").then(m => m.verifyOgmMateryalGroup),
-    "salihbora": () => import("./connectors/salihbora-probe.mjs").then(m => m.verifySalihBoraGroup),
+    divanmakam: () => import("./lib/connectors/divanmakam-probe.mjs").then(m => m.verifyDivanMakamGroup),
+    "ogm-materyal": () => import("./lib/connectors/ogm-materyal-probe.mjs").then(m => m.verifyOgmMateryalGroup),
+    "salihbora": () => import("./lib/connectors/salihbora-probe.mjs").then(m => m.verifySalihBoraGroup),
   },
-  "youtube-oembed-verifier": () => import("./connectors/youtube-oembed-verifier.mjs").then(m => m.verifyYouTubeOEmbedGroup),
+  "youtube-oembed-verifier": () => import("./lib/connectors/youtube-oembed-verifier.mjs").then(m => m.verifyYouTubeOEmbedGroup),
 };
 
 async function resolveConnector(provider) {
@@ -517,6 +530,7 @@ export async function runProviderVerification({
   const rateLimitState = {lastRequestAtByProvider: new Map()};
 
   for (const provider of providers) {
+    const providerAcceptedThreshold = Number(provider.acceptedThreshold ?? policy.acceptedThreshold ?? 92);
     for (const group of selectedGroups) {
       try {
         evidence.push(await verifyProviderGroup({
@@ -530,7 +544,7 @@ export async function runProviderVerification({
           discoveryLookup,
           rateLimitState,
           respectRateLimit,
-          acceptedThreshold: Number(policy.acceptedThreshold ?? 92),
+          acceptedThreshold: providerAcceptedThreshold,
         }));
       } catch (error) {
         warnings.push(`${provider.id}:${group.catalogId}: ${error instanceof Error ? error.message : String(error)}`);
@@ -576,6 +590,7 @@ export async function runProviderVerification({
     ? Math.max(parsedOffset + parsedLimit, Number(internetArchiveCoverage?.verifiedOrClassifiedGroupCount ?? 0))
     : groups.length;
   writeJson(cachePath, cache);
+  writeJson(path.join(outDir, "provider-verification-coverage.json"), coverage);
   writeJson(path.join(outDir, "provider-verification-evidence.json"), {
     version: 1,
     type: "external-source-provider-verification-evidence",

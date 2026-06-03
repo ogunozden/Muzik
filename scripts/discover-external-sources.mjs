@@ -82,9 +82,9 @@ function mergeProviderPolicy(policyProvider, researchProfile) {
   };
 }
 
-function buildCandidate({group, provider, checkedAt, acceptedThreshold}) {
+function buildCandidate({group, provider, checkedAt, acceptedThreshold, policy}) {
   const query = buildCatalogSearchQuery(group);
-  const confidence = scoreDiscoveryCandidate({provider, group});
+  const confidence = scoreDiscoveryCandidate({provider, group, policy});
   const status = classifyDiscoveryCandidate({group, score: confidence.score, acceptedThreshold});
   const discoveryId = buildDiscoveryIdentity(group.catalogId, provider.id, query);
 
@@ -149,6 +149,7 @@ export function runExternalSourceDiscovery({
     provider,
     checkedAt,
     acceptedThreshold,
+    policy,
   })));
   const acceptedReady = candidates.filter((candidate) => candidate.status === "accepted-ready");
   const needsReview = candidates.filter((candidate) => candidate.status === "needs-review");

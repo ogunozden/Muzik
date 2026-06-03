@@ -1,0 +1,10 @@
+{
+  "version": 1,
+  "generatedAt": "2026-06-03T00:54:27.070Z",
+  "totalEntries": 2795,
+  "alreadyVerified": 0,
+  "autoVerifiedCandidate": 1804,
+  "insufficientCandidates": 991,
+  "heuristicThreshold": 3,
+  "status": "candidates-ready-for-heuristic-review"
+}

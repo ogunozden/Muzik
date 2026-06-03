@@ -4,6 +4,7 @@ import {fileURLToPath} from "node:url";
 import {runImport} from "./import-external-reference-candidates.mjs";
 import {buildDiscoveryIdentity, buildCatalogSearchQuery} from "./discovery/query-builder.mjs";
 import {normalizeText, slugify} from "./lib/external-source-matcher.mjs";
+import {buildArchiveSearchUrlWithStrategy, findBestStrategy} from "./lib/strategy-engine.mjs";
 
 const PROJECT_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const DEFAULT_COVERAGE_DIR = "output/external-reference-coverage";
@@ -135,18 +136,7 @@ function sortGroupsForVerification(groups) {
 }
 
 function buildArchiveSearchUrl(group, rows) {
-  const params = new URLSearchParams();
-  params.set("q", [group.title, group.composer, group.makam, group.form, group.usul].filter(Boolean).join(" "));
-  params.set("output", "json");
-  params.set("rows", String(rows));
-  params.append("fl[]", "identifier");
-  params.append("fl[]", "title");
-  params.append("fl[]", "creator");
-  params.append("fl[]", "description");
-  params.append("fl[]", "mediatype");
-  params.append("fl[]", "collection");
-  params.append("fl[]", "date");
-  return `${INTERNET_ARCHIVE_ADVANCED_SEARCH_URL}?${params.toString()}`;
+  return buildArchiveSearchUrlWithStrategy(group, rows, "internet-archive");
 }
 
 async function fetchJson(url, {timeoutMs, maxResponseBytes}) {
@@ -469,6 +459,18 @@ export async function runProviderVerification({
     parsedOffset,
     Number.isFinite(parsedLimit) ? parsedOffset + parsedLimit : undefined,
   );
+  const timeoutMs = Number(policy.timeoutMs ?? 8000);
+  const maxResponseBytes = Number(policy.maxResponseBytes ?? 262144);
+
+  if (parsedOffset === 0 && providers.some((p) => p.id === "internet-archive")) {
+    try {
+      const catalogIds = groups.map((g) => g.catalogId);
+      await findBestStrategy(providers.map((p) => [p.id, p]), catalogIds, rows, { timeoutMs, maxResponseBytes });
+    } catch (error) {
+      warnings.push(`strategy-discovery: ${error instanceof Error ? error.message : String(error)}`);
+    }
+  }
+
   const discoveryCandidates = readJson(path.join(outDir, "discovery-candidates.json"), "source discovery candidates", {candidates: []});
   const discoveryLookup = discoveryCandidateLookup(Array.isArray(discoveryCandidates) ? discoveryCandidates : discoveryCandidates.candidates ?? []);
   const generatedAt = `${checkedAt}T00:00:00.000Z`;
@@ -485,8 +487,8 @@ export async function runProviderVerification({
           group,
           provider,
           checkedAt,
-          timeoutMs: Number(policy.timeoutMs ?? 8000),
-          maxResponseBytes: Number(policy.maxResponseBytes ?? 262144),
+          timeoutMs,
+          maxResponseBytes,
           rows,
           cache,
           discoveryLookup,

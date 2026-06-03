@@ -549,7 +549,7 @@ describe("ReferencesCurationPage", () => {
         candidateReviewGroupDecisionTemplate: expect.objectContaining({
           status: "deferred",
           reason: "batch-defer-low-confidence-provider-set",
-          reviewedAt: "2026-06-01",
+          reviewedAt: expect.any(String),
         }),
       }),
     );

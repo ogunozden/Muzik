@@ -1,13 +1,17 @@
-export function scoreDiscoveryCandidate({provider, group}) {
-  const trustWeight = Number(provider.trustWeight ?? provider.policy?.trustWeight ?? 0);
-  const base = Math.round((trustWeight || 0.5) * 60);
-  const formatBonus = group.priorityGroup === "pdf-and-musicxml" ? 10 : group.priorityGroup === "pdf-only" ? 6 : 0;
-  const statusPenalty = group.status === "conflict" ? 30 : group.status === "deferred" ? 20 : 0;
-  const score = Math.max(0, Math.min(89, base + formatBonus - statusPenalty));
+export function scoreDiscoveryCandidate({provider, group, policy}) {
+  const sp = policy?.scoringParams ?? {};
+  const trustWeight = Number(provider.trustWeight ?? provider.policy?.trustWeight ?? sp.defaultTrustWeight ?? 0.5);
+  const base = Math.round((trustWeight || sp.defaultTrustWeight ?? 0.5) * (sp.baseWeightMultiplier ?? 60));
+  const formatBonus = group.priorityGroup === "pdf-and-musicxml" ? (sp.bonusPdfAndMusicxml ?? 10) : group.priorityGroup === "pdf-only" ? (sp.bonusPdfOnly ?? 6) : 0;
+  const statusPenalty = group.status === "conflict" ? (sp.penaltyConflict ?? 30) : group.status === "deferred" ? (sp.penaltyDeferred ?? 20) : 0;
+  const maxScore = sp.maxDiscoveryScore ?? 89;
+  const score = Math.max(0, Math.min(maxScore, base + formatBonus - statusPenalty));
+  const bucketMedium = sp.bucketMedium ?? 80;
+  const bucketLow = sp.bucketLow ?? 60;
 
   return {
     score,
-    bucket: score >= 80 ? "medium" : score >= 60 ? "low" : "needs-context",
+    bucket: score >= bucketMedium ? "medium" : score >= bucketLow ? "low" : "needs-context",
     reasons: [
       "provider-profile-search-lead",
       "no-validated-source-url-yet",

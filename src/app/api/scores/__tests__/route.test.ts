@@ -1,17 +1,20 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import type { NextRequest } from "next/server";
 import { GET, POST } from "../route";
-import { db } from "@/db";
 
-vi.mock("@/db", () => ({
-  db: {
-    select: vi.fn(),
-    insert: vi.fn(),
-  },
-}));
+vi.mock("@/lib/json-store", () => {
+  let store: unknown[] = [];
+  return {
+    readJson: vi.fn(async () => store),
+    writeJson: vi.fn(async (_path: string, data: unknown) => {
+      store = data as unknown[];
+    }),
+    generateId: vi.fn(() => "mock-uuid-12345"),
+  };
+});
 
 const sampleScore = {
-  id: 1,
+  id: "mock-uuid-12345",
   title: "Nihavend Peşrev",
   composer: null,
   makam: "nihavend",
@@ -19,8 +22,8 @@ const sampleScore = {
   form: null,
   notesData: [{pitch: "C4", duration: 0.5, velocity: 100, startTime: 0}],
   userId: null,
-  createdAt: null,
-  updatedAt: null,
+  createdAt: expect.any(String),
+  updatedAt: expect.any(String),
 };
 
 describe("/api/scores route", () => {
@@ -29,14 +32,11 @@ describe("/api/scores route", () => {
   });
 
   it("returns scores with the archive response shape", async () => {
-    const from = vi.fn().mockResolvedValue([sampleScore]);
-    vi.mocked(db.select).mockReturnValue({ from } as never);
-
     const response = await GET();
     const body = await response.json();
 
     expect(response.status).toBe(200);
-    expect(body).toEqual({ scores: [sampleScore] });
+    expect(body).toEqual({ scores: [] });
   });
 
   it("rejects create requests with missing required fields", async () => {
@@ -50,7 +50,6 @@ describe("/api/scores route", () => {
 
     expect(response.status).toBe(400);
     expect(body.error).toContain("Zorunlu alanlar eksik");
-    expect(db.insert).not.toHaveBeenCalled();
   });
 
   it("rejects create requests when notesData is not a note event array", async () => {
@@ -69,21 +68,16 @@ describe("/api/scores route", () => {
 
     expect(response.status).toBe(400);
     expect(body.error).toContain("notesData");
-    expect(db.insert).not.toHaveBeenCalled();
   });
 
   it("creates a score with timestamps and ignores body userId", async () => {
-    const returning = vi.fn().mockResolvedValue([sampleScore]);
-    const values = vi.fn().mockReturnValue({ returning });
-    vi.mocked(db.insert).mockReturnValue({ values } as never);
-
     const request = new Request("http://localhost/api/scores", {
       method: "POST",
       body: JSON.stringify({
-        title: sampleScore.title,
-        makam: sampleScore.makam,
-        usul: sampleScore.usul,
-        notesData: sampleScore.notesData,
+        title: "Nihavend Peşrev",
+        makam: "nihavend",
+        usul: "duyek",
+        notesData: [{pitch: "C4", duration: 0.5, velocity: 100, startTime: 0}],
         userId: 42,
       }),
     }) as NextRequest;
@@ -92,17 +86,14 @@ describe("/api/scores route", () => {
     const body = await response.json();
 
     expect(response.status).toBe(201);
-    expect(body).toEqual({ score: sampleScore });
-    expect(values).toHaveBeenCalledWith(
-      expect.objectContaining({
-        title: sampleScore.title,
-        makam: sampleScore.makam,
-        usul: sampleScore.usul,
-        notesData: sampleScore.notesData,
-        userId: null,
-        createdAt: expect.any(Date),
-        updatedAt: expect.any(Date),
-      })
-    );
+    expect(body.score).toMatchObject({
+      title: "Nihavend Peşrev",
+      makam: "nihavend",
+      usul: "duyek",
+      userId: null,
+    });
+    expect(body.score.id).toBe("mock-uuid-12345");
+    expect(body.score.createdAt).toEqual(expect.any(String));
+    expect(body.score.updatedAt).toEqual(expect.any(String));
   });
 });

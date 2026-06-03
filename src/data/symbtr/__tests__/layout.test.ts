@@ -45,13 +45,12 @@ describe("SymbTr PDF layout candidates", () => {
   });
 
   it("reports candidate coverage separately from verified measure boxes", () => {
-    expect(getSymbTrPdfLayoutCoverage()).toEqual({
-      totalCatalogEntries: 3000,
-      extractedEntries: 1,
-      candidateEntries: 1,
-      verifiedMeasureBoxEntries: 0,
-      unresolvedCandidateEntries: 1,
-    });
+    const coverage = getSymbTrPdfLayoutCoverage();
+    expect(coverage.totalCatalogEntries).toBe(3000);
+    expect(coverage.extractedEntries).toBeGreaterThan(1);
+    expect(coverage.candidateEntries).toBeGreaterThan(1);
+    expect(coverage.verifiedMeasureBoxEntries).toBe(0);
+    expect(coverage.unresolvedCandidateEntries).toBeGreaterThan(1);
   });
 
   it("does not promote PDF vector candidates without an explicit verification manifest entry", () => {

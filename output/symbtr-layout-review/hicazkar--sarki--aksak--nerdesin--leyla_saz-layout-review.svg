@@ -1,0 +1,189 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 595.22 842" role="img" aria-labelledby="title desc">
+  <title id="title">hicazkar--sarki--aksak--nerdesin--leyla_saz PDF vector measure candidates</title>
+  <desc id="desc">48 measure candidates extracted from 11 staff rows. These are unverified candidates.</desc>
+  <style>
+    .page { fill: #fffdf8; stroke: #1f2937; stroke-width: 1.2; }
+    .staff-band { fill: rgba(21, 94, 117, 0.06); stroke: rgba(21, 94, 117, 0.45); stroke-width: 0.8; }
+    .staff-line { stroke: #334155; stroke-width: 0.55; }
+    .measure-candidate { fill: rgba(217, 119, 6, 0.15); stroke: #b45309; stroke-width: 0.9; }
+    .row-label { fill: #0f766e; font: 8px ui-monospace, SFMono-Regular, Consolas, monospace; }
+    .candidate-label { fill: #92400e; font: 7px ui-monospace, SFMono-Regular, Consolas, monospace; text-anchor: middle; }
+  </style>
+  <rect x="0" y="0" width="595.22" height="842" class="page" />
+
+      <rect x="14.22" y="73.702" width="567.16" height="20.999" class="staff-band" />
+      <text x="18.22" y="68.702" class="row-label">row 1</text>
+      <rect x="14.22" y="117.92" width="565.841" height="20.999" class="staff-band" />
+      <text x="18.22" y="112.92" class="row-label">row 2</text>
+      <rect x="14.22" y="159.199" width="565.961" height="20.999" class="staff-band" />
+      <text x="18.22" y="154.199" class="row-label">row 3</text>
+      <rect x="14.22" y="203.417" width="567.16" height="21" class="staff-band" />
+      <text x="18.22" y="198.417" class="row-label">row 4</text>
+      <rect x="14.22" y="244.696" width="566.561" height="20.999" class="staff-band" />
+      <text x="18.22" y="239.696" class="row-label">row 5</text>
+      <rect x="14.22" y="288.914" width="566.501" height="21" class="staff-band" />
+      <text x="18.22" y="283.914" class="row-label">row 6</text>
+      <rect x="14.22" y="374.411" width="566.741" height="21" class="staff-band" />
+      <text x="18.22" y="369.411" class="row-label">row 7</text>
+      <rect x="14.22" y="459.909" width="566.26" height="20.999" class="staff-band" />
+      <text x="18.22" y="454.909" class="row-label">row 8</text>
+      <rect x="14.22" y="545.406" width="566.681" height="20.999" class="staff-band" />
+      <text x="18.22" y="540.406" class="row-label">row 9</text>
+      <rect x="14.22" y="630.903" width="566.861" height="20.999" class="staff-band" />
+      <text x="18.22" y="625.903" class="row-label">row 10</text>
+      <rect x="14.22" y="716.4" width="567.16" height="20.999" class="staff-band" />
+      <text x="18.22" y="711.4" class="row-label">row 11</text>
+
+        <line x1="14.22" y1="73.702" x2="581.38" y2="73.702" class="staff-line" />
+        <line x1="14.22" y1="78.921" x2="581.38" y2="78.921" class="staff-line" />
+        <line x1="14.22" y1="84.201" x2="581.38" y2="84.201" class="staff-line" />
+        <line x1="14.22" y1="89.421" x2="581.38" y2="89.421" class="staff-line" />
+        <line x1="14.22" y1="94.701" x2="581.38" y2="94.701" class="staff-line" />
+        <line x1="14.22" y1="117.92" x2="580.061" y2="117.92" class="staff-line" />
+        <line x1="14.22" y1="123.2" x2="580.061" y2="123.2" class="staff-line" />
+        <line x1="14.22" y1="128.42" x2="580.061" y2="128.42" class="staff-line" />
+        <line x1="14.22" y1="133.7" x2="580.061" y2="133.7" class="staff-line" />
+        <line x1="14.22" y1="138.919" x2="580.061" y2="138.919" class="staff-line" />
+        <line x1="14.22" y1="159.199" x2="580.181" y2="159.199" class="staff-line" />
+        <line x1="14.22" y1="164.419" x2="580.181" y2="164.419" class="staff-line" />
+        <line x1="14.22" y1="169.698" x2="580.181" y2="169.698" class="staff-line" />
+        <line x1="14.22" y1="174.918" x2="580.181" y2="174.918" class="staff-line" />
+        <line x1="14.22" y1="180.198" x2="580.181" y2="180.198" class="staff-line" />
+        <line x1="14.22" y1="203.417" x2="581.38" y2="203.417" class="staff-line" />
+        <line x1="14.22" y1="208.697" x2="581.38" y2="208.697" class="staff-line" />
+        <line x1="14.22" y1="213.917" x2="581.38" y2="213.917" class="staff-line" />
+        <line x1="14.22" y1="219.197" x2="581.38" y2="219.197" class="staff-line" />
+        <line x1="14.22" y1="224.417" x2="581.38" y2="224.417" class="staff-line" />
+        <line x1="14.22" y1="244.696" x2="580.781" y2="244.696" class="staff-line" />
+        <line x1="14.22" y1="249.916" x2="580.781" y2="249.916" class="staff-line" />
+        <line x1="14.22" y1="255.196" x2="580.781" y2="255.196" class="staff-line" />
+        <line x1="14.22" y1="260.415" x2="580.781" y2="260.415" class="staff-line" />
+        <line x1="14.22" y1="265.695" x2="580.781" y2="265.695" class="staff-line" />
+        <line x1="14.22" y1="288.914" x2="580.721" y2="288.914" class="staff-line" />
+        <line x1="14.22" y1="294.194" x2="580.721" y2="294.194" class="staff-line" />
+        <line x1="14.22" y1="299.414" x2="580.721" y2="299.414" class="staff-line" />
+        <line x1="14.22" y1="304.694" x2="580.721" y2="304.694" class="staff-line" />
+        <line x1="14.22" y1="309.914" x2="580.721" y2="309.914" class="staff-line" />
+        <line x1="14.22" y1="374.411" x2="580.961" y2="374.411" class="staff-line" />
+        <line x1="14.22" y1="379.691" x2="580.961" y2="379.691" class="staff-line" />
+        <line x1="14.22" y1="384.911" x2="580.961" y2="384.911" class="staff-line" />
+        <line x1="14.22" y1="390.191" x2="580.961" y2="390.191" class="staff-line" />
+        <line x1="14.22" y1="395.411" x2="580.961" y2="395.411" class="staff-line" />
+        <line x1="14.22" y1="459.909" x2="580.48" y2="459.909" class="staff-line" />
+        <line x1="14.22" y1="465.188" x2="580.48" y2="465.188" class="staff-line" />
+        <line x1="14.22" y1="470.408" x2="580.48" y2="470.408" class="staff-line" />
+        <line x1="14.22" y1="475.688" x2="580.48" y2="475.688" class="staff-line" />
+        <line x1="14.22" y1="480.908" x2="580.48" y2="480.908" class="staff-line" />
+        <line x1="14.22" y1="545.406" x2="580.901" y2="545.406" class="staff-line" />
+        <line x1="14.22" y1="550.686" x2="580.901" y2="550.686" class="staff-line" />
+        <line x1="14.22" y1="555.905" x2="580.901" y2="555.905" class="staff-line" />
+        <line x1="14.22" y1="561.185" x2="580.901" y2="561.185" class="staff-line" />
+        <line x1="14.22" y1="566.405" x2="580.901" y2="566.405" class="staff-line" />
+        <line x1="14.22" y1="630.903" x2="581.081" y2="630.903" class="staff-line" />
+        <line x1="14.22" y1="636.183" x2="581.081" y2="636.183" class="staff-line" />
+        <line x1="14.22" y1="641.403" x2="581.081" y2="641.403" class="staff-line" />
+        <line x1="14.22" y1="646.682" x2="581.081" y2="646.682" class="staff-line" />
+        <line x1="14.22" y1="651.902" x2="581.081" y2="651.902" class="staff-line" />
+        <line x1="14.22" y1="716.4" x2="581.38" y2="716.4" class="staff-line" />
+        <line x1="14.22" y1="721.68" x2="581.38" y2="721.68" class="staff-line" />
+        <line x1="14.22" y1="726.9" x2="581.38" y2="726.9" class="staff-line" />
+        <line x1="14.22" y1="732.18" x2="581.38" y2="732.18" class="staff-line" />
+        <line x1="14.22" y1="737.399" x2="581.38" y2="737.399" class="staff-line" />
+
+        <rect x="14.22" y="73.702" width="171.174" height="20.999" class="measure-candidate" />
+        <text x="96.807" y="87.2015" class="candidate-label">1</text>
+        <rect x="185.394" y="73.702" width="181.674" height="20.999" class="measure-candidate" />
+        <text x="273.231" y="87.2015" class="candidate-label">2</text>
+        <rect x="367.068" y="73.702" width="49.318" height="20.999" class="measure-candidate" />
+        <text x="388.727" y="87.2015" class="candidate-label">3</text>
+        <rect x="416.386" y="73.702" width="164.994" height="20.999" class="measure-candidate" />
+        <text x="495.88300000000004" y="87.2015" class="candidate-label">4</text>
+        <rect x="14.22" y="117.92" width="136.975" height="20.999" class="measure-candidate" />
+        <text x="79.7075" y="131.4195" class="candidate-label">1</text>
+        <rect x="151.195" y="117.92" width="28.619" height="20.999" class="measure-candidate" />
+        <text x="162.5045" y="131.4195" class="candidate-label">2</text>
+        <rect x="179.814" y="117.92" width="142.855" height="20.999" class="measure-candidate" />
+        <text x="248.24149999999997" y="131.4195" class="candidate-label">3</text>
+        <rect x="322.669" y="117.92" width="85.917" height="20.999" class="measure-candidate" />
+        <text x="362.6275" y="131.4195" class="candidate-label">4</text>
+        <rect x="408.586" y="117.92" width="142.976" height="20.999" class="measure-candidate" />
+        <text x="477.074" y="131.4195" class="candidate-label">5</text>
+        <rect x="551.562" y="117.92" width="28.499" height="20.999" class="measure-candidate" />
+        <text x="562.8115" y="131.4195" class="candidate-label">6</text>
+        <rect x="14.22" y="159.199" width="244.671" height="20.999" class="measure-candidate" />
+        <text x="133.5555" y="172.69850000000002" class="candidate-label">1</text>
+        <rect x="258.891" y="159.199" width="170.095" height="20.999" class="measure-candidate" />
+        <text x="340.93850000000003" y="172.69850000000002" class="candidate-label">2</text>
+        <rect x="428.986" y="159.199" width="151.195" height="20.999" class="measure-candidate" />
+        <text x="501.58349999999996" y="172.69850000000002" class="candidate-label">3</text>
+        <rect x="14.22" y="203.417" width="121.855" height="21" class="measure-candidate" />
+        <text x="72.14750000000001" y="216.917" class="candidate-label">1</text>
+        <rect x="136.075" y="203.417" width="32.999" height="21" class="measure-candidate" />
+        <text x="149.5745" y="216.917" class="candidate-label">2</text>
+        <rect x="169.074" y="203.417" width="164.815" height="21" class="measure-candidate" />
+        <text x="248.4815" y="216.917" class="candidate-label">3</text>
+        <rect x="333.889" y="203.417" width="247.491" height="21" class="measure-candidate" />
+        <text x="454.6345" y="216.917" class="candidate-label">4</text>
+        <rect x="14.22" y="244.696" width="255.471" height="20.999" class="measure-candidate" />
+        <text x="138.9555" y="258.19550000000004" class="candidate-label">1</text>
+        <rect x="269.691" y="244.696" width="22.379" height="20.999" class="measure-candidate" />
+        <text x="277.8805" y="258.19550000000004" class="candidate-label">2</text>
+        <rect x="292.07" y="244.696" width="44.399" height="20.999" class="measure-candidate" />
+        <text x="311.2695" y="258.19550000000004" class="candidate-label">3</text>
+        <rect x="336.469" y="244.696" width="221.992" height="20.999" class="measure-candidate" />
+        <text x="444.465" y="258.19550000000004" class="candidate-label">4</text>
+        <rect x="558.461" y="244.696" width="22.32" height="20.999" class="measure-candidate" />
+        <text x="566.621" y="258.19550000000004" class="candidate-label">5</text>
+        <rect x="14.22" y="288.914" width="55.678" height="21" class="measure-candidate" />
+        <text x="39.059" y="302.414" class="candidate-label">1</text>
+        <rect x="73.678" y="288.914" width="56.458" height="21" class="measure-candidate" />
+        <text x="98.907" y="302.414" class="candidate-label">2</text>
+        <rect x="130.136" y="288.914" width="120.056" height="21" class="measure-candidate" />
+        <text x="187.164" y="302.414" class="candidate-label">3</text>
+        <rect x="250.192" y="288.914" width="120.356" height="21" class="measure-candidate" />
+        <text x="307.37" y="302.414" class="candidate-label">4</text>
+        <rect x="370.548" y="288.914" width="120.176" height="21" class="measure-candidate" />
+        <text x="427.636" y="302.414" class="candidate-label">5</text>
+        <rect x="490.724" y="288.914" width="89.997" height="21" class="measure-candidate" />
+        <text x="532.7225" y="302.414" class="candidate-label">6</text>
+        <rect x="14.22" y="374.411" width="270.89" height="21" class="measure-candidate" />
+        <text x="146.665" y="387.911" class="candidate-label">1</text>
+        <rect x="285.11" y="374.411" width="295.851" height="21" class="measure-candidate" />
+        <text x="430.0355" y="387.911" class="candidate-label">2</text>
+        <rect x="14.22" y="459.909" width="256.851" height="20.999" class="measure-candidate" />
+        <text x="139.6455" y="473.4085" class="candidate-label">1</text>
+        <rect x="271.071" y="459.909" width="22.379" height="20.999" class="measure-candidate" />
+        <text x="279.26050000000004" y="473.4085" class="candidate-label">2</text>
+        <rect x="293.45" y="459.909" width="44.399" height="20.999" class="measure-candidate" />
+        <text x="312.6495" y="473.4085" class="candidate-label">3</text>
+        <rect x="337.849" y="459.909" width="221.992" height="20.999" class="measure-candidate" />
+        <text x="445.84499999999997" y="473.4085" class="candidate-label">4</text>
+        <rect x="559.841" y="459.909" width="20.639" height="20.999" class="measure-candidate" />
+        <text x="567.1605" y="473.4085" class="candidate-label">5</text>
+        <rect x="14.22" y="545.406" width="55.678" height="20.999" class="measure-candidate" />
+        <text x="39.059" y="558.9055" class="candidate-label">1</text>
+        <rect x="73.678" y="545.406" width="226.312" height="20.999" class="measure-candidate" />
+        <text x="183.834" y="558.9055" class="candidate-label">2</text>
+        <rect x="299.99" y="545.406" width="25.379" height="20.999" class="measure-candidate" />
+        <text x="309.6795" y="558.9055" class="candidate-label">3</text>
+        <rect x="325.369" y="545.406" width="204.593" height="20.999" class="measure-candidate" />
+        <text x="424.6655" y="558.9055" class="candidate-label">4</text>
+        <rect x="529.962" y="545.406" width="50.939" height="20.999" class="measure-candidate" />
+        <text x="552.4315" y="558.9055" class="candidate-label">5</text>
+        <rect x="14.22" y="630.903" width="268.671" height="20.999" class="measure-candidate" />
+        <text x="145.5555" y="644.4025" class="candidate-label">1</text>
+        <rect x="282.891" y="630.903" width="21.479" height="20.999" class="measure-candidate" />
+        <text x="290.63050000000004" y="644.4025" class="candidate-label">2</text>
+        <rect x="304.37" y="630.903" width="42.598" height="20.999" class="measure-candidate" />
+        <text x="322.669" y="644.4025" class="candidate-label">3</text>
+        <rect x="346.968" y="630.903" width="212.993" height="20.999" class="measure-candidate" />
+        <text x="450.46450000000004" y="644.4025" class="candidate-label">4</text>
+        <rect x="559.961" y="630.903" width="21.12" height="20.999" class="measure-candidate" />
+        <text x="567.521" y="644.4025" class="candidate-label">5</text>
+        <rect x="14.22" y="716.4" width="278.87" height="20.999" class="measure-candidate" />
+        <text x="150.655" y="729.8995" class="candidate-label">1</text>
+        <rect x="293.09" y="716.4" width="16.92" height="20.999" class="measure-candidate" />
+        <text x="298.54999999999995" y="729.8995" class="candidate-label">2</text>
+        <rect x="310.01" y="716.4" width="271.37" height="20.999" class="measure-candidate" />
+        <text x="442.695" y="729.8995" class="candidate-label">3</text>
+</svg>

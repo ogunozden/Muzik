@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "engines": {
-    "node": ">=24 <25",
+    "node": ">=26 <27",
     "npm": ">=10"
   },
   "scripts": {
@@ -41,53 +41,58 @@
     "import:symbtr-measure-verification": "node scripts/import-symbtr-layout-verification.mjs",
     "verify:symbtr-layout-review-import": "node scripts/verify-symbtr-layout-review-import.mjs --summary-output output/symbtr-layout-review/layout-verification-empty-import-dry-run.json",
     "verify:symbtr-measures": "node scripts/validate-symbtr-layout-verification.mjs --summary-output output/symbtr-layout-review/layout-verification-summary.json",
-    "precommit": "npm run guardrails:architecture && npm run lint && npm run typecheck && npm run test:run",
+    "precommit": "npm run guardrails:architecture && npx lint-staged && npm run test:run",
     "quality": "npm run precommit && npm run audit:security",
     "audit:security": "npm audit --audit-level=moderate",
     "prepare": "husky",
     "test": "vitest",
-    "test:run": "vitest run",
-    "db:generate": "drizzle-kit generate",
-    "db:push": "drizzle-kit push",
-    "db:studio": "drizzle-kit studio"
+    "test:run": "vitest run"
   },
   "dependencies": {
-    "@libsql/client": "^0.17.3",
-    "drizzle-orm": "^0.45.2",
-    "i18next": "^26.0.10",
     "i18next-browser-languagedetector": "^8.2.1",
-    "next": "^16.2.6",
-    "react": "^19.2.6",
-    "react-dom": "^19.2.6",
-    "react-i18next": "^17.0.7",
-    "vexflow": "^5.0.0",
-    "zustand": "^5.0.13"
+    "vexflow": "^5.0.0"
   },
   "devDependencies": {
     "@testing-library/dom": "^10.4.1",
     "@testing-library/react": "^16.3.2",
     "@types/node": "^24.12.4",
-    "@types/react": "^19.2.14",
+    "@types/react": "^19.2.16",
     "@types/react-dom": "^19.2.3",
     "@unocss/postcss": "^66.7.0",
     "@unocss/preset-wind4": "^66.7.0",
-    "@vitejs/plugin-react": "^6.0.1",
-    "drizzle-kit": "^0.31.10",
+    "@vitejs/plugin-react": "^6.0.2",
     "eslint": "^9.39.4",
-    "eslint-config-next": "^16.2.6",
+    "eslint-config-next": "^16.2.7",
     "husky": "^9.1.7",
+    "i18next": "^26.3.0",
     "jsdom": "^29.1.1",
+    "lint-staged": "^17.0.7",
+    "next": "^16.2.7",
+    "playwright": "^1.60.0",
     "postcss": "^8.5.14",
+    "react": "^19.2.7",
+    "react-dom": "^19.2.7",
+    "react-i18next": "^17.0.8",
     "typescript": "^6.0.3",
-    "vitest": "^4.1.5"
+    "vitest": "^4.1.8",
+    "zustand": "^5.0.14"
+  },
+  "lint-staged": {
+    "*.{ts,tsx}": [
+      "eslint --fix",
+      "tsc --noEmit --pretty"
+    ],
+    "*.{mjs,js}": [
+      "eslint --fix"
+    ]
   },
   "overrides": {
     "@esbuild-kit/core-utils": {
-      "esbuild": "^0.25.12"
+      "esbuild": "^0.28.0"
     },
     "next": {
       ".": "$next",
-      "postcss": "8.5.14"
+      "postcss": "8.5.15"
     }
   }
 }

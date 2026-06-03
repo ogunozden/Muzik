@@ -4,6 +4,17 @@
   "defaultMode": "dry-run",
   "scope": "missing",
   "acceptedThreshold": 92,
+  "scoringParams": {
+    "baseWeightMultiplier": 60,
+    "defaultTrustWeight": 0.5,
+    "bonusPdfAndMusicxml": 10,
+    "bonusPdfOnly": 6,
+    "penaltyConflict": 30,
+    "penaltyDeferred": 20,
+    "maxDiscoveryScore": 89,
+    "bucketMedium": 80,
+    "bucketLow": 60
+  },
   "cacheTtlDays": 14,
   "timeoutMs": 8000,
   "maxResponseBytes": 262144,

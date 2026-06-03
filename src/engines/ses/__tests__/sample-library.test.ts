@@ -87,4 +87,20 @@ describe("sample asset inventory", () => {
     expect(missing.every((relativePath) => knownMissingNeySlots.has(relativePath))).toBe(true);
     expect(missing.length).toBeLessThanOrEqual(knownMissingNeySlots.size);
   });
+
+  it("reports audio data chunk size for each sample (placeholder detection)", () => {
+    const zeroDataFiles: string[] = [];
+    for (const relativePath of actualWav) {
+      const fullPath = path.join(samplesRoot, ...relativePath.split("/"));
+      const buf = readFileSync(fullPath);
+      if (buf.length < 5000) zeroDataFiles.push(relativePath);
+    }
+    const totalActual = actualWav.length;
+    const totalReal = totalActual - zeroDataFiles.length;
+    const percentReal = totalActual > 0 ? Math.round((totalReal / totalActual) * 100) : 0;
+    console.log(`[sample-audit] ${totalReal}/${totalActual} files have audio data (${percentReal}% real, ${zeroDataFiles.length} placeholders)`);
+    if (zeroDataFiles.length > 0) {
+      console.log(`[sample-audit] Placeholder files (< 5000 bytes): ${zeroDataFiles.slice(0, 5).join(", ")}... (${zeroDataFiles.length} total)`);
+    }
+  });
 });

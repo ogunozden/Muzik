@@ -1,32 +1,30 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import type { NextRequest } from "next/server";
 import { DELETE, GET, PUT } from "../route";
-import { db } from "@/db";
 
-vi.mock("@/db", () => ({
-  db: {
-    select: vi.fn(),
-    update: vi.fn(),
-    delete: vi.fn(),
-  },
-}));
-
-vi.mock("drizzle-orm", () => ({
-  eq: vi.fn((field, value) => ({ field, value })),
-}));
-
-const sampleScore = {
-  id: 1,
-  title: "Nihavend Peşrev",
-  composer: null,
-  makam: "nihavend",
-  usul: "duyek",
-  form: null,
-  notesData: [{pitch: "C4", duration: 0.5, velocity: 100, startTime: 0}],
-  userId: null,
-  createdAt: null,
-  updatedAt: null,
-};
+vi.mock("@/lib/json-store", () => {
+  let store: Record<string, unknown>[] = [
+    {
+      id: "mock-uuid-1",
+      title: "Nihavend Peşrev",
+      composer: null,
+      makam: "nihavend",
+      usul: "duyek",
+      form: null,
+      notesData: [{pitch: "C4", duration: 0.5, velocity: 100, startTime: 0}],
+      userId: null,
+      createdAt: "2026-01-01T00:00:00.000Z",
+      updatedAt: "2026-01-01T00:00:00.000Z",
+    },
+  ];
+  return {
+    readJson: vi.fn(async () => store),
+    writeJson: vi.fn(async (_path: string, data: Record<string, unknown>[]) => {
+      store = data;
+    }),
+    generateId: vi.fn(() => "mock-uuid-new"),
+  };
+});
 
 const context = (id: string) => ({
   params: Promise.resolve({ id }),
@@ -37,94 +35,87 @@ describe("/api/scores/[id] route", () => {
     vi.clearAllMocks();
   });
 
-  it("awaits dynamic params and returns a single score", async () => {
-    const where = vi.fn().mockResolvedValue([sampleScore]);
-    const from = vi.fn().mockReturnValue({ where });
-    vi.mocked(db.select).mockReturnValue({ from } as never);
-
+  it("returns a single score by id", async () => {
     const response = await GET(
-      new Request("http://localhost/api/scores/1") as NextRequest,
-      context("1")
+      new Request("http://localhost/api/scores/mock-uuid-1") as NextRequest,
+      context("mock-uuid-1")
     );
     const body = await response.json();
 
     expect(response.status).toBe(200);
-    expect(body).toEqual({ score: sampleScore });
-    expect(where).toHaveBeenCalled();
+    expect(body.score).toMatchObject({ title: "Nihavend Peşrev" });
   });
 
-  it("rejects invalid ids before querying the database", async () => {
+  it("returns 404 for non-existent id", async () => {
     const response = await GET(
-      new Request("http://localhost/api/scores/not-a-number") as NextRequest,
-      context("not-a-number")
+      new Request("http://localhost/api/scores/non-existent") as NextRequest,
+      context("non-existent")
     );
     const body = await response.json();
 
-    expect(response.status).toBe(400);
-    expect(body).toEqual({ error: "Geçersiz ID" });
-    expect(db.select).not.toHaveBeenCalled();
+    expect(response.status).toBe(404);
+    expect(body).toEqual({ error: "Eser bulunamadı" });
   });
 
-  it("updates a score and returns the updated score shape", async () => {
-    const updatedScore = { ...sampleScore, title: "Güncel eser" };
-    const returning = vi.fn().mockResolvedValue([updatedScore]);
-    const where = vi.fn().mockReturnValue({ returning });
-    const set = vi.fn().mockReturnValue({ where });
-    vi.mocked(db.update).mockReturnValue({ set } as never);
-
-    const request = new Request("http://localhost/api/scores/1", {
+  it("updates a score and returns updated", async () => {
+    const request = new Request("http://localhost/api/scores/mock-uuid-1", {
       method: "PUT",
-      body: JSON.stringify({ title: updatedScore.title }),
+      body: JSON.stringify({ title: "Güncel eser" }),
     }) as NextRequest;
 
-    const response = await PUT(request, context("1"));
+    const response = await PUT(request, context("mock-uuid-1"));
     const body = await response.json();
 
     expect(response.status).toBe(200);
-    expect(body).toEqual({ score: updatedScore });
-    expect(set).toHaveBeenCalledWith(expect.objectContaining({ title: updatedScore.title, updatedAt: expect.any(Date) }));
+    expect(body.score.title).toBe("Güncel eser");
   });
 
   it("rejects updates with no allowed fields", async () => {
-    const request = new Request("http://localhost/api/scores/1", {
+    const request = new Request("http://localhost/api/scores/mock-uuid-1", {
       method: "PUT",
       body: JSON.stringify({ userId: 42 }),
     }) as NextRequest;
 
-    const response = await PUT(request, context("1"));
+    const response = await PUT(request, context("mock-uuid-1"));
     const body = await response.json();
 
     expect(response.status).toBe(400);
     expect(body.error).toContain("Güncellenecek alan bulunamadı");
-    expect(db.update).not.toHaveBeenCalled();
   });
 
   it("rejects updates with invalid notesData", async () => {
-    const request = new Request("http://localhost/api/scores/1", {
+    const request = new Request("http://localhost/api/scores/mock-uuid-1", {
       method: "PUT",
       body: JSON.stringify({ notesData: [{ pitch: "C4", startTime: 0 }] }),
     }) as NextRequest;
 
-    const response = await PUT(request, context("1"));
+    const response = await PUT(request, context("mock-uuid-1"));
     const body = await response.json();
 
     expect(response.status).toBe(400);
     expect(body.error).toContain("notesData");
-    expect(db.update).not.toHaveBeenCalled();
   });
 
   it("deletes a score and returns message plus deleted score", async () => {
-    const returning = vi.fn().mockResolvedValue([sampleScore]);
-    const where = vi.fn().mockReturnValue({ returning });
-    vi.mocked(db.delete).mockReturnValue({ where } as never);
-
     const response = await DELETE(
-      new Request("http://localhost/api/scores/1") as NextRequest,
-      context("1")
+      new Request("http://localhost/api/scores/mock-uuid-1") as NextRequest,
+      context("mock-uuid-1")
     );
     const body = await response.json();
 
     expect(response.status).toBe(200);
-    expect(body).toEqual({ message: "Eser silindi", score: sampleScore });
+    expect(body.message).toBe("Eser silindi");
+    expect(body.score.id).toBe("mock-uuid-1");
+  });
+
+  it("returns 404 when deleting non-existent score", async () => {
+    const response = await DELETE(
+      new Request("http://localhost/api/scores/non-existent") as NextRequest,
+      context("non-existent")
+    );
+    const body = await response.json();
+
+    expect(response.status).toBe(404);
+    expect(body).toEqual({ error: "Eser bulunamadı" });
   });
 });

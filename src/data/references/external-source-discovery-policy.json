@@ -52,9 +52,9 @@
       "baseUrl": "https://archive.org",
       "allowedHosts": ["archive.org"],
       "provider": "archive",
-      "enabled": false,
+      "enabled": true,
       "rateLimitPerSecond": 1,
-      "acceptedThreshold": 60,
+      "acceptedThreshold": 92,
       "scoringOverrides": {
         "titleWeight": 50,
         "composerWeight": 30,

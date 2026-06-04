@@ -23,7 +23,7 @@
 | Alan | Eksik | Not |
 |------|-------|-----|
 | Harici kaynak coverage | 2993 eser | Elle kürasyon veya kullanıcı katılımı gerek |
-| PDF candidate-only | 1285 eser | Ratio mismatch, elle inceleme veya görsel regresyon gerek |
+| PDF candidate-only | 2275 eser | Rapor: output/symbtr-layout-review/candidate-only-review.json, duusuk oncelikli |
 | IA discovery | Kapalı | Collection-level false positive'lar nedeniyle disable edildi |
 
 ### Yeni Tamamlanan

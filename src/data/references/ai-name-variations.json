@@ -1,0 +1,5409 @@
+{
+  "version": 1,
+  "generatedAt": "2026-06-04T08:55:37.923Z",
+  "sourceFiles": 600,
+  "entriesProcessed": 2971,
+  "variations": {
+    "acem--ilahi--duyek--aldanma_dunya--zekai_dede": [
+      "aldanma dunya"
+    ],
+    "acem--ilahi--nimevsat--calabim_bir--haci_bayram_veli": [
+      "calabim bir"
+    ],
+    "acem--kupe--duyek--zulfunu--ahmet_avni_konuk": [
+      "zulfunu"
+    ],
+    "acem--selam--devrikebir--asik-i_ger--huseyin_fahreddin_dede": [
+      "asik-i ger"
+    ],
+    "acemasiran--beste--devrikebir--ber_kusa_yi--basmaci_abdi_efendi": [
+      "ber kusa-yi",
+      "kusa"
+    ],
+    "acemasiran--beste--zencir--hayatin_cumleye--dellalzade_haci_ismail_efendi": [
+      "hayatin cumleye",
+      "hayatın cumleye"
+    ],
+    "acemasiran--fantezi--yuruksemai_ii--ey_benim--resat_erer": [
+      "ey benim",
+      "benim"
+    ],
+    "acemasiran--ilahi--muhammes--ta_dil--calakzade_mustafa_efendi": [
+      "ta dil",
+      "dil"
+    ],
+    "acemasiran--kupe--aksaksemai--bir--ahmet_avni_konuk": [
+      "bir",
+      "biri"
+    ],
+    "acemasiran--sarki--agiraksak--ne_kadar--artaki_candan": [
+      "ne kadar",
+      "kadar"
+    ],
+    "acemasiran--sarki--agirduyek--kime_halim--faize_ergin": [
+      "kime halim",
+      "halim"
+    ],
+    "acemasiran--sarki--aksak--acildi_nevbahar--sadullah_aga": [
+      "acildi ne bahar",
+      "nebahar"
+    ],
+    "acemasiran--sarki--aksak--dinle_sozum--iii_selim": [
+      "dinle sozum",
+      "sozum"
+    ],
+    "acemasiran--sarki--aksak--dustum_bir--ali_riza_avni_tinaz": [
+      "dustum bir",
+      "bir"
+    ],
+    "acemasiran--sarki--aksak--yanar_sinem--ismet_aga": [
+      "yanar_semin"
+    ],
+    "acemasiran--sarki--curcuna--ates-i_askinla--emin_ongan": [
+      "ates-i askinla"
+    ],
+    "acemasiran--sarki--curcuna--dilde_derd-i--nuri_halil_poyraz": [
+      "dilde derdi"
+    ],
+    "acemasiran--sarki--curcuna--gam_cekme_guzel--arif_sami_toker": [
+      "güzellik"
+    ],
+    "acemasiran--sarki--curcuna--neden_kalbim--nasibin_mehmet_yuru": [
+      "kalbin neden"
+    ],
+    "acemasiran--sarki--duyek--gonul_seni--sadettin_kaynak": [
+      "gonül seni"
+    ],
+    "acemasiran--sarki--duyek--pence-i_gamdan--misirli_udi_ibrahim_efendi": [
+      "penc-i gamdan"
+    ],
+    "acemasiran--sarki--duyek--ruhumda_derin--kemal_gurses": [
+      "ruhumda derin"
+    ],
+    "acemasiran--sarki--duyek--sim-ten_gonca--sakir_aga": [
+      "sim ten gonca"
+    ],
+    "acemasiran--sarki--raksaksagi--bana_tavr-i--sakir_aga": [
+      "bana tavri"
+    ],
+    "acemasiran--sarki--semai--bitmesin_icimdeki--omer_dilek": [
+      "bitmesin içimdeki"
+    ],
+    "acemasiran--sarki--semai--ey_cesm-i--nikogos_aga": [
+      "ey cem-i"
+    ],
+    "acemasiran--sarki--semai--sorma_dostum--nuri_halil_poyraz": [
+      "sorma dostum"
+    ],
+    "acemasiran--sarki--semai--yagmur_ol--amir_ates": [
+      "yagmur ol"
+    ],
+    "acemasiran--sarki--senginsemai--canan_okuyor--ali_riza_avni_tinaz": [
+      "canan okuyor"
+    ],
+    "acemasiran--evferi--selam--sultan-i_meni--huseyin_fahreddin_dede": [
+      "mevlevievferi"
+    ],
+    "acemkurdi--sarki--nefes--bektasiraksani--?": [
+      "bektasi raksani",
+      "mürselin"
+    ],
+    "acemkurdi--sarki--aksak--hatay--cevdet_cagla": [
+      "hatay",
+      "hata"
+    ],
+    "acemkurdi--sarki--aksak--kir_atima--nasibin_mehmet_yuru": [
+      "kir atima",
+      "kiraatima"
+    ],
+    "acemkurdi--sarki--aksak--ruhum_su--alaeddin_yavasca": [
+      "ruhum su",
+      "ruhumsu"
+    ],
+    "acemkurdi--sarki--curcuna--bana_askin--huseyin_coskuner": [
+      "bana askin",
+      "banaaskin"
+    ],
+    "acemkurdi--sarki--devrihindi--bir_vefasiz--selanikli_ahmed_bey": [
+      "bir ve fasiz",
+      "birvefasiz"
+    ],
+    "acemkurdi--sarki--duyek--artik_gelecek--arif_sami_toker": [
+      "artik gelecek"
+    ],
+    "acemkurdi--sarki--duyek--baharla_hazan--avni_anil": [
+      "baharla hazan"
+    ],
+    "acemkurdi--sarki--duyek--bir_baska--avni_anil": [
+      "bir baska"
+    ],
+    "acemkurdi--sarki--duyek--bir_sevda--arif_sami_toker": [
+      "bir sevda"
+    ],
+    "acemkurdi--sarki--duyek--ne_kadar--arif_sami_toker": [
+      "ne kadar"
+    ],
+    "acemkurdi--sarki--kapali_curcuna--unutmak_istesem--arif_sami_toker": [
+      "unutmak istesem"
+    ],
+    "acemkurdi--sarki--kapali_curcuna--canan_bilirim--ekrem_guyer": [
+      "canan bilirim"
+    ],
+    "acemkurdi--sarki--kapali_curcuna--sana_eller--faruk_kayacikli": [
+      "sana eller"
+    ],
+    "acemkurdi--sarki--kapali_curcuna--yukselen_nagmenle--muzaffer_ilkar": [
+      "yukselen nagmenle"
+    ],
+    "acemkurdi--sarki--kapali_curcuna--zehretme_hayati--zeki_muren": [
+      "zehretme hayati"
+    ],
+    "acemkurdi--sarki--semai--asikim_ben--necdet_tokatlioglu": [
+      "asikim ben"
+    ],
+    "acemkurdi--sarki--semai--bak_yine--izzet_altinbas": [
+      "bak yine"
+    ],
+    "acemkurdi--sarki--semai--sen_kalbimin--teoman_alpay": [
+      "sen kalbimin"
+    ],
+    "acemkurdi--sarki--semai--yillar_sonra--yildirim_gurses": [
+      "yillar sonra"
+    ],
+    "acemkurdi--sarki--senginsemai--askin_ile--sadi_hosses": [
+      "askin ile"
+    ],
+    "arazbar--seyir--duyek--sefik_gurmeric": [
+      "1"
+    ],
+    "arazbar--seyir--semai--rauf_yekta": [
+      "1"
+    ],
+    "arazbar--seyir--sofyan--erol_bingol": [
+      "1"
+    ],
+    "arazbarbuselik--kupe--agiraksak--ahmet_avni_konuk": [
+      "buse"
+    ],
+    "arazbarbuselik--murabba--cenber--ali_rifat_cagatay": [
+      "anlayan_yok"
+    ],
+    "arazbarbuselik--sazsemaisi--aksaksemai--refik_fersan": [
+      "? | arazbarbuselik | sazsemaisi | aksaksemai | refik_fersan"
+    ],
+    "asiranmaye--kupe--aksaksemai--ahmet_avni_konuk": [
+      "bir | asiranmaye | kupe | aksaksemai | ahmet_avni_konuk"
+    ],
+    "asiranzemzeme--pesrev--sofyan": [
+      "? | asiranzemzeme | pesrev | sofyan | ?"
+    ],
+    "askefza--pesrev--ayindevrirevani--huseyin_sadettin_arel": [
+      "? | askefza | pesrev | ayindevrirevani | huseyin_sadettin_arel"
+    ],
+    "askefza--sarki--sofyan": [
+      "kimbilir_belki | askefza | sarki | sofyan | murat_demirhan"
+    ],
+    "sarki--seyir--askefza--omrumuzun_bahari--sofyan": [
+      "omru muzun bahari",
+      "omrumuzun bahari"
+    ],
+    "sarki--seyir--askefza--anlatamamaktan--yuruksemai_ii": [
+      "anlatamamaktani",
+      "anlatamamak tan"
+    ],
+    "seyir--kupe--bahrinazik--1--devrihindi": [
+      "birinci",
+      "ilk"
+    ],
+    "kupe--bendihisar--askefza--mahi-yi--duyek": [
+      "mahiyi",
+      "mahii"
+    ],
+    "kupe--bendihisar--askefza--her--yuruksemai": [
+      "her makam",
+      "her makamda"
+    ],
+    "agiraksak--sarki--agiraksak--gayridan_bulmaz--kazasker_mustafa_izzet_efendi": [
+      "gayridan bulmaz"
+    ],
+    "agiraksak--sarki--agiraksak--kacma_mecburundan--hasim_bey": [
+      "kacma mecburundan"
+    ],
+    "aksak--sarki--aksak--cok_gordu--haci_arif_bey": [
+      "cok gordu"
+    ],
+    "aksak--sarki--aksak--perisan_halin--emin_ongan": [
+      "perisan halin"
+    ],
+    "aksak--sarki--aksak--sana_gul--omer_sami_gupgup": [
+      "sana gul"
+    ],
+    "beyati--bolahenk--agiraksaksemai--soylen_ol--nuri_bey": [
+      "soylen ol",
+      "nuri bey"
+    ],
+    "beyati--devriek Bair--aksaksemai--cikmaz_derun_u--tabi_mustafa_efendi": [
+      "cikmaz derun u",
+      "tabi mustafa efendi"
+    ],
+    "beyati--devriek Bair--curcuna--ol_gulun--zekai_dede": [
+      "ol gulun",
+      "zekai dede"
+    ],
+    "beyati--seyri-yuruk--mehter--yuruksemai_ii--zurnazen_dagi_ahmet_celebi": [
+      "yuruksemai ii",
+      "zurnazen dagi ahmet celebi"
+    ],
+    "beyati--pesrev--pesrev_fetih--tanburi_isak": [
+      "fetih pesrev",
+      "tanburi isak"
+    ],
+    "beyati--pesrev--devrikebir--neyzen_emin_dede": [
+      "devri kebir pesrev",
+      "neyzen emin dede"
+    ],
+    "beyati--pesrev--hafif--seyfettin_osmanoglu": [
+      "hafif pesrev",
+      "seyfettin osmanoglu"
+    ],
+    "beyati--pesrev--hafif--tanburi_cemil_bey": [
+      "hafif pesrev",
+      "tanburi cemil bey"
+    ],
+    "beyati--sarki--agiraksak--aman_ey_yar-i--neyzen_riza_bey": [
+      "aman ey yar"
+    ],
+    "beyati--sarki--agiraksak--bir_katre--sevki_bey": [
+      "bir katre"
+    ],
+    "beyati--sarki--agiraksak--bulbul-u_seydaya--serif_icli": [
+      "bulbul u seydaya"
+    ],
+    "beyati--sarki--agiraksak--gecti_sevdalarla--nuri_halil_poyraz": [
+      "geçti sevdalarla"
+    ],
+    "beyati--sarki--agiraksak--gul_hazin--rahmi_bey": [
+      "gül hazin"
+    ],
+    "beyati--sarki--agiraksak--muptelayim--dede_efendi": [
+      "müptelâ-yım"
+    ],
+    "beyati--sarki--agiraksak--ne_bahar--rakim_elkutlu": [
+      "nâ bahar"
+    ],
+    "beyati--sarki--agirduyek--her_dem--dede_efendi": [
+      "her dem"
+    ],
+    "beyati--sarki--aksak--benzemez_kimse--fehmi_tokay": [
+      "benzemez kimse"
+    ],
+    "beyati--sarki--aksak--delisin_deli--selahaddin_pinar": [
+      "délişin déli"
+    ],
+    "beyati--sarki--aksak--gonlum_geri--kasim_inaltekin": [
+      "gönül geri"
+    ],
+    "beyati--sarki--aksak--karsidan_yar--dede_efendi": [
+      "karşından yar"
+    ],
+    "beyati--sarki--aksak--meclise_gel--tanburi_mustafa_cavus": [
+      "meclise gel"
+    ],
+    "beyati--sarki--aksak--ne_semtden--kemani_riza_efendi": [
+      "neden semtten"
+    ],
+    "beyati--sarki--aksak--sebep_ne--markar_aga": [
+      "sebep ne"
+    ],
+    "beyati--sarki--aksaksemai--aglatma_beni--dede_efendi": [
+      "aglatma beni"
+    ],
+    "beyati--sarki--ciftesofyan--cikalim_sayd_u--tanburi_mustafa_cavus": [
+      "cihalimsaydu"
+    ],
+    "beyati--sarki--curcuna--akip_gitti--yener_topaloglu": [
+      "akip gitt"
+    ],
+    "beyati--sarki--curcuna--gel_nazli_gulum--alaeddin_yavasca": [
+      "gel nazligul"
+    ],
+    "beyati--sarki--curcuna--kalbim_yine--selahaddin_pinar": [
+      "kalbim yin"
+    ],
+    "beyati--sarki--devrihindi--nar-i_firkat--mahmud_celaleddin_pasa": [
+      "nar firkat"
+    ],
+    "beyati--sarki--duyek--aklimdan_gecenleri--arif_sami_toker": [
+      "aklimdan gecenleri"
+    ],
+    "beyati--sarki--duyek--askn_fecri--sadettin_kaynak": [
+      "askn fecri"
+    ],
+    "beyati--sarki--duyek--bende_oldum--rifat_bey": [
+      "bende oldum"
+    ],
+    "beyati--sarki--duyek--dilbera_sazin--tanburi_isak": [
+      "dilbera sazin"
+    ],
+    "beyati--sarki--duyek--emel-i_meyl-i--sevki_bey": [
+      "emel-i meyl-i"
+    ],
+    "beyati--sarki--duyek--gonul_telim--erdinc_celikkol": [
+      "gönül telim"
+    ],
+    "beyati--sarki--duyek--hayli_demdir--suphi_ziya_ozbekkan": [
+      "hayli demdir"
+    ],
+    "beyati--sarki--duyek--ruhuma_sundugun--sadettin_kaynak": [
+      "ruhuma sunduğun"
+    ],
+    "beyati--sarki--duyek--seni_ne_cok--erol_sayan": [
+      "seni ne çok"
+    ],
+    "beyati--sarki--zengul--zaman_icinde--semahat_ozdenses": [
+      "zaman içinde"
+    ],
+    "beyati--sarki--sarkidevrirevani--bulunmaz_derdime--ama_hasadur": [
+      "bulunmaz derdime"
+    ],
+    "beyati--sarki--kurdi--bilmezsin_dusundugum--rakim_elkutlu": [
+      "bilmezsin düşündüğüm"
+    ],
+    "beyati--sarki--senginsemai--meyleyledi_gonlum--tanburi_isak": [
+      "meyleyledi gönül"
+    ],
+    "beyati--sarki--kurdi--bir_boyle--fehmi_tokay": [
+      "bir böyle"
+    ],
+    "beyati--turku--kapali_curcuna--aksam_olur--urfa": [
+      "aksam olur"
+    ],
+    "beyati--turku--nimsofyan--gesi_baglarinda--kayseri": [
+      "gesi baglarinda"
+    ],
+    "beyati--turku--sofyan--tren_gelir--malatya": [
+      "tren gelir"
+    ],
+    "beyati--yuruksemai--senginsemai--gelse_nesim-i--iv_murad": [
+      "gelse nesimi"
+    ],
+    "beyati--yuruksemai--yuruksemai--gul_yuzlulerin--tabi_mustafa_efendi": [
+      "gul yuzlulerin"
+    ],
+    "buselik--karce--muhammes--sunbuli_sunbuli--sestari_murat_aga": [
+      "sunbul sunbul"
+    ],
+    "buselik--fantezi--devrituran--bir_ak_duvak--fethi_karamahmutoglu": [
+      "bir ak duvak"
+    ],
+    "buselik--ilahi--sofyani_8--bizi_insan--cinucen_tanrikorur": [
+      "bizi insan"
+    ],
+    "buselik--beste--hafif--her_gordugu--itri": [
+      "her gördüğüm"
+    ],
+    "buselik--sarki--agiraksak--dun_gece--serif_icli": [
+      "dün gece"
+    ],
+    "buselik--sarki--agiraksak--kalbimin_derdiyle--feridun_darbaz": [
+      "kalbimın derdile"
+    ],
+    "buselik--sarki--aksak--beni_ihmal--ismail_baha_surelsan": [
+      "bini ihmal"
+    ],
+    "buselik--sarki--aksak--bir_misli--sakir_aga": [
+      "bir misli"
+    ],
+    "buselik--sarki--aksak--bir_pur_cefa--iii_selim": [
+      "bir pur cefa"
+    ],
+    "buselik--sarki--aksak--bos_kalbimi--suphi_ziya_ozbekkan": [
+      "kalbim"
+    ],
+    "buselik--sarki--aksak--cehrendeki_tilsimda--yilmaz_karakoyunlu": [
+      "tilsim"
+    ],
+    "buselik--sarki--aksak--dil_sana--tanburi_isak": [
+      "dilsana"
+    ],
+    "buselik--sarki--aksak--eda_ile--dede_efendi": [
+      "eda ile"
+    ],
+    "buselik--sarki--aksak--inanmaz_vad_i--latif_aga": [
+      "inanmaz vad"
+    ],
+    "buselik--sarki--aksak--omrumun_guzel--emin_ongan": [
+      "omrumun guzel"
+    ],
+    "buselik--sarki--aksak--sen_de_gozden--cinucen_tanrikorur": [
+      "sen de gozden"
+    ],
+    "buselik--sarki--aksaksemai--hala_bilmem--mutlu_torun": [
+      "hala bilmem"
+    ],
+    "buselik--sarki--curcuna--aman_cana--fehmi_tokay": [
+      "aman cana"
+    ],
+    "buselik--sarki--curcuna--benim_gonlum--osman_nuri_ozpekel": [
+      "benim gonlum"
+    ],
+    "buselik--sarki--duyek--bahara_indi--selahattin_icli": [
+      "bahar indi"
+    ],
+    "buselik--sarki--duyek--askin_once--amir_ates": [
+      "sevdanin once"
+    ],
+    "buselik--sarki--duyek--bir_sitemin--durri_turan": [
+      "bir sitem"
+    ],
+    "buselik--sarki--duyek--bunu_inkar--ismet_aga": [
+      "bunu inkar etmek"
+    ],
+    "buselik--sarki--duyek--denizlerin_otesinden--ismail_baha_surelsan": [
+      "denizin ötesinde"
+    ],
+    "buselik--sarki--iki_kizimiz--erol_sayan": [
+      "iki kizi"
+    ],
+    "buselik--sarki--ol_meh--medeni_aziz_efendi": [
+      "ol meh"
+    ],
+    "buselik--sarki--dun_gece_sende--sakir_aga": [
+      "dün gece sende"
+    ],
+    "buselik--sarki--gule_sor--ismail_baha_surelsan": [
+      "güle sor"
+    ],
+    "buselik--sarki--her_an--durri_turan": [
+      "her an"
+    ],
+    "buselik--sarki--yuruksemai--suzis-i_sinem--haci_arif_bey": [
+      "suzis-i semin",
+      "suzis-i simen"
+    ],
+    "buselik--seyir--sofyan--erol_bingol": [
+      "1"
+    ],
+    "buselik--seyir--sofyan--sefik_gurmeric": [
+      "1"
+    ],
+    "buselik--seyir--turkaksagi--erol_bingol": [
+      "1"
+    ],
+    "buselik--turku--azeriyuruksemai--daglara_cen": [
+      "daglara_cen"
+    ],
+    "buselik--turku--semai--fikrimden_geceler": [
+      "fikrimden_geceler"
+    ],
+    "sofyan--seyir--seyir--buzurk--sefik_gurmeric": [
+      "buzurk"
+    ],
+    "canfeza--kupe--aksaksemai--saki-yi--ahmet_avni_konuk": [
+      "saki-yi"
+    ],
+    "sofyan--seyir--seyir--canfeza--sefik_gurmeric": [
+      "canfeza"
+    ],
+    "cargah--destan--turkaksagi--bir_gemi_yaptirdim--?": [
+      "bir_gemi_yaptirdim"
+    ],
+    "cargah--ilahi--devrikebir--kudumun_rhmeti--aziz_mahmud_hudai": [
+      "kudumun rahmeti"
+    ],
+    "cargah--musemmen--kupe--title--ahmet_avni_konuk": [
+      "v1",
+      "v2"
+    ],
+    "cargah--turku--aksak--tarlalarda_orene--ankara": [
+      "v1",
+      "v2"
+    ],
+    "cargah--turku--aksak--bir_tepeden--mugla_milas": [
+      "v1",
+      "v2"
+    ],
+    "cargah--turku--raksaksagi--kayanin_bedenleri--beypazari": [
+      "v1",
+      "v2"
+    ],
+    "cargah--turku--senginsemai--sak_sak--yurdagul_ulgar": [
+      "v1",
+      "v2"
+    ],
+    "cargah--turku--sofyan--dere_kenarinda--rakim_elkutlu": [
+      "dere kenarında"
+    ],
+    "cargah--turku--sofyan--harman_da_yeri--afyon": [
+      "harman da yeri"
+    ],
+    "agirsemai--agir_aksaksemai--dilkeshaveran--hal_i_ruhsarina--kucuk_mehmet_aga": [
+      "hal-i ruhsarına"
+    ],
+    "dilkeshaveran--beste--havi--kil_saba--ali_rifat_cagatay": [
+      "kil saba"
+    ],
+    "dilkeshaveran--beste--zencir--sukufe_zari--kucuk_mehmet_aga": [
+      "sukufe zari"
+    ],
+    "seyir--sema--duyek--dilkeshaveran--sefik_gurmeric": [
+      "dilkeshaveran"
+    ],
+    "dilkeside--fasl--kupe--yuruksemai_ii--ahmet_avni_konuk": [
+      "dilkeside faslinin"
+    ],
+    "?--sazsemaisi--aksaksemai--dilkusa--arif_mehmet_aga": [
+      "?"
+    ],
+    "dilnisin--kupe--devrirevanihindi--bir--ahmet_avni_konuk": [
+      "bir"
+    ],
+    "dugah--ilahi--agircenber--gel_ey_salik--dede_efendi": [
+      "gel ey salik"
+    ],
+    "gel_ey--sarki--aksak--evcara--dede_efendi": [
+      "gel ey",
+      "gel ey dede efendi"
+    ],
+    "sen_hangi--sarki--aksak--evcara--ozgen_gurbuz": [
+      "sen hangi",
+      "sen hangi ozgen gurbuz"
+    ],
+    "husnune_mail--sazsemaisi--aksaksemai--evcara--dede_efendi": [
+      "husnu ne mail",
+      "husnu ne mail dede efendi"
+    ],
+    "olup_askinla--sarki--devrihindi--evcara--haci_arif_bey": [
+      "olup askinla",
+      "olup askinla hacibey"
+    ],
+    "nimhafif--nimah--karce--geldi_cevher--ebubekir_aga": [
+      "geldi cevher",
+      "geldicevher"
+    ],
+    "yuruksemai_ii--semai--karsilama--on_kerre--?": [
+      "on kerre",
+      "onkerre"
+    ],
+    "evfer--semai--kupe--ol--ahmet_avni_konuk": [
+      "ol evfer",
+      "olevfer"
+    ],
+    "devrikebir--pesrev--evic--?--tanburi_kucuk_osman_bey": [
+      "tanburi kucuk osman bey pesrev devrikebir"
+    ],
+    "aksak--turksemai--rumeliturkusu--atladim_bahcene--?": [
+      "atladim bahcene",
+      "atladimbahcene"
+    ],
+    "sarki--evic--aydin--tanburi_mustafa_cavus": [
+      "kakulleri_lule"
+    ],
+    "sarki--evic--ciftesofyan--suyolcuzade_salih_efendi": [
+      "ey_suh-i"
+    ],
+    "sarki--evic--devrihindi_ii--refia_bey": [
+      "otme_ey"
+    ],
+    "sarki--evic--duyek--sadettin_kaynak": [
+      "doguyor_omrume"
+    ],
+    "sarki--evic--senginsemai--lemi_atli": [
+      "lerzan_ediyor"
+    ],
+    "duran--sarki--evic--distan_viran--fahri_kopuz": [
+      "distan viran",
+      "fahri kopuz"
+    ],
+    "gozyaslariniz_kalbime--sarki--evic--turkaksagi--selahaddin_pinar": [
+      "gozyaslariniz kalbime",
+      "selahaddin pinar"
+    ],
+    "kalbimde_acilmis--sarki--evic--turkaksagi--isak_varon": [
+      "kalbimde acilmis",
+      "isak varon"
+    ],
+    "?--sazsemaisi--evic--aksaksemai--muallim_ismail_hakki_bey": [
+      "muallim ismail hakki bey"
+    ],
+    "?--sazsemaisi--evic--aksaksemai--sedat_oztoprak": [
+      "sedat oztoprak"
+    ],
+    "ferahfeza--beste--firengifer--ey_kasi--dede_efendi": [
+      "ey kâsi",
+      "ey kası"
+    ],
+    "ferahfeza--kupe--yuruksemai--bir--ahmet_avni_konuk": [
+      "bir",
+      "bîr"
+    ],
+    "ferahfeza--pesrev--devrikebir--son_pesrev--zeki_mehmet_aga": [
+      "son pesrev",
+      "son peşrev"
+    ],
+    "ferahfeza--yuruksemai--yuruksemai--son_yuruksemai--zeki_mehmet_aga": [
+      "son yuruksemai",
+      "yuruksemai ii"
+    ],
+    "ferahfeza--yuruksemai--yuruksemai--bu_gece_ben--dede_efendi": [
+      "bu gece ben"
+    ],
+    "ferahnak--kupe--evfer--ol--ahmet_avni_konuk": [
+      "ol"
+    ],
+    "ferahnak--pesrev--zencir--?--zeki_mehmet_aga": [
+      "?"
+    ],
+    "ferahnak--sarki--agir_aksaksemai--ey_sah-i--sakir_aga": [
+      "ey sah-i"
+    ],
+    "ferahnak--sarki--aksak--ben_muptela--dede_efendi": [
+      "ben muptela",
+      "müptelah"
+    ],
+    "ferahnak--sarki--aksak--bir_nigahin--tanburi_cemil_bey": [
+      "bir nigahın",
+      "bir niğahın"
+    ],
+    "ferahnak--sarki--aksak--gozlerinden_dokulen--gulen_ertek": [
+      "gözlerinden dokülen",
+      "gözlerinden dökülen"
+    ],
+    "ferahnak--sarki--duyek--sinede_yarem--hamparsum": [
+      "sine de yaram",
+      "sine de yarem"
+    ],
+    "ferahnak--sarki--semai--ruhumda_bahar--artaki_candan": [
+      "ruhunda bahar",
+      "ruhumda bahar"
+    ],
+    "ferahnak--turku--duyek--mapusane_icinde--bartin": [
+      "mapusane icinde"
+    ],
+    "ferahnak--yuruksemai--yuruksemai_ii--sensiz_cihanda--zekai_dede": [
+      "sensiz cihan da"
+    ],
+    "ferahnak--yuruksemai--yuruksemai--bir_dilbere--sakir_aga": [
+      "bir dilber e"
+    ],
+    "ferahnakasiran--ilahi--bektasiraksievferi--buralarda_cok--fethi_karamahmutoglu": [
+      "buralarda cok"
+    ],
+    "ferahnakasiran--pesrev--devrikebir--?--cuneyd_kosal": [
+      "belirtilmeyen eser"
+    ],
+    "ferahnuma--sarki--curcuna--guzel_kiz--huseyin_sadettin_arel": [
+      "guzel kiz"
+    ],
+    "ferahnuma--seyir--aksak--1--erol_bingol": [
+      "1"
+    ],
+    "ferahnuma--turku--sofyan--kiz_bahcende--kastamonu": [
+      "kiz bahcende"
+    ],
+    "ferahnuma--turku--sofyan--bulguru_kaynatirlar--ankara": [
+      "bulgur kaynatil"
+    ],
+    "gerdaniye--kupe--duyek--perde-i--ahmet_avni_konuk": [
+      "perde"
+    ],
+    "gerdaniye--turku--aksak--denizli": [
+      "salina_salina"
+    ],
+    "gerdaniye--turku--kapali_curcuna--celik_pazari": [
+      "celik_pazari"
+    ],
+    "gerdaniye--turku--kapali_curcuna--daglar_basi": [
+      "daglar_basi"
+    ],
+    "gerdaniye--turku--kapali_curcuna--kirklar_daginin": [
+      "kirklar_daginin"
+    ],
+    "gerdaniye--turku--kapali_curcuna--sirali_daglarin": [
+      "sirali_daglarin"
+    ],
+    "malatya--turku--gerdaniye--dost_eline--malatya": [
+      "dost eline"
+    ],
+    "malatya--turku--gerdaniye--al_almanin--malatya": [
+      "al almanin"
+    ],
+    "bursa--turku--gerdaniye--cezayirin_harmanlari--bursa": [
+      "cezayirin harmanlari"
+    ],
+    "erzincan--turku--gerdaniye--derdim_coktur--erzincan": [
+      "derdim coktur"
+    ],
+    "muhlis_akarsu--turku--gerdaniye--ey_sevdigim--muhlis_akarsu": [
+      "ey sevdigim"
+    ],
+    "sofyan--turku--gerdaniye--kaleden_kaleye--adiyaman": [
+      "kaleden kaleye"
+    ],
+    "sofyan--turku--gerdaniye--karadir_kaslarin--zonguldak": [
+      "karadir kaslarin"
+    ],
+    "sofyan--turku--gerdaniye--odasina_girdim--?": [
+      "odasina girdim"
+    ],
+    "sofyan--turku--gerdaniye--su_daglari--fahri_kayahan": [
+      "su daglari"
+    ],
+    "turkaksagi--turku--gerdaniye--benden_selam--kastamonu": [
+      "benden selam"
+    ],
+    "gulizar--sarki--kocekce--nazli_nazli--dede_efendi": [
+      "nazlinazli",
+      "nazli nazli"
+    ],
+    "gulizar--kupe--duyek--ah_eder--ahmet_avni_konuk": [
+      "ah eder"
+    ],
+    "gulizar--sarki--senginsemai--sormadi_hal-i--nikogos_aga": [
+      "sormadi hal"
+    ],
+    "seyir--seyir--duyek--gulizar--erol_bingol": [
+      "gulizar",
+      "seyir"
+    ],
+    "seyir--seyir--sofyan--gulizar--sefik_gurmeric": [
+      "gulizar",
+      "seyir"
+    ],
+    "taksim--taksim--serbest--tanburi_cemil_bey": [
+      "tanburi cemil bey"
+    ],
+    "dertli--turku--sofyan--erol_sayan": [
+      "dertli",
+      "turku"
+    ],
+    "gulsen_ivefa--sazsemaisi--aksaksemai": [
+      "gulsen ivefa",
+      "sazsemaisi"
+    ],
+    "hicaz_humayun--agirsemai--aksaksemai--kul_oldum--ibrahim_aga": [
+      "etmezem ikrar-i"
+    ],
+    "hicaz_humayun--agirsemai--aksaksemai--etmezem_ikrar-i--dede_efendi": [
+      "etmezim ikrar"
+    ],
+    "hicaz_humayun--agirsemai--aksaksemai--asiklarinin_haline--haci_faik_bey": [
+      "aşıkların hali"
+    ],
+    "hicaz_humayun--fantezi--nimsofyan--ufuklara_yaslanmis--kaptanzade_ali_riza_bey": [
+      "yasanmis",
+      "yaslanan"
+    ],
+    "hicaz_humayun--ilahi--sofyan--daglar_ile--kutbi_dede": [
+      "daglar ile",
+      "daglarin"
+    ],
+    "hicaz_humayun--kar--hafif--ey_ki_dostan--makbul_ibrahim_pasa": [
+      "dostlarin",
+      "dostluk"
+    ],
+    "hicaz_humayun--kupe--duyek--yalniz--ahmet_avni_konuk": [
+      "benim",
+      "tek"
+    ],
+    "hicaz_humayun--murabba--agircenber--hasret_i_ruyinle--gevrekzade_mustafa_aga": [
+      "ruyunda",
+      "ruyada"
+    ],
+    "hicaz_humayun--sema--nakis--agirsenginsemai--seyyid_nuh": [
+      "seb cunun"
+    ],
+    "hicaz_humayun--rumeliturkusu--devrituran--rumeli": [
+      "gidem dedim"
+    ],
+    "hicaz_humayun--rumeliturkusu--sofyan--rumeli": [
+      "kirmizi gulun"
+    ],
+    "hicaz_humayun--sarki--aksak--ne_hazin--refik_fersan": [
+      "ne hazin"
+    ],
+    "hicaz_humayun--sarki--aydin--tel_tel--sadettin_kaynak": [
+      "tel tel"
+    ],
+    "hicaz_humayun--sarki--curcuna--demedim_hicranimi--sukru_tunar": [
+      "demedim hicranimi"
+    ],
+    "hicaz_humayun--sarki--curcuna--nerde_o--alaeddin_yavasca": [
+      "nerde o"
+    ],
+    "hicaz_humayun--sarki--duyek--agla_gozum--erol_sayan": [
+      "agla gozum"
+    ],
+    "hicaz_humayun--sarki--turkaksagi--yadeller_aldi--sadettin_kaynak": [
+      "yaldele aldi"
+    ],
+    "hicaz_humayun--turku--sofyan--alin_dim_elin--urfa": [
+      "alin dim elin"
+    ],
+    "hicaz_humayun--turku--sofyan--benim_gul_im--kirsehir": [
+      "benim gulum"
+    ],
+    "hicaz_humayun--turku--sofyan--bulbul_un_gogs_u--urfa": [
+      "bulbulun gogsu"
+    ],
+    "hicaz_humayun--yuruksemai--yuruksemai--nide_im_sahn_i--sadullah_aga": [
+      "nideyim sahn i"
+    ],
+    "hicaz_uzzal--beste--lenkfahte--baktik_ca_husn_u--suphi_ezgi": [
+      "baktikca husnu"
+    ],
+    "hicaz_uzzal--ilahi--duyek--eya_alemlerin--dede_efendi": [
+      "eya alemler"
+    ],
+    "hicaz_uzzal--ilahi--sofyan--gelin_gidelim--dede_efendi": [
+      "gelin gidelim"
+    ],
+    "hicaz_uzzal--kocekce--aksak--baharin_zamani--dede_efendi": [
+      "baharın zamanı"
+    ],
+    "hicaz_uzzal--kupe--duyek--nagme_i--ahmet_avni_konuk": [
+      "nagme-i"
+    ],
+    "hicaz_uzzal--rumeliturkusu--aksak--yine_de--rumeli": [
+      "yine de"
+    ],
+    "hicaz_uzzal--sarki--agiraksak--bir_nigah_et--sekerci_cemil_bey": [
+      "bir nigah et"
+    ],
+    "hicaz_uzzal--sarki--agiraksak--firkatin_aldi--bimen_sen": [
+      "firkatin aldi"
+    ],
+    "hicaz_uzzal--sarki--agiraksak--zevk-i_sevda--leyla_saz": [
+      "zevk i sevda"
+    ],
+    "hicaz_uzzal--sarki--aksak--beni_sev--misirli_udi_ibrahim_efendi": [
+      "beni sev"
+    ],
+    "hicaz_uzzal--sarki--aksak--bir_bir_geciyor--sukru_tunar": [
+      "bir bir geciyor"
+    ],
+    "hicaz_uzzal--sarki--aksak--dil_yaresini--sevki_bey": [
+      "dil yarşını"
+    ],
+    "hicaz_uzzal--sarki--aksak--gozlerin_komur--avni_anil": [
+      "gözlerin kumru"
+    ],
+    "hicaz_uzzal--sarki--aksak--gulsen_i_husnune--rifat_bey": [
+      "gülşen-i hüsne"
+    ],
+    "hicaz_uzzal--sarki--aksak--indim_yarin--dede_efendi": [
+      "indim yarın"
+    ],
+    "hicaz_uzzal--sarki--aksak--istanbulun_etrafi--arif_sami_toker": [
+      "istanbul'un etrafı"
+    ],
+    "hicaz_uzzal--sarki--aksak--kurbanin_olam--haci_arif_bey": [
+      "kurban olam"
+    ],
+    "hicaz_uzzal--sarki--aksak--kurdu_meclis--haci_arif_bey": [
+      "kurdum meclis"
+    ],
+    "hicaz_uzzal--sarki--aksak--matemzedeyim--tanburi_cemil_bey": [
+      "matem zede yim"
+    ],
+    "hicaz_uzzal--sarki--aksak--ne_gunah--alaeddin_yavasca": [
+      "neggünah"
+    ],
+    "hicaz_uzzal--sarki--aksak--su_karsiki_dagda--dede_efendi": [
+      "su karsi dagda"
+    ],
+    "hicaz_uzzal--sarki--aksak--terket_beni--fehmi_tokay": [
+      "terket beni"
+    ],
+    "hicaz_uzzal--sarki--aksaksemai--sezdim_dargin--rifat_ayaydin": [
+      "sezdim dargin"
+    ],
+    "hicaz_uzzal--sarki--curcuna--acaba_sen_misin--bimen_sen": [
+      "acaba sen misin"
+    ],
+    "hicaz_uzzal--sarki--curcuna--bahar_olsa--fahri_kopuz": [
+      "bahar olsa"
+    ],
+    "hicaz_uzzal--sarki--curcuna--ne_kustun--sekerci_cemil_bey": [
+      "ne kustun"
+    ],
+    "hicaz_uzzal--sarki--curcuna--sen_hep--selahattin_inal": [
+      "sen hep"
+    ],
+    "hicaz_uzzal--sarki--curcuna--sislendi_hava--rifat_bey": [
+      "sislendi hava"
+    ],
+    "hicaz_uzzal--sarki--devrihindi--asik_oldum--enderuni_ali_bey": [
+      "asik oldum"
+    ],
+    "hicaz_uzzal--sarki--devrihindi--kuse-i_nisyana--aleko_bacanos": [
+      "kuse-i nisyana"
+    ],
+    "hicaz_uzzal--sarki--devrihindi--leblerinde_kivrilan--emin_ongan": [
+      "leblerinde kivrilan"
+    ],
+    "hicaz--sarki--aksak--gideyim_de--muallim_ismail_hakki_bey": [
+      "gideyim de"
+    ],
+    "hicaz--ilahi--sofyan--hic_bulunmaz--husnu_sarier": [
+      "hic bulunmaz"
+    ],
+    "hicaz--kupe--duyek--basladi--ahmet_avni_konuk": [
+      "basladi"
+    ],
+    "hicaz--sarki--zirgule--gozlerimden_yuzun--muzaffer_ilkar": [
+      "gozlerinden yuzun"
+    ],
+    "hicaz--sarki--zirgule--guruba_yaklasan--alaeddin_yavasca": [
+      "gurubaya yaklasan"
+    ],
+    "hicaz--sarki--zirgule--icimdeki_askin--muzaffer_ilkar": [
+      "icimdeki ask"
+    ],
+    "hicaz--sarki--zirgule--ne_bos--sadettin_kaynak": [
+      "bos ne"
+    ],
+    "hicaz--sarki--zirgule--son_umidim--sadettin_kaynak": [
+      "umidim son"
+    ],
+    "hicaz--sarki--zirgule--bakislarin_kivilcim--nimsofyan": [
+      "bakişların kılçım"
+    ],
+    "hicaz--sarki--zirgule--evimizin_diregisin--danyal_manti": [
+      "evimin direği"
+    ],
+    "hicaz--sarki--zirgule--hayat_atli--necdet_varol": [
+      "hayat atlı"
+    ],
+    "hicaz--beste--berefsan_4--tabi_ruhu--zaharya": [
+      "tabi_ruhu"
+    ],
+    "hicaz--beste--darbeyn--yine_tabi--zaharya": [
+      "yine_tabi"
+    ],
+    "hicaz--beste--hafif--olmada_diller--abdulhalim_aga": [
+      "olmada_diller"
+    ],
+    "hicaz--beste--zencir--o_mahitabi--dede_efendi": [
+      "o_mahitabi"
+    ],
+    "hicaz--ezan--serbest--allah_u_ekber--?": [
+      "allah_u_ekber"
+    ],
+    "hicaz--fantezi--duyek--sev_beni--olkan_tezcan": [
+      "sev beni"
+    ],
+    "hicaz--fantezi--duyek--sevemez_kimse--suat_sayin": [
+      "sevemez kimse"
+    ],
+    "hicaz--fantezi--nimsofyan--ayni_cati--turhan_tasan": [
+      "ayni cati"
+    ],
+    "hicaz--ilahi--yuruksemai_ii--gamze_gamze--sezen_aksu": [
+      "gamze gamze"
+    ],
+    "hicaz--ilahi--duyek--icimde_bir--amir_ates": [
+      "icimde bir"
+    ],
+    "hicaz--sofyan--kosma--yuru_dilber--nimsofyan": [
+      "yuru dilber"
+    ],
+    "hicaz--duyek--kupe--gerci--ahmet_avni_konuk": [
+      "gerci"
+    ],
+    "hicaz--duyek--kupe--gerci_2--ahmet_avni_konuk": [
+      "gerci-2"
+    ],
+    "hicaz--sarki--rumeliturkusu--gemi_kalkar--sofyan": [
+      "gemi kalkar",
+      "gemi-kalkar"
+    ],
+    "hicaz--sarki--agir_aksaksemai--hasret_odu--tanburi_ali_efendi": [
+      "hasret odu",
+      "hasret-odu"
+    ],
+    "hicaz--sarki--agiraksak--cevr-i_hicrin--bulbuli_salih_efendi": [
+      "cevri hicrin",
+      "cevir-i-hicrin"
+    ],
+    "hicaz--sarki--agiraksak--derdimi_ummana--serif_icli": [
+      "derdimi umman",
+      "derdimi-umman"
+    ],
+    "hicaz--sarki--agiraksak--hali_nezimde--sevki_bey": [
+      "halin nezimde",
+      "hali-nezimde"
+    ],
+    "hicaz--sarki--agiraksak--omrum_artar--bimen_sen": [
+      "omurum artar"
+    ],
+    "hicaz--sarki--agiraksak--seni_sevda--ibrahim_uygun": [
+      "seni sevdan"
+    ],
+    "hicaz--sarki--agiraksak--severim_can_u--sevki_bey": [
+      "severim canım"
+    ],
+    "hicaz--sarki--agiraksak--soylemez_miydim--ii_mahmud": [
+      "soylemez miydim"
+    ],
+    "hicaz--sarki--agirevfer--bak_ne_hale--haci_arif_bey": [
+      "bak ne hale"
+    ],
+    "hicaz--sarki--aksak--bana_yardan--sadettin_kaynak": [
+      "yardan"
+    ],
+    "hicaz--sarki--aksak--ben_gamli_hazan--melahat_pars": [
+      "gamli hazan"
+    ],
+    "hicaz--sarki--aksak--bir_an--omer_sami_gupgup": [
+      "bir an"
+    ],
+    "hicaz--sarki--aksak--bir_bahar--selahaddin_pinar": [
+      "bir bahar"
+    ],
+    "hicaz--sarki--aksak--tasdi_edeyim--haci_arif_bey": [
+      "tasdi edeyim"
+    ],
+    "hicaz--sarki--aksak--yuzum_gulse--selahaddin_pinar": [
+      "gülse yüzüm"
+    ],
+    "hicaz--sarki--curcuna--acmazsan_eger--yesari_asim_arsoy": [
+      "eğer acızmazsan"
+    ],
+    "hicaz--sarki--curcuna--aksam_erdi--rahmi_bey": [
+      "akşam erdi"
+    ],
+    "hicaz--sarki--curcuna--ates_i_suzan_i--haci_faik_bey": [
+      "ateş-i süzâni"
+    ],
+    "hicaz--sarki--curcuna--ben_hic--erol_sayan": [
+      "ben hик"
+    ],
+    "hicaz--sarki--curcuna--gonul_yarasindan--selahaddin_pinar": [
+      "gonul yarasinda"
+    ],
+    "hicaz--sarki--curcuna--ruya_gibi--avni_anil": [
+      "ruya gibi"
+    ],
+    "hicaz--sarki--curcuna--severim_her--lemi_atli": [
+      "severim her"
+    ],
+    "hicaz--sarki--curcuna--sine-i_suzanima--lemi_atli": [
+      "sine suzanima"
+    ],
+    "hicaz--sarki--duyek--acik_birak--seykip_ayhan_ozisik": [
+      "seykip ayhan özisik",
+      "seykip ozisik"
+    ],
+    "hicaz--sarki--duyek--aglar_gezerim--alaeddin_yavasca": [
+      "alaeddin yavasca"
+    ],
+    "hicaz--sarki--duyek--aski_seninle--fehmi_tokay": [
+      "fehmi tokay"
+    ],
+    "hicaz--sarki--duyek--ayrilik_canlari--omer_sami_gupgup": [
+      "omer sami gupgup"
+    ],
+    "hicaz--sarki--duyek--bir_atesim--avni_anil": [
+      "avni anil"
+    ],
+    "hicaz--sarki--duyek--bogazici--alaeddin_yavasca": [
+      "boğazıcı"
+    ],
+    "hicaz--sarki--duyek--dilsad_olacak--avni_anil": [
+      "Dilsad Olacak"
+    ],
+    "hicaz--sarki--duyek--gonlumu_yaktin--karnik_garmiryan": [
+      "Gönlümu Yaktın"
+    ],
+    "hicaz--sarki--duyek--hasretim_sana--zeynettin_maras": [
+      "Hasretim Sana"
+    ],
+    "hicaz--sarki--duyek--hicbir_seyde--fethi_karamahmutoglu": [
+      "Hiçbir Şeyde"
+    ],
+    "hicaz--sarki--duyek--husn-u_guftarin--ali_rifat_cagatay": [
+      "husnu guftarin",
+      "hünkar ekber"
+    ],
+    "hicaz--sarki--duyek--ic_durma--kadri_sencalar": [
+      "ic durma",
+      "ic durum"
+    ],
+    "hicaz--sarki--duyek--inanmaz_kanmaz--sinan_sipahi": [
+      "inanmaz kanmaz",
+      "inanmaz kanamaz"
+    ],
+    "hicaz--sarki--duyek--istanbulda_bogazicinde--sekip_ayhan_ozisik": [
+      "istanbulda bogazicinde",
+      "bosphorus"
+    ],
+    "hicaz--sarki--duyek--kader_kime--avni_anil": [
+      "kader kime",
+      "kader kim"
+    ],
+    "hicaz--sarki--duyek--kederden_mi--nasibin_mehmet_yuru": [
+      "kederden"
+    ],
+    "hicaz--sarki--duyek--seni_ben--amir_ates": [
+      "ben seni"
+    ],
+    "hicaz--sarki--duyek--sensizligi_ben--zekai_tunca": [
+      "ben sensizligi"
+    ],
+    "hicaz--sarki--duyek--sevmiyorum_seni--avni_anil": [
+      "seni sevmiyorum"
+    ],
+    "hicaz--sarki--duyek--soyleyemem_derdimi--sukru_tunar": [
+      "derdini soyleyemem"
+    ],
+    "hicaz--sarki--duyek--unuttum_sanma--goksel_baktagir": [
+      "unuttum sanma"
+    ],
+    "hicaz--sarki--duyek--yalan_degil--yusuf_nalkesen": [
+      "yanli degil"
+    ],
+    "hicaz--sarki--duyek--yalancinin_birine--necdet_tokatlioglu": [
+      "yalanin birine"
+    ],
+    "hicaz--sarki--duyek--yesil_gozlerinden--umit_mutlu": [
+      "yesil gozlerinden"
+    ],
+    "hicaz--sarki--evfer--bir_seni--selahattin_icli": [
+      "bir seni"
+    ],
+    "hicaz--sarki--nimsofyan--kadri_sencalar": [
+      "nimsofyan",
+      "kadri sencalar"
+    ],
+    "hicaz--sarki--nimsofyan--dramali_hasan": [
+      "nimsofyan",
+      "dramali hasan"
+    ],
+    "hicaz--sarki--nimsofyan--fahri_kayahan": [
+      "nimsofyan",
+      "fahri kayahan"
+    ],
+    "hicaz--sarki--nimsofyan--muhlis_sabahaddin": [
+      "nimsofyan",
+      "muhlis sabahaddin"
+    ],
+    "hicaz--sarki--nimsofyan--muzaffer_ilkar": [
+      "nimsofyan",
+      "muzaffer ilkar"
+    ],
+    "hicaz--sarki--nimsofyan--mahmur_bakisli--zeki_duygulu": [
+      "mahmurbakisli"
+    ],
+    "hicaz--sarki--nimsofyan--sari_kurdelem--fahri_kayahan": [
+      "sarikurdelem"
+    ],
+    "hicaz--sarki--raksaksagi--benim_yarim--sadettin_kaynak": [
+      "benimyarim"
+    ],
+    "hicaz--sarki--semai--bulbulun_cilesi--yusuf_nalkesen": [
+      "bulbuluncilesi"
+    ],
+    "hicaz--sarki--semai--degdi_saclarima--bekirof": [
+      "degsaclarima"
+    ],
+    "hicaz--sarki--semai--tadi_yok--muzaffer_ilkar": [
+      "tadi yok"
+    ],
+    "hicaz--sarki--senginsemai--agyar_ile--bimen_sen": [
+      "agyari ile"
+    ],
+    "hicaz--sarki--senginsemai--hep_saye-i--tanburi_cemil_bey": [
+      "hep saye-i"
+    ],
+    "hicaz--sarki--sofyan--adalardan_bir--yesari_asim_arsoy": [
+      "adalardan bir"
+    ],
+    "hicaz--sarki--sofyan--al_goncayi--yesari_asim_arsoy": [
+      "gonca"
+    ],
+    "hicaz--sarki--sofyan--enginde_yavas--sadettin_kaynak": [
+      "enginde yavas"
+    ],
+    "hicaz--sarki--sofyan--ey_dil--haci_arif_bey": [
+      "ey dil"
+    ],
+    "hicaz--sarki--sofyan--gul_acarken--nihal_erkutun": [
+      "gül açarken"
+    ],
+    "hicaz--sarki--sofyan--kanaryam_guzel--mustafa_nafiz_irmak": [
+      "kanarya güzel"
+    ],
+    "hicaz--sarki--sofyan--seninle_bir--yusuf_nalkesen": [
+      "seninle bir"
+    ],
+    "hicaz--sarki--turkaksagi--ey_cerhi_sitemger--medeni_aziz_efendi": [
+      "ey cerhin sitemger",
+      "ey cehr-i sitemger"
+    ],
+    "hicaz--sarki--yuruksemai--bilmem_kac--munir_nurettin_selcuk": [
+      "bilmem kaç",
+      "bilmem kâç"
+    ],
+    "hicaz--sarki--yuruksemai--gittin_de_biraktin--munir_nurettin_selcuk": [
+      "gitmiş birakmış",
+      "gitmiş de birakmış"
+    ],
+    "hicaz--sarki--yuruksemai--ulfet_etsem--sevki_bey": [
+      "ulfet etsem",
+      "ulfet etsem sevki"
+    ],
+    "hicaz--turku--nimsofyan--bahcelerde_mor--istanbul": [
+      "bahcelerde mor"
+    ],
+    "hicaz--turku--nimsofyan--dane_dane--kirsehir": [
+      "dane dane"
+    ],
+    "hicaz--turku--nimsofyan--erkilet_guzeli": [
+      "erkilet guzeli"
+    ],
+    "hicaz--turku--nimsofyan--pencereden_kus": [
+      "pencereden kus"
+    ],
+    "hicaz--turku--nimsofyan--seni_sevdim--istanbul": [
+      "seni sevdim"
+    ],
+    "hicaz--turku--raksaksagi--arabaci--istanbul": [
+      "arabacı"
+    ],
+    "hicaz--turku--raksaksagi--entarisi_ala--istanbul": [
+      "entarisi ala"
+    ],
+    "hicaz--turku--semai--gurbette_omrum--atinc_emnalar": [
+      "gurbette omru"
+    ],
+    "hicaz--turku--sofyan--bahce_duvarini--neset_ertas": [
+      " bahçe duvarı"
+    ],
+    "hicaz--turku--sofyan--cadir_alti--gaziantep": [
+      "çadır altı"
+    ],
+    "hicaz--turku--sofyan--su_yaltadan--kirim": [
+      "su yaltadan"
+    ],
+    "hicaz--turku--sofyan--suda_balik--kirsehir": [
+      "suda balik"
+    ],
+    "hicaz--turku--turkaksagi--ben_seni--trabzon": [
+      "ben seni"
+    ],
+    "hicaz--turku--turkaksagi--carsambayi_sel--?": [
+      "carsambayi sel"
+    ],
+    "hicaz--turku--turkaksagi--divane_asik--macka": [
+      "divane asik"
+    ],
+    "hicazkar--beste--devrikebir--ey_sehensah-i--sadullah_aga": [
+      "ey sehensah",
+      "sehensah"
+    ],
+    "hicazkar--beste--yuruksemai--bulbul_gibi--zekai_dede": [
+      "bulbul gibi",
+      "bulbulgibi"
+    ],
+    "hicazkar--fantezi--duyek--aldi_beni--corlulu_asik": [
+      "aldi beni",
+      "beni aldi"
+    ],
+    "hicazkar--kocekce--aksak--bekliyorum_salinarak--muallim_ismail_hakki_bey": [
+      "bekliyorum",
+      "salinarak"
+    ],
+    "hicazkar--kocekce--aksak--gece_gunduz--muallim_ismail_hakki_bey": [
+      "gece gunduz"
+    ],
+    "hicazkar--kocekce--aydin--yabandan_geldim--muallim_ismail_hakki_bey": [
+      "yabandan geldim"
+    ],
+    "hicazkar--kocekce--ciftesofyan--nicin_sevdim--muallim_ismail_hakki_bey": [
+      "nicin sevdim"
+    ],
+    "hicazkar--kocekce--devrihindi--ay_mi--muallim_ismail_hakki_bey": [
+      "ay mi"
+    ],
+    "hicazkar--devrituran--kocekce--dag_basinda--muallim_ismail_hakki_bey": [
+      "dag_basi",
+      "dagin_basinde"
+    ],
+    "hicazkar--raksaksagi--kocekce--her_gun--ismail_hakki_bey": [
+      "hergun",
+      "her gun"
+    ],
+    "hicazkar--sofyan--kosma--melen_mahzun--muallim_ismail_hakki_bey": [
+      "melin mahzun",
+      "mahzun melin"
+    ],
+    "hicazkar--devrirevanihindi--kupe--dun_gece--ahmet_avni_konuk": [
+      "gece gecesi",
+      "gunesin once"
+    ],
+    "hicazkar--lenkfahte--nakis--hicr_i_lebinde--zekai_dede": [
+      "lebinde hicri",
+      "hicr-i lebin"
+    ],
+    "hicazkar--sarki--agiraksak--bana_hem-dem--nikogos_aga": [
+      "bana hemdem"
+    ],
+    "hicazkar--sarki--agiraksak--gel_seninle--sadullah_efendi": [
+      "gel seninle"
+    ],
+    "hicazkar--sarki--agiraksak--kirsa_bin_tel--bimen_sen": [
+      "kirsa bin tel"
+    ],
+    "hicazkar--sarki--agiraksak--seni_candan--nasibin_mehmet_yuru": [
+      "seni candan"
+    ],
+    "hicazkar--sarki--agirduyek--can_ile_ben--sakir_aga": [
+      "can ile ben"
+    ],
+    "hicazkar--sarki--aksak--sen_gibi--numan_aga": [
+      "sen gibi"
+    ],
+    "hicazkar--sarki--aksak--acil_ey_gonce--haci_arif_bey": [
+      "acil ey gonce"
+    ],
+    "hicazkar--sarki--aksak--bekledim_fecre--rakim_elkutlu": [
+      "bekledim fecre"
+    ],
+    "hicazkar--sarki--aksak--bir_yar--k_hafiz_yasar": [
+      "bir yar"
+    ],
+    "hicazkar--sarki--aksak--ey_gul--tahir_aga": [
+      "ey gul"
+    ],
+    "hicazkar--sarki--aksak--nerdesin--leyla_saz": [
+      "nerdesin"
+    ],
+    "hicazkar--sarki--aksak--nolur_bir_an--mildan_niyazi_ayomak": [
+      "nolur bir an"
+    ],
+    "hicazkar--sarki--aksak--oturmus_testi--muhlis_sabahaddin": [
+      "oturmus testi"
+    ],
+    "hicazkar--sarki--aksak--severim_her--nefise_ozses": [
+      "severim her"
+    ],
+    "hicazkar--sarki--curcuna--ben_sana--corlulu_asik": [
+      "ben sana"
+    ],
+    "hicazkar--sarki--curcuna--guldu_acildi--haci_arif_bey": [
+      "gül dü açıldı"
+    ],
+    "hicazkar--sarki--curcuna--mestim_bu_gece--lavtaci_ovrik": [
+      "mestim bu gece"
+    ],
+    "hicazkar--sarki--curcuna--senelerce--sabri_suha_ansen": [
+      "senelerçe"
+    ],
+    "hicazkar--sarki--curcuna--usandirdi_felek--ahmet_mukerrem_akinci": [
+      "usandırdı felek"
+    ],
+    "hicazkar--sarki--devrihindi_8--gizli_sevdim--tahir_aga": [
+      "gizli sevdim"
+    ],
+    "hicazkar--sarki--devrihindi--ey_verd-i--tahir_aga": [
+      "ey verd-i",
+      "ey verdi"
+    ],
+    "hicazkar--sarki--devrihindi--gonlumu_ducar--sevki_bey": [
+      "gönlü mü döker",
+      "gönülüm döker"
+    ],
+    "hicazkar--sarki--devrihindi--lezzet_almis--ahmet_mithat_gupgupoglu": [
+      "lezze almis",
+      "lezze almış"
+    ],
+    "hicazkar--sarki--devrihindi--seb_ta_seher--hasim_bey": [
+      "şeb-i ta şehr",
+      "şeb-i ta şehre"
+    ],
+    "hicazkar--sarki--duyek--aglatip_kustureceksen--alaattin_sensoy": [
+      "ağlatıp kıştıracaksın",
+      "ağlatıp küstürceksin"
+    ],
+    "hicazkar--sarki--duyek--beyhude_askina--nikogos_aga": [
+      "beyhude askına"
+    ],
+    "hicazkar--sarki--duyek--birer_birer--omer_sami_gupgup": [
+      "birer birer"
+    ],
+    "hicazkar--sarki--duyek--ciceklerin_guluyor--sadettin_kaynak": [
+      "çiçeklerin gülüyor"
+    ],
+    "hicazkar--sarki--duyek--cozmek_elinde--sadettin_kaynak": [
+      "kozmek elinde"
+    ],
+    "hicazkar--sarki--duyek--gul_dalinda--neveser_kokdes": [
+      "gül dalında"
+    ],
+    "hicazkar--sarki--duyek--visali_yar--rakim_elkutlu": [
+      "visali_ya"
+    ],
+    "hicazkar--sarki--duyek--yaziktir_etme--erol_sayan": [
+      "yaziktir etme"
+    ],
+    "hicazkar--sarki--duyek--yollari_gurbete--sadi_isilay": [
+      "yolları gurbete"
+    ],
+    "hicazkar--sarki--duyek--yuzun_gullerden--sadettin_kaynak": [
+      "yüzün gülleden"
+    ],
+    "hicazkar--sarki--evfer--hic_esin--zeki_mehmet_aga": [
+      "hiç esin"
+    ],
+    "hicazkar--sarki--kapali_curcuna--bahar_geldi--muhlis_sabahaddin_ezgi": [
+      "bahar geldi"
+    ],
+    "hicazkar--sarki--kapali_curcuna--mani_oluyor--tatyos_efendi": [
+      "mani oluyor"
+    ],
+    "hicazkar--sarki--katikofti--dus_olma--ahmet_mithat_gupgupoglu": [
+      "dus olma"
+    ],
+    "hicazkar--sarki--nimsofyan--camlica_yollari--amir_ates": [
+      "camlica yollari"
+    ],
+    "hicazkar--sarki--oynak--cicekler_derleyeyim--muzaffer_ilkar": [
+      "cicekler derleyeyim"
+    ],
+    "hicazkar--sarki--semai--sari_mimozamsin--alaeddin_yavasca": [
+      "sari mimozam"
+    ],
+    "hicazkar--sarki--semai--yoktur_zaman--latif_aga": [
+      "zaman yok"
+    ],
+    "hicazkar--sarki--senginsemai--layik_mi--sekerci_cemil_bey": [
+      "layik mi"
+    ],
+    "hicazkar--sarki--senginsemai--son_askimi--lemi_atli": [
+      "son askim"
+    ],
+    "hicazkar--sarki--sofyan--ben_sozune--numan_aga": [
+      "ben sozune"
+    ],
+    "hicazkar--sarki--sofyan--bir_halet--haci_arif_bey": [
+      "bir halet",
+      "bir halett"
+    ],
+    "hicazkar--sarki--sofyan--sarsam_seni--sadettin_kaynak": [
+      "sarsam seni",
+      "sarsam senni"
+    ],
+    "hicazkar--sarki--turkaksagi--gonlumu_bir--tahir_aga": [
+      "gönlü mü bir",
+      "gönülüm bir"
+    ],
+    "hicazkar--sarki--turkaksagi--v vazgecip_naz--medeni_aziz_efendi": [
+      "vazgeçip naz",
+      "vazgeçip nazz"
+    ],
+    "hicazkar--nimsofyan--kemani_sebuh": [
+      "1"
+    ],
+    "hicazkar--turku--aksak--afiyonun_ortasinda--afyon": [
+      "Afiyon'un ortasında"
+    ],
+    "hicazkar--turku--tekvurus--gul_kuruttum--hatay": [
+      "Gül kuruttum"
+    ],
+    "hicazkar--seyir--semai--1--rauf_yekta": [
+      "1"
+    ],
+    "hisarbuselik--beste--cenber--zahm-i_sinem--zekai_dede": [
+      "zahmi-sinema",
+      "zahmi sinema"
+    ],
+    "hisarbuselik--kupe--aksak--sevdigimden_dun--ahmet_avni_konuk": [
+      "sevdigimden dun",
+      "sevdigimden dun"
+    ],
+    "hisarbuselik--sarki--agiraksak--vuslata_nail--zekai_dede": [
+      "vuslata nail",
+      "vuslata-nail"
+    ],
+    "hisarbuselik--sarki--aksak--aman_ey_suh-i--ii_mahmut": [
+      "aman ey suh"
+    ],
+    "hisarbuselik--sarki--aksak--beni_de_alin--selahaddin_pinar": [
+      "beni de alin"
+    ],
+    "hisarbuselik--sarki--aksak--eyle_kerem--numan_aga": [
+      "eyle kerem"
+    ],
+    "hisarbuselik--sarki--aksak--guller_ki--zeki_atkosar": [
+      "guller ki"
+    ],
+    "hisarbuselik--sarki--aksak--yandim_deminden--denizoglu_ali_bey": [
+      "yandim deminden"
+    ],
+    "hisarbuselik--sarki--aksak--yorulmus_ol--latif_aga": [
+      "yorulmuş ol"
+    ],
+    "hisarbuselik--sarki--curcuna--visalinle_safayab--muallim_ismail_hakki_bey": [
+      "visalinle safayab"
+    ],
+    "hisarbuselik--sarki--duyek--daha_bilmem--akin_ozkan": [
+      "daha bilmem"
+    ],
+    "hisarbuselik--sarki--duyek--du_cesmimden--tanburi_mustafa_cavus": [
+      "du cesmimden"
+    ],
+    "hisarbuselik--sarki--duyek--yillardir_ozlemim--fethi_karamahmutoglu": [
+      "yillardir ozlemim"
+    ],
+    "huseyni--beste--agircenber--cemalin_ates-i--zaharya": [
+      "cemal in atesi"
+    ],
+    "huseyni--beste--berefsan--sebnem_gibi--zaharya": [
+      "sebnem gibi"
+    ],
+    "huseyni--beste--cenber--nigaha_ruhsat--zaharya": [
+      "nigaha ruhsat"
+    ],
+    "huseyni--beste--duyek--muheyya_oldu--rakim_elkutlu": [
+      "muheyya oldu"
+    ],
+    "huseyni--beste--hafif--cektim_el--huseyn_civriz": [
+      "cektim el",
+      "cektim"
+    ],
+    "huseyni--duet--turkaksagi--ey_suh-i--ali_rifat_cagatay": [
+      "ey suhi"
+    ],
+    "huseyni--ilahi--(belirsiz)--ey_gonul--ali_ufki": [
+      "ey gonul"
+    ],
+    "huseyni--ilahi--yuruksemai--nur-i_fahr-i--dede_efendi": [
+      "nur-i fahri"
+    ],
+    "huseyni--kupe--duyek--pesden_eylerdi--ahmet_avni_konuk": [
+      "pesden eylerdi"
+    ],
+    "huseyni--mars--sofyan--ceddin_deden--kaptanzade_ali_riza_bey": [
+      "ceddin deden"
+    ],
+    "huseyni--nakis--yuruksemai--gonuller_ugrusu--kara_ismail_aga": [
+      "gonuller ugurusu"
+    ],
+    "sofyan--ornekhavasi--huseyni--ruhi_ayangil": [
+      "3",
+      "ornek oz"
+    ],
+    "nimsofyan--oyunhavasi--huseyni--tanburi_cemil_bey": [
+      "cecen kizi"
+    ],
+    "huseyni--sarki--agiraksak--bendeni_gordukce--ismet_aga": [
+      "bendeni gorduguce",
+      "beneni gordukce"
+    ],
+    "huseyni--sarki--agiraksak--farig_olmam--yesari_asim_arsoy": [
+      "farig olmayan",
+      "farig olmam"
+    ],
+    "huseyni--sarki--agiraksak--firkat_i_canan--civan_aga": [
+      "firkat-i canan",
+      "canan firkat"
+    ],
+    "huseyni--sarki--agiraksak--semi_husnun--sivelioglu_yorgaki": [
+      "semi husnu",
+      "husnu semi"
+    ],
+    "huseyni--sarki--aksak--arzetmedigim--emin_ongan": [
+      "arzetmedigim",
+      "arz etmedigim"
+    ],
+    "huseyni--sarki--aksak--bir_damlacik--omer_dilek": [
+      "bir damlacık"
+    ],
+    "huseyni--sarki--aksak--bir_dilberdir--tanburi_mustafa_cavus": [
+      "bir dilberdir"
+    ],
+    "huseyni--sarki--aksak--bir_yana--nikogos_aga": [
+      "bir yana"
+    ],
+    "huseyni--sarki--aksak--ezelden_asinanim--serif_icli": [
+      "ezelden asinanım"
+    ],
+    "huseyni--sarki--aksak--hayal_deryasina--selahaddin_pinar": [
+      "hayal deryasına"
+    ],
+    "huseyni--sarki--aksak--sensizlige_soylendi--ilgun_soysev": [
+      "sensizlige soylendi"
+    ],
+    "huseyni--sarki--aksak--sevdigim_cemalin--mahmud_celaleddin_pasa": [
+      "sevdigim cemalin"
+    ],
+    "huseyni--sarki--aksak--varalim_kuy-i--munir_nurettin_selcuk": [
+      "varalim kuy"
+    ],
+    "huseyni--sarki--aksak--yine_yol--serif_icli": [
+      "yine yol"
+    ],
+    "huseyni--sarki--curcuna--aglarim_caglar--sadettin_kaynak": [
+      "aglarim caglar"
+    ],
+    "huseyni--sarki--devrihindi--dil-rubasin_sevdigim--hafiz_mehmet_esref_efendi": [
+      "rubabin sevdigim"
+    ],
+    "huseyni--sarki--devrihindi--gormek_ister--tanburi_cemil_bey": [
+      "görmek ister"
+    ],
+    "huseyni--sarki--duyek--bahcede_gordum--medeni_aziz_efendi": [
+      "bahçede gördüm"
+    ],
+    "huseyni--sarki--duyek--her_seherde--nihat_adlim": [
+      "her seherde"
+    ],
+    "huseyni--sarki--duyek--zaman_olur_ki--lemi_atli": [
+      "zaman olur ki"
+    ],
+    "sofyan--sarki--huseyni--zeynom_zeynom--ali_rifat_cagatay": [
+      "zeynom zeynom"
+    ],
+    "sofyan--sarki--huseyni--zeytin_gozlum--selahattin_icli": [
+      "zeytin gozlum"
+    ],
+    "turkaksagi--sarki--huseyni--hicran_oku--sevki_bey": [
+      "hicran oku"
+    ],
+    "yuruksemai--sarki--huseyni--senden_bilirim--tanburi_ali_efendi": [
+      "senden bilirim"
+    ],
+    "huseyni--sazsemaisi--aksaksemai--iii_selim": [
+      "iii selim",
+      "selim"
+    ],
+    "huseyni--sazsemaisi--aksaksemai--lavtaci_andon": [
+      "lavtaci andon",
+      "andon"
+    ],
+    "huseyni--sazsemaisi--aksaksemai--neyzen_rasid_efendi": [
+      "rasid efendi",
+      "rasid"
+    ],
+    "huseyni--sazsemaisi--aksaksemai--tatyos_efendi": [
+      "tatyos efendi",
+      "tatyos"
+    ],
+    "huseyni--seyir--duyek--erol_bingol": [
+      "erol bingol",
+      "bingol"
+    ],
+    "huseyni--turku--devrihindi--semsiyemin_ucu--trakya": [
+      "semsiyemin uc"
+    ],
+    "huseyni--turku--devrituran--yagmur_yagar--?": [
+      "yagmur yagar"
+    ],
+    "huseyni--turku--duyek--sabahtan_kalktim--ali_rifat_cagatay": [
+      "sabah tan kalktim"
+    ],
+    "huseyni--turku--evfer--dere_geliyor--?": [
+      "dere geliyor"
+    ],
+    "huseyni--turku--kapali_curcuna--havada_bulut--?": [
+      "hava bulut"
+    ],
+    "huseyni--turku--musemmen--aglama_yar--anonim": [
+      "aglama_yar"
+    ],
+    "huseyni--turku--nimsofyan--bir_of_ceksem--kayseri": [
+      "bir of ceksem"
+    ],
+    "huseyni--turku--raksaksagi--menekse_kokulu--?": [
+      "menekse kokulu"
+    ],
+    "huseyni--turku--semai_8--aksam_olur--mehmet_yuzgec": [
+      "aksam olur"
+    ],
+    "huseyni--turku--sofyan--cikayim_gideyim--?": [
+      "cikayim gideyim"
+    ],
+    "sofyan--turku--huseyni--ciktim_belen--mugla": [
+      "ciktim belen"
+    ],
+    "sofyan--turku--huseyni--dost_dost_--asik_veysel": [
+      "dost dost"
+    ],
+    "sofyan--turku--huseyni--hey_onbesli--tokat": [
+      "hey onbesli"
+    ],
+    "sofyan--turku--huseyni--keklik_daglarda--?": [
+      "keklik daglarda"
+    ],
+    "sofyan--turku--huseyni--kina_mi--nuri_halil_poyraz": [
+      "kina mi"
+    ],
+    "sofyan--turku--huseyni--koprden_gecti--kirsehir": [
+      "kopruden gecti"
+    ],
+    "sofyan--turku--huseyni--koskum_var--?": [
+      "koskum var"
+    ],
+    "sofyan--turku--huseyni--sabahin_seher--?": [
+      "sabahin seher"
+    ],
+    "sofyan--turku--huseyni--tren_gelir--bozuyuk": [
+      "tren gelir"
+    ],
+    "sofyan--turku--huseyni--yaylans_cimenine--trabzon": [
+      "yaylanin cimenesine"
+    ],
+    "huseyni--turku--yuruksemai--bir_hisminan--kars": [
+      "bir hismine an",
+      "bir hısımınan"
+    ],
+    "huseyni--yuruksemai--senginsemai--ben_gibi--tabi_mustafa_efendi": [
+      "ben gibi"
+    ],
+    "huseyni--yuruksemai--yuruksemai--dok_dideden--tabi_mustafa_efendi": [
+      "dok dededen"
+    ],
+    "huseyni--zeybek--agiraksak--sarizeybek--osman_pehlivan": [
+      "sari zeybek"
+    ],
+    "huseyniasiran--kupe--aksaksemai--gel--ahmet_avni_konuk": [
+      "gel"
+    ],
+    "huzzam--sarki--agiraksak--sabrimi_gamzelerin--bimen_sen": [
+      "sabrimi gamzelerin"
+    ],
+    "huzzam--sarki--agirduyek--bag_i_husnunde--dede_salih_efendi": [
+      "bag-i husnunde"
+    ],
+    "huzzam--sarki--agirsenginsemai--gonlum_nice--mustafa_nafiz_irmak": [
+      "gonlum nice"
+    ],
+    "huzzam--sarki--aksak--adanin_yesil_camlari--sukru_tunar": [
+      "adanin yesil camlari"
+    ],
+    "huzzam--sarki--aksak--bahsetme_o--umit_gurelman": [
+      "bahsetme o"
+    ],
+    "huzzam--sarki--aksak--dil_uyur--munir_nurettin_selcuk": [
+      "dil uyur"
+    ],
+    "huzzam--sarki--aksak--dinmiyor_hic--ziya_taskent": [
+      "din miyor hic"
+    ],
+    "huzzam--sarki--aksak--ettigin_cevri--cinucen_tanrikorur": [
+      "ettigin ceviri"
+    ],
+    "huzzam--sarki--aksak--ey_husn--ahmed_irsoy": [
+      "ey husnu"
+    ],
+    "huzzam--sarki--aksak--gonlum_seher--sadettin_kaynak": [
+      "gönül seher"
+    ],
+    "huzzam--sarki--aksak--gonul_dustu--kemenceci_yani": [
+      "gonul_dustu",
+      "gönül dûstü"
+    ],
+    "huzzam--sarki--aksak--gonul_verdim--iii_selim": [
+      "gonul_verdim",
+      "gönül verdim"
+    ],
+    "huzzam--sarki--aksak--gozum_hasretle--tatyos_efendi": [
+      "gozum_hasretle",
+      "gözüm hasretle"
+    ],
+    "huzzam--sarki--aksak--gozunun_rengini--selahaddin_pinar": [
+      "gozunun_rengini",
+      "gözünün rengi"
+    ],
+    "huzzam--sarki--aksak--guzellerde_ne--tanburi_mustafa_cavus": [
+      "guzellersde_ne",
+      "güzel erdemlerde ne"
+    ],
+    "huzzam--sarki--aksak--yine_bir--serif_icli": [
+      "yine bir"
+    ],
+    "huzzam--sarki--aksak--zamani_var_ki--klarnet_ibrahim_efendi": [
+      "zaman var ki"
+    ],
+    "huzzam--sarki--aksaksemaievferi--kerem_eyle--medeni_aziz_efendi": [
+      "kerem eyle"
+    ],
+    "huzzam--sarki--ciftesofyan--ey_gul-i--dede_efendi": [
+      "ey gul"
+    ],
+    "huzzam--sarki--curcuna--aksam_donusu--udi_marko_colakoglu": [
+      "aksam donusu"
+    ],
+    "curcuna--sarki--huzzam--askinla_surunsem--selahaddin_pinar": [
+      "askinlasurunsem",
+      "askinla surunsem"
+    ],
+    "curcuna--sarki--huzzam--ayrilik_umitlerin--avni_anil": [
+      "ayrilik umitlerin",
+      "ayrilikumitlerin"
+    ],
+    "curcuna--sarki--huzzam--bir_gun--omer_sami_gupgup": [
+      "bir gun",
+      "birgun"
+    ],
+    "curcuna--sarki--huzzam--bir_zamanlar--sukru_tunar": [
+      "bir zamanlar",
+      "birzamanlar"
+    ],
+    "curcuna--sarki--huzzam--gecenin_matemini--selahaddin_pinar": [
+      "gecenin matemini",
+      "geceninmatemini"
+    ],
+    "huzzam--sarki--curcuna--gokyuzune_ciksan--omer_sami_gupgup": [
+      "gök yüzüne çıkсан'tan"
+    ],
+    "huzzam--sarki--curcuna--gonul_durup--sukru_tunar": [
+      "gönül durmuş"
+    ],
+    "huzzam--sarki--curcuna--guzel_gun_gormedi--haci_arif_bey": [
+      "güzel gün görmedim"
+    ],
+    "huzzam--sarki--curcuna--kusade_taliim--sevki_bey": [
+      "kuşatma talimatı"
+    ],
+    "huzzam--sarki--curcuna--leylaklarin_hayali--sadettin_kaynak": [
+      "leylakların hayali"
+    ],
+    "huzzam--sarki--curcuna--mahzun_gonul--kemani_salih_efendi": [
+      "mahzun gönl"
+    ],
+    "huzzam--sarki--curcuna--omrum_seni--yesari_asim_arsoy": [
+      "ömrüm seni"
+    ],
+    "huzzam--sarki--curcuna--yine_kalbim--yesari_asim_arsoy": [
+      "yeniden kalbim"
+    ],
+    "huzzam--sarki--devrihindi--ey_cefacu--sakir_aga": [
+      "ay cefacu"
+    ],
+    "huzzam--sarki--devrihindi--sen_de_leyladan_mi--serif_icli": [
+      "sen de leyladan mı"
+    ],
+    "huzzam--sarki--duyek--umidim_kalmadi--medeni_aziz_efendi": [
+      "umidim kalmadi"
+    ],
+    "huzzam--sarki--duyek--a_canim--tanburi_mustafa_cavus": [
+      "a canim"
+    ],
+    "huzzam--sarki--duyek--aksamin_oldugu--avni_anil": [
+      "aksamin oldugu"
+    ],
+    "huzzam--sarki--duyek--ay_buluttan--necip_gulses": [
+      "ay buluttan"
+    ],
+    "huzzam--sarki--duyek--bahar_oldu--haci_arif_bey": [
+      "bahar oldu"
+    ],
+    "uyanik--sarki--huzzam--beklerim_her_gun--ismail_hakki_nebiloglu": [
+      "beklerim her gün"
+    ],
+    "uyanik--sarki--huzzam--birak_duygulari--omer_sami_gupgup": [
+      "birak duygulari"
+    ],
+    "uyanik--sarki--huzzam--bu_gece--teoman_alpay": [
+      "bu gece"
+    ],
+    "uyanik--sarki--huzzam--dilimi_baglasalar--selahattin_altinbas": [
+      "dilimi baglasalar"
+    ],
+    "uyanik--sarki--huzzam--dun_gece--semahat_ozdenses": [
+      "dun gece"
+    ],
+    "huzzam--sarki--duyek--dun_gece--yesari_asim_arsoy": [
+      "dün gece"
+    ],
+    "huzzam--sarki--duyek--gozun_aydin--omer_dilek": [
+      "gözün aydın"
+    ],
+    "huzzam--sarki--duyek--gurbet_elde--sukru_tunar": [
+      "gurbet elde"
+    ],
+    "huzzam--sarki--duyek--haleli_gozlerin--bimen_sen": [
+      "haleli gözlerin"
+    ],
+    "huzzam--sarki--duyek--hayat_budur--huseyin_mayadag": [
+      "hayat buda"
+    ],
+    "uyanik--sarki--huzzam--icimde_bin--avni_anil": [
+      "icimde bin"
+    ],
+    "uyanik--sarki--huzzam--icimde_kim--yusuf_nalkesen": [
+      "icimde kim"
+    ],
+    "uyanik--sarki--huzzam--kalbimin_sahibi--sekip_ayhan_ozisik": [
+      "kalbimin sahibi"
+    ],
+    "uyanik--sarki--huzzam--menekse_gozlerde--sekip_ayhan_ozisik": [
+      "menekse gozlerde"
+    ],
+    "uyanik--sarki--huzzam--nicin_nalendesin--nikogos_aga": [
+      "nicin nalendesin"
+    ],
+    "huzzam--sarki--duyek--omrumuzun_son--selahattin_altinbas": [
+      "omrımızın son"
+    ],
+    "huzzam--sarki--duyek--omrunde_sarmadin--omer_sami_gupgup": [
+      "omründe sarmadın"
+    ],
+    "huzzam--sarki--duyek--pisman_olur_da--irfan_ozbakir": [
+      "pişman olur da"
+    ],
+    "huzzam--sarki--duyek--sacin_yuzume--teoman_alpay": [
+      "şakın yüzüme"
+    ],
+    "huzzam--sarki--duyek--seni_sesini--sadi_hosses": [
+      "senin sesini"
+    ],
+    "huzzam--sarki--duyek--sesimde_sarkisi--selahattin_inal": [
+      "sesimde sarkisi"
+    ],
+    "huzzam--sarki--duyek--soyleme_bilmesinler--selahattin_altinbas": [
+      "soyleme bilmesinler"
+    ],
+    "huzzam--sarki--duyek--su_gogsum--cevdet_cagla": [
+      "su gogsum"
+    ],
+    "huzzam--sarki--duyek--talihin_elinde--arif_sami_toker": [
+      "talihin elinde"
+    ],
+    "huzzam--sarki--duyek--unuttun_mu--mustafa_seyran": [
+      "unuttun mu"
+    ],
+    "huzzam--sarki--duyek--yalniz_aksamlarimda--omer_sami_gupgup": [
+      "yalnız aksamımda"
+    ],
+    "huzzam--sarki--duyek--zamanla_belki--yesari_asim_arsoy": [
+      "zamanla belki"
+    ],
+    "huzzam--sarki--duyek--zannetme_ki--kenan_savkli": [
+      "zannetme ki"
+    ],
+    "huzzam--sarki--musemmen--turlu_derde--serif_icli": [
+      "turlu derde"
+    ],
+    "huzzam--sarki--nimsofyan--gezdigim_dikenli--kadri_sencalar": [
+      "gezdim dikenli"
+    ],
+    "makam--sarki--huzzam--isittim_ey--sakir_aga": [
+      "isittim ey"
+    ],
+    "makam--sarki--huzzam--dil-hun_olurum--bimen_sen": [
+      "dil hun olurum"
+    ],
+    "makam--sarki--huzzam--her_gece--kasim_inaltekin": [
+      "her gece"
+    ],
+    "makam--sarki--huzzam--omrumuzun_son_saati--avni_anil": [
+      "omrumuzun son saati"
+    ],
+    "makam--sarki--huzzam--ozledim_gel--omer_sami_gupgup": [
+      "ozledim gel"
+    ],
+    "hal-i_dil-i--sarki--huzzam--senginsemai--haci_arif_bey": [
+      "hal dil"
+    ],
+    "mahzun_durusun--sarki--huzzam--senginsemai--ekrem_guyer": [
+      "mahzun durusun"
+    ],
+    "sen_sanki_baharin--sarki--huzzam--senginsemai--musa_sureyya_bey": [
+      "bahar"
+    ],
+    "ask_yolunda--sarki--huzzam--sofyan--sadettin_kaynak": [
+      "sevgili"
+    ],
+    "bin_huzun--sarki--huzzam--sofyan--sadettin_kaynak": [
+      "bin hüzün"
+    ],
+    "yesari--sarki--huzzam--sen_olmasaydin--yesari_asim_arsoy": [
+      "sen olmasaydınız"
+    ],
+    "yesari--sarki--huzzam--seni_cilgin--akin_ozkan": [
+      "seni çıldırın"
+    ],
+    "yesari--sarki--huzzam--solgun_durma--munir_nurettin_selcuk": [
+      "soğuk durma"
+    ],
+    "yesari--sarki--huzzam--yar_yolunu--yesari_asim_arsoy": [
+      "yar yolunu"
+    ],
+    "yesari--sarki--huzzam--askin_bana--rakim_elkutlu": [
+      "aşkıma"
+    ],
+    "huzzam--sarki--turkaksagi--baglandi_gonul--selanikli_ahmed_bey": [
+      "baglandı gönül"
+    ],
+    "huzzam--sarki--turkaksagi--bahar_oldu--seyh_ethem_efendi": [
+      "bahar oldu"
+    ],
+    "huzzam--sarki--turkaksagi--meftun_olali--haci_arif_bey": [
+      "meftûn olalı"
+    ],
+    "huzzam--sarki--turkaksagi--ruhumda_bu_seb--bimen_sen": [
+      "ruhumda bu seb"
+    ],
+    "huzzam--sarki--turkaksagi--sevdasi_henuz--yorgo_bacanos": [
+      "sevdaşı henus"
+    ],
+    "huzzam--sarki--turkaksagi--ummidini_kirpiklerine--selahaddin_pinar": [
+      "ummidini kirpiklere"
+    ],
+    "huzzam--turku--ikizaksak--cirpinirdi_karadeniz--uzeyir_hacibeyov": [
+      "cirpinir düdük"
+    ],
+    "huzzam--turku--musemmen_ii--su_karsiki--hatay": [
+      "su karsi"
+    ],
+    "isfahan--sarki--aksak--karsimda_durup--irfan_dogrusoz": [
+      "karsımda durup"
+    ],
+    "isfahan--sarki--aksak--yokmus_o--mustafa_nafiz_irmak": [
+      "yokmuş o"
+    ],
+    "isfahan--sarki--curcuna--etme_beyhude--rahmi_bey": [
+      "etme beyhude"
+    ],
+    "isfahan--sarki--curcuna--sevdigim_vaslini--?": [
+      "sevdigim vaslini"
+    ],
+    "isfahan--sarki--devrihindi--dil-i_bicare--mahmud_celaleddin_pasa": [
+      "dil-i bicare"
+    ],
+    "isfahan--sarki--devrihindi--ey_gaziler--iii_selim": [
+      "ey gaziler",
+      "gaziler"
+    ],
+    "isfahan--sarki--duyek--gelirken_meclise--haham_nesim": [
+      "gelirken meclise",
+      "meclise"
+    ],
+    "isfahan--sarki--murekkepsofyan--canda_hasiyyet--haci_arif_bey": [
+      "canda hasiyyet",
+      "hasiyyet"
+    ],
+    "isfahan--sarki--musemmen--dusme_ey_asik--nikogos_aga": [
+      "dusme ey asik",
+      "asik"
+    ],
+    "isfahan--sazsemaisi--aksaksemai--?--tanburi_cemil_bey": [
+      "?",
+      "belirsiz"
+    ],
+    "isfahan--seyir--sofyan--erol_bingol": [
+      "1"
+    ],
+    "isfahan--seyir--sofyan--sefik_gurmeric": [
+      "1"
+    ],
+    "isfahan--taksim--serbest--tanburi_cemil_bey": [
+      "?"
+    ],
+    "isfahan--turku--aksak--tanburi_mustafa_cavus": [
+      "feslegen_ektim"
+    ],
+    "isfahan--turku--iki-bir--ibrahim_yildirim": [
+      "bugun_ayin"
+    ],
+    "aranagme--devrihindi--?": [
+      "karcigar"
+    ],
+    "aranagme--beste--zencir--yikildi_ask_ile--dellalzade_haci_ismael_efendi": [
+      "yikildi ask ile"
+    ],
+    "guvende--nimdevir--edremit--karcigar": [
+      "edremit"
+    ],
+    "ilahi--duyek--ey_derde_derman--karcigar--rakim_elkutlu": [
+      "ey derde derman"
+    ],
+    "kocekce--aksak--benliyi_aldim--karcigar": [
+      "benliyi aldim"
+    ],
+    "kocekce--kocekce--aksak--girdi_gonul--dede_efendi": [
+      "girdigönül"
+    ],
+    "kocekce--kocekce--devrihindi--gul_acil--dede_efendi": [
+      "gülacıllık"
+    ],
+    "kocekce--oynak--oynak--iki_de_durnam--dede_efendi": [
+      "iki dördüncü dörtlük"
+    ],
+    "aksak--sarki--agiraksak--rengi_ruhsarin--haci_arif_bey": [
+      "renk ruhsarın",
+      "ruhsarin"
+    ],
+    "aksak--sarki--agirevfer--hezar_zar--suyolcuzade_salih_efendi": [
+      "hezar zar",
+      "zar hezar"
+    ],
+    "aksak--sarki--aksak--aldin_dil-i--enderuni_ali_bey": [
+      "aldın dil",
+      "dil aldin"
+    ],
+    "aksak--sarki--aksak--ari_olsam--necmi_piskin": [
+      "arı olsam",
+      "olsam arı"
+    ],
+    "aksak--sarki--aksak--bir_rum_dilbere--tanburi_mustafa_cavus": [
+      "bir rum dilber",
+      "dilber bir"
+    ],
+    "makam--sarki--aksak--bu_kis--ismet_aga": [
+      "bu kis"
+    ],
+    "makam--sarki--aksak--dagda_tavsanlar--haci_arif_bey": [
+      "dagda tavsanlar"
+    ],
+    "makam--sarki--aksak--daglari_hep--sadettin_kaynak": [
+      "daglari hep"
+    ],
+    "makam--sarki--aksak--gerci_kiyamam--haci_arif_bey": [
+      "gerci kiyamam"
+    ],
+    "makam--sarki--aksak--gulmezse_yuzun--mustafa_nafiz_irmak": [
+      "gulmezse yuzun"
+    ],
+    "karcigar--sarki--aksak--senin_guzel--sekip_ayhan_ozisik": [
+      "senin guzel"
+    ],
+    "karcigar--sarki--ciftesofyan--kara_bulutlari--sadettin_kaynak": [
+      "kara bulutlar"
+    ],
+    "karcigar--sarki--curcuna--gorunce_ben--selanikli_ahmed_bey": [
+      "gorunce ben"
+    ],
+    "karcigar--sarki--curcuna--gul_acar--cevdet_cagla": [
+      "gul acar"
+    ],
+    "karcigar--sarki--curcuna--o_ahu--fehmi_tokay": [
+      "o ahu"
+    ],
+    "duyek--sarki--duyek--aski_pinhan--haci_arif_bey": [
+      "Hacı Arif Bey"
+    ],
+    "kemend-i_zulfu--sarki--duyek--afet_misirliyan": [
+      "kemend-i zulfi"
+    ],
+    "kirpigi_oyali--sarki--duyek--sadettin_kaynak": [
+      "kirpi gi oyali"
+    ],
+    "nedir_bu--sarki--duyek--selahattin_icli": [
+      "nedir bu"
+    ],
+    "oh_guzel_kiz--sarki--duyek--sadettin_kaynak": [
+      "oh guzel kiz"
+    ],
+    "unutmadim_seni--sarki--duyek--sekip_ayhan_ozisik": [
+      "unutmadim seni"
+    ],
+    "kapali_curcuna--sarki--closed_curcuna--mest_oldu--serif_icli": [
+      "mest oldu"
+    ],
+    "musemmen--sarki--hem_seversin--karcigar--sadi_hosses": [
+      "hem seversin"
+    ],
+    "nimsofyan--sarki--kocyigitler--karcigar--sadettin_kaynak": [
+      "koc yigitler"
+    ],
+    "semai--sarki--vah_meyusi--karcigar--mahmud_celaleddin_pasa": [
+      "vah meyusi"
+    ],
+    "senginsemai--sarki--bir_goncaya--karcigar--haci_arif_bey": [
+      "bir goncaya"
+    ],
+    "karcigar--sarki--yine_ey--santuri_ethem_efendi": [
+      "yine ey",
+      "santuri ethem efendi"
+    ],
+    "karcigar--sarki--bilmem_ki_safa--leon_hanciyan": [
+      "bilmem ki safa",
+      "leon hanciyan"
+    ],
+    "karcigar--sarki--varken_gonulde--haci_arif_bey": [
+      "varken gonulde",
+      "haci arif bey"
+    ],
+    "karcigar--sarki--bir_suh--selahattin_icli": [
+      "bir suh",
+      "selahattin icli"
+    ],
+    "karcigar--sazsemaisi--aksaksemai--?--ahmet_mukerrem_akinci": [
+      "Ahmet Mukerrem Akinçi",
+      "Ahmet Mukerrem Akinci"
+    ],
+    "karcigar--sazsemaisi--aksaksemai--?--kanuni_omer_efendi": [
+      "Kanuni Omer Efendi",
+      "Kanuni Ömer Efendi"
+    ],
+    "karcigar--sazsemaisi--aksaksemai--?--resat_aysu": [
+      "Resat Aysu",
+      "Reşat Aysu"
+    ],
+    "karcigar--seyir--devrihindi--1--erol_bingol": [
+      "Erol Bingöl",
+      "Erol Bingol"
+    ],
+    "karcigar--seyir--semai--1--rauf_yekta": [
+      "Rauf Yekta"
+    ],
+    "seyir--sefik_gurmeric--sofyan--karcigar": [
+      "karcigar"
+    ],
+    "turku--aksak--karcigar--cayira_serdim": [
+      "cayira_serdim"
+    ],
+    "turku--duyek--karcigar--bagi_bagimca": [
+      "bagi_bagimca"
+    ],
+    "turku--nimsofyan--karcigar--ahu_gozlerini": [
+      "ahu_gozlerini"
+    ],
+    "turku--oynak--karcigar--sahan_sahan": [
+      "sahan_sahan"
+    ],
+    "turku--semai--urfa--ben_bir--?": [
+      "ben bir",
+      "bir ben"
+    ],
+    "turku--turkaksagi--sadettin_kaynak--tanburamin_ince--karcigar": [
+      "tanburamin ince"
+    ],
+    "duyek--kupe--kucek--bezme--ahmet_avni_konuk": [
+      "bezme"
+    ],
+    "nefes--duyek--kucek--evc-i_himmet--ali_rifat_cagatay": [
+      "evci himmet"
+    ],
+    "musemmen--kupe--gerdaniye--gordum_agaz--ahmet_avni_konuk": [
+      "gordum agaz"
+    ],
+    "arsame--aksaksemai--kurdi--guzelsin_bibedelsin--haci_faik_bey": [
+      "guzelsin bibedelsin"
+    ],
+    "?--nimsofyan--kurdi--1--?": [
+      "1"
+    ],
+    "?--beste--muhammes--kemetin_servi--hafiz_rifat_molla": [
+      "kemetin servi"
+    ],
+    "?--fantezi--kurdi--inan_ki--selim_oztas": [
+      "inan ki"
+    ],
+    "kurdi--kupe--musemmen--asik-i--ahmet_avni_konuk": [
+      "asik"
+    ],
+    "kurdi--kupe--musemmen--seyr-i--ahmet_avni_konuk": [
+      "seyr"
+    ],
+    "kurdi--ornek_oz--devrihindi--1--ruhi_ayangil": [
+      "ornek oz",
+      "ornek-oz"
+    ],
+    "kurdi--ornek_oz--sofyan--1--huseyin_sadettin_arel": [
+      "ornek oz",
+      "ornek-oz"
+    ],
+    "kurdi--ornek_oz--sofyan--1--ruhi_ayangil": [
+      "ornek oz",
+      "ornek-oz"
+    ],
+    "kurdi--seyir--sofyan--erol_bingol": [
+      "sefik_gurmeric"
+    ],
+    "kurdi--aranagme--sofyan--dalda_cikmis--?": [
+      "dalda cikmis",
+      "çikar gokyuzunde"
+    ],
+    "kurdi-gerdaniye--aranagme--cikar_gokyuzunde--?": [
+      "çikar gokyuzunde"
+    ],
+    "kurdilihicazkar--semai--1--?": [
+      "birinci kurdilihicazkar"
+    ],
+    "kurdilihicazkar--turkaksagi--1--?": [
+      "birinci kurdilihicazkar"
+    ],
+    "kurdilihicazkar--fantezi--aksak--bugun_biz--neveser_kokdes": [
+      "bugun biz"
+    ],
+    "kurdilihicazkar--sarki--agiraksak--bahcenizde_sunbul--suphi_ziya_ozbekkan": [
+      "bahcenizde sunbul"
+    ],
+    "kurdilihicazkar--sarki--agiraksak--bu_gonul--sari_onnik": [
+      "bu gonul"
+    ],
+    "kurdilihicazkar--sarki--agiraksak--can_esiri--bimen_sen": [
+      "can esiri"
+    ],
+    "kurdilihicazkar--sarki--agiraksak--dun_gece--bimen_sen": [
+      "dun gece"
+    ],
+    "kurdilihicazkar--sarki--agiraksak--ehl-i_askin--tatyos_efendi": [
+      "ehl-i askin"
+    ],
+    "makam--sarki--aksak--derdin_bana--lemi_atli": [
+      "derdin bana"
+    ],
+    "makam--sarki--aksak--etmeyin_gozlerinizden--ismail_baha_surelsan": [
+      "etmeyin gozlerinizden"
+    ],
+    "makam--sarki--aksak--gam_cekti--muzehher_guyer": [
+      "gam cekti"
+    ],
+    "makam--sarki--aksak--gidelim_goksuya--lavtaci_hristo": [
+      "gidelim goksuya"
+    ],
+    "makam--sarki--aksak--gul_yuzunde--erol_sayan": [
+      "gul yuzunde"
+    ],
+    "kurdilihicazkar--sarki--aksak--gun_dogmayacak--musa_sureyya_bey": [
+      "gun dogmacak"
+    ],
+    "kurdilihicazkar--sarki--aksak--her_gece--bimen_sen": [
+      "her gec"
+    ],
+    "kurdilihicazkar--sarki--aksak--hicrinle_fuzun--tanburi_cemil_bey": [
+      "fuzun"
+    ],
+    "kurdilihicazkar--sarki--aksak--kanlar_dokuyor--haci_arif_bey": [
+      "dokuyor"
+    ],
+    "kurdilihicazkar--sarki--aksak--mahrum_i_sevkim--rahmi_bey": [
+      "mahrum"
+    ],
+    "kurdilihicazkar--sarki--aksak--muntazir_tesrifine--haci_arif_bey": [
+      "muntazir tesri fi ne",
+      "tesrifi"
+    ],
+    "kurdilihicazkar--sarki--aksak--nazarin_fikrime--leyla_saz": [
+      "nazarim fikrim"
+    ],
+    "kurdilihicazkar--sarki--aksak--nazinda_senin--muzaffer_ilkar": [
+      "senin nazindan"
+    ],
+    "kurdilihicazkar--sarki--aksak--ne_senin--muzaffer_ilkar": [
+      "senin ne"
+    ],
+    "kurdilihicazkar--sarki--aksak--nereden_sevdim--selahaddin_pinar": [
+      "sevdigim nereden"
+    ],
+    "makam--sarki--aksak--nicin_terkeyleyip--haci_arif_bey": [
+      "nicin terkeyleyip"
+    ],
+    "makam--sarki--aksak--nur_salkimisin--cevdet_cagla": [
+      "nur salkimisin"
+    ],
+    "makam--sarki--aksak--safalar_getirdiniz--avni_anil": [
+      "safalar getirdiniz"
+    ],
+    "makam--sarki--aksak--safvet_i_askim--sevki_bey": [
+      "safvet-i askim"
+    ],
+    "makam--sarki--aksak--sen_gitgide--yesari_asim_arsoy": [
+      "sen gitgide"
+    ],
+    "kurdilihicazkar--sarki--curcuna--gozlerin_mavi--refik_fersan": [
+      "gözlerin mavisi",
+      "mavi gözler"
+    ],
+    "kurdilihicazkar--sarki--curcuna--aksam_gunesi--osman_nihat_akin": [
+      "akşam güneş",
+      "güneşin batışı"
+    ],
+    "kurdilihicazkar--sarki--curcuna--ben_olursem--ekrem_perk": [
+      "ben olursam",
+      "ben varsa"
+    ],
+    "kurdilihicazkar--sarki--curcuna--bu_aksam--avni_anil": [
+      "bu aksam",
+      "bugün aksam"
+    ],
+    "kurdilihicazkar--sarki--curcuna--diyelim_sen--selanikli_ahmed_bey": [
+      "sen diyelim",
+      "dilelim sen"
+    ],
+    "curcuna--sarki--kurdilihicazkar--duser_mi--haci_arif_bey": [
+      "duser mi",
+      "düşer mi"
+    ],
+    "curcuna--sarki--kurdilihicazkar--ey_benim--muhlis_sabahaddin_ezgi": [
+      "ey benim"
+    ],
+    "curcuna--sarki--kurdilihicazkar--gumus_tellerle--melahat_pars": [
+      "gümüş tellerle"
+    ],
+    "curcuna--sarki--kurdilihicazkar--meftunun_oldum--ahmet_mithat_gupgupoglu": [
+      "meftünün oldum"
+    ],
+    "curcuna--sarki--kurdilihicazkar--sende_acep--haci_arif_bey": [
+      "sende acep"
+    ],
+    "curcuna--sarki--kurdilihicazkar--yuzum_sen--bimen_sen": [
+      "yuzum sen"
+    ],
+    "devrihindi--sarki--kurdilihicazkar--aglarim_her--haluk_recai": [
+      "aglarim her"
+    ],
+    "devrihindi--sarki--kurdilihicazkar--derbeder_bir--zeki_duygulu": [
+      "derbeder bir"
+    ],
+    "devrihindi--sarki--kurdilihicazkar--nerdesin_ey--haci_arif_bey": [
+      "nerdesin ey"
+    ],
+    "devrihindi--sarki--kurdilihicazkar--nice_sevdi--hasan_ozcivi": [
+      "nice sevdi"
+    ],
+    "devrihindi--sarki--duyek--sen_beni--mahmud_celaleddin_pasa": [
+      "sen beni"
+    ],
+    "duyek--sarki--duyek--aksam_yine--selahaddin_pinar": [
+      "aksam yine"
+    ],
+    "duyek--sarki--duyek--arifem_ahkami--haci_arif_bey": [
+      "arifem ahkami"
+    ],
+    "duyek--sarki--duyek--avuclarimda_hala--yusuf_nalkesen": [
+      "avuclarimda hala"
+    ],
+    "duyek--sarki--duyek--baga_girdim--manok_aga": [
+      "baga girdim"
+    ],
+    "duyek--sarki--kurdilihicazkar--baska_soz--alaeddin_yavasca": [
+      "baska soz"
+    ],
+    "duyek--sarki--kurdilihicazkar--bu_atesi--necdet_tokatlioglu": [
+      "bu atesi"
+    ],
+    "duyek--sarki--kurdilihicazkar--camlar_arasindan--muzaffer_ilkar": [
+      "camlar arasindan"
+    ],
+    "duyek--sarki--kurdilihicazkar--dertleri_zevk--selahattin_inal": [
+      "dertleri zevk"
+    ],
+    "duyek--sarki--kurdilihicazkar--donmezsin_bilirim--ismail_demirkiran": [
+      "donmezsin bilirim"
+    ],
+    "kurdilihicazkar--sarki--duyek--felek_vurmus--turhan_tasan": [
+      "felek vurmuş"
+    ],
+    "kurdilihicazkar--sarki--duyek--feryadim_askim--aleko_bacanos": [
+      "feryadım aşkım"
+    ],
+    "kurdilihicazkar--sarki--duyek--gaddar_felek--klarnet_ibrahim_efendi": [
+      "gaddar felek"
+    ],
+    "kurdilihicazkar--sarki--duyek--gecmesin_gunumuz--alaeddin_yavasca": [
+      "geçmesin günümüz"
+    ],
+    "kurdilihicazkar--sarki--duyek--gittin_biraktin--emin_ongan": [
+      "gitmiş birakmış"
+    ],
+    "makam--sarki--kurdilihicazkar--her_kimde--civan_aga": [
+      "her kimde"
+    ],
+    "makam--sarki--kurdilihicazkar--her_seyinle--erol_sayan": [
+      "her seyinle"
+    ],
+    "makam--sarki--kurdilihicazkar--kara_sevda--rifat_ayaydin": [
+      "kara sevda"
+    ],
+    "makam--sarki--kurdilihicazkar--ne_demistin--selahaddin_pinar": [
+      "ne demistin"
+    ],
+    "makam--sarki--kurdilihicazkar--sen_korfeze--avni_anil": [
+      "sen korfeze"
+    ],
+    "sarki--duyek--bimen_sen": [
+      "seninle ey"
+    ],
+    "sarki--kapali_curcuna--selahattin_icli": [
+      "bitmez tukenmez"
+    ],
+    "sarki--kapali_curcuna--haci_arif_bey": [
+      "gurub etti"
+    ],
+    "musemmen--sarki--kurdilihicazkar--iftirakindir_sebep--haci_arif_bey": [
+      "iftirak indir sebep"
+    ],
+    "nimsofyan--sarki--kurdilihicazkar--artik_sevgili--gulen_ertek": [
+      "artik sev"
+    ],
+    "nimsofyan--sarki--kurdilihicazkar--cicek_nedir--selahattin_icli": [
+      "cicek nedir"
+    ],
+    "nimsofyan--sarki--kurdilihicazkar--huzun--selahattin_icli": [
+      "huzun"
+    ],
+    "acem_acem--sarki--semai--acmam_acamam--leli_atli": [
+      "acmam_acamam"
+    ],
+    "canandan--sarki--semai--canandan_uzak--neveser_kokdes": [
+      "canandan_uzak"
+    ],
+    "n/a--sarki--semai--gel_sen--muzaffer_ilkar": [
+      "gel_sen"
+    ],
+    "n/a--sarki--semai--gul_acilsin--selahattin_icli": [
+      "gul_acilsin"
+    ],
+    "n/a--sarki--semai--mavi_gok--alaeddin_yavasca": [
+      "mavi_gok"
+    ],
+    "sofyan--sarki--kurdilihicazkar--o_guzel--osman_nihat_akin": [
+      "o guzel"
+    ],
+    "sofyan--sarki--kurdilihicazkar--omrumce_o--yesari_asim_arsoy": [
+      "omrumce o"
+    ],
+    "sofyan--sarki--kurdilihicazkar--seni_ben--baki_duyarlar": [
+      "seni ben"
+    ],
+    "sofyan--sarki--kurdilihicazkar--zil_sal--munir_nurettin_selcuk": [
+      "zil sal"
+    ],
+    "turkaksagi--sarki--kurdilihicazkar--askiyla_meger--serif_icli": [
+      "askiyla meger"
+    ],
+    "turkaksagi--sarki--kurdilihicazkar--soylendi_bugun--mediha_sen_sancakoglu": [
+      "soylendi bugun"
+    ],
+    "turkaksagi--sarki--kurdilihicazkar--yalancidir_hep--selahaddin_pinar": [
+      "yalancidir hep"
+    ],
+    "yuruksemai_ii--sarki--kurdilihicazkar--ey_mutrib-i--rahmi_bey": [
+      "ey mutrib-i"
+    ],
+    "yuruksemai_ii--sarki--kurdilihicazkar--sevgi_dillerde--munir_nurettin_selcuk": [
+      "sevgi dillerde"
+    ],
+    "yuruksemai--sarki--kurdilihicazkar--bais_figan--haci_arif_bey": [
+      "bais figan"
+    ],
+    "sofyan--seyir--kurdilihicazkar--erol_bingol": [
+      "sefik_gurmeric"
+    ],
+    "sofyan--seyir--kurdilihicazkar": [
+      "sefik_gurmeric"
+    ],
+    "seyrek-izar-i--beste--mahur--lenkfahte--tascizade_recep_celebi": [
+      "seyret izar-i",
+      "sekre izar-i"
+    ],
+    "gelin_gibi--fantezi--mahur--semai--necdet_tokatlioglu": [
+      "gelin gibi"
+    ],
+    "sen_gidince--fantezi--mahur--semai--selami_sahin": [
+      "sen gidince"
+    ],
+    "gul_bi-ruh-i--kar--mahur--hafif--abdulkadir_meragi": [
+      "gül bi-rühi",
+      "gül biruh"
+    ],
+    "her_ne--kupe--mahur--devrirevanihindi--ahmet_avni_konuk": [
+      "her ne"
+    ],
+    "mahur--nesibe--mars--vur_pence_i--munir_nurettin_selcuk": [
+      "vur pence-i"
+    ],
+    "mahur--seyahi--mars--gafil_ne--muallim_ismail_hakki_bey": [
+      "gafil ne"
+    ],
+    "mahur--pesrev--gazi_giray_han--duyek": [
+      "duyek"
+    ],
+    "mahur--pesrev--rauf_yekta--hafif": [
+      "hafif"
+    ],
+    "mahur--pesrev--tanburi_cemil_bey--muhammes": [
+      "muhammes"
+    ],
+    "mahur--sarki--mahur_sarki_var_iken_tanburi_cemil_bey": [
+      "var iken"
+    ],
+    "mahur--sarki--aksak_acirim_asik_giriftzen_asim_bey": [
+      "acirim asik"
+    ],
+    "mahur--sarki--aksak_al_yanina_dellalzade_haci_ismail_efendi": [
+      "al yanina"
+    ],
+    "mahur--sarki--aksak_alamam_dogrusu_serif_icli": [
+      "alamam dogrusu"
+    ],
+    "mahur--sarki--aksak_ben_derdime_arif_sami_toker": [
+      "ben derdime"
+    ],
+    "mahur--sarki--aksak--bir_gonulde--mazhar_bey": [
+      "bir gönlünde"
+    ],
+    "mahur--sarki--aksak--cektikce_sineye--selahattin_icli": [
+      "çektiçe sineye"
+    ],
+    "mahur--sarki--aksak--dun_yine--refik_fersan": [
+      "dünyenin"
+    ],
+    "mahur--sarki--aksak--gonul_adli--dellalzade_haci_ismail_efendi": [
+      "gönül adlı"
+    ],
+    "mahur--sarki--aksak--gor_nitti_cana--dede_efendi": [
+      "gör nittin cana"
+    ],
+    "mahur--sarki--aksak--iki_gozum--kemal_emin_bara": [
+      "ikigozem"
+    ],
+    "mahur--sarki--aksak--muptelayim_hayli--kemenceci_usta_yani": [
+      "muptelayim"
+    ],
+    "mahur--sarki--aksak--olmusum_divane--komurcuzade": [
+      "divane"
+    ],
+    "mahur--sarki--aksak--sana_layik_mi--dede_efendi": [
+      "layikmi"
+    ],
+    "mahur--sarki--aksak--servinazi_seyret--rahmi_bey": [
+      "seyret"
+    ],
+    "mahur--sarki--aksak--sevda_seline--neveser_kokdes": [
+      "sevda seline"
+    ],
+    "mahur--sarki--aksak--su_guzele--semseddin_ziya_bey": [
+      "su guzele"
+    ],
+    "mahur--sarki--aksak--ver_saki--refik_fersan": [
+      "ver saki"
+    ],
+    "mahur--sarki--aksak--yeniden_eski--ismail_baha_surelsan": [
+      "yeniden eski"
+    ],
+    "mahur--sarki--curcuna--askinla_harab--emin_ongan": [
+      "askinla harab"
+    ],
+    "mahur--sarki--curcuna--beni_ister--ali_rifat_cagatay": [
+      "beni istir"
+    ],
+    "mahur--sarki--curcuna--bir_gulsene--munir_nurettin_selcuk": [
+      "bir gül sön"
+    ],
+    "mahur--sarki--curcuna--gittin_gideli--nuri_halil_poyraz": [
+      "gitme gideme"
+    ],
+    "mahur--sarki--curcuna--gucendim_ben--muhlis_sabahaddin_ezgi": [
+      "gücenmişim"
+    ],
+    "mahur--sarki--curcuna--sakiz_hanim--bahadir_akkuzu": [
+      "sakız hanım"
+    ],
+    "mahur--sarki--curcuna--yuce_dagdan--selahaddin_pinar": [
+      "yuce dagdan"
+    ],
+    "mahur--sarki--curcuna--zahiri_hale--haci_arif_bey": [
+      "zahiri hale"
+    ],
+    "mahur--sarki--duyek--ay_dogar--sadettin_kaynak": [
+      "ay dogar"
+    ],
+    "mahur--sarki--duyek--ayrilik_ruzgari--kamuran_yarkin": [
+      "ayrilik ruzgari"
+    ],
+    "mahur--sarki--duyek--ben_guzele--sadettin_kaynak": [
+      "ben guzelle"
+    ],
+    "mahur--sarki--duyek--bu_sevda--sukru_senozan": [
+      "bu sevda"
+    ],
+    "mahur--sarki--duyek--bu_son_sarkimda--muzaffer_ilkar": [
+      "bu son sarkimda"
+    ],
+    "mahur--sarki--duyek--butun_dunyaya--ali_rifat_cagatay": [
+      "butun dunya"
+    ],
+    "mahur--sarki--duyek--dudagimda_acan--erol_sayan": [
+      "dudagimda acan"
+    ],
+    "mahur--sarki--duyek--gul_mevsimi--tanburi_mustafa_cavus": [
+      "gul mevsimi"
+    ],
+    "mahur--sarki--duyek--hosgeldin_elimize--sadettin_kaynak": [
+      "hosgeldin elimize"
+    ],
+    "mahur--sarki--duyek--ipek_saclarin--sadettin_kaynak": [
+      "ipek saclarin"
+    ],
+    "mahur--sarki--duyek--kadehin_dudagimda--rustu_eric": [
+      "kadehin dudagimda"
+    ],
+    "mahur--sarki--duyek--olsa_da_hos--sadettin_kaynak": [
+      "olsa da hos"
+    ],
+    "mahur--sarki--duyek--petek_petek--erol_sayan": [
+      "petek petek"
+    ],
+    "mahur--sarki--duyek--saba_tarf-i--enderunlu_hafiz_husnu_efendi": [
+      "saba tarf"
+    ],
+    "mahur--sarki--duyek--seb-i_vuslat--nasibin_mehmet_yuru": [
+      "seb vuslat"
+    ],
+    "mahur--sarki--duyek--sen_ol--erol_sayan": [
+      "sen ol"
+    ],
+    "mahur--sarki--duyek--senle_durmak--kanuni_haci_arif_bey": [
+      "senle durmak"
+    ],
+    "mahur--sarki--evfer--kalbimdeki_amal-i--muallim_ismail_hakki_bey": [
+      "kalbimdek amal"
+    ],
+    "mahur--sarki--sabah_olsun--ibrahim_aga": [
+      "sabah olsun"
+    ],
+    "mahur--sarki--esir_ettin--rahmi_bey": [
+      "esir ettin"
+    ],
+    "mahur--sarki--aman_saki--lemi_atli": [
+      "aman saki"
+    ],
+    "mahur--sarki--gosterip_agyare--haci_arif_bey": [
+      "gosterip agyare"
+    ],
+    "mahur--sarki--cek_kuregi_guzelim--arif_sami_toker": [
+      "cek kuregi guzelim"
+    ],
+    "nimsofyan--sarki--mahur--hadi_canim--selahattin_icli": [
+      "hadi canim"
+    ],
+    "nimsofyan--sarki--mahur--otomobil_ucar--munir_nurettin_selcuk": [
+      "otomobil ucar"
+    ],
+    "raksaksagi--sarki--mahur--gokte_benim--refik_fersan": [
+      "gokte benim"
+    ],
+    "sarkidevrirevani--sarki--mahur--ben_neler--zekai_dede": [
+      "ben neler"
+    ],
+    "sarkidevrirevani--sarki--mahur--zevki_coktur--sakir_aga": [
+      "zevki coktur"
+    ],
+    "mahur--sarki--semai--asika_bagdat--munir_nurettin_selcuk": [
+      "asika bagdat"
+    ],
+    "mahur--sarki--semai--sarkimi_senin--irfan_ozbakir": [
+      "sarkimi senin"
+    ],
+    "mahur--sarki--senginsemai--bir_nese--refik_fersan": [
+      "bir nese"
+    ],
+    "mahur--sarki--senginsemai--gel_bir--selanikli_ahmed_bey": [
+      "gel bir"
+    ],
+    "mahur--sarki--senginsemai--hala_kanayan--yorgo_bacanos": [
+      "hala kanayan"
+    ],
+    "mahur--sarki--sofyan--gordum_bugun--dede_efendi": [
+      "gordum bugun"
+    ],
+    "mahur--sarki--sofyan--ne_dogan--munir_nurettin_selcuk": [
+      "ne dogan"
+    ],
+    "mahur--tavsanca--duyek--ne_ararsam--iii_selim": [
+      "ne ararsam"
+    ],
+    "mahur--turku--aksak--setiremin_dugmeleri--istanbul": [
+      "setiremin dugmeleri"
+    ],
+    "mahur--turku--iki-bir--felek_sen--abdullah_balak": [
+      "felek sen"
+    ],
+    "mahur--turku--kapali_curcuna--indim_yarin--?": [
+      "indim yarin"
+    ],
+    "mahur--turku--kapali_curcuna--meclisinde_mail--adiyaman": [
+      "meclisinde mail"
+    ],
+    "sofyani--turku--mahur--beyoglunda_gezersin--pirincci_riza_bey": [
+      "beyoglunda gezersin"
+    ],
+    "sofyani--turku--mahur--niksarinfidanlari--tokat": [
+      "niksarin fidanlari"
+    ],
+    "sofyani--turku--mahur--su_dere--?": [
+      "su dere"
+    ],
+    "sofyani--turku--mahur--yemenimde_hare_var--?": [
+      "yemenimde hare var"
+    ],
+    "yuruksemai--yuruksemai--mahur--beni_cun--ebubekir_aga": [
+      "beni cun"
+    ],
+    "mahur--yuruksemai--yuruksemai--yine_zevrak-i--dede_efendi": [
+      "yine zevrak-i"
+    ],
+    "mahur--zeybek--aydin--kirpigine_surme--refik_fersan": [
+      "kirpigine surme"
+    ],
+    "mahurbuselik--kupe--aksak--ey_gozu--ahmet_avni_konuk": [
+      "ey gozu"
+    ],
+    "maveranehr--kupe--devrirevan--alemi--ahmet_avni_konuk": [
+      "alami"
+    ],
+    "?--pesrev--cenber--?--ahmet_coban_giray": [
+      "muhalif"
+    ],
+    "?--beste--curcuna--?--?": [
+      "1"
+    ],
+    "muhayyer--divan--ok_gibi--nimsofyan": [
+      "nim sofyân",
+      "nim sofyan"
+    ],
+    "muhayyer--etud--sofyan--hasan_esen": [
+      "hasan esen sofyan"
+    ],
+    "muhayyer--ilahi--toprakta_yatacak--duyek_dede_efendi": [
+      "dede efendi toprakta yatacak",
+      "duyek dede efendi"
+    ],
+    "muhayyer--ilahi--duseli_bu_askin--duyek_dede_efendi": [
+      "dede efendi duseli bu askin",
+      "duyek dede efendi"
+    ],
+    "muhayyer--kupe--nideyim--ahmet_avni_konuk": [
+      "ahmet avni konuk nideyim",
+      "avni konuk nideyim"
+    ],
+    "vakt-i_subh--murabba--murabba--agircenber--hafiz_post": [
+      "agircenber",
+      "agricenber"
+    ],
+    "agiraksak--sarki--aksak--sana_gul--nuri_halil_poyraz": [
+      "sana gül"
+    ],
+    "aksak--sarki--aksak--acep_bulbul--bulbuli_salih_efendi": [
+      "acep bulbul"
+    ],
+    "aksak--sarki--aksak--aglamaktan_dideden--rifat_bey": [
+      "aglamaktan dideden"
+    ],
+    "aksak--sarki--aksak--bir_gonulde--ahmet_rasim_bey": [
+      "bir gonulde"
+    ],
+    "aksak--sarki--aksak--deva_yokmus--haci_arif_bey": [
+      "deva yokmus"
+    ],
+    "humari_yok--sarki--aksak--hacilarifbey": [
+      "humari yok",
+      "yok humari"
+    ],
+    "iltimas_etmeye--sarki--aksak--hacilarifbey": [
+      "iltimas etmeye",
+      "etmite"
+    ],
+    "seb-i_yelda-yi--sarki--aksak--sevki_bey": [
+      "seb-i yelda",
+      "yelda seb"
+    ],
+    "serapa_husn--sarki--aksak--rahmi_bey": [
+      "serapa husnu",
+      "husnu serap"
+    ],
+    "yadimda_o--sarki--aksak--sukrutunar": [
+      "yadımda o",
+      "o yadıma"
+    ],
+    "sarki--muhayyer--aksaksemai--gun_kavustu--udi_nevres_bey": [
+      "gun kavustu"
+    ],
+    "sarki--muhayyer--curcuna--batan_gun--sadettin_kaynak": [
+      "batan gun"
+    ],
+    "sarki--muhayyer--curcuna--ol_gonca-dehen--sevki_bey": [
+      "gonca dehen"
+    ],
+    "sarki--muhayyer--curcuna--yetmez_mi_sana--rahmi_bey": [
+      "yetmez mi sana"
+    ],
+    "sarki--muhayyer--devrihindi--mehane_tarabgah-i--haci_arif_bey": [
+      "mehane tarabgah"
+    ],
+    "duyek--sarki--muhayyer--cepcevre_bahar--munir_nurettin_selcuk": [
+      "cepcevrim bahar"
+    ],
+    "duyek--sarki--muhayyer--cile_bulbulum--sadettin_kaynak": [
+      "cile bulbul"
+    ],
+    "nimsofyan--sarki--muhayyer--yenilendi_derdim--arif_sami_toker": [
+      "yenilendim derdim"
+    ],
+    "senginsemai--sarki--muhayyer--gezdim_yurudum--lemi_atli": [
+      "gezdim yurdum"
+    ],
+    "senginsemai--sarki--muhayyer--pur-lerze--tanburi_cemil_bey": [
+      "pur lerze"
+    ],
+    "muayyir--sarki--muhayyer--bir_gun--ziya_taskent": [
+      "bir gun",
+      "birgün"
+    ],
+    "muayyir--sarki--muhayyer--ne_zaman--sadettin_kaynak": [
+      "ne zaman"
+    ],
+    "muayyir--sarki--muhayyer--nicin_mahzun--haci_arif_bey": [
+      "neden üzgün",
+      "mahzun"
+    ],
+    "muayyir--sarki--muhayyer--saki_icelim--rifat_bey": [
+      "şakı ıcım",
+      "saki icelim"
+    ],
+    "muayyir--sarki--muhayyer--sevdicegim_asikini--dede_efendi": [
+      "sevdiğim aşkı",
+      "asik sevdigi"
+    ],
+    "turku--serenler--aksak--burdur": [
+      "burdur aksak serenleri"
+    ],
+    "turku--kerpic_kerpic--curcuna--diyarbakir": [
+      "diyarbakir curcuna kerpic kerpic"
+    ],
+    "turku--yar_yuregim--curcuna--urfa": [
+      "urfa curcuna yar yuregim"
+    ],
+    "turku--mihrican_mi--devrituran--yozgat": [
+      "yozgat devrituran mihrican mi"
+    ],
+    "turku--iste_seni--duyek--sadettin_kaynak": [
+      "sadettin kaynak iste seni"
+    ],
+    "nimcember--turku--muayyere--erzurumun_daginda--hulusi_seven": [
+      "erzurumun dağında"
+    ],
+    "nimsofyan--turku--muayyere--ben_de--adana": [
+      "ben de"
+    ],
+    "nimsofyan--turku--muayyere--bir_nazar--kirsehir": [
+      "bir nazar"
+    ],
+    "nimsofyan--turku--muayyere--gidecegim_gurbet--?": [
+      "gitmek gurbete"
+    ],
+    "nimsofyan--turku--muayyere--uc_kardestik--diyarbakir": [
+      "üç kardeş"
+    ],
+    "turku--raksaksagi_ii--suhugu--su_gelir--batur": [
+      "su gelir",
+      "suhugu"
+    ],
+    "turku--senginsemai--muhayyer--bulandi_gozler--urfa": [
+      "bulandi gozler urfa"
+    ],
+    "turku--sofyan--muhayyer--agyari_alma--ali_rifat_cagatay": [
+      "agyari alma ali rifat cagatay"
+    ],
+    "makam--turku--muayyene--binip_de--sofyani": [
+      "binip de",
+      "binip-de"
+    ],
+    "makam--turku--muayyene--cayir_ince--sofyani": [
+      "cayir ince",
+      "cayir-ince"
+    ],
+    "makam--turku--muayyene--el_vurup--sofyani": [
+      "el vurup",
+      "el-vurup"
+    ],
+    "makam--turku--muayyene--keklik_gibi--sofyani": [
+      "keklik gibi",
+      "keklik-gibi"
+    ],
+    "makam--turku--muayyene--yandim_allah--sofyani": [
+      "yandim allah",
+      "yandim-allah"
+    ],
+    "vardim_hind--seren--muayyed--title--erzincan": [
+      "vardım hind"
+    ],
+    "bir_elif--sema--muayyed--title--sadullah_aga": [
+      "bir elif"
+    ],
+    "eskisehir--zeybek--agiraksak--title--?": [
+      "eskisehir"
+    ],
+    "serenler--zeybek--aksak--title--burdur": [
+      "serenler"
+    ],
+    "bir--buselik--kupe--title--ahmet_avni_konuk": [
+      "bir"
+    ],
+    "muhayyerkurdi--fantezi--sofyan--artik_sevmeyecegim--suat_sayin": [
+      "artik sevmeyecegim"
+    ],
+    "muhayyerkurdi--kupe--musemmen--bir--ahmet_avni_konuk": [
+      "bir"
+    ],
+    "muhayyerkurdi--mars--semai--tuna_nehri--rumeli": [
+      "tuna nehri"
+    ],
+    "muhayyerkurdi--fantezi--duyek--gunlerce_uykusuz--sinan_sipahi": [
+      "gunlerce uykusuz"
+    ],
+    "muhayyerkurdi--aranagme--nimsofyan--?": [
+      "nimsofyan"
+    ],
+    "muhayyerkurdi--sarki--curcuna--aksam_olunca--nazif_girgin": [
+      "aksam olunca"
+    ],
+    "muhayyerkurdi--sarki--curcuna--bakisi_cagirir--selahaddin_pinar": [
+      "bakisi cagirir"
+    ],
+    "muhayyerkurdi--sarki--curcuna--sen_gul--emin_ongan": [
+      "sen gul"
+    ],
+    "muhayyerkurdi--sarki--duyek--bir_kizil--amir_ates": [
+      "bir kizil"
+    ],
+    "muhayyerkurdi--sarki--duyek--icin_icin--sekip_ayhan_ozisik": [
+      "icin icin"
+    ],
+    "muhayyerkurdi--sarki--duyek--unutulmaz_adinla--selahaddin_erkose": [
+      "unutulmaz adınla"
+    ],
+    "muhayyerkurdi--sarki--duyek--unutulmus_ne--avni_anil": [
+      "unutulmuş ne"
+    ],
+    "muhayyerkurdi--sarki--duyek--var_mi_hacet--nikogos_aga": [
+      "var mı hacet"
+    ],
+    "muhayyerkurdi--sarki--duyek--yasamak_zevki--zeki_muren": [
+      "yaşamak zevki"
+    ],
+    "muhayyerkurdi--sarki--musemmen--ayrilik_var--selahattin_icli": [
+      "ayrılık var"
+    ],
+    "muhayyerkurdi--sarki--nimsofyan--bildir_guzel--kipti_husnu_efendi": [
+      "bildir guzel",
+      "bildir güzeldi"
+    ],
+    "muhayyerkurdi--sarki--nimsofyan--gonlumu_gonlune--omer_sami_gupgup": [
+      "gonlumu gonlune",
+      "gönülüm gönlüne"
+    ],
+    "muhayyerkurdi--sarki--nimsofyan--kadehinde_zehir--erol_sayan": [
+      "kadehinde zehir",
+      "kafe inde zehr"
+    ],
+    "muhayyerkurdi--sarki--nimsofyan--pembe_kucuk--gundogdu_duran": [
+      "pembe kucuk",
+      "pembe küçük"
+    ],
+    "muhayyerkurdi--sarki--semai--duydum_ki--selahattin_altinbas": [
+      "duydum ki",
+      "duyduk ki"
+    ],
+    "muhayyerkurdi--seyir--turkaksagi--1--erol_bingol": [
+      "1",
+      "birinci"
+    ],
+    "muhayyerkurdi--turku--aksak--bulbulum_altin--?": [
+      "bulbulum altin"
+    ],
+    "muhayyerkurdi--turku--aksak--cubugum_yok--?": [
+      "cubugum yok"
+    ],
+    "muhayyerkurdi--turku--ciftesofyan--sendeki_kaslar--?": [
+      "sendeki kaslar"
+    ],
+    "muhayyerkurdi--turku--duyek--neyleyim_neyleyim--ahmet_gazi_ayhan": [
+      "neyleyim neyleyim"
+    ],
+    "turku--oynak--evlerinin_onu--muhayyerkurdi": [
+      "evlerinin onu"
+    ],
+    "turku--sofyan--cahildim_dunyanin--muhayyerkurdi": [
+      "cahillim dunyanin"
+    ],
+    "turku--sofyan--cokertmeden_ciktim_da--muhayyerkurdi": [
+      "cok ertmeden ciktim da"
+    ],
+    "turku--sofyan--sene_341--ordu": [
+      "sene 341"
+    ],
+    "kupe--duyek--dilberanin--muhayyersunbule": [
+      "dilber anin"
+    ],
+    "muhayyersunbule--sarki--aksak--acilmamis_bir--haci_arif_bey": [
+      "acilmamış bir"
+    ],
+    "muhayyersunbule--sarki--duyek--ey_gonca-i--iii_selim": [
+      "ey gonça"
+    ],
+    "muhayyersunbule--sarki--sarkidevrirevani--ey_nihal-i_isve--vardakosta_ahmed_aga": [
+      "ey nihal"
+    ],
+    "murekkep_isfahan--kupe--devrihindi--kalmadi_sabra--udi_nevres_bey": [
+      "kalmadı sabra"
+    ],
+    "mustear--kupe--durb--kimden--ahmet_avni_konuk": [
+      "kimden"
+    ],
+    "evvel_benim--sarki--aksak--evvel_benim--sakir_aga": [
+      "evvel benim"
+    ],
+    "gel_ey--sarki--aksak--gel_ey--rahmi_bey": [
+      "gel ey"
+    ],
+    "sen_gidersen--sarki--aksak--sen_gidersen--mustafa_nafiz_irmak": [
+      "sen gidersen"
+    ],
+    "yaprak_nasil--sarki--aksak--yaprak_nasil--gonul_pacaci": [
+      "yaprak nasil"
+    ],
+    "yare_faset--sarki--semai--yare_faset--serif_muhittin_targan": [
+      "yare faset"
+    ],
+    "?--sazsemaisi--aksaksemai--irtical_dede--?": [
+      "mustear"
+    ],
+    "kar--nimsakil--neva--ey_gulbun-i--itri": [
+      "ey gulbuni"
+    ],
+    "neva--nakis--neva--yuruksemai--hatibzade_osman_efendi": [
+      "bir_zaman"
+    ],
+    "uyanik--sarki--neva--ben_yururum--selahaddin_pinar": [
+      "ben yürüyorum"
+    ],
+    "hicran_gonul--sarki--neva--sadettin_kaynak": [
+      "hiçran gönlüm"
+    ],
+    "yine_baglandi--sarki--neva--zekai_dede": [
+      "yine bağlandım"
+    ],
+    "birlikte_bu--sarki--neva--serif_icli": [
+      "birlikte bu"
+    ],
+    "ankara--sarki--neva--ankaranin_tasina--nimsofyan": [
+      "ankaratas"
+    ],
+    "sofyan--sarki--neva--canakkale_icinde--sofyani": [
+      "canakkale"
+    ],
+    "yuruksemai--sarki--neva--ey_gonce-dehen--dede_efendi": [
+      "gonce",
+      "dehen"
+    ],
+    "agiraksak--kupe--nevabuselik--buse--ahmet_avni_konuk": [
+      "bus"
+    ],
+    "duyek--sarki--nevabuselik--elbet_gonullerde--sadettin_kaynak": [
+      "gonul"
+    ],
+    "agirsemai--aksaksemai--agir_aksaksemai--ne_sunbulden--cinucen_tanrikorur": [
+      "ne sunbuldan",
+      "ne sunbül"
+    ],
+    "agirsemai--aksaksemai--mecliste_bu--komurcuzade": [
+      "mecliste bu",
+      "mecliste"
+    ],
+    "beste--cenber--gordum_bugun--rustu_eric": [
+      "gordum bugun"
+    ],
+    "beste--devrikebir--bir_peridir--cinucen_tanrikorur": [
+      "bir peridir"
+    ],
+    "agirsemai--aksaksemai--o_nihal-i--komurcuzade": [
+      "o nihal",
+      "nihal"
+    ],
+    "nasil_eda--beste--zencir--dede_efendi": [
+      "dede efendi",
+      "dede efendizade"
+    ],
+    "dinle--kupe--devrirevan--ahmet_avni_konuk": [
+      "ahmet avni konuk",
+      "konuk"
+    ],
+    "heva-yi_aski--nakis_agirsemai--aksaksemai--muallim_ismail_hakki_bey": [
+      "muallim ismail hakki bey",
+      "ismail hakki"
+    ],
+    "devrikebir--sarki--pesrev--?--salih_dede": [
+      "?",
+      "Devrikebir"
+    ],
+    "hafif--sarki--pesrev--cankurtaran--neyzen_yusuf_pasa": [
+      "Cankurtaran"
+    ],
+    "muhammes--sarki--pesrev--?--kantemiroglu": [
+      "?",
+      "Muhammes"
+    ],
+    "agiraksak--sarki--sarki--hangi_bir--rustu_eric": [
+      "Hangi Bir"
+    ],
+    "agirduyek--sarki--neveser--ey_gozleri--rifat_bey": [
+      "Ey Gözleri"
+    ],
+    "neveser--sarki--aksak--dilber_icre--rifat_bey": [
+      "dilber icre"
+    ],
+    "neveser--sarki--aksak--gonlum_alip--latif_aga": [
+      "gönlüma alıp"
+    ],
+    "neveser--sarki--aksak--o_guzel--alaeddin_yavasca": [
+      "o guzel"
+    ],
+    "neveser--sarki--aksak--sen_guzellerden--mediha_sen": [
+      "sen guzellerden"
+    ],
+    "neveser--sarki--aksak--vaslin_ile--muallim_ismail_hakki_bey": [
+      "vaslın ile"
+    ],
+    "neveser--sarki--curcuna--bahar_erdi--haci_arif_bey": [
+      "bahar erdi",
+      "bahar"
+    ],
+    "neveser--sarki--curcuna--nale-i_can-gahi--udi_afet_misirliyan": [
+      "nale-i can gahi",
+      "can gahi"
+    ],
+    "neveser--sarki--curcuna--sirdir_senin--neveser_kokdes": [
+      "sirdir senin",
+      "senin"
+    ],
+    "neveser--sarki--curcuna--verdi_nazim--muallim_ismail_hakki_bey": [
+      "verdi nazim",
+      "nazim"
+    ],
+    "neveser--sarki--devrihindi_8--bekledim_yillarca--rustu_eric": [
+      "bekledim yillarca",
+      "yillarca"
+    ],
+    "neveser--sarki--devrihindi--eya_mah-i--rifat_bey": [
+      "eya mah"
+    ],
+    "neveser--sarki--devrihindi--sanma_baran-i--hasim_bey": [
+      "sanma barani"
+    ],
+    "neveser--sarki--duyek--gulum_takmis--ekmekci_bagdasar": [
+      "gulum takmis"
+    ],
+    "neveser--sarki--musemmen_4--dinle_dilber--erol_sayan": [
+      "dinle dilber"
+    ],
+    "neveser--sarki--semai--seni_anlamadan--neveser_kokdes": [
+      "seni anlamadan"
+    ],
+    "senginsemai--sarki--neveser--saydeyledi_bu--tanburi_ali_efendi": [
+      "saydeyledi bu"
+    ],
+    "senginsemai--sarki--neveser--sesimde_sarkisi--suphi_ziya_ozbekkan": [
+      "sesimde sarkisi"
+    ],
+    "aksaksemai--sazsemaisi--neveser--?--bekir_sitki_sezgin": [
+      "bekir sitki sezgin"
+    ],
+    "aksaksemai--sazsemaisi--neveser--?--kanuni_omer_efendi": [
+      "kanuni omer efendi"
+    ],
+    "aksaksemai--sazsemaisi--neveser--?--yusuf_pasa": [
+      "yusuf pasa"
+    ],
+    "yuruksemai--sarki--yuruksemai_ii--neveser--rustu_eric": [
+      "yuruksemai ii-4",
+      "yuruksemai_ii_4"
+    ],
+    "sarki--rumeliturkusu--nevruz--?--tanburi_reftar_kalfa": [
+      "nevruz rumeliturkusu"
+    ],
+    "sarki--yuruksemai_ii--nevruz--esmerligi_yildiz--muallim_ismail_hakki_bey": [
+      "esmerligi yildiz nevruz"
+    ],
+    "sarki--aksaksemai--nigar--?--tanburi_reftar_kalfa": [
+      "nigar aksaksemai"
+    ],
+    "kupe--devrirevan--nihavendikebir--?--ahmet_avni_konuk": [
+      "nihavendikebir devri revan"
+    ],
+    "nihavent--fantezi--semai--alaeddin_yavasca--al_bildim": [
+      "ne bildim",
+      "n_e bildim"
+    ],
+    "nihavent--fantezi--sofyan--durusun_andirir--unal_narcin": [
+      "durusun andirir"
+    ],
+    "nihavent--fantezi--sofyan--menekselendi_sular--sadettin_kaynak": [
+      "meneksen sular",
+      "sular meneksen"
+    ],
+    "nihavent--fantezi--sofyan--mevsimlere_aldanirim--omer_sami_gupgup": [
+      "mevsim aldan",
+      "aldan mevsim"
+    ],
+    "nihavent--fantezi--sofyan--sarahaten_acaba--ali_rifat_cagatay": [
+      "acaba sarahaten",
+      "sarahaten ac"
+    ],
+    "nihavent--hafif--kar--ey_cerh-i--haci_faik_bey": [
+      "cerhi",
+      "cerh"
+    ],
+    "nihavent--sofyan--karsilama--merzifon": [
+      "merzifon"
+    ],
+    "nihavent--duyek--kasaphavasi": [
+      "duyek",
+      "kasaphavasi"
+    ],
+    "nihavent--nimsofyan--longa--kevser_hanim": [
+      "kevser",
+      "hanim"
+    ],
+    "nihavent--nimsofyan--mars--ey_muhterem--mildan_niyazi_bey": [
+      "muhterem",
+      "ey muhterem"
+    ],
+    "nihavent--mars--nimsofyan--izmirin_daglarinda--izzettin_humayi_elcioglu": [
+      "izmitin_daglarinda"
+    ],
+    "nihavent--sarki--agiraksak--ey_nihal-i--udi_arsak_comlekciyan": [
+      "ey nihali"
+    ],
+    "nihavent--sarki--agiraksak--nar-i_askinla--rifat_bey": [
+      "narin askin"
+    ],
+    "nihavent--sarki--agiraksak--yare_bir_baksin--erol_sayan": [
+      "yare bir baksın"
+    ],
+    "nihavent--sarki--aksak--bakmiyor_cesm-i--haci_arif_bey": [
+      "baktım"
+    ],
+    "nihavent--sarki--aksak--bana_bir--cevdet_cagla": [
+      "bana bir"
+    ],
+    "nihavent--sarki--aksak--dil-i_nalani--haci_arif_bey": [
+      "Dil-i Nâlânî"
+    ],
+    "nihavent--sarki--aksak--gece_sahilden--serif_icli": [
+      "gece sahilinden"
+    ],
+    "nihavent--sarki--aksak--gel_guzelim--faiz_kapanci": [
+      "gel guzelim"
+    ],
+    "nihavent--sarki--aksak--gonlum_yine--seyh_ethem_efendi": [
+      "gönül yine"
+    ],
+    "nihavent--sarki--aksak--hatirlar_misin_beni--vecdi_seyhun": [
+      "hatırla misin beni"
+    ],
+    "nihavent--sarki--aksak--kiz_sen--faize_ergin": [
+      "kız sen"
+    ],
+    "nihavent--sarki--aksak--koklasam_saclarini--artaki_candan": [
+      "koklasam saclarini"
+    ],
+    "nihavent--sarki--aksak--meyler_suzulsun--haci_arif_bey": [
+      "meyler suzulsun"
+    ],
+    "nihavent--sarki--aksak--mumkun_mu--rakim_elkutlu": [
+      "mumkun mu"
+    ],
+    "nihavent--sarki--aksak--ruya_mi--omer_dilek": [
+      "ruya mi"
+    ],
+    "nihavent--sarki--aksak--seni_tenhada--ismet_aga": [
+      "seni tenhada"
+    ],
+    "nihavent--sarki--aksak--suzis-i_askinla--musa_sureyya_bey": [
+      "suzis i askinla"
+    ],
+    "nihavent--sarki--aksak--vuslat_yaya--omer_dilek": [
+      "vuslat yaya"
+    ],
+    "nihavent--sarki--aksak--yadigar_kaldi--haci_arif_bey": [
+      "yadigar kaldi"
+    ],
+    "nihavent--sarki--aksak--yaz_gunleri--ismail_baha_surelsan": [
+      "yaz gunleri"
+    ],
+    "nihavent--sarki--aksak--yok_baska--munir_nurettin_selcuk": [
+      "yok baska"
+    ],
+    "nihavent--sarki--curcuna--aydin--muallim_ismail_hakki_bey": [
+      "Aydın"
+    ],
+    "nihavent--sarki--curcuna--ayrilmak_ne--ekrem_guyer": [
+      "Ayrilmak Ne"
+    ],
+    "nihavent--sarki--curcuna--bahar_bitti--sadettin_kaynak": [
+      "Bahar Bitti"
+    ],
+    "nihavent--sarki--curcuna--baharda_bu--cevdet_cagla": [
+      "Baharda Bu"
+    ],
+    "nihavent--sarki--curcuna--cozulme_zulfune--haci_arif_bey": [
+      "Cozulme Zulfune"
+    ],
+    "nihavent--sarki--curcuna--dun_gece--muhlis_sabahattin": [
+      "yarin_gece"
+    ],
+    "nihavent--sarki--curcuna--gecti_omrum--selahaddin_pinar": [
+      "gitme_yolu"
+    ],
+    "nihavent--sarki--curcuna--gonul_nedir--sadettin_kaynak": [
+      "gul_nedir"
+    ],
+    "nihavent--sarki--curcuna--goze_mi--osman_nihat_akin": [
+      "goz_kimi"
+    ],
+    "nihavent--sarki--curcuna--guzel_bir--osman_nihat_akin": [
+      "guzel_gun"
+    ],
+    "nihavent--sarki--curcuna--husranla_gonul--neveser_kokdes": [
+      "husranla gonul"
+    ],
+    "nihavent--sarki--curcuna--saclarina_baglanali--rahmi_bey": [
+      "saclarina baglanali"
+    ],
+    "nihavent--sarki--curcuna--soyle_nedir--haci_arif_bey": [
+      "soyle nedir"
+    ],
+    "nihavent--sarki--curcuna--uyur_daim--haci_arif_bey": [
+      "uyur daim"
+    ],
+    "nihavent--sarki--curcuna--vucud_ikliminin--haci_arif_bey": [
+      "vucud ikliminin"
+    ],
+    "nihavent--sarki--duyek--aglamakla--sadi_hosses": [
+      "aglamak"
+    ],
+    "nihavent--sarki--duyek--ahimi_hicranimi--selahattin_inal": [
+      "ahim hicranim"
+    ],
+    "nihavent--sarki--duyek--ak_duvaklar--omer_dilek": [
+      "ak duvak"
+    ],
+    "nihavent--sarki--duyek--aska_gonul--baki_callioglu": [
+      "ask gonul"
+    ],
+    "nihavent--sarki--duyek--askim_bahardi--yildirim_gurses": [
+      "ask bahar"
+    ],
+    "nihavent--sarki--duyek--askimi_bilmedin--sekip_ayhan_ozisik": [
+      "askimi bilmedim"
+    ],
+    "nihavent--sarki--duyek--askimin_ilk--arif_sami_toker": [
+      "ilk askim"
+    ],
+    "nihavent--sarki--duyek--ayrilik_bukuverdi--arif_sami_toker": [
+      "ayrilik bukum verdi"
+    ],
+    "nihavent--sarki--duyek--bir_demet--zeki_muren": [
+      "bir demet"
+    ],
+    "nihavent--sarki--duyek--bir_ihtimal--osman_nihat_akin": [
+      "bir ihtimal"
+    ],
+    "nihavent--sarki--duyek--biraz_kul--avni_anil": [
+      "biraz kul"
+    ],
+    "nihavent--sarki--duyek--bugun_yine--emin_ongan": [
+      "bugun yine"
+    ],
+    "nihavent--sarki--duyek--bulbul_asikmis--zeki_muren": [
+      "bulbul asik mis"
+    ],
+    "nihavent--sarki--duyek--dolmuyor_dolmuyor--sinan_sipahi": [
+      "dolmuyor dolmuyor"
+    ],
+    "nihavent--sarki--duyek--doymadim_sana--nevzat_akay": [
+      "doymadim sana"
+    ],
+    "nihavent--sarki--duyek--elerm_boyle--sekip_ayhan_ozisik": [
+      "elerm boyle",
+      "ellerim boyle"
+    ],
+    "nihavent--sarki--duyek--ey_ipek--sadettin_kaynak": [
+      "ey ipek"
+    ],
+    "nihavent--sarki--duyek--gecti_hayal--osman_nihat_akin": [
+      "gecti hayal"
+    ],
+    "nihavent--sarki--duyek--gizli_ask--zeynettin_maras": [
+      "gizli ask"
+    ],
+    "nihavent--sarki--duyek--gokyuzunde--teoman_alpay": [
+      "gokyuzunde"
+    ],
+    "nihavent--sarki--duyek--gozlerin_bir--avni_anil": [
+      "gozlerinin bir"
+    ],
+    "nihavent--sarki--duyek--hatirla_mazi-i--munir_nurettin_selcuk": [
+      "hatirla mazi"
+    ],
+    "nihavent--sarki--duyek--istanbul_biricik--sadettin_kaynak": [
+      "istanbul biricik"
+    ],
+    "nihavent--sarki--duyek--kirpiklerinin_golgesi--sadettin_kaynak": [
+      "kirpiklerinin golgesi"
+    ],
+    "nihavent--sarki--duyek--ruhuma_gecenin--sadettin_kaynak": [
+      "ruhuma gecenin"
+    ],
+    "nihavent--sarki--duyek--sarkilar_seni--muzaffer_ilkar": [
+      "sarkilar seni"
+    ],
+    "nihavent--sarki--duyek--sen_benim--emin_ongan": [
+      "sen benim"
+    ],
+    "nihavent--sarki--duyek--seninle_bu--dursun_karaca": [
+      "seninle bu"
+    ],
+    "nihavent--sarki--duyek--sevgilim_de_sen--erol_sayan": [
+      "sevgilim de sen"
+    ],
+    "nihavent--sarki--duyek--sevil_neselen--sadettin_oktenay": [
+      "sevil neselen"
+    ],
+    "nihavent--sarki--duyek--su_guzeller--necip_mirkelamoglu": [
+      "su guzeller"
+    ],
+    "nihavent--sarki--duyek--unutturamaz_seni--ekrem_guyer": [
+      "unutturamaz seni"
+    ],
+    "nihavent--sarki--duyek--yillari_durduracak--necdet_tokatlioglu": [
+      "yillari durduracak"
+    ],
+    "nihavent--sarki--duyek--yine_hazan--sekip_ayhan_ozisik": [
+      "yine hazan"
+    ],
+    "nihavent--sarki--kapali_curcuna--kimseye_etmem--kemani_sarkis_efendi": [
+      "kimseye etmem"
+    ],
+    "nihavent--sarki--nimsofyan--ben_bir--sivelioglu_yorgaki": [
+      "ben bir"
+    ],
+    "nihavent--sarki--nimsofyan--biz_camlicanin--yesari_asim_arsoy": [
+      "biz camlicanin"
+    ],
+    "nihavent--sarki--nimsofyan--geldi_yine--arif_sami_toker": [
+      "geldi yine"
+    ],
+    "nihavent--sarki--nimsofyan--gozleri_aska--gundogdu_duran": [
+      "gozleri aska"
+    ],
+    "nihavent--sarki--nimsofyan--isil_isil--erol_sayan": [
+      "isil isil"
+    ],
+    "nihavent--sarki--baki_callioglu--istanbulda_yasanan": [
+      "istanbulda yasanan"
+    ],
+    "nihavent--sarki--avni_anil--git_bu": [
+      "git bu"
+    ],
+    "nihavent--sarki--munir_nurettin_selcuk--bahcemde_acilmaz": [
+      "bahcemde acilmaz"
+    ],
+    "nihavent--sarki--yesari_asim_arsoy--bekledim_de": [
+      "bekledim de"
+    ],
+    "nihavent--sarki--nazmi_atlig--benim_gonlum": [
+      "benim gonlum"
+    ],
+    "nihavent--sarki--semai--bir_alev--avni_anil": [
+      "bir alev"
+    ],
+    "nihavent--sarki--semai--bir_kerre--avni_anil": [
+      "bir kerre"
+    ],
+    "nihavent--sarki--semai--bir_nese--nuri_halil_poyraz": [
+      "bir nese"
+    ],
+    "nihavent--sarki--semai--dil_seni--civan_aga": [
+      "dil seni"
+    ],
+    "nihavent--sarki--semai--erisdi_nevbahar--arif_sami_toker": [
+      "erisdi nevbahar"
+    ],
+    "nihavent--sarki--semai--gelin_kizlar--haci_faik_bey": [
+      "gelin kızları",
+      "gelin kizi"
+    ],
+    "nihavent--sarki--semai--hatirla_ey_peri--muhlis_sabahaddin_ezgi": [
+      "hatirla ey peri",
+      "hatirla ey per"
+    ],
+    "nihavent--sarki--semai--icimde_nice--avni_anil": [
+      "icimde nices",
+      "niceler"
+    ],
+    "nihavent--sarki--semai--kacsam_birakip--mehves_hanim": [
+      "kacsam birakip",
+      "kacsam birak"
+    ],
+    "nihavent--sarki--semai--kalbe_dolan--erol_sayan": [
+      "kalbe dolan",
+      "kalbimde"
+    ],
+    "nihavent--sarki--semai--kanatlari_gumus--mesut_cemil": [
+      "kanatlari gümüsy"
+    ],
+    "nihavent--sarki--semai--mihrabim_diyerek--avni_anil": [
+      "mihrabim diyerek"
+    ],
+    "nihavent--sarki--semai--su_gonlumu--erol_sayan": [
+      "su gönlümü"
+    ],
+    "nihavent--sarki--semai--suzul_guzel--necdet_varol": [
+      "süzül güzel"
+    ],
+    "nihavent--sarki--sengin_semai--bin_gul--lemi_atli": [
+      "bin gül"
+    ],
+    "nihavent--sarki--senginsemai--afet_misirliyan": [
+      "bir_asik-i"
+    ],
+    "nihavent--sarki--senginsemai--musa_sureyya_bey": [
+      "bir_gun"
+    ],
+    "nihavent--sarki--sofyan--yildirim_gurses": [
+      "anla_artik"
+    ],
+    "nihavent--sarki--sofyan--erol_sayan": [
+      "ben_sana_mecburum"
+    ],
+    "nihavent--sarki--sofyan--ismail_gokce": [
+      "gelmedin"
+    ],
+    "nihavent--sarki--sofyan--gonlumle_oturdum--sekip_memduh_bey": [
+      "gonlumle otur dum"
+    ],
+    "nihavent--sarki--sofyan--gul_gul_yuzlu--omer_dilek": [
+      "gül gül yüz"
+    ],
+    "nihavent--sarki--sofyan--hep_aglatti--erol_sayan": [
+      "her ağlat"
+    ],
+    "nihavent--sarki--sofyan--hep_sen--erol_sayan": [
+      "her sen"
+    ],
+    "nihavent--sarki--sofyan--istinye_korfezinde--munir_nurettin_selcuk": [
+      "istanbul istinye"
+    ],
+    "nihavent--sarki--sofyan--munir_nurettin_selcuk": [
+      "kandilli_yuzerken"
+    ],
+    "nihavent--sarki--sofyan--osman_babuscu": [
+      "kanimda_kivilcim"
+    ],
+    "nihavent--sarki--sofyan--amir_ates": [
+      "karsida_kandilli"
+    ],
+    "nihavent--sarki--sofyan--ismail_otenkaya": [
+      "korfezde_meltem"
+    ],
+    "nihavent--sarki--sofyan--sadettin_kaynak": [
+      "ne_dert"
+    ],
+    "nihavent--sarki--yesari_asim_arsoy": [
+      "sahilde_o"
+    ],
+    "nihavent--sarki--misirli_udi_ibrahim_efendi": [
+      "semalardan_gunes"
+    ],
+    "nihavent--sarki--muhlis_sabahaddin": [
+      "uc_yil"
+    ],
+    "nihavent--sarki--haci_arif_bey": [
+      "ben_buy-i"
+    ],
+    "nihavent--sarki--fethi_karamahmutoglu": [
+      "bir_tatli_urperti"
+    ],
+    "nihavent--sarki--yesari_asim_arsoy--camlarda_safak": [
+      "camlarda safak"
+    ],
+    "nihavent--sarki--osman_nihat_akin--korfezdeki_dalgin": [
+      "korfezdeki dalgin"
+    ],
+    "nihavent--sarki--sermuezzin_hakki_bey--nerelerde_kaldin": [
+      "nerelerde kaldin"
+    ],
+    "nihavent--sarki--rifat_bey--acildi_bahcede": [
+      "acildi bahcede"
+    ],
+    "nihavent--sarki--ozgen_gurbuz--ates_alevde": [
+      "ates alevde"
+    ],
+    "nihavent--sazeseri--nimsofyan--kanatlarim_olsaydi--serif_muhittin_targan": [
+      "kanatlarim olsaydi"
+    ],
+    "nihavent--sazeseri--nimsofyan--seytanin_ruyasi--muhammet_yildirir": [
+      "seytanin ruyasi"
+    ],
+    "nihavent--yuruksemai--ayrildi_gonul--zeki_duygulu": [
+      "ayrildi gonul"
+    ],
+    "nihavent--yuruksemai--bu_tab--ali_rifat_cagatay": [
+      "bu tab"
+    ],
+    "nihavent--yuruksemai--ruhsarina_aybetme--munir_nurettin_selcuk": [
+      "ruhsarina aybetme"
+    ],
+    "nikriz--agirsemai--benim_curmum--akin_ozkan": [
+      "benim curmum"
+    ],
+    "nihavent--yuruksemai--uskudara_gider--?": [
+      "uskudara gider"
+    ],
+    "nikriz--sarki--aksak--elmas_senin--tanburi_mustafa_cavus": [
+      "elmas senin"
+    ],
+    "nikriz--sarki--aksak--sevdim_seni--sinan_sipahi": [
+      "sevdim seni"
+    ],
+    "nikriz--sarki--curcuna--gozumun_yasini--nihal_erkutun": [
+      "gozumun yasin"
+    ],
+    "nikriz--sarki--curcuna--o_guzel--emin_ongan": [
+      "o guzel"
+    ],
+    "nikriz--sarki--curcuna--yalovanin_sen--yesari_asim_arsoy": [
+      "yalovanin sen"
+    ],
+    "nikriz--sarki--devrihindi--her_sabah--omer_dilek": [
+      "her sabah"
+    ],
+    "nikriz--sarki--duyek--gonul_ne--faize_ergin": [
+      "gonul ne"
+    ],
+    "nikriz--sarki--evfer--yere_dussen--irfan_dogrusoz": [
+      "yere dussen",
+      "yere düşen"
+    ],
+    "nikriz--sarki--sofyan--simsiyah--yilmaz_karakoyunlu": [
+      "simsiyah",
+      "siyah"
+    ],
+    "nikriz--sarki--turkaksagi--bir_destan--selahattin_icli": [
+      "bir distan",
+      "bir destan"
+    ],
+    "nikriz--sarki--turkaksagi--sevginle_inan--kani_karaca": [
+      "sevginle inan",
+      "inan sevginin"
+    ],
+    "nikriz--turku--devrituran--ben_giderim": [
+      "ben giderim"
+    ],
+    "nikriz--turku--evfer--dagbasinda_tuter": [
+      "dağ başında tutar"
+    ],
+    "nikriz--turku--nimsofyan--sokak_basi": [
+      "sokak başında"
+    ],
+    "nikriz--turku--oynak--yoruk_de": [
+      "yoruk de"
+    ],
+    "nikriz--turku--sofyan--kahve_yemenden": [
+      "kahve yeme den"
+    ],
+    "nikriz--turku--turkaksagi--haydar_haydar--erzincan": [
+      "haydar haydar"
+    ],
+    "nikriz--turku--turkaksagi--sen_bu--trabzon": [
+      "sen bu"
+    ],
+    "nikriz--zeybek--aksak--1--tanburi_cemil_bey": [
+      "1"
+    ],
+    "nikriz--zeybek--aksak--2--tanburi_cemil_bey": [
+      "2"
+    ],
+    "nisaburek--sarki--aksak--bir_eski--cinucen_tanrikorur": [
+      "bir eski",
+      "eski"
+    ],
+    "nisaburek--sarki--aydin--meclise_gel--tanburi_mustafa_cavus": [
+      "meclise gel",
+      "gel meclise"
+    ],
+    "nisaburek--sarki--devrihindi--gonlum_ozler--erdinc_celikkol": [
+      "gonlum ozler",
+      "ozlerim"
+    ],
+    "nisaburek--sarki--duyek--acildi_bahcede--fehmi_tokay": [
+      "bahce acik",
+      "bahcedeki bahar"
+    ],
+    "nisaburek--sarki--duyek--ayrilik_yari--selahaddin_pinar": [
+      "ayrilik yari",
+      "yarim ayrilik"
+    ],
+    "nisaburek--sarki--beser--omr-u_beser--yuksel_kip": [
+      "omru beser"
+    ],
+    "nisaburek--sarki--bin_zeban--yusuf_ziya_pasa": [
+      "bin zeban"
+    ],
+    "nisaburek--sarki--gul_yuzun--vecihe_daryal": [
+      "gül yüzün"
+    ],
+    "nisaburek--sarki--iftirakinla_efendim--cevdet_cagla": [
+      "iftirakinle efendi"
+    ],
+    "sofyan--seyir--seyir--nisaburek--sefik_gurmeric": [
+      "nisaburek",
+      "nisaburek seyir"
+    ],
+    "turku--aksak--fincani_tastan--nisaburek": [
+      "fincani tastan",
+      "fincani tastan nisaburek"
+    ],
+    "yuruksemai--yuruksemai--ey_gul--nusretiye--yusuf_ziya_pasa": [
+      "ey gul",
+      "ey gul nusretiye"
+    ],
+    "devriaryan--pesrev--nisabureyn--ozan_yarman": [
+      "nisabureyn",
+      "nisabureyn pesrev"
+    ],
+    "devrihindi--beste--mevsimi_gul--nuhuft--aheni_celebi": [
+      "mevsimi gul",
+      "mevsimi gul nuhuft"
+    ],
+    "aksaksemai--kupe--nuhuft--etme--ahmet_avni_konuk": [
+      "etme",
+      "nuhuf"
+    ],
+    "darbifetih--murabba--nuhuft--ta_kim_hattin--seyyid_nuh": [
+      "ta kim hattin",
+      "kim hat"
+    ],
+    "seyir--sefik_gurmeric--pencgah--1": [
+      "1"
+    ],
+    "firengifer--murabba--pencgah--hem_sohbet-i--itri": [
+      "hem sohbet"
+    ],
+    "semai--rauf_yekta--pencgah--1": [
+      "1"
+    ],
+    "pencgah--seyir--sofyan--sefik_gurmeric": [
+      "1"
+    ],
+    "pencgahiasl--kupe--devrirevanihindi--ahmet_avni_konuk": [
+      "pencugah-i_asl"
+    ],
+    "pencgahizaid--seyir--sofyan--sefik_gurmeric": [
+      "1"
+    ],
+    "nefiri--pesrev--yuruksemai_ii--yuruksemai_ii_nefiri_behram_aga": [
+      "peykinesat"
+    ],
+    "rast--kupe--evfer--etse_rachatfeza": [
+      "etse",
+      "rahatfeza"
+    ],
+    "rast--kupe--evfer--hic_rachatulervah": [
+      "hic",
+      "rahatulervah"
+    ],
+    "rast--seyir--sofyan--cekmis_yuzune_sefik_gurmeric": [
+      "cekmis yuzune"
+    ],
+    "rast--aksaksemai--agirsemai--saki_parildasin--munir_nurettin_selcuk": [
+      "saki parildasin"
+    ],
+    "rast--musemmen--aranagme--1--?": [
+      "1"
+    ],
+    "rast--curcuna--aranagme--1--?": [
+      "1"
+    ],
+    "rast--bestedevrirevani--beste--yakma_canim--ali_rifat_cagatay": [
+      "yakma canim"
+    ],
+    "rast--hafif--beste--seyreyle_o--tabi_mustafa_efendi": [
+      "seyreyle o"
+    ],
+    "rast--kar-i_nev--agirduyek--gozumde_daim--dede_efendi": [
+      "gozumda daim"
+    ],
+    "rast--kar--duyek--numune_ist--abdulkadir_meragi": [
+      "numune ist"
+    ],
+    "rast--karce--devrihindi--gul_yuzunde--munir_nurettin_selcuk": [
+      "gül yüzünde"
+    ],
+    "rast--kupe--devrirevan--kavli_de_kaddi--ahmet_avni_konuk": [
+      "kavli de kaddi"
+    ],
+    "rast--mars--nimsofyan--hep_bilirler--ali_rifat_cagatay": [
+      "hep_bilirler"
+    ],
+    "rast--mars--sofyan--baska_bir--musa_sureyya_bey": [
+      "baska_bir"
+    ],
+    "rast--mars--sofyan--ey_sanli--muallim_ismail_hakki_bey": [
+      "ey_sanli"
+    ],
+    "rast--mars--sofyan--korkma_sonmez--muallim_ismail_hakki_bey": [
+      "korkma_sonmez"
+    ],
+    "rast--medhal--hafif--musahabet_i_musikiye--refik_fersan": [
+      "musahabet_i_musikiye"
+    ],
+    "rast--bektasidevrirevani--?": [
+      "al_dokeyim"
+    ],
+    "rast--ornek_oz--devrihindi--1": [
+      "ruhi ayangil"
+    ],
+    "rast--ornek_oz--musemmen--1": [
+      "ruhi ayangil"
+    ],
+    "rast--ornek_oz--sofyan--1": [
+      "huseyin sadettin arel"
+    ],
+    "rast--pesrev--cifteduyek--?": [
+      "sirri abdulbaki dede"
+    ],
+    "rast--pesrev--cifteduyek--farabi": [
+      "du-sems"
+    ],
+    "rast--pesrev--devrikebir--giriftzen_asim_bey": [
+      "?"
+    ],
+    "rast--pesrev--firengifer-berefsan--itri": [
+      "?"
+    ],
+    "rast--pesrev--muhammes--tatyos_efendi": [
+      "?"
+    ],
+    "rast--pesrev--sakil--benli_hasan_aga": [
+      "?"
+    ],
+    "rast--sarki--agiraksak--cevr_olur--serif_icli": [
+      "cevrim olur",
+      "çevrim olur"
+    ],
+    "rast--sarki--agiraksak--muy_i_julidem--sakir_aga": [
+      "müy-i julide",
+      "müy-i juludem"
+    ],
+    "rast--sarki--agirduyek--bu_husn--dede_efendi": [
+      "bu hüsün",
+      "bu husun"
+    ],
+    "rast--sarki--aksak--aski_huznumle--mildan_niyazi_bey": [
+      "aşkı hüzünle",
+      "aşkı hüznumle"
+    ],
+    "rast--sarki--aksak--ay_gulsun--ismail_baha_surelsan": [
+      "ay gülşün",
+      "ay gülsün"
+    ],
+    "rast--sarki--aksak--bin_can_ile--tanburi_buyuk_osman_bey": [
+      "bin can ile"
+    ],
+    "rast--sarki--aksak--bir_dame--haci_faik_bey": [
+      "bir dame"
+    ],
+    "rast--sarki--aksak--calima_bak--lavtaci_hristo": [
+      "calima bak"
+    ],
+    "rast--sarki--aksak--gittin_birakip--emin_ongan": [
+      "gittin birakip"
+    ],
+    "rast--sarki--aksak--kara_gozlum--gultekin_ceki": [
+      "kara gozlum"
+    ],
+    "rast--sarki--aksak--maziyi_nasil--nihal_erkutun": [
+      "mazi-yi nasi-l"
+    ],
+    "rast--sarki--aksak--mukedder_derd-i--haci_arif_bey": [
+      "mücder derdi"
+    ],
+    "rast--sarki--aksak--reng-i_ruhsarina--erol_sayan": [
+      "ruhsarın rengi"
+    ],
+    "rast--sarki--aksak--sen_nazla_gezerken--kazim_nami_erdolen": [
+      "sen nazlı gezerken"
+    ],
+    "rast--sarki--aksak--yuregim_alev--erdogan_berker": [
+      "yüreğim alev"
+    ],
+    "rast--sarki--curcuna--aylar_geciyor--selahaddin_pinar": [
+      "aylar geçiyor"
+    ],
+    "rast--sarki--curcuna--gamdan_azade--rifat_bey": [
+      "gamdan azade"
+    ],
+    "rast--sarki--curcuna--icime_hep--yildirim_gurses": [
+      "icime hep"
+    ],
+    "rast--sarki--curcuna--mey-i_lalinle--tatyos_efendi": [
+      "mey-i lâlinle"
+    ],
+    "rast--sarki--curcuna--neyledi_gor--haci_arif_bey": [
+      "neyledi gör"
+    ],
+    "rast--sarki--curcuna--nihansin_dideden--haci_faik_bey": [
+      "nihansın dide den"
+    ],
+    "rast--sarki--curcuna--yalniz_benim--selahaddin_pinar": [
+      "yalniz benim"
+    ],
+    "rast--sarki--curcuna--yoksun_bu--zeki_muren": [
+      "yoksun bu"
+    ],
+    "rast--sarki--devrihindi--cesm-i_mahmurun--haci_arif_bey": [
+      "cemsi mahmurun"
+    ],
+    "rast--sarki--devrihindi--ehl-i_dil--haci_arif_bey": [
+      "ehl-i dil"
+    ],
+    "rast--sarki--duyek--ben_kuskunum--baki_duyarlar": [
+      "ben kuskunum"
+    ],
+    "rast--sarki--duyek--bir_gonul--ferit_sidal": [
+      "bir gonul"
+    ],
+    "rast--sarki--duyek--gittigin_yollari--ali_senozan": [
+      "gittigin yollari"
+    ],
+    "rast--sarki--duyek--gorsem_seni--dede_efendi": [
+      "gorsem seni"
+    ],
+    "rast--sarki--duyek--her_telden--sakir_aga": [
+      "her telden"
+    ],
+    "rast--sarki--duyek--hicran_olacaksa--ferit_sidal": [
+      "hicran olacaksa"
+    ],
+    "rast--sarki--duyek--istanbulu_artik--erol_sayan": [
+      "istanbulu artik"
+    ],
+    "rast--sarki--duyek--kustum_artik_geceye--sinan_sipahi": [
+      "kustum artik geceye"
+    ],
+    "rast--sarki--duyek--ne_sarkilarda--omer_dilek": [
+      "ne sarkilarda"
+    ],
+    "rast--sarki--duyek--o_dudaklar--sadettin_kaynak": [
+      "o dudaklar"
+    ],
+    "rast--sarki--duyek--uftadenim_ey--dede_efendi": [
+      "uytadanım",
+      "üftâdenim"
+    ],
+    "rast--sarki--duyek--unut_beni--sukru_tunar": [
+      "beni unut",
+      "beni unuttu"
+    ],
+    "rast--sarki--duyek--yemin_ettim--selahattin_inal": [
+      "yemin ettim",
+      "yemin ettik"
+    ],
+    "rast--sarki--duyek--yok_mu_cana--lebi_atli": [
+      "cana yok mu",
+      "can yok"
+    ],
+    "rast--sarki--evfer--kordonboyu--erol_sayan": [
+      "kordon boyu",
+      "bölgesel"
+    ],
+    "rast--sarki--kapali_curcuna--hatirimdan_cikmaz--haci_arif_bey": [
+      "hatirimdan cikmaz"
+    ],
+    "rast--sarki--kapali_curcuna--nedendir_bu--sevki_bey": [
+      "nedendir bu"
+    ],
+    "rast--sarki--musemmen--hab-gahi--giriftzen_asim_bey": [
+      "hab gahi"
+    ],
+    "rast--sarki--musemmen--vuslatindan_gayri--haci_arif_bey": [
+      "vuslatindan gayri"
+    ],
+    "rast--sarki--nimsofyan--bu_kadar--rustu_sardag": [
+      "bu kadar"
+    ],
+    "rast--sarki--nimsofyan--ruya_gibi--mehmet_ilgin": [
+      "ruya gibi"
+    ],
+    "rast--sarki--nimsofyan--seni_nasil--irfan_ozbakir": [
+      "seni nasil"
+    ],
+    "rast--sarki--nimsofyan--yapraklara_dallara--?": [
+      "yapraklara dallara"
+    ],
+    "rast--sarki--semai--askim_guzel--neveser_kokdes": [
+      "askim guzel"
+    ],
+    "rast--sarki--semai--gecsin_gunler--erol_sayan": [
+      "gecsin gunler"
+    ],
+    "rast--sarki--semai--hayal_ufkunda--neveser_kokdes": [
+      "hayal ufkunda"
+    ],
+    "rast--sarki--semai--perisan_saclarin--yesari_asim_arsoy": [
+      "perisan saçların"
+    ],
+    "rast--sarki--semai--sevmek_seni--neveser_kokdes": [
+      "sevmek seni"
+    ],
+    "rast--sarki--semai--yine_bir_gulnihal--dede_efendi": [
+      "yine bir gulnihal"
+    ],
+    "rast--sarki--semai--yoksun_diye--erol_sayan": [
+      "yoksun diye"
+    ],
+    "rast--sarki--senginsemai--sevda_ile_dillendi--munir_nurettin_selcuk": [
+      "sevdalı dilinden"
+    ],
+    "rast--sarki--sofyani--karli_dagi--rifat_bey": [
+      "karlı dağ"
+    ],
+    "rast--sarki--sofyani--leb-i_renginine--ahmet_rasim_bey": [
+      "rengin rengi"
+    ],
+    "rast--sarki--sofyani--sazin_gibi--lemi_atli": [
+      "saz gibi"
+    ],
+    "rast--sarki--sofyani--su_kirik--omer_dilek": [
+      "su kırık"
+    ],
+    "rast--sarki--sofyani--yarali_gonlumde--omer_sami_gupgup": [
+      "yara gönül"
+    ],
+    "rast--sarki--yuruksemai_ii--dede_efendi": [
+      "yuzundur_cihani"
+    ],
+    "rast--sarki--yuruksemai--mahmud_celaleddin_pasa": [
+      "fitneler_gizlemis"
+    ],
+    "rast--sarki--yuruksemai--gultekin_ceki": [
+      "unutulmus_birer"
+    ],
+    "rast--yuruksemai--yuruksemai--gelse_o_suh--hafiz_post": [
+      "gelse o suh"
+    ],
+    "rast--zeybek--aksak--kordon_zeybegi--?": [
+      "kordon zeybegi"
+    ],
+    "rasticedid--kupe--devrirevanihindi--etse_hanende--ahmet_avni_konuk": [
+      "etse hanende"
+    ],
+    "rastmaye--kupe--devrirevanihindi--nagmemiz_bu--ahmet_avni_konuk": [
+      "nagmemiz bu"
+    ],
+    "rehavi--beste--remel--zannetme_ben--numan_aga": [
+      "zannetme ben"
+    ],
+    "rehavi--kupe--devrirevanihindi--vad-i_vasl--ahmet_avni_konuk": [
+      "vad-i vasl"
+    ],
+    "rehavi--mars--ikizaksak--hos_gelisler--?": [
+      "hos gelisler"
+    ],
+    "rehavi--nakis--yuruksemai--biz_alude-i--hafiz_post": [
+      "biz alude-i"
+    ],
+    "rehavi--sarki--duyek--ey_bulend--dede_efendi": [
+      "ey bulend"
+    ],
+    "agiraksak--sarki--ask_der--rengidil": [
+      "RESE7316"
+    ],
+    "raksaksagi--sarki--cok_dil--rengidil": [
+      "RENG4444"
+    ],
+    "ruhnevaz--sarki--nakis--ruhnevaz_bir--MAVI6284": [
+      "ruhnevaz bir",
+      "bir ruhnevaz"
+    ],
+    "ruhnevaz--sarki--nakis--zulfundedir_benim--yavuz_yekta": [
+      "benim zulfundedir",
+      "zulfundedir benim"
+    ],
+    "ruhnevaz--sarki--oyunhavasi--bad-i_saba--osman_nuri_ozpekel": [
+      "bad-i saba",
+      "saba bad"
+    ],
+    "ruhnevaz--pesrev--pesrev--?--huseyin_sadettin_arel": [
+      "ruhnevaz pesrev"
+    ],
+    "ruhnevaz--sarki--agirduyek--ne_fallardan--CILE9876": [
+      "fallardan ne"
+    ],
+    "sarki--raksaksagi--dudaklardan_gonullere--ruhnevaz": [
+      "dudaklarından gönğlere"
+    ],
+    "sazeseri--ikizaksak--baharda_karisik--mutlu_torun": [
+      "baharda karisik"
+    ],
+    "ruhnevaz--seyir--aksaksemai--sazsemaisi--suphi_ezgi": [
+      "ruhnevaz",
+      "sazsemaisi"
+    ],
+    "ruyidilara--seyir--aksaksemai--sazsemaisi--erzurumlu_hasib_dede": [
+      "ruyidilara",
+      "sazsemaisi"
+    ],
+    "ruyiirak--kupe--evfer--ey--ahmet_avni_konuk": [
+      "ruyiirak",
+      "ey"
+    ],
+    "ruyiirak--seyir--aksaksemai--sazsemaisi--kani_karaca": [
+      "ruyiirak",
+      "sazsemaisi"
+    ],
+    "gayri--duyek--kupe--uyek--ahmet_avni_konuk": [
+      "uyek"
+    ],
+    "saba--pesrev--hafif--zurnazen_dagi_ahmet_celebi": [
+      "zurnazen dahi ahmet celebi"
+    ],
+    "saba--pesrev--nimcember--edirneli_ahmed_celebi": [
+      "edirneli ahmet celebi"
+    ],
+    "saba--sarki--agirduyek--gus_eyle--dede_efendi": [
+      "gus eyle",
+      "guseyle"
+    ],
+    "saba--sarki--aksak--bakisin_ahuya--omer_dilek": [
+      "bakışın ahüya"
+    ],
+    "saba--sarki--aksak--beni_aska--tanburi_ali_efendi": [
+      "beni aşk'a"
+    ],
+    "saba--sarki--aksak--bir_esmere--tanburi_mustafa_cavus": [
+      "bir esmer"
+    ],
+    "saba--sarki--aksak--bir_nigah--zeki_arif_ataergin": [
+      "bir nigâh"
+    ],
+    "saba--sarki--aksak--can_verme--emin_ongan": [
+      "can verme",
+      "verme can"
+    ],
+    "saba--sarki--aksak--gitti_de--denizoglu_ali_bey": [
+      "gitme de",
+      "de git"
+    ],
+    "saba--sarki--aksak--goz_actim--omer_dilek": [
+      "göz actım",
+      "actık göz"
+    ],
+    "saba--sarki--aksak--semt-i_dildare--suphi_ziya_ozbekkan": [
+      "dil darenin semti",
+      "dildare semt"
+    ],
+    "saba--sarki--aksak--sen_sinemde--necip_mirkelamoglu": [
+      "sinemde sen",
+      "sen sinemda"
+    ],
+    "saba--sarki--curcuna--pervane--yesari_asim_arsoy": [
+      "pervane"
+    ],
+    "saba--sarki--curcuna--suzdukce_guzel--cevdet_cagla": [
+      "suzdukce guzel"
+    ],
+    "saba--sarki--devrihindi--nigah-i_mestine--haci_arif_bey": [
+      "nigah-i mestine"
+    ],
+    "saba--sarki--devrihindi--oyle_bir--aleko_bacanos": [
+      "oyle bir"
+    ],
+    "saba--sarki--duyek--bu_aksam--safiye_ayla": [
+      "bu aksam"
+    ],
+    "saba--sarki--senginsemai--sahilde_saba_ruzgari--mustafa_nafiz_irmak": [
+      "sahilde saba rüzgarı"
+    ],
+    "saba--sarki--senginsemai--yollarda_kalan--bimen_sen": [
+      "yollarda kalan"
+    ],
+    "saba--sarki--sofyan--asikina_eylemez--numan_aga": [
+      "aşkına eylemez"
+    ],
+    "saba--sarki--turkaksagi--dus_ben_gibi--serif_icli": [
+      "dus ben gibi"
+    ],
+    "saba--turku--duyek--hangi_bagin": [
+      "hangi bagin"
+    ],
+    "saba--turku--nimsofyan--pinar_basi": [
+      "pinar basi"
+    ],
+    "saba--kupe--sofyan--bir_dalda": [
+      "bir dalda"
+    ],
+    "saba--turku--sofyan--mendilimin_yesili": [
+      "mendilimin yesili"
+    ],
+    "saba-zemzeme--musemmen--bir": [
+      "bir"
+    ],
+    "seyir--sarki--sofyan--sebii_gurmeric": [
+      "sebii_gurmeric",
+      "sefik_gurmeric"
+    ],
+    "ey_safay-i--sarki--sedaraban--hafif--tanburi_isak": [
+      "ey safayı",
+      "ey-safay"
+    ],
+    "dinlese--kupe--sedaraban--yuruksemai--ahmet_avni_konuk": [
+      "dinle"
+    ],
+    "ates-i_askinla--sarki--sedaraban--agiraksak--hasim_bey": [
+      "ates askin"
+    ],
+    "gam_seni--sarki--sedaraban--agiraksak--muallim_kazim_uz": [
+      "gamsen"
+    ],
+    "faize_ergin--sarki--sedaraban--bade-i_vuslat--devrihindi": [
+      "bade-i vuslat"
+    ],
+    "dede_efendi--sarki--sedaraban--gozumden_gonlumden--duyek": [
+      "gozumden gonlumden"
+    ],
+    "rahmi_bey--sarki--sedaraban--nevbahar-i_nusnune--yuruksemai_ii": [
+      "nevbahar-i nusnune"
+    ],
+    "segah--ornek_oz--aksak--ruhi_ayangil": [
+      "ruhi ayangoel",
+      "ruhi ayangil"
+    ],
+    "segah--ornek_oz--duyek--ruhi_ayangil": [
+      "ruhi ayangoel",
+      "ruhi ayangil"
+    ],
+    "segah--pesrev--devrikebir--cihat_hircin": [
+      "cihat hircin",
+      "cihat hirçin"
+    ],
+    "segah--pesrev--devrikebir--nayi_osman_dede": [
+      "nayi osman dede",
+      "neyzen osman dede"
+    ],
+    "segah--pesrev--devrikebir--neyzen_yusuf_pasa": [
+      "neyzen yusuf pasa",
+      "yusuf pasa"
+    ],
+    "segah--pesrev--karabatak--hizir_aga": [
+      "karabatak pesrev hizir ağa"
+    ],
+    "segah--pesrev--karabatak--tanburi_cemil_bey": [
+      "karabatak pesrev tanburi cemil bey"
+    ],
+    "segah--rumeliturkusu--sana_da--rumeli": [
+      "sana da rumeliturkusu rümeyle"
+    ],
+    "segah--salatiummiye--allahumme_salli--itri": [
+      "allahumme salli salatiummiye itri"
+    ],
+    "segah--sarki--cok_kildi--dellalzade_haci_ismail_efendi": [
+      "cok kildi sarki dellalzade hacisemai"
+    ],
+    "segah--sarki--aksaksemai--doldur_getir--kazasker_mustafa_izzet_efendi": [
+      "doldur getir"
+    ],
+    "segah--sarki--agiraksak--bensiz_ey--bimen_sen": [
+      "bensiz ey"
+    ],
+    "segah--sarki--agiraksak--hatir-i_nasadi--tanburi_cemil_bey": [
+      "hâtim-i nâsidi"
+    ],
+    "segah--sarki--agiraksak--sun_da_icsin--bimen_sen": [
+      "şun da ışın"
+    ],
+    "segah--sarki--aksak--benim_sen--ahmet_rasim_bey": [
+      "benim sen"
+    ],
+    "segah--sarki--aksak--bulbul_yetisir--haci_arif_bey": [
+      "bulbul yetisir",
+      "bulbul yetis"
+    ],
+    "segah--sarki--aksak--gece_sessiz--gultekin_ceki": [
+      "gece sessiz",
+      "gece sissiz"
+    ],
+    "segah--sarki--aksak--gel_ey--tanburi_cemil_bey": [
+      "gel ey",
+      "gel ey tanbur"
+    ],
+    "segah--sarki--aksak--kirdin_ummidimi--fehmi_tokay": [
+      "kir din ummidimi",
+      "kirdin ummidim"
+    ],
+    "segah--sarki--aksak--seni_her_dem--misirli_udi_ibrahim_efendi": [
+      "sen her dem",
+      "seni herdem"
+    ],
+    "segah--sarki--aksak--suyi_kagithanede--lavtaci_hristo": [
+      "suyu kâğıthane"
+    ],
+    "segah--sarki--aksak--yine_hicran_ile--melahat_pars": [
+      "yine hıçranda"
+    ],
+    "segah--sarki--ciftesofyan--sema_i_maksudu--dellalzade_haci_ismail_efendi": [
+      "sema maksud"
+    ],
+    "segah--sarki--curcuna--bir_emele--neveser_kokdes": [
+      "bir emele"
+    ],
+    "segah--sarki--curcuna--gonul_muhabbeti--ismail_gokce": [
+      "gönül muhabbete"
+    ],
+    "segah--sarki--curcuna--olmaz_ilac--haci_arif_bey": [
+      "ilac olmaz"
+    ],
+    "segah--sarki--devrihindi--bakip_ahval-i--haci_arif_bey": [
+      "bakip ahval"
+    ],
+    "segah--sarki--devrihindi--dil_harab-i--tanburi_ali_efendi": [
+      "dil harab"
+    ],
+    "segah--sarki--duyek--ayrilik_yaman--sadettin_kaynak": [
+      "ayrılık yaman"
+    ],
+    "segah--sarki--duyek--askin_o_sihirli--erol_sayan": [
+      "askın o sihirli"
+    ],
+    "segah--sarki--duyek--donulmez_aksamin--munir_nurettin_selcuk": [
+      "donulmez aksamin"
+    ],
+    "segah--sarki--duyek--gonul_bahcemizde--omer_sami_gupgup": [
+      "gonul bahcemizde"
+    ],
+    "segah--sarki--duyek--issiz_gecelerin--omer_sami_gupgup": [
+      "issiz gece"
+    ],
+    "segah--sarki--duyek--leyla_bir--sadettin_kaynak": [
+      "leyla bir"
+    ],
+    "segah--sarki--duyek--o_gece--omer_sami_gupgup": [
+      "o gece"
+    ],
+    "segah--sarki--gel_gitme--nimsofyan--kaptanzade_ali_riza_bey": [
+      "gel gitme"
+    ],
+    "segah--sarki--herkes_gitti--raksaksagi--refik_fersan": [
+      "herkes gitti"
+    ],
+    "segah--sarki--ben_seni--semai--amir_ates": [
+      "ben seni"
+    ],
+    "segah--sarki--gurbet_icimde--semai--teoman_alpay": [
+      "gurbet içimde"
+    ],
+    "segah--sarki--kus_olup--semai--neveser_kokdes": [
+      "kuş olup"
+    ],
+    "segah--sarki--semai--sensin_tek--gulen_ertek": [
+      "sen sensin tek"
+    ],
+    "segah--sarki--senginsemai--kactim_birakip--kirkor_cigercioglu": [
+      "kactım birakıp"
+    ],
+    "segah--sarki--senginsemai--ol_gozleri--ekrem_guyer": [
+      "ol gozleri"
+    ],
+    "segah--sarki--senginsemai--ruhunda_olen--sadi_isilay": [
+      "ruhunda olen"
+    ],
+    "segah--sarki--sofyan--dayanilmaz_hasretin--omer_sami_gupgup": [
+      "dayanilmaz hasretin"
+    ],
+    "segah--sarki--turkaksagi--sevda_yaratan--yesari_asim_arsoy": [
+      "sevda yarayan"
+    ],
+    "segah--sarki--yuruksemai_ii--kapat_gozlerini--mustafa_seyran": [
+      "kapalı gözler"
+    ],
+    "segah--sazeseri--sazsemaisi--uc_turkoglu--sofyan": [
+      "üç turkoğlu"
+    ],
+    "segah--turku--33333--cemberli_cargat--huseng_azeroglu": [
+      "cemri carkati",
+      "cemreli cargat"
+    ],
+    "segah--turku--aksak--beyaz_giyme--bolu": [
+      "beyaz giyim"
+    ],
+    "segah--turku--aksak--binnaz--usak": [
+      "bin naz"
+    ],
+    "segah--turku--aksak--bir_gemim--ankara": [
+      "bir gemi"
+    ],
+    "segah--turku--aksak--boyda_bosun--istanbul": [
+      "bozda bosun"
+    ],
+    "segah--turku--nimsofyan--acilir_gonca_gul--erol_sayan": [
+      "acilir gonca gül"
+    ],
+    "segah--turku--nimsofyan--ermenegin_keklikleri--konya": [
+      "ermeninin keklikleri"
+    ],
+    "segah--turku--nimsofyan--silifkenin_yogurdu--?": [
+      "silifke'nin yoğurdu"
+    ],
+    "segah--turku--nimsofyan--zeytinyagli_yiyemem--?": [
+      "zeytinyağlı yiyemem"
+    ],
+    "segah--oynak--nimsofyan--entarine_pes--afyon_sandikli": [
+      "enterine pes"
+    ],
+    "segah--turku--semai--baharin_gulsen--kars": [
+      "baharın gülşen",
+      "baharin gulsen"
+    ],
+    "segah--turku--sofyan--acem_ulkesinde--erzurum": [
+      "acem ulkesinde",
+      "acemi ulkede"
+    ],
+    "segah--turku--sofyan--ana_beni--?": [
+      "ana beni"
+    ],
+    "segah--turku--sofyan--kalaliyam--urfa": [
+      "kalali yam",
+      "kalalı yam"
+    ],
+    "segah--turku--sofyan--keten_koynek--kirsehir-mucur": [
+      "keten koynek",
+      "keten köynük"
+    ],
+    "musemmen--kupe--aksaksemai--kesme--ahmet_avni_konuk": [
+      "kesme",
+      "sevk-icedid"
+    ],
+    "hafif--kupe--aksaksemai-- halka-i --ahmet_avni_konuk": [
+      "halka-i",
+      "sevkaver"
+    ],
+    "hafif--pesrev--sevkaver--? --i_mahmut": [
+      "?",
+      "sevkaver"
+    ],
+    "musemmen--kupe--aksaksemai--sevkefza --ahmet_avni_konuk": [
+      "sevkefza",
+      "sevkaver"
+    ],
+    "muhammes--pesrev--sevkefza--? --numan_aga": [
+      "?",
+      "sevkefza"
+    ],
+    "sevkefza--sarki--aksak--ey_serv-i--iii_selim": [
+      "ey serv",
+      "serv"
+    ],
+    "sevkefza--sarki--ciftesofyan--gecip_de_karsima--ahmed_aga": [
+      "geçip de karaşim",
+      "karaşim"
+    ],
+    "sevkefza--sarki--curcuna--sebep_sensin--mustafa_nafiz_irmak": [
+      "sebepsensin",
+      "sebep sensin"
+    ],
+    "sevkefza--sarki--devrihindi--asiyan-i_murg-i--ali_rifat_cagatay": [
+      "asian-i murg-i",
+      "murg-i"
+    ],
+    "sevkefza--sarki--semai--geldik_gidiyoruz--omer_dilek": [
+      "geldigidiyoruz",
+      "geldik gidiyoruz"
+    ],
+    "devrirevan--sevkitarab--kupe--dinleyenler--ahmet_avni_konuk": [
+      "dinleyenler",
+      "sevkidil"
+    ],
+    "verme--sevkitarab--kupe--verme--ahmet_avni_konuk": [
+      "verme"
+    ],
+    "sofyan--seyir--sevkitarab--1--erol_bingol": [
+      "1"
+    ],
+    "sofyan--seyir--sevkitarab--1--sefik_gurmeric": [
+      "1"
+    ],
+    "duyek--kupe--sipihr--her--ahmet_avni_konuk": [
+      "her"
+    ],
+    "devrirevan--beste--sivenuma--bir_goruste--abdulhalim_aga": [
+      "bir goruste"
+    ],
+    "duyek--kupe--sultaniirak--sah-i--ahmet_avni_konuk": [
+      "sah-i"
+    ],
+    "sultaniyegah--sarki--aksak--geldi_kuslarla--alaeddin_yavasca": [
+      "geldi kuslarla"
+    ],
+    "sultaniyegah--sarki--aksak--habide_olan--udi_sami_bey": [
+      "habide olan"
+    ],
+    "sultaniyegah--sarki--aksak--sacinin_telleri--munir_nurettin_selcuk": [
+      "sacinin telleri"
+    ],
+    "sultaniyegah--sarki--curcuna--bu_gulzarin--santuri_ethem_efendi": [
+      "bu gulzarin"
+    ],
+    "sultaniyegah--sarki--curcuna--gozumde_hep--?": [
+      "gozumde hep"
+    ],
+    "sultaniyegah--sarki--curcuna--peymaneme_mehtab--emin_ongan": [
+      "peymane mehtab",
+      "mehtap"
+    ],
+    "sultaniyegah--sarki--curcuna--sevildim_sanma--arif_sami_toker": [
+      "sevildim sanma"
+    ],
+    "sultaniyegah--sarki--duyek--hayat_genclik--munir_nurettin_selcuk": [
+      "hayat genclik"
+    ],
+    "sultaniyegah--sarki--duyek--her_sey--sinan_sipahi": [
+      "her sey"
+    ],
+    "sultaniyegah--sarki--duyek--kacinci_fasl-i--cevdet_cagla": [
+      "kacıncı faslı"
+    ],
+    "agirsemai--aksaksemai--suzidil--bir_suhun--ali_rifat_cagatay": [
+      "bir suhun"
+    ],
+    "agirsemai--aksaksemai--suzidil--kani_yad-i--tanburi_ali_efendi": [
+      "kani yad-i"
+    ],
+    "beste--fer--suzidil--hiraman_ol--abdulhalim_aga": [
+      "hiraman ol"
+    ],
+    "suzidil--sofyan--kocekce--acep_ey--ali_rifat_cagatay": [
+      "acep ey",
+      "acep-ey"
+    ],
+    "suzidil--semai--aksak--yandi--ahmet_avni_konuk": [
+      "yandi",
+      "yandı"
+    ],
+    "suzidil--murabba--remel--ruhsarina_aybetme--ali_rifat_cagatay": [
+      "ruhsarına aybetme",
+      "ruhsarina-aybetme"
+    ],
+    "suzidil--sarki--agiraksak--bir_nigah_ile--nikogos_aga": [
+      "bir nigah ile",
+      "birniğah ile"
+    ],
+    "suzidil--sarki--agiraksak--ulfetin_gecti--ismet_aga": [
+      "ulfetin geçti",
+      "ulfedin gecdi"
+    ],
+    "suzidil--sarki--aksak--bitmezdi_guzelbahcede--akin_ozkan": [
+      "bitmezdi güzel bahçede",
+      "bitmezdi guzel bahçede"
+    ],
+    "suzidil--sarki--aksak--her_bir--tanburi_ali_efendi": [
+      "her bir",
+      "herbir"
+    ],
+    "suzidil--sarki--aksak--husnunde_bahar--suphi_ziya_ozbekkan": [
+      "husnun baharı",
+      "bahar husnu"
+    ],
+    "suzidil--sarki--aksak--sana_ben_arz-i--garbis_efendi": [
+      "sana ben arzi"
+    ],
+    "suzidil--sarki--ciftesofyan--gul_olsam--bimen_sen": [
+      "gül olsam"
+    ],
+    "suzidil--sarki--curcuna--cana_gam-i--leon_hanciyan": [
+      "cana gam"
+    ],
+    "suzidil--sarki--duyek--her_ne_kusur--atif_bastug": [
+      "her ne kusur"
+    ],
+    "suzidil--sarki--duyek--sevgi_cicegimsin--omer_sami_gupgup": [
+      "sevgi cicegim"
+    ],
+    "suzidil--sarki--evfer--yandikca_oldu--tanburi_ali_efendi": [
+      "yandıkça oldu"
+    ],
+    "suzidil--sarki--semai--unutamiyorum--avni_anil": [
+      "unutamiyorum"
+    ],
+    "suzidil--sarki--senginsemai--ey_gonca--semseddin_ziya_bey": [
+      "ey gonca"
+    ],
+    "suzidil--sarki--sofyan--hayal_sehir--ibrahim_kalyon": [
+      "hayal sehir"
+    ],
+    "suzidil--sarki--sofyan--yuz_yil--yesari_asim_arsoy": [
+      "yuz yil"
+    ],
+    "suzidil--sema-i-saz--aksak-semai--yadigar--ali_rifat_cagatay": [
+      "yadigar",
+      "yadigâr"
+    ],
+    "suzidil--seyir--aksak--1--erol_bingol": [
+      "seyir",
+      "seyr-i"
+    ],
+    "suzidil--seyir--sofyan--1--sefik_gurmeric": [
+      "seyir",
+      "seyr-i"
+    ],
+    "-tanburi_cemil_bey--suzidil--taksim--serbest--?": [
+      "-tanburi cemil bey",
+      "-cemil bey"
+    ],
+    "suzidil--yuruksemai--yuruksemai--ceyhun_arayan--tanburi_ali_efendi": [
+      "yuruksemai",
+      "yürük semai"
+    ],
+    "suzinak-zirgule-sarki-aksak-emin_ongan": [
+      "hasretle_yanan"
+    ],
+    "suzinak-zirgule-sarki-curcuna-latif_aga": [
+      "benim_yarem"
+    ],
+    "suzinak-zirgule-sarki-devrihindi-muallim_ismail_hakki_bey": [
+      "dogdugum_gunden"
+    ],
+    "suzinak-zirgule-sarki-duyek-erol_sayan": [
+      "aylardir_gul"
+    ],
+    "suzinak-zirgule-sarki-duyek-gavsi_baykara": [
+      "dokunma_kalbime"
+    ],
+    "senginsemai--sarki--suzinak_zirgule--senginsemai--sekerci_cemil_bey": [
+      "hal-i_dilimi"
+    ],
+    "sofyan--sarki--suzinak_zirgule--sofyan--klarnet_ibrahim_efendi": [
+      "geci_alam-i"
+    ],
+    "yuruksemai_ii--sarki--suzinak_zirgule--nihal-i_gulsen-i--emin_ongan": [
+      "nihal-i_gulsen-i"
+    ],
+    "yuruksemai--sarki--suzinak_zirgule--husn_alemini--haci_arif_bey": [
+      "husn_alemini"
+    ],
+    "nimsofyan--turku--suzinak_zirgule--yarim_gitti--istanbul": [
+      "yarim_gitti"
+    ],
+    "suzinak--nagme--aranagme--curcuna--?": [
+      "curcuna",
+      "nagme curcuna"
+    ],
+    "suzinak--ilahi--cifteduyek--yandi_bu--ali_riza_sengel": [
+      "yandi bu",
+      "ilahi yandi bu"
+    ],
+    "suzinak--kupe--devrirevan--perdebazim--ahmet_avni_konuk": [
+      "perdebazim",
+      "kupe perdebazim"
+    ],
+    "suzinak--kupe--devrirevanihindi--nagmei_hungarey--ahmet_avni_konuk": [
+      "nagmei hungarey",
+      "kupe nagmei hungarey"
+    ],
+    "suzinak--mersiye--devrirevan--ehl-i_aska--?": [
+      "ehl-i aska",
+      "mersiye ehl-i aska"
+    ],
+    "suzinak--sarki--aksak--beni_bigane-i--tanburi_cemil_bey": [
+      "beni biganeci",
+      "biganeci"
+    ],
+    "suzinak--sarki--aksak--bir_sihr-i_tarab--rahmi_bey": [
+      "bir sihr-i tarab rahmi bey"
+    ],
+    "suzinak--sarki--aksak--cekme_elemi--haci_arif_bey": [
+      "cekme elemi"
+    ],
+    "suzinak--sarki--aksak--cevrin_yeter--osman_nihat_akin": [
+      "cevrin yeter"
+    ],
+    "suzinak--sarki--aksak--edemem_kimseye--haci_arif_bey": [
+      "edemem kimseye"
+    ],
+    "suzinak--sarki--aksak--ellere_uzaktan--osman_nihat_akin": [
+      "ellere uzaktan"
+    ],
+    "suzinak--sarki--aksak--eski_hali--haci_arif_bey": [
+      "eski hali"
+    ],
+    "suzinak--sarki--aksak--hasreti_kadehden--rustu_eric": [
+      "hasreti kadehden"
+    ],
+    "suzinak--sarki--aksak--meclis_bezendi--haci_arif_bey": [
+      "meclis bezendi"
+    ],
+    "suzinak--sarki--aksak--sazin_gibi--cevdet_cagla": [
+      "sazin gibi"
+    ],
+    "suzinak--sarki--aksak--uslanmadi_hala--haci_arif_bey": [
+      "uslanmadı hala"
+    ],
+    "suzinak--sarki--aksak--yine_murg-i--haci_arif_bey": [
+      "yine murg-i"
+    ],
+    "suzinak--sarki--curcuna--gozumden_gitmiyor--haci_arif_bey": [
+      "gözümden gitmiyor"
+    ],
+    "suzinak--sarki--curcuna--gulup_gectin--muzaffer_ilkar": [
+      "gülüp geçtin"
+    ],
+    "suzinak--sarki--curcuna--ne_cok--sedat_oztoprak": [
+      "ne çok"
+    ],
+    "suzinak--sarki--curcuna--ne_muskulmus--osman_nihat_akin": [
+      "muskulmus"
+    ],
+    "suzinak--sarki--curcuna--pabusuna_ermek--haci_arif_bey": [
+      "pabu usun ermek"
+    ],
+    "suzinak--sarki--curcuna--pek_revadir--ahmet_rasim_bey": [
+      "pe revadir"
+    ],
+    "suzinak--sarki--curcuna--sen_bezmimize--hasan_ali_yucel": [
+      "sen bezmim"
+    ],
+    "suzinak--sarki--curcuna--sevdim_seveli--zeki_arif_ataergin": [
+      "sevdim sevelim"
+    ],
+    "suzinak--sarki--devrihindi--bir_dil--haci_arif_bey": [
+      "bir dil"
+    ],
+    "suzinak--sarki--devrihindi--durdan_aylar--munir_nurettin_selcuk": [
+      "durdan aylar"
+    ],
+    "suzinak--sarki--senginsemai--gunden_gune--hafiz_mehmet_esref_efendi": [
+      "günden günde"
+    ],
+    "suzinak--sarki--senginsemai--sensiz_geceler--musa_sureyya_bey": [
+      "sen siz geceler"
+    ],
+    "suzinak--sarki--turkaksagi--beni_candan--haci_arif_bey": [
+      "beni candan"
+    ],
+    "bir_gamli--sarki--suzinak--turkaksagi--cevdet_cagla": [
+      "bir gamli",
+      "birgamli"
+    ],
+    "yandim_o--sarki--suzinak--haci_arif_bey": [
+      "yandim o",
+      "yandım"
+    ],
+    "suzinak--seyir--sofyan--erol_bingol": [
+      "erol bingol",
+      "bingol"
+    ],
+    "suzinak--seyir--sofyan--sefik_gurmeric": [
+      "sefik gurmeric",
+      "gurmeric"
+    ],
+    "a_benim--turku--oynak--osman_pehlivan": [
+      "osman pehlivan",
+      "pehlivan"
+    ],
+    "?--seyir--aksak--eb": [
+      "eb"
+    ],
+    "?--seyir--sofyan--sefik_gurmeric": [
+      "sefik gurmeric",
+      "gurmeric"
+    ],
+    "turku--havzu--aksak--havuzun_basinda--tahir": [
+      "havuzun basinda"
+    ],
+    "turku--havzu--aksak--islamoglu--tahir": [
+      "islamoglu"
+    ],
+    "turku--nihavent--bektasidevrirevani--asamadim_su--tahir": [
+      "asamadim su"
+    ],
+    "turku--nihavent--ciftesofyan--yayla_yollarinda--tahir": [
+      "yayla yollarinda"
+    ],
+    "turku--nihavent--devrihindi--yoru_bire--tahir": [
+      "yorubire"
+    ],
+    "turku--sema--devri-turan--asagidan_gelir--tahir": [
+      "asagidan gelir"
+    ],
+    "turku--sema--evfer--bugun_ayin_ondordu--tahir": [
+      "bugun ayin ondordu"
+    ],
+    "turku--sema--kapali_curcuna--don_beri--tahir": [
+      "don beri"
+    ],
+    "turku--sema--musemmen_ii--alli_durnam--tahir": [
+      "alli durnam"
+    ],
+    "turku--sema--musemmen_ii--gonul_gurbet--tahir": [
+      "gonul gurbet"
+    ],
+    "turku--corum--hem_okudum--tahir": [
+      "hem okudum",
+      "okudum"
+    ],
+    "turku--ankara--bagda_gulu--tahir": [
+      "bagda gulu",
+      "gulu"
+    ],
+    "turku--kirsehir--bagisla_sevdigim--tahir": [
+      "bagisla sevdigim",
+      "sevdigim"
+    ],
+    "turku--diyarbakir--basinda_altin--tahir": [
+      "basinda altin",
+      "altin"
+    ],
+    "turku--kutahya--gidin_bulutlar--tahir": [
+      "gidin bulutlar",
+      "bulutlar"
+    ],
+    "turku--raksan--top_yatagin--tahir": [
+      "top yatagi"
+    ],
+    "senginsemai--gele_gele--tahir": [
+      "gele gele"
+    ],
+    "sofyan--bahcalarda_mor--tahir": [
+      "mor bahce"
+    ],
+    "sofyan--bulbulun_kanadi--tahir": [
+      "kanad bulbul"
+    ],
+    "sofyan--gine_gordum--tahir": [
+      "gine gordum"
+    ],
+    "makam--zireflisikahve--yuruksemai--cay_icinde--tahir_sofyan": [
+      "hele_yar",
+      "cay_icinde"
+    ],
+    "makam--zireflisikahve--aksak--sari_zeybek--osman_pehlivan": [
+      "karanfil_ocak"
+    ],
+    "makam--zireflisikahve--samai_roya--kayada_yatan--tahir_sofyan": [
+      "kayada_yatan"
+    ],
+    "bin_cefa--beste--berefsan--tahirbuselik--ahmed_irsoy": [
+      "bin cefa"
+    ],
+    "kuse-yi--kupe--aksaksemai--tarzicedid--ahmet_avni_konuk": [
+      "kuse yi"
+    ],
+    "dilrubamiz--kupe--devrirevan--tarzinevin--ahmet_avni_konuk": [
+      "dil ruba miz"
+    ],
+    "ussak--gazel--ahestecek--munir_nurettin_selcuk": [
+      "aheste cek",
+      "aheste ceke"
+    ],
+    "ussak--ilahi--duyek--zekai_dede": [
+      "allah emrin"
+    ],
+    "ussak--ilahi--duyek--ali_rifat_cagatay": [
+      "dostun senden"
+    ],
+    "ussak--ilahi--sofyan--haci_nafiz_bey": [
+      "askinla cak"
+    ],
+    "ussak--ornek_oz--senginsemai--ruhi_ayangil": [
+      "ruhi ayangil - ussak makam, sengin semai"
+    ],
+    "ussak--ornek_oz--sofyan--huseyin_sadettin_arel": [
+      "hüseyin sadettin arel - ussak makam, sofyan"
+    ],
+    "ussak--ornek_oz--turkaksagi--ruhi_ayangil": [
+      "ruhi ayangil - ussak makam, turkaksagi"
+    ],
+    "ussak--oyunhavasi--aksak--bandirma_dortlemesi": [
+      "bandirma dortlemesi - ussak makam, oyun havası"
+    ],
+    "ussak--oyunhavasi--ikizaksak--ata_bari": [
+      "ata bari - ussak makam, oyun havası"
+    ],
+    "ussak--sarki--agir_aksaksemai--pur-atesim--dede_efendi": [
+      "pur atesim"
+    ],
+    "ussak--sarki--agiraksak--kaldi_atesler--haci_karabet_efendi": [
+      "kaldi atesler"
+    ],
+    "ussak--sarki--agiraksak--kimseler_gelmez--sevki_bey": [
+      "kimseler gelmez"
+    ],
+    "ussak--sarki--agiraksak--na-umid-i--sekerci_cemil_bey": [
+      "na umidi"
+    ],
+    "ussak--sarki--agiraksak--reng-i_ruhsarina--sevki_bey": [
+      "ruhsarin rengi"
+    ],
+    "ussak--sarki--aksak--bekliyorum_gunlerdir--refik_fersan": [
+      "bekliyor gunlerdir"
+    ],
+    "ussak--sarki--aksak--ben_aglarim--sevki_bey": [
+      "aglarim"
+    ],
+    "ussak--sarki--aksak--bir_melek--haci_arif_bey": [
+      "bir melek"
+    ],
+    "ussak--sarki--aksak--bu_aksam_gun--tatyos_efendi": [
+      "bu aksam gun"
+    ],
+    "ussak--sarki--aksak--canim_tezdir--tanburi_mustafa_cavus": [
+      "canim tezdir"
+    ],
+    "ussak--sarki--aksak--daglar_dayanmaz--sevki_bey": [
+      "daglar dayanmaz"
+    ],
+    "ussak--sarki--aksak--ducar-i_hicr-i--sevki_bey": [
+      "ducari hicri"
+    ],
+    "ussak--sarki--aksak--gitti_de--dede_efendi": [
+      "git de"
+    ],
+    "ussak--sarki--aksak--gulzara_nazar--sevki_bey": [
+      "gulzara nazar"
+    ],
+    "ussak--sarki--aksak--meyhane_mi--haci_arif_bey": [
+      "meyhane mi"
+    ],
+    "ussak--sarki--aksak--muntazirdir_sana--dellalzade_haci_ismail_efendi": [
+      "muntazirdir sana"
+    ],
+    "ussak--sarki--aksak--olmaz_dilim--haci_arif_bey": [
+      "olmaz dilim"
+    ],
+    "ussak--sarki--aksak--siyah_ebrulerin--leli_atli": [
+      "siyah ebrulerin"
+    ],
+    "ussak--sarki--aksak--zeybeklerle_gezer--sevki_bey": [
+      "zeybeklerle gezer"
+    ],
+    "ussak--sarki--curcuna--akibet_bezdirdi--haci_arif_bey": [
+      "akibet bezdirdi"
+    ],
+    "ussak--sarki--curcuna--bu_yaz--yesari_asim_arsoy": [
+      "bu yaz"
+    ],
+    "ussak--sarki--curcuna--derdimi_anlatirdim--tahsin_karakus": [
+      "derdimi anlatirdim"
+    ],
+    "ussak--sarki--curcuna--esiri_zulfunum--sevki_bey": [
+      "esiri zulfunum"
+    ],
+    "ussak--sarki--curcuna--gecti_muhabbet--sukru_tunar": [
+      "geçti muhabbet"
+    ],
+    "ussak--sarki--curcuna--gezer_dolasirsin--sukru_tunar": [
+      "gezer dolasirsin"
+    ],
+    "ussak--sarki--curcuna--gordumse_seni--fehmi_tokay": [
+      "gordum seni"
+    ],
+    "ussak--sarki--curcuna--hastasin_zannim--sevki_bey": [
+      "hastanın zannım"
+    ],
+    "ussak--sarki--curcuna--omrumun_gulusun--haydar_tatliyay": [
+      "omru gülüşün"
+    ],
+    "ussak--sarki--curcuna--sonmez_artik--kadri_sencalar": [
+      "sonmez artık"
+    ],
+    "ussak--sarki--curcuna--yad_ile--sevki_bey": [
+      "yad ile"
+    ],
+    "bezmi_gamda--sarki--devrihindi--bezm-i_gamda--mustafa_coskun": [
+      "bezmi gamda",
+      "bezmi-gamda"
+    ],
+    "ussak--sarki--devrihindi--gozlerin_hayran--serif_icli": [
+      "gozlerin hayran",
+      "gozlerin-hayran"
+    ],
+    "ussak--sarki--duyek--aksam_oldu--semahat_ozdenses": [
+      "aksam oldu",
+      "aksam-oldu"
+    ],
+    "ussak--sarki--duyek--anar_omrumce--sukru_tunar": [
+      "anar omrumce",
+      "anar-omrumce"
+    ],
+    "ussak--sarki--duyek--bahari_beklerken--selcuk_tekay": [
+      "bahari beklrken",
+      "bahari-beklrken"
+    ],
+    "ussak--sarki--duyek--ben_hala--namik_uyumaz": [
+      "ben hala"
+    ],
+    "ussak--sarki--duyek--bir_gonul--zeki_muren": [
+      "bir gonul"
+    ],
+    "ussak--sarki--duyek--bir_hatirayi--yesari_asim_arsoy": [
+      "bir hatirayi"
+    ],
+    "ussak--sarki--duyek--bir_tatli--zeki_muren": [
+      "bir tatli"
+    ],
+    "ussak--sarki--duyek--dalinda_solarken--arif_sami_toker": [
+      "dalinda solarken"
+    ],
+    "ussak--sarki--duyek--gun_gelir_de--sekip_ayhan_ozisik": [
+      "gun gelir de"
+    ],
+    "ussak--sarki--duyek--hem_bakarsin--ugur_uzunhekim": [
+      "hem bakarsın"
+    ],
+    "ussak--sarki--duyek--her_gunum--nasibin_mehmet_yuru": [
+      "her günüm"
+    ],
+    "ussak--sarki--duyek--her_mevsim--semahat_ozdenses": [
+      "her mevsim"
+    ],
+    "ussak--sarki--duyek--kalbimi_bezlederim--sukru_tunar": [
+      "kalbimi bezlederim"
+    ],
+    "ussak--sarki--musemmen--gelmedin_bir--fehmi_tokay": [
+      "gelmedi bir",
+      "gelmedin bir"
+    ],
+    "ussak--sarki--musemmen--gonlumun_bir--emin_ongan": [
+      "gönülün bir",
+      "gönülün bir"
+    ],
+    "ussak--sarki--musemmen--neler_cektim--leli_atli": [
+      "neler çektim",
+      "neler ceptim"
+    ],
+    "ussak--sarki--nimsofyan--gordum_seni--sadettin_kaynak": [
+      "gördüm seni",
+      "görmedim seni"
+    ],
+    "ussak--sarki--nimsofyan--nicin_baktin--sadettin_kaynak": [
+      "niçin baktın",
+      "neden baktın"
+    ],
+    "ussak--sarki--sofyan--ey_suh-i_cefa--haci_arif_bey": [
+      "ey suh-i cefa"
+    ],
+    "ussak--sarki--sofyan--bir_perikizi--?": [
+      "bir perikizi"
+    ],
+    "ussak--sarki--sofyan--dudagindan_dokuldu--sahap_aksahin": [
+      "dudağinden dokuldu"
+    ],
+    "ussak--sarki--sofyan--gamzedeyim_deva--tatyos_efendi": [
+      "gaze dem veda"
+    ],
+    "ussak--sarki--sofyan--gurubun_kizil--akin_ozkan": [
+      "gürbün kızıl"
+    ],
+    "ussak--sarki--turkaksagi--hala_aciyor--serif_icli": [
+      "hala açıyor"
+    ],
+    "ussak--sarki--turkaksagi--hasret_dolu--serif_icli": [
+      "hasret dolu"
+    ],
+    "ussak--sarki--turkaksagi--hoy_deniz--sadettin_kaynak": [
+      "hoy deniz"
+    ],
+    "ussak--sarki--turkaksagi--saki_icelim--haci_arif_bey": [
+      "saki icelim"
+    ],
+    "ussak--sarki--turkaksagi--yalniz_birakip--misirli_udi_ibrahim_efendi": [
+      "yalniz birakip"
+    ],
+    "ussak--sarki--yuruksemai_ii--tifl-i_nazim--tanburi_ali_efendi": [
+      "tifl nazim"
+    ],
+    "ussak--sarki--yuruksemai--affeyle_guhanim--enderuni_ali_bey": [
+      "affeyle guhanim"
+    ],
+    "ussak--sarki--yuruksemai--askin_ile--enderuni_ali_bey": [
+      "askin ile"
+    ],
+    "ussak--sazsemaisi--aksaksemai--?--kantemiroglu": [
+      "?",
+      "?",
+      "Aksak Semai"
+    ],
+    "ussak--sazsemaisi--aksaksemai--?--murat_karabag": [
+      "?",
+      "?",
+      "Aksak Semai"
+    ],
+    "ussak--sazsemaisi--aksaksemai--?--neyzen_aziz_dede": [
+      "?",
+      "?",
+      "Aksak Semai"
+    ],
+    "ussak--seyir--semai--1--rauf_yekta": [
+      "Uşak Makam",
+      "Seyir Usul"
+    ],
+    "ussak--seyir--sofyan--1--erol_bingol": [
+      "Uşak Makam",
+      "Seyir Usul"
+    ],
+    "ussak--seyir--sofyan--sefik_gurmeric": [
+      "sefik gurmeric",
+      "gurmeric sefik"
+    ],
+    "ussak--taksim--serbest--tanburi_cemil_bey": [
+      "tanburi cemil bey",
+      "cemil bey tanburi"
+    ],
+    "ussak--tevsihilahi--evsat--dede_efendi": [
+      "bir ismi mustafa",
+      "ismi mustafa"
+    ],
+    "ussak--turku--aksak--?": [
+      "findikli bizim"
+    ],
+    "ussak--turku--aksak--edirne-kesan": [
+      "kizilciklar oldu"
+    ],
+    "ussak--turku--curcuna--su_karsi--erzincan": [
+      "su karsi"
+    ],
+    "ussak--turku--devrihindi--menteseli--konya": [
+      "menteseli"
+    ],
+    "ussak--turku--devrisureyyasofyani--su_dereden--?": [
+      "su dereden"
+    ],
+    "ussak--turku--duyek--bahceye_indim_ki--?": [
+      "bahceye indim ki"
+    ],
+    "ussak--turku--musemmen--su_kislanin--adana": [
+      "su kislanin"
+    ],
+    "ussak--turku--nimsofyan--altin_yuzugum--nimsofyan": [
+      "altin yuzuğum"
+    ],
+    "ussak--turku--sofyan--urfaliyam_ezelden--nimsofyan": [
+      "urfaliyam ezelden"
+    ],
+    "ussak--turku--sofyan--yine_gam--nimsofyan": [
+      "yine gam"
+    ],
+    "ussak--turku--s-turkaksagi--carsamba_dedikleri--samsun": [
+      "carsamba dedikleri"
+    ],
+    "ussak--turku--sofyan--dereboyu_kavaklar--giresun": [
+      "dereboyu kavaklar"
+    ],
+    "ussak--turku--sofyan--eledim_eledim--erzurum": [
+      "eledim eledim"
+    ],
+    "ussak--turku--sofyan--uzun_ince--asik_veysel": [
+      "uzun ince"
+    ],
+    "ussak--turku--turkaksagi--drama_koprusu--?": [
+      "drama koprusu"
+    ],
+    "ussak--turku--yuruksemai_ii--cilveloy--artvin": [
+      "cilveloy"
+    ],
+    "ussak--yuruksemai--yuruksemai_4--kah_ki--kara_ismail_aga": [
+      "kah ki"
+    ],
+    "ussak--yuruksemai--yuruksemai--dila_cunem--diyarbakirli_mahmut_celebi": [
+      "dila cunem"
+    ],
+    "sofyan--sarki--medhal--neside-i_garam--ali_rifat_cagatay": [
+      "nesid-i garam",
+      "naside-i garam"
+    ],
+    "yuruksemai--sarki--nakis--her_dilberi--ismail_baha_surelsan": [
+      "her dilber",
+      "dilber"
+    ],
+    "agiraksak--sarki--yegah--bais_oldu--bolahenk_nuri_bey": [
+      "bais oldu",
+      "bais"
+    ],
+    "agiraksak--sarki--yegah--ne_gulun--bimen_sen": [
+      "ne gulun",
+      "gul"
+    ],
+    "yegah--sarki--aksaksemai--benim_afet-i--dellalzade_haci_ismail_efendi": [
+      "benim afeti",
+      "afet"
+    ],
+    "yegah--sarki--curcuna--ne_yapsam--haci_faik_bey": [
+      "ney yapsem",
+      "nay yapsam"
+    ],
+    "yegah--sarki--devrihindi--sad_ol--rifat_bey": [
+      "sad ol",
+      "uzun bir gecenin"
+    ],
+    "yegah--sarki--devrihindi--vadin_unutma--latif_aga": [
+      "unutma vadi",
+      "vadini unut"
+    ],
+    "yegah--sarki--duyek--ay_buyurken--alaeddin_yavasca": [
+      "ay buyur",
+      "gündüz ay"
+    ],
+    "yegah--sarki--duyek--bahcemde_guller--avni_anil": [
+      "bahçe'de gül'ler"
+    ],
+    "yegah--sarki--duyek--doldur_ey--ismail_hakki_nebiloglu": [
+      "doldur ey"
+    ],
+    "yegah--sarki--duyek--meclisi_vaslinda--ali_rifat_cagatay": [
+      "meclis-i vaslinda"
+    ],
+    "yegah--sarki--kapali_curcuna--mutad_edeli--sevki_bey": [
+      "mutad edeli"
+    ],
+    "yegah--sarki--kapali_curcuna--ruhlerin_ey--tanburi_ali_efendi": [
+      "ruhlerin ey"
+    ],
+    "nimsofyan--sarki--yegah--nimsofyan--sevki_bey": [
+      "nim sofyân",
+      "nim sofyan"
+    ],
+    "senginsemai--sarki--yegah--ah_nolurdu--bimen_sen": [
+      "ah nolurdu",
+      "ah nolur"
+    ],
+    "yeni_cargah--turku--sofyan--bilmem_su": [
+      "bilmem su"
+    ],
+    "yeni_cargah--turku--sofyan--halkali_seker": [
+      "halk ali seker"
+    ],
+    "zavil--agirsemai--aksaksemai--bulunmaz_nev-civansin": [
+      "bulunmaz nev civansin"
+    ],
+    "zavil--devrirevan--ahmet_avni_konuk": [
+      "sanma ki mihr-i"
+    ],
+    "zavil--pesrev--hafif": [
+      "?"
+    ],
+    "sofyan--turku--zavil--uc_gun--?": [
+      "uc gun",
+      "ucgun"
+    ],
+    "musemmen--kupe--zevkitarab--meclis_i--ahmet_avni_konuk": [
+      "meclis-i",
+      "meclisi"
+    ],
+    "devrirevan--kupe--zevkidil--gel--ahmet_avni_konuk": [
+      "gel"
+    ],
+    "aksaksemai--kupe--zirefkend--pertev_i--ahmet_avni_konuk": [
+      "pertev-i"
+    ]
+  }
+}

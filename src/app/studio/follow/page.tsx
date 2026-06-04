@@ -35,6 +35,7 @@ import {
   getSymbTrVerifiedPdfMeasureBoxes,
 } from "@/data/symbtr/layout";
 import {getPieceExternalReferences} from "@/data/references/piece-external-references";
+import {SourceSubmissionForm} from "@/features/references/SourceSubmissionForm";
 
 interface SampleSlotStatus {
   category: "melodic" | "percussion";
@@ -810,6 +811,14 @@ export default function EserTakipPage() {
                     </>
                   )}
                 </div>
+                {selectedPiece.symbtrCatalogId && (
+                  <SourceSubmissionForm
+                    catalogId={selectedPiece.symbtrCatalogId}
+                    title={selectedPiece.title}
+                    makam={selectedPiece.makam}
+                    composer={selectedPiece.composer}
+                  />
+                )}
                 {selectedSymbTrSourceReferences.length > 0 && (
                   <details className="mt-3 w-full min-w-0 rounded-md border border-[var(--color-border-subtle)] bg-[var(--color-bg-base)] px-3 py-2 text-sm">
                     <summary className="cursor-pointer font-medium text-[var(--color-text-primary)]">

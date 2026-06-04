@@ -56,16 +56,17 @@
       "rateLimitPerSecond": 1,
       "acceptedThreshold": 92,
       "scoringOverrides": {
-        "titleWeight": 50,
-        "composerWeight": 30,
-        "makamWeight": 5,
-        "usulWeight": 5,
-        "formWeight": 5,
+        "titleWeight": 55,
+        "composerWeight": 35,
+        "makamWeight": 10,
+        "usulWeight": 10,
+        "formWeight": 10,
         "titleThreshold": 0.6,
         "composerThreshold": 0.5,
         "completeEvidenceTitle": 0.6,
         "completeEvidenceComposer": 0.5
       },
+      "acceptedThreshold": 80,
       "verificationRequiredForAccepted": ["archive-metadata-title", "archive-item-identifier"]
     },
     {

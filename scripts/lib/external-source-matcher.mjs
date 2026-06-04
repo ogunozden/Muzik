@@ -1,3 +1,26 @@
+import {readFileSync} from "node:fs";
+import {resolve} from "node:path";
+
+// Lazy-load source profiles for trustWeight lookup
+let _sourceProfiles = null;
+function getSourceProfiles() {
+  if (_sourceProfiles) return _sourceProfiles;
+  try {
+    const profilesPath = resolve(process.cwd(), "src/data/references/research-source-profiles.json");
+    const data = JSON.parse(readFileSync(profilesPath, "utf8"));
+    _sourceProfiles = new Map((data.profiles || []).map(p => [p.id, p]));
+  } catch {
+    _sourceProfiles = new Map();
+  }
+  return _sourceProfiles;
+}
+
+function getTrustWeightForProvider(providerId) {
+  const profiles = getSourceProfiles();
+  const profile = profiles.get(providerId);
+  return profile?.trustWeight ?? null;
+}
+
 export function normalizeText(value) {
   return String(value ?? "")
     .toLocaleLowerCase("tr-TR")
@@ -295,7 +318,9 @@ export function classifyMapping(best, secondBest, source) {
 }
 
 export function mapInboxSource(source, catalogEntries) {
-  const trustWeight = source.trustWeight ?? 0.5;
+  const providerId = inferSourceProvider(source);
+  const profileTrust = getTrustWeightForProvider(providerId);
+  const trustWeight = source.trustWeight ?? profileTrust ?? 0.5;
   const ranked = catalogEntries
     .map((entry) => scoreCatalogEntry(source, entry, trustWeight))
     .sort((left, right) => right.score - left.score || left.entry.id.localeCompare(right.entry.id, "en"));

@@ -46,7 +46,7 @@ export function getConfig(providerOverride) {
     ollama: {
       provider: "ollama",
       baseUrl: process.env.OLLAMA_BASE_URL || "http://localhost:11434/v1",
-      model: process.env.OLLAMA_MODEL || "qwen3-30b-a3b",
+      model: process.env.OLLAMA_MODEL || "qwen2.5:14b",
       temperature: 0.1,
       maxTokens: 4096,
       timeout: 300000,

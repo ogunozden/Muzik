@@ -1,7 +1,7 @@
 # Muzik Projesi — Öneri ve Yapılacaklar
 
 > Son güncelleme: 2026-06-04
-> Durum: Prod-cycle audit geçti, 400/400 test OK, build OK
+> Durum: AI batch enrichment tamamlandi, 400/400 test OK, Ollama qwen2.5:14b aktif
 
 ---
 
@@ -26,48 +26,41 @@
 | PDF candidate-only | 1285 eser | Ratio mismatch, elle inceleme veya görsel regresyon gerek |
 | IA discovery | Kapalı | Collection-level false positive'lar nedeniyle disable edildi |
 
+### Yeni Tamamlanan
+
+| Alan | Durum |
+|------|-------|
+| AI batch enrichment | 3000 eser analiz edildi, output/ai-enrichment/ altında 600 batch JSON |
+| AI client | Ollama + Gemini destekli unified client (scripts/lib/ai-client.mjs) |
+| AI config | Provider switching (scripts/lib/ai-config.mjs) |
+| AI pipeline | Retry + checkpoint + raw error log (scripts/ai-full-batch.mjs) |
+| Ollama | qwen2.5:14b lokal model, GPU inference, limitsiz |
+
 ---
 
-## 2. AI Kullanım Önerileri (LM Studio)
+## 2. AI Altyapısı — Ollama + Gemini Hibrit
 
-### Yapılabilir (Yüksek Değer)
+### Mevcut Çalışan Kurulum
 
-1. **Metadata zenginleştirme (batch)**
-   - 3000 eser için varyasyonlar, normalize başlıklar, arama keyword'leri üret
-   - `scripts/ai-enrich-catalog.mjs` ile çalıştır
-   - Çıktı: `catalog-enriched.generated.json`
+| Bileşen | Seçim | Detay |
+|---------|-------|-------|
+| **Lokal model** | Ollama + qwen2.5:14b | RTX 5080 GPU, limitsiz, ücretsiz |
+| **Bulut model** | Gemini 2.5 Flash API | Free tier, yedek/fallback |
+| **Client** | scripts/lib/ai-client.mjs | Unified: Ollama + Gemini |
+| **Config** | scripts/lib/ai-config.mjs | Provider switching, .env'den okur |
+| **Batch runner** | scripts/ai-full-batch.mjs | Checkpoint, retry, raw error log |
 
-2. **Varyasyon kuralları çıkarma**
-   - "Hacı Arif Bey" → "H. Arif Bey", "Arif Bey"
-   - "Dede Efendi" → "İsmail Dede Efendi"
-   - Matcher'a entegre edilir
+### Tamamlanan AI İşleri
 
-3. **İngilizce transliteration**
-   - "Şehnaz" → "Sehnaz", "Shehnaz"
-   - Arama eşleşmesi artar
+1. **Metadata zenginleştirme (batch)** ✅
+   - 3000 eser analiz edildi (output/ai-enrichment/, 600 batch JSON)
+   - Varyasyonlar, İngilizce transliteration, arama keyword'leri
+   - 2 hata → root cause: JSON içinde `/* */` yorum → fixlendi
 
-4. **Admin curation destek**
-   - Admin URL eklediğinde AI analiz eder
-   - "Başlık %85 eşleşiyor, makam eşleşiyor → ACCEPT önerisi"
-   - Otomatik kabul değil, öneri
-
-### Yapılamaz (Gerçekçi Sınırlar)
-
-- Web'de canlı arama yapamaz
-- Güncel URL bulamaz
-- "Bu eser DivanMakam'da var mı?" bilmiyor
-- Collection/bireysel ayıklama yapamaz (site içeriğini görmeden)
-
-### Önerilen Model Değişikliği
-
-Mevcut: `qwen3.5-35b-a3b-main` (35B)
-- Yavaş (~155 sn response)
-- Türk müziği bilgisi yetersiz ("Zekai Dede" bilmiyor)
-
-**Öneri:** Daha küçük, daha hızlı model
-- Örn: `qwen2.5-7b`, `phi-4`, `gemma-3-4b`
-- llmfit ile bilgisayar specs'ine göre en uygununu bul
-- Batch iş için 7-14B model yeterli
+2. **Kalan AI işleri:**
+   - DivanMakam/OGM/SalihBora tarama + AI eşleştirme (Playwright + AI)
+   - Kullanıcı kaynak bildirim butonu (UI)
+   - Admin curation desteği (URL girince AI analiz etme)
 
 ---
 

@@ -13,6 +13,25 @@
 import React, {useEffect, useRef} from "react";
 import type {UsulSymbol} from "@/types";
 
+/**
+ * Darbin (1-tabanli, kesirli olabilir) porte uzerindeki YATAY MERKEZI.
+ * Her vurus-sutunu perBeat genisligindedir; nota sutunun ortasina cizilir.
+ */
+export function usulBeatCenterX(gridStart: number, perBeat: number, beat: number): number {
+  return gridStart + (beat - 1) * perBeat + perBeat / 2;
+}
+
+/**
+ * Oynatma cizgisinin x'i. `progressBeat` 0-tabanli gecen vurustur
+ * (0 = muzikal 1. vurus); cizgi o an DUYULAN darbin NOTA MERKEZINDE olmali,
+ * yani beatCenterX(progressBeat + 1). Eski surum `gridStart + p*perBeat`
+ * kullaniyordu (yarim sutun sola kayik: cizgi, yanan notanin solunda
+ * goruunuyordu — kullanici ekran goruntusuyle bildirdi).
+ */
+export function usulPlayheadX(gridStart: number, perBeat: number, beats: number, progressBeat: number): number {
+  return usulBeatCenterX(gridStart, perBeat, Math.min(progressBeat, beats) + 1);
+}
+
 interface UsulNotationProps {
   symbols: UsulSymbol[];
   unit: string;
@@ -85,17 +104,18 @@ export function UsulNotation({
   const beatNumberY = staffTop + staffHeight + config.lineSpacing * 3.1;
   const totalHeight = beatNumberY + config.lineSpacing * 1.2;
 
-  const beatX = (beat: number) => gridStart + (beat - 1) * perBeat + perBeat / 2;
+  const beatX = (beat: number) => usulBeatCenterX(gridStart, perBeat, beat);
+  const playheadX = (progress: number) => usulPlayheadX(gridStart, perBeat, beats, progress);
   const beatNumberStep = beats > 32 ? 4 : beats > 16 ? 2 : 1;
 
   // Oynatma cizgisini gorunurde tut (genis usullerde yatay takip).
   useEffect(() => {
     const scroller = scrollRef.current;
     if (!isPlaying || progressBeat < 0 || !scroller) return;
-    const x = gridStart + progressBeat * perBeat;
+    const x = usulPlayheadX(gridStart, perBeat, beats, progressBeat);
     const target = Math.max(0, x - scroller.clientWidth / 2);
     scroller.scrollTo({left: target, behavior: "auto"});
-  }, [gridStart, isPlaying, perBeat, progressBeat]);
+  }, [gridStart, isPlaying, perBeat, progressBeat, beats]);
 
   return (
     <div className={className}>
@@ -250,12 +270,12 @@ export function UsulNotation({
                 </text>
               ))}
 
-            {/* Oynatma cizgisi: kesirli vurusu surekli izler */}
+            {/* Oynatma cizgisi: duyulan darbin nota merkezine hizali (playheadX). */}
             {isPlaying && progressBeat >= 0 && (
               <line
-                x1={gridStart + Math.min(progressBeat, beats) * perBeat}
+                x1={playheadX(progressBeat)}
                 y1={staffTop - config.lineSpacing * 1.1}
-                x2={gridStart + Math.min(progressBeat, beats) * perBeat}
+                x2={playheadX(progressBeat)}
                 y2={staffTop + staffHeight + config.lineSpacing * 1.1}
                 stroke={COLORS.playhead}
                 strokeWidth="2"

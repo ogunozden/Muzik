@@ -24,58 +24,43 @@ export interface NavItem {
 }
 
 /**
- * Primary navigation renders only product surfaces. Legacy aliases stay in
- * routes.config and redirect pages, but are not shown as separate pages.
+ * Primary navigation 3 hub'a gruplanir (F7 bilgi mimarisi): Çalışma, Kürasyon,
+ * Kütüphane. Her hub bir dropdown; alt yüzeyler children olarak listelenir.
+ * Guardrail'in aradıği `id`/`href` ciftleri children icinde korunur.
+ * Legacy alias'lar routes.config + redirect sayfalarinda kalir.
  */
 export const navigation: NavItem[] = [
   {
-    id: "studio",
-    label: "nav.studio",
-    href: routes.studio,
-    type: "link",
+    id: "hubStudio",
+    label: "nav.hubStudio",
+    type: "dropdown",
     icon: "🎼",
+    children: [
+      {id: "studioScoreEngine", label: "nav.studioScoreEngine", href: routes.studioScoreEngine, type: "link", icon: "🧬"},
+      {id: "studioFollow", label: "nav.studioFollow", href: routes.studioFollow, type: "link", icon: "🎧"},
+      {id: "studio", label: "nav.studio", href: routes.studio, type: "link", icon: "🎼"},
+      {id: "rhythm", label: "nav.rhythm", href: routes.rhythm, type: "link", icon: "🥁"},
+    ],
   },
   {
-    id: "studioFollow",
-    label: "nav.studioFollow",
-    href: routes.studioFollow,
-    type: "link",
-    icon: "🎧",
-  },
-  {
-    id: "rhythm",
-    label: "nav.rhythm",
-    href: routes.rhythm,
-    type: "link",
-    icon: "🥁",
-  },
-  {
-    id: "samples",
-    label: "nav.samples",
-    href: routes.samples,
-    type: "link",
-    icon: "🎹",
-  },
-  {
-    id: "references",
-    label: "nav.references",
-    href: routes.references,
-    type: "link",
-    icon: "🔗",
-  },
-  {
-    id: "referencesCuration",
-    label: "nav.referencesCuration",
-    href: routes.referencesCuration,
-    type: "link",
+    id: "hubCuration",
+    label: "nav.hubCuration",
+    type: "dropdown",
     icon: "🧭",
+    children: [
+      {id: "referencesCuration", label: "nav.referencesCuration", href: routes.referencesCuration, type: "link", icon: "🧭"},
+      {id: "references", label: "nav.references", href: routes.references, type: "link", icon: "🔗"},
+    ],
   },
   {
-    id: "archive",
-    label: "nav.archive",
-    href: routes.archive,
-    type: "link",
+    id: "hubLibrary",
+    label: "nav.hubLibrary",
+    type: "dropdown",
     icon: "📚",
+    children: [
+      {id: "archive", label: "nav.archive", href: routes.archive, type: "link", icon: "📚"},
+      {id: "samples", label: "nav.samples", href: routes.samples, type: "link", icon: "🎹"},
+    ],
   },
 ];
 
@@ -137,6 +122,7 @@ export const legacyNavigationAliases: NavItem[] = [
 export const footerLinks = [
   { id: "studio", label: "Studio", href: routes.studio },
   { id: "studioFollow", label: "Eser Takip", href: routes.studioFollow },
+  { id: "studioScoreEngine", label: "Skor Motoru", href: routes.studioScoreEngine },
   { id: "rhythm", label: "Ritim", href: routes.rhythm },
   { id: "samples", label: "Sesler", href: routes.samples },
   { id: "references", label: "Kaynaklar", href: routes.references },

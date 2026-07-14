@@ -13,6 +13,7 @@ const COVERAGE_ROOT = path.join(PROJECT_ROOT, "output", "external-reference-cove
 const SYMBTR_LAYOUT_REVIEW_ROOT = path.join(PROJECT_ROOT, "output", "symbtr-layout-review");
 const REFERENCES_ROOT = path.join(PROJECT_ROOT, "src", "data", "references");
 const PROD_CYCLE_SUMMARY_PATH = path.join(COVERAGE_ROOT, "prod-cycle-summary.json");
+const PROD_CLOSURE_ROOT = path.join(PROJECT_ROOT, "output", "prod-closure");
 const SOURCE_DISCOVERY_ROOT = path.join(PROJECT_ROOT, "output", "external-source-discovery");
 const SOURCE_PROVIDER_VERIFICATION_CONTINUE_SCRIPT = "npm run verify:external-source-providers:continue";
 const DEFAULT_BACKLOG_LIMIT = 100;
@@ -284,6 +285,47 @@ interface SourceIntakeAcceptedImportDryRunManifest {
   errors?: unknown[];
 }
 
+interface SourceTerminalDecisionManifest {
+  generatedAt?: string;
+  summary?: {
+    terminalDecisionGroupCount?: number;
+    statusCounts?: Record<string, number>;
+    directAutoAttachCount?: number;
+    mediaDownloadCount?: number;
+  };
+  entries?: Array<{
+    catalogId?: string;
+    status?: string;
+    reason?: string;
+    providerResultCount?: number;
+    importValidationRequired?: boolean;
+    sourceUrl?: string | null;
+  }>;
+}
+
+interface SourceTerminalFeedbackManifest {
+  events?: Array<{
+    eventId?: string;
+    catalogId?: string;
+    eventType?: string;
+    reason?: string;
+    note?: string;
+    alternateUrl?: string;
+    previousEventId?: string;
+    previousValue?: unknown;
+    createdAt?: string;
+    createdBy?: string;
+    weakLabel?: boolean;
+    labelPolicy?: string;
+  }>;
+  summary?: {
+    eventCount?: number;
+    activeEventCount?: number;
+    rolledBackEventCount?: number;
+    eventTypeCounts?: Record<string, number>;
+  };
+}
+
 interface QualityStatsManifest {
   generatedAt?: string | null;
   stats?: CurationStat[];
@@ -330,6 +372,27 @@ function summarizeCandidateManifest(manifest: BulkCandidateManifest | null) {
     needsReviewCount: statusCounts["needs-review"] ?? 0,
     rejectedCount: statusCounts.rejected ?? 0,
     conflictCount: statusCounts.conflict ?? 0,
+    statusCounts,
+  };
+}
+
+function summarizeTerminalDecisionManifest(manifest: SourceTerminalDecisionManifest | null) {
+  const entries = manifest?.entries ?? [];
+  const statusCounts = manifest?.summary?.statusCounts ?? entries.reduce<Record<string, number>>((counts, entry) => {
+    const status = String(entry.status ?? "unknown");
+    counts[status] = (counts[status] ?? 0) + 1;
+    return counts;
+  }, {});
+
+  return {
+    artifactPath: toProjectPath(path.join(PROD_CLOSURE_ROOT, "source-terminal-decisions.json")),
+    generatedAt: manifest?.generatedAt ?? null,
+    terminalDecisionGroupCount: manifest?.summary?.terminalDecisionGroupCount ?? entries.length,
+    disputedCount: statusCounts.disputed ?? 0,
+    verifiedUnavailableCount: statusCounts["verified-unavailable"] ?? 0,
+    deferredCount: statusCounts.deferred ?? 0,
+    directAutoAttachCount: manifest?.summary?.directAutoAttachCount ?? 0,
+    mediaDownloadCount: manifest?.summary?.mediaDownloadCount ?? 0,
     statusCounts,
   };
 }
@@ -400,6 +463,8 @@ async function buildReadOnlyInitialState(): Promise<ExternalReferenceState> {
   const sourceProviderVerificationPlanPath = path.join(SOURCE_DISCOVERY_ROOT, "provider-verification-plan.json");
   const sourceProviderVerificationCoveragePath = path.join(SOURCE_DISCOVERY_ROOT, "provider-verification-coverage.json");
   const sourceProviderVerificationBatchRunPath = path.join(SOURCE_DISCOVERY_ROOT, "provider-verification-batch-run.json");
+  const sourceTerminalDecisionsPath = path.join(PROD_CLOSURE_ROOT, "source-terminal-decisions.json");
+  const sourceTerminalFeedbackPath = path.join(PROD_CLOSURE_ROOT, "source-terminal-feedback-events.json");
   const mappingPath = path.join(COVERAGE_ROOT, "mapped-external-reference-candidates.json");
   const [
     coverage,
@@ -428,6 +493,8 @@ async function buildReadOnlyInitialState(): Promise<ExternalReferenceState> {
     sourceProviderVerificationRun,
     sourceProviderVerificationCoverage,
     sourceProviderVerificationBatchRun,
+    sourceTerminalDecisions,
+    sourceTerminalFeedback,
     candidateReviewQueueData,
     candidateReviewGroupsData,
     backlogData,
@@ -459,6 +526,8 @@ async function buildReadOnlyInitialState(): Promise<ExternalReferenceState> {
     readJsonOrNull<SourceProviderVerificationRunManifest>(sourceProviderVerificationRunPath),
     readJsonOrNull<Record<string, unknown>>(sourceProviderVerificationCoveragePath),
     readJsonOrNull<Record<string, unknown>>(sourceProviderVerificationBatchRunPath),
+    readJsonOrNull<SourceTerminalDecisionManifest>(sourceTerminalDecisionsPath),
+    readJsonOrNull<SourceTerminalFeedbackManifest>(sourceTerminalFeedbackPath),
     readJsonOrNull<CandidateReviewRow[]>(candidateQueuePath),
     readJsonOrNull<CandidateReviewGroup[]>(candidateGroupsPath),
     readJsonOrNull<CurationBacklogRow[]>(backlogPath),
@@ -691,6 +760,18 @@ async function buildReadOnlyInitialState(): Promise<ExternalReferenceState> {
           before: sourceDiscoveryCoverageDelta?.before ?? null,
           afterDryRun: sourceDiscoveryCoverageDelta?.afterDryRun ?? null,
         },
+      },
+      sourceTerminalDecisions: {
+        ...summarizeTerminalDecisionManifest(sourceTerminalDecisions),
+        visibleEntries: (sourceTerminalDecisions?.entries ?? []).slice(0, 20),
+        feedbackArtifactPath: toProjectPath(sourceTerminalFeedbackPath),
+        feedbackEventCount: sourceTerminalFeedback?.events?.length ?? 0,
+        feedbackActiveEventCount: sourceTerminalFeedback?.summary?.activeEventCount ?? sourceTerminalFeedback?.events?.length ?? 0,
+        feedbackRolledBackEventCount: sourceTerminalFeedback?.summary?.rolledBackEventCount ?? 0,
+        feedbackEventTypeCounts: sourceTerminalFeedback?.summary?.eventTypeCounts ?? {},
+        feedbackEvents: (sourceTerminalFeedback?.events ?? []).slice(-80).reverse(),
+        allowedEventTypes: ["comment_added", "alternate_proposed", "verified", "community_verified_requested", "disputed", "rejected", "rolled_back"],
+        policy: "Terminal decisions are not accepted sources. User feedback is weak-label evidence until source intake validation passes.",
       },
       candidateReviewGroupPage: {
         offset: 0,

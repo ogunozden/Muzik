@@ -60,6 +60,40 @@ npm run import:external-references -- --input output/external-source-discovery/a
 npm run audit:prod-cycle
 ```
 
+Gemini/Search grounding is a bounded suggestion producer, not an accepted-source
+producer:
+
+```bash
+npm run suggest:external-sources:gemini -- --limit 5
+```
+
+The command writes `output/external-source-discovery/gemini-source-suggestions.json`,
+`gemini-source-suggestions-summary.json` and
+`gemini-source-suggestions-checkpoint.json`. It never writes
+`external-reference-bulk-candidates.json`, never stages inbox rows and never
+downloads media/PDF/audio/video. Every suggestion must carry
+`acceptedEligible:false`, `directAutoAttach:false`, `mediaDownload:false` and
+`weakLabelOnly:true`. If Gemini returns `accepted` or `verified`, the normalizer
+downgrades it to `auto-suggested`; unknown provider profiles are `deferred`, and
+invalid URLs are `rejected`.
+
+Grounded search limits are local safety limits, not a promise from Google:
+
+- `GEMINI_GROUNDING_MAX_PROMPTS_PER_RUN` caps prompts in one run; default `25`.
+- `GEMINI_GROUNDING_DAILY_SOFT_LIMIT` caps local-day grounded prompts; default
+  `450`.
+- `GEMINI_GROUNDING_MIN_INTERVAL_MS` rate-limits requests; default `2500`.
+- `output/ai-usage/gemini-grounding-usage.json` records prompt/search-query
+  counts without exposing the API key.
+
+Use the priority order below for unattended batches:
+
+1. Existing provider connectors and accepted-source validators.
+2. Internet Archive structured metadata.
+3. Gemini/Search grounded suggestions with checkpoint and metadata fetch.
+4. Optional bounded fallback tools only if they keep the same dry-run and quota
+   contract.
+
 The discovery command writes `output/external-source-discovery/discovery-run.json`,
 `discovery-candidates.json`, `accepted-import-ready.json`,
 `needs-review-groups.json`, `conflicts.json`, `provider-coverage.json`,

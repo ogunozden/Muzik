@@ -8,7 +8,7 @@ const initAudioMock = vi.hoisted(() => vi.fn(async () => true));
 const playRhythmMock = vi.hoisted(() => vi.fn(() => new Promise<void>(() => undefined)));
 const stopAllMock = vi.hoisted(() => vi.fn());
 
-vi.mock("@/components/layout/UnifiedLayout", () => ({
+vi.mock("@/shared/ui/layout/UnifiedLayout", () => ({
   UnifiedLayout: ({children}: {children: ReactNode}) => <main>{children}</main>,
 }));
 
@@ -38,10 +38,10 @@ describe("UsulPage", () => {
   it("shows the rhythm as playing immediately while percussion samples are still scheduling", async () => {
     render(<UsulPage />);
 
-    const playButton = await screen.findByRole("button", {name: "usul.playRhythm"});
+    const playButton = await screen.findByRole("button", {name: "Ritmi Çal"});
     fireEvent.click(playButton);
 
-    await waitFor(() => expect(screen.getByRole("button", {name: "common.stop"})).toBeDefined());
+    await waitFor(() => expect(screen.getByRole("button", {name: "Dur"})).toBeDefined());
     expect(screen.getByText("Çalıyor")).toBeDefined();
     expect(screen.getByText("1. DUM")).toBeDefined();
     expect(initAudioMock).toHaveBeenCalledTimes(1);

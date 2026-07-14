@@ -52,3 +52,6 @@ symb/
 
 # Pipeline artifacts
 output/
+
+# Runtime mutable state (SQLite; ADR 0001)
+/var/

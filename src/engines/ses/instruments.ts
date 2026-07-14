@@ -359,7 +359,14 @@ export function playPercussionSymbolScheduled(
   const context = getAudioContext();
   if (!context || !getMasterGain()) return false;
 
-  return scheduleSampledPercussionHit(context, symbol, isAccent, startTime, beatDuration, percussionInstrument);
+  if (scheduleSampledPercussionHit(context, symbol, isAccent, startTime, beatDuration, percussionInstrument)) {
+    return true;
+  }
+
+  if (!SYNTHETIC_FALLBACK_ENABLED) return false;
+
+  schedulePercussionHit(context, symbol, isAccent, startTime, beatDuration, percussionInstrument);
+  return true;
 }
 
 // Re-exports

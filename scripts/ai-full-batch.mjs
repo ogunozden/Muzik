@@ -1,7 +1,6 @@
 #!/usr/bin/env node
 import {readFileSync, mkdirSync, writeFileSync, existsSync} from "node:fs";
 import {resolve} from "node:path";
-import {getConfig} from "./lib/ai-config.mjs";
 import {callAI, checkHealth} from "./lib/ai-client.mjs";
 
 const OUTPUT_DIR = resolve("output/ai-enrichment");

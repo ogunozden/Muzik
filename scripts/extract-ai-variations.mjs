@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-import {readFileSync, readdirSync, writeFileSync, mkdirSync} from "node:fs";
+import {readFileSync, readdirSync, writeFileSync} from "node:fs";
 import {resolve} from "node:path";
 
 const ENRICH_DIR = resolve("output/ai-enrichment");

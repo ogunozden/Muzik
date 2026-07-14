@@ -1,6 +1,6 @@
 import {afterEach, beforeEach, describe, expect, it, vi} from "vitest";
 import {execFile} from "node:child_process";
-import {mkdir, readFile, unlink, writeFile} from "node:fs/promises";
+import {mkdir, open, readFile, rename, unlink, writeFile} from "node:fs/promises";
 import {getCandidateReviewGroupFingerprint} from "@/data/references/candidate-review-group-fingerprint.mjs";
 import {GET, POST} from "../route";
 
@@ -11,7 +11,12 @@ const childProcessMock = vi.hoisted(() => ({
 }));
 const fsPromisesMock = vi.hoisted(() => ({
   mkdir: vi.fn().mockResolvedValue(undefined),
+  open: vi.fn().mockResolvedValue({
+    writeFile: vi.fn().mockResolvedValue(undefined),
+    close: vi.fn().mockResolvedValue(undefined),
+  }),
   readFile: vi.fn(),
+  rename: vi.fn().mockResolvedValue(undefined),
   unlink: vi.fn().mockResolvedValue(undefined),
   writeFile: vi.fn().mockResolvedValue(undefined),
 }));
@@ -117,6 +122,47 @@ const autoAttachedFixture = {
   ],
 };
 const feedbackFixture = {version: 1, events: []};
+const sourceTerminalDecisionsFixture = {
+  version: 1,
+  type: "source-terminal-decisions",
+  generatedAt: "2026-06-04T19:22:58.715Z",
+  summary: {
+    terminalDecisionGroupCount: 1,
+    statusCounts: {disputed: 1},
+    directAutoAttachCount: 0,
+    mediaDownloadCount: 0,
+  },
+  entries: [
+    {
+      catalogId: CATALOG_ID,
+      status: "disputed",
+      reason: "Provider evidence exists but metadata is ambiguous.",
+      providerResultCount: 5,
+      importValidationRequired: true,
+      sourceUrl: "https://archive.org/details/example",
+    },
+  ],
+};
+const sourceTerminalFeedbackFixture = {
+  version: 1,
+  type: "source-terminal-feedback-events",
+  events: [
+    {
+      eventId: "terminal-feedback-1",
+      catalogId: CATALOG_ID,
+      eventType: "comment_added",
+      reason: "fixture-comment",
+      createdAt: "2026-06-04T19:22:58.715Z",
+      weakLabel: true,
+    },
+  ],
+  summary: {
+    eventCount: 1,
+    activeEventCount: 1,
+    rolledBackEventCount: 0,
+    eventTypeCounts: {comment_added: 1},
+  },
+};
 const manualCorrectionsFixture = {
   version: 1,
   corrections: [
@@ -547,6 +593,14 @@ function mockJsonFiles() {
 
     if (filePath.includes("auto-attached-references.json")) {
       return JSON.stringify(autoAttachedFixture);
+    }
+
+    if (filePath.includes("source-terminal-decisions.json")) {
+      return JSON.stringify(sourceTerminalDecisionsFixture);
+    }
+
+    if (filePath.includes("source-terminal-feedback-events.json")) {
+      return JSON.stringify(sourceTerminalFeedbackFixture);
     }
 
     if (filePath.includes("source-feedback-events.json")) {
@@ -1248,6 +1302,216 @@ describe("/api/external-references route", () => {
       "--input",
       expect.stringMatching(/^output\/external-reference-coverage\/ui-input\/.+\.json$/),
     ]);
+  });
+
+  it("writes source terminal feedback as weak-label prod-closure events", async () => {
+    const request = authedRequest("http://localhost/api/external-references", {
+      method: "POST",
+      body: JSON.stringify({
+        action: "source-terminal-feedback",
+        sourceTerminalFeedback: {
+          catalogId: CATALOG_ID,
+          eventType: "comment_added",
+          reason: "review-note",
+        },
+      }),
+    });
+
+    const response = await POST(request);
+    const [, writtenPayload] = vi.mocked(writeFile).mock.calls.find(([filePath]) => (
+      String(filePath).includes("source-terminal-feedback-events.json")
+    )) ?? [];
+    const parsed = JSON.parse(String(writtenPayload));
+
+    expect(response.status).toBe(200);
+    expect(parsed).toEqual(expect.objectContaining({
+      version: 1,
+      type: "source-terminal-feedback-events",
+      summary: expect.objectContaining({
+        eventCount: 2,
+        activeEventCount: 2,
+        rolledBackEventCount: 0,
+        eventTypeCounts: expect.objectContaining({comment_added: 2}),
+      }),
+      events: expect.arrayContaining([
+        expect.objectContaining({
+          catalogId: CATALOG_ID,
+          eventType: "comment_added",
+          weakLabel: true,
+        }),
+      ]),
+    }));
+    expect(open).toHaveBeenCalledWith(expect.stringContaining("source-terminal-feedback-events.json.lock"), "wx");
+    expect(rename).toHaveBeenCalledWith(
+      expect.stringContaining("source-terminal-feedback-events.json."),
+      expect.stringContaining("source-terminal-feedback-events.json"),
+    );
+    expect(execFile).not.toHaveBeenCalled();
+  });
+
+  it("writes rollback source terminal feedback with previous event tracking", async () => {
+    const request = authedRequest("http://localhost/api/external-references", {
+      method: "POST",
+      body: JSON.stringify({
+        action: "source-terminal-feedback",
+        sourceTerminalFeedback: {
+          catalogId: CATALOG_ID,
+          eventType: "rolled_back",
+          previousEventId: "terminal-feedback-1",
+          reason: "undo-review-note",
+        },
+      }),
+    });
+
+    const response = await POST(request);
+    const [, writtenPayload] = vi.mocked(writeFile).mock.calls.find(([filePath]) => (
+      String(filePath).includes("source-terminal-feedback-events.json")
+    )) ?? [];
+    const parsed = JSON.parse(String(writtenPayload));
+
+    expect(response.status).toBe(200);
+    expect(parsed).toEqual(expect.objectContaining({
+      summary: expect.objectContaining({
+        eventCount: 2,
+        activeEventCount: 1,
+        rolledBackEventCount: 1,
+        eventTypeCounts: expect.objectContaining({rolled_back: 1}),
+      }),
+      events: expect.arrayContaining([
+        expect.objectContaining({
+          catalogId: CATALOG_ID,
+          eventType: "rolled_back",
+          previousEventId: "terminal-feedback-1",
+          weakLabel: true,
+        }),
+      ]),
+    }));
+    expect(execFile).not.toHaveBeenCalled();
+  });
+
+  it("rejects rollback source terminal feedback without previous event id", async () => {
+    const request = authedRequest("http://localhost/api/external-references", {
+      method: "POST",
+      body: JSON.stringify({
+        action: "source-terminal-feedback",
+        sourceTerminalFeedback: {
+          catalogId: CATALOG_ID,
+          eventType: "rolled_back",
+        },
+      }),
+    });
+
+    const response = await POST(request);
+    const body = await response.json();
+
+    expect(response.status).toBe(400);
+    expect(body.error).toContain("previousEventId");
+    expect(execFile).not.toHaveBeenCalled();
+  });
+
+  it("rejects source terminal feedback for catalog ids outside terminal decisions", async () => {
+    const request = authedRequest("http://localhost/api/external-references", {
+      method: "POST",
+      body: JSON.stringify({
+        action: "source-terminal-feedback",
+        sourceTerminalFeedback: {
+          catalogId: "missing--catalog",
+          eventType: "comment_added",
+        },
+      }),
+    });
+
+    const response = await POST(request);
+    const body = await response.json();
+
+    expect(response.status).toBe(400);
+    expect(body.error).toContain("manifestinde yok");
+    expect(execFile).not.toHaveBeenCalled();
+  });
+
+  it("rejects source terminal alternate urls that are not HTTPS", async () => {
+    const request = authedRequest("http://localhost/api/external-references", {
+      method: "POST",
+      body: JSON.stringify({
+        action: "source-terminal-feedback",
+        sourceTerminalFeedback: {
+          catalogId: CATALOG_ID,
+          eventType: "alternate_proposed",
+          alternateUrl: "http://example.test/source",
+        },
+      }),
+    });
+
+    const response = await POST(request);
+    const body = await response.json();
+
+    expect(response.status).toBe(400);
+    expect(body.error).toContain("HTTPS");
+    expect(execFile).not.toHaveBeenCalled();
+  });
+
+  it("rejects duplicate source terminal rollback events", async () => {
+    vi.mocked(readFile).mockImplementation(async (file) => {
+      const filePath = String(file);
+      if (filePath.includes("source-terminal-decisions.json")) {
+        return JSON.stringify(sourceTerminalDecisionsFixture);
+      }
+      if (filePath.includes("source-terminal-feedback-events.json")) {
+        return JSON.stringify({
+          ...sourceTerminalFeedbackFixture,
+          events: [
+            ...sourceTerminalFeedbackFixture.events,
+            {
+              eventId: "terminal-feedback-rollback-1",
+              catalogId: CATALOG_ID,
+              eventType: "rolled_back",
+              previousEventId: "terminal-feedback-1",
+              weakLabel: true,
+            },
+          ],
+        });
+      }
+      throw Object.assign(new Error("missing"), {code: "ENOENT"});
+    });
+
+    const request = authedRequest("http://localhost/api/external-references", {
+      method: "POST",
+      body: JSON.stringify({
+        action: "source-terminal-feedback",
+        sourceTerminalFeedback: {
+          catalogId: CATALOG_ID,
+          eventType: "rolled_back",
+          previousEventId: "terminal-feedback-1",
+        },
+      }),
+    });
+
+    const response = await POST(request);
+    const body = await response.json();
+
+    expect(response.status).toBe(400);
+    expect(body.error).toContain("zaten geri alınmış");
+    expect(execFile).not.toHaveBeenCalled();
+  });
+
+  it("rejects source terminal feedback with an unsupported event type", async () => {
+    const request = authedRequest("http://localhost/api/external-references", {
+      method: "POST",
+      body: JSON.stringify({
+        action: "source-terminal-feedback",
+        sourceTerminalFeedback: {
+          catalogId: CATALOG_ID,
+          eventType: "accepted",
+        },
+      }),
+    });
+
+    const response = await POST(request);
+    const body = await response.json();
+
+    expect(response.status).toBe(400);
+    expect(body.error).toContain("eventType");
+    expect(execFile).not.toHaveBeenCalled();
   });
 
   it("rejects curation feedback without a structured payload", async () => {

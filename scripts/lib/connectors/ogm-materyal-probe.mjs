@@ -55,7 +55,7 @@ export function tokenCoverage(field, haystack) {
   return tokens.length > 0 ? found.length / tokens.length : 0;
 }
 
-export function scoreKnownSitePage(group, probe, policyOverrides = {}) {
+export function scoreKnownSitePage(group, probe) {
   const text = probe.text;
   const titleCoverage = tokenCoverage(group.title, text);
   const composerCoverage = tokenCoverage(group.composer, text);
@@ -80,7 +80,7 @@ function buildSearchUrl(query) {
   return `https://html.duckduckgo.com/html/?q=${encodeURIComponent(query)}`;
 }
 
-export async function verifyOgmMateryalGroup({group, provider, checkedAt, timeoutMs=8000, maxResponseBytes=262144, rows=3, cache, rateLimitState, respectRateLimit, acceptedThreshold=80}) {
+export async function verifyOgmMateryalGroup({group, provider, checkedAt, timeoutMs=8000, rows=3, cache, acceptedThreshold=80}) {
   const title = group.title && group.title !== "1" ? group.title : "";
   const composer = group.composer || "";
   const query = `site:ogmmateryal.eba.gov.tr "${title}" "${composer}"`;

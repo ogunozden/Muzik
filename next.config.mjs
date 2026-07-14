@@ -40,6 +40,9 @@ const nextConfig = {
   outputFileTracingRoot: __dirname,
   allowedDevOrigins: ["127.0.0.1"],
 
+  // Tek-node self-host icin yalin standalone cikti (ADR 0001; F9)
+  output: "standalone",
+
   // SWC Compiler
   compiler: {
     removeConsole: isProd ? { exclude: ["error", "warn"] } : false,

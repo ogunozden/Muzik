@@ -2,7 +2,8 @@
 
 import { useCallback, useRef, useEffect, memo, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { UnifiedLayout } from "@/components/layout/UnifiedLayout";
+import { UnifiedLayout } from "@/shared/ui/layout/UnifiedLayout";
+import { StudioTabs } from "@/features/studio/StudioTabs";
 import dynamic from "next/dynamic";
 import { useMidiInput } from "@/hooks/useMidiInput";
 import { MAKAM_DATA } from "@/engines/makam/data";
@@ -10,7 +11,7 @@ import { USUL_DATA } from "@/engines/usul/data";
 import { midiToNoteName, noteNameToMidi } from "@/engines/nota/data";
 import { playSequence, stopAll } from "@/engines/ses/engine";
 import type { InstrumentType } from "@/engines/ses/engine";
-import { ENSTRUMAN_LIST, MELODIC_INSTRUMENTS } from "@/lib/centralized";
+import { ENSTRUMAN_LIST, MELODIC_INSTRUMENTS } from "@/lib/app-constants";
 import { NotaEvent } from "@/types";
 import { Badge, Button, Card, CardBody, Input, Select } from "@/shared/ui";
 import { tokens } from "@/shared/tokens";
@@ -18,7 +19,7 @@ import { useEditorStore } from "@/store/editorStore";
 
 // Dynamic imports for heavy components
 const InstrumentSurface = dynamic(
-  () => import("@/components/organisms/InstrumentSurface").then((mod) => mod.InstrumentSurface),
+  () => import("@/shared/ui/organisms/InstrumentSurface").then((mod) => mod.InstrumentSurface),
   {
     loading: () => <InstrumentSurfaceSkeleton />,
     ssr: false,
@@ -26,7 +27,7 @@ const InstrumentSurface = dynamic(
 );
 
 const PianoRollViewer = dynamic(
-  () => import("@/components/organisms/PianoRollViewer").then((mod) => mod.PianoRollViewer),
+  () => import("@/shared/ui/organisms/PianoRollViewer").then((mod) => mod.PianoRollViewer),
   {
     loading: () => <div className="animate-pulse bg-gray-200 h-64 rounded-lg" />,
     ssr: false,
@@ -34,7 +35,7 @@ const PianoRollViewer = dynamic(
 );
 
 const VexFlowViewer = dynamic(
-  () => import("@/components/organisms/VexFlowViewer").then((mod) => mod.VexFlowViewer),
+  () => import("@/shared/ui/organisms/VexFlowViewer").then((mod) => mod.VexFlowViewer),
   {
     loading: () => <div className="animate-pulse bg-gray-100 h-48 rounded-lg" />,
     ssr: false,
@@ -273,6 +274,7 @@ function NotaEditorPage() {
 
   return (
     <UnifiedLayout>
+      <StudioTabs />
       <div className={`min-h-[calc(100vh-125px)] ${tokens.colors.background.base}`}>
         <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:py-10">
           <section className="mb-8 grid gap-6 lg:grid-cols-[minmax(0,1fr)_420px] lg:items-end">

@@ -4,14 +4,16 @@ import {
   HICAZKAR_REFERENCE_SOURCES,
   HICAZKAR_VISUAL_MAP,
   KIZ_NEYI_FOUR_VOICE_A_AHENK,
+  koma53ToFrequency,
+  parseSymbtrScore,
+} from "../hicazkarPesrev";
+import {
   createDefaultVisualMap,
   createVisualMeasureSegments,
   getActiveVisualMeasureSegment,
   getSymbtrMeasureRanges,
   getVisualBeatPosition,
-  koma53ToFrequency,
-  parseSymbtrScore,
-} from "../hicazkarPesrev";
+} from "../visual-map";
 
 const FIXTURE = [
   "Sira\tKod\tNota53\tNotaAE\tKoma53\tKomaAE\tPay\tPayda\tMs\tLNS\tBas\tSoz1\tOffset",
@@ -128,7 +130,7 @@ describe("Hicazkar Pesrev SymbTr parser", () => {
   });
 
   it("maps visual score pages to ordered staff bands in musical time", () => {
-    expect(HICAZKAR_VISUAL_MAP.method).toBe("manual-percent");
+    expect(HICAZKAR_VISUAL_MAP.method).toBe("approximate-staff-percent");
     expect(new Set(HICAZKAR_VISUAL_MAP.staffBands.map((band) => band.pageIndex))).toEqual(new Set([0, 1, 2]));
 
     for (let index = 1; index < HICAZKAR_VISUAL_MAP.staffBands.length; index += 1) {
@@ -173,9 +175,9 @@ describe("Hicazkar Pesrev SymbTr parser", () => {
       bandId: "p1-r1",
       label: "1. sayfa üst satır",
       progressPercent: 50,
-      xPercent: 50,
       yPercent: 22,
     });
+    expect(position?.xPercent).toBeCloseTo(56.16, 5);
   });
 
   it("binds SymbTr measure ranges to visual staff coordinates", () => {
@@ -194,11 +196,11 @@ describe("Hicazkar Pesrev SymbTr parser", () => {
     expect(segments[0]).toMatchObject({
       id: "m1-p1-r1",
       measureIndex: 1,
-      leftPercent: 6,
+      leftPercent: 18.32,
       topPercent: 15,
       heightPercent: 14,
     });
-    expect(segments[0].widthPercent).toBeCloseTo(88 * (4 / 28), 5);
+    expect(segments[0].widthPercent).toBeCloseTo(88 * (1 - 0.14) * (4 / 28), 5);
     expect(activeSegment?.measureIndex).toBe(1);
   });
 });

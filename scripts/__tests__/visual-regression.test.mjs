@@ -5,6 +5,7 @@ import {
   validateCandidatesOverlapStaffRows,
   validateCandidateDensity,
   validateReviewArtifactGeometry,
+  validateDeterministicMeasureCandidateGate,
   validateReviewHtmlStructure,
   compareSvgGeometry,
 } from "../lib/visual-regression.mjs";
@@ -33,6 +34,15 @@ const BAD_SVG_NO_OVERLAP = `<?xml version="1.0" encoding="UTF-8"?>
   <rect x="0" y="0" width="595" height="842" class="page" />
   <rect x="20" y="100" width="555" height="60" class="staff-band" />
   <rect x="30" y="900" width="50" height="50" class="measure-candidate" />
+</svg>`;
+
+const DETERMINISTIC_GATE_SVG = `<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 595 842" role="img">
+  <rect x="0" y="0" width="595" height="842" class="page" />
+  <rect x="20" y="100" width="150" height="60" class="staff-band" />
+  <rect x="20" y="105" width="50" height="50" class="measure-candidate" />
+  <rect x="70" y="105" width="50" height="50" class="measure-candidate" />
+  <rect x="120" y="105" width="50" height="50" class="measure-candidate" />
 </svg>`;
 
 const SAMPLE_HTML = `<!doctype html>
@@ -139,6 +149,50 @@ describe("visual-regression infrastructure", () => {
       const result = validateReviewArtifactGeometry(BAD_SVG_OUT_OF_BOUNDS);
       expect(result.valid).toBe(false);
       expect(result.checks.pageBounds.valid).toBe(false);
+    });
+  });
+
+  describe("validateDeterministicMeasureCandidateGate", () => {
+    it("passes only with fingerprint and deterministic geometry evidence", () => {
+      const result = validateDeterministicMeasureCandidateGate(DETERMINISTIC_GATE_SVG, {
+        candidateGeometryFingerprint: "sha256:test",
+        fingerprintAlgorithm: "sha256:symbtr-layout-candidate-geometry-v1",
+        measureIndexes: [1, 2, 3],
+      });
+
+      expect(result.valid).toBe(true);
+      expect(result.promotionEligible).toBe(true);
+      expect(result.checks.fingerprint.valid).toBe(true);
+      expect(result.checks.barlineAlignment.valid).toBe(true);
+      expect(result.checks.neighborGeometry.valid).toBe(true);
+    });
+
+    it("fails when current fingerprint evidence is missing", () => {
+      const result = validateDeterministicMeasureCandidateGate(DETERMINISTIC_GATE_SVG, {
+        measureIndexes: [1, 2, 3],
+      });
+
+      expect(result.valid).toBe(false);
+      expect(result.promotionEligible).toBe(false);
+      expect(result.checks.fingerprint.valid).toBe(false);
+    });
+
+    it("fails when neighboring candidates overlap", () => {
+      const overlappingSvg = `<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 595 842" role="img">
+  <rect x="0" y="0" width="595" height="842" class="page" />
+  <rect x="20" y="100" width="100" height="60" class="staff-band" />
+  <rect x="20" y="105" width="60" height="50" class="measure-candidate" />
+  <rect x="75" y="105" width="45" height="50" class="measure-candidate" />
+</svg>`;
+
+      const result = validateDeterministicMeasureCandidateGate(overlappingSvg, {
+        candidateGeometryFingerprint: "sha256:test",
+        measureIndexes: [1, 2],
+      });
+
+      expect(result.valid).toBe(false);
+      expect(result.checks.neighborGeometry.issues[0].type).toBe("neighbor-overlap");
     });
   });
 

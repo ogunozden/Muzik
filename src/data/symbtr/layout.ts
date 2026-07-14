@@ -1,3 +1,4 @@
+import "server-only";
 import layoutData from "./layout.generated.json";
 import layoutVerificationData from "./layout-verification.generated.json";
 import {SYMBTR_CATALOG_COUNT, getSymbTrEntryById} from "./catalog";

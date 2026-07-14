@@ -1,4 +1,6 @@
-import {GoogleGenerativeAI} from "@google/generative-ai";
+import {existsSync, mkdirSync, readFileSync, writeFileSync} from "node:fs";
+import path from "node:path";
+import {GoogleGenAI} from "@google/genai";
 import {getConfig} from "./ai-config.mjs";
 
 // Parse JSON from LLM response (handles markdown fences + comments + partial JSON)
@@ -55,12 +57,11 @@ export function parseJsonResponse(content) {
   }
 }
 
-// Rate limiter: Gemini free tier = 1K RPM, 0.06s aralik yeterli
 let lastGeminiCall = 0;
 
-async function waitForRateLimit() {
+async function waitForRateLimit(config = {}) {
   const now = Date.now();
-  const minInterval = 100; // 100ms = ~600 RPM (emniyet marjiyla 1K RPM altinda)
+  const minInterval = Number(config.minIntervalMs ?? 1000);
   if (lastGeminiCall > 0) {
     const elapsed = now - lastGeminiCall;
     if (elapsed < minInterval) {
@@ -71,22 +72,111 @@ async function waitForRateLimit() {
   lastGeminiCall = Date.now();
 }
 
-// Call Gemini API
-async function callGemini(systemPrompt, userPrompt, config) {
-  await waitForRateLimit();
-  const genAI = new GoogleGenerativeAI(config.apiKey);
-  const model = genAI.getGenerativeModel({model: config.model});
+function assertGeminiApiKey(config) {
+  if (!config.apiKey) {
+    throw new Error("GOOGLE_GEMINI_API_KEY is required for Gemini providers");
+  }
+}
 
-  const result = await model.generateContent({
-    contents: [{role: "user", parts: [{text: `${systemPrompt}\n\n${userPrompt}`}]}],
-    generationConfig: {
+function getTextFromGeminiResponse(response) {
+  if (typeof response.text === "function") return response.text();
+  return response.text ?? response.candidates?.[0]?.content?.parts?.map((part) => part.text ?? "").join("") ?? "";
+}
+
+function getGroundingMetadata(response) {
+  return response.candidates?.[0]?.groundingMetadata ?? response.groundingMetadata ?? null;
+}
+
+function safeProjectPath(projectRoot, relativePath) {
+  const target = path.resolve(projectRoot, relativePath);
+  const relative = path.relative(projectRoot, target);
+  if (relative.startsWith("..") || path.isAbsolute(relative)) {
+    throw new Error(`Refusing to write AI usage outside project: ${target}`);
+  }
+  return target;
+}
+
+function readGroundingUsage(config, projectRoot) {
+  if (!config.usagePath) return {version: 1, days: {}};
+  const usagePath = safeProjectPath(projectRoot, config.usagePath);
+  if (!existsSync(usagePath)) return {version: 1, days: {}};
+  return JSON.parse(readFileSync(usagePath, "utf8"));
+}
+
+function writeGroundingUsage(config, projectRoot, usage) {
+  if (!config.usagePath) return;
+  const usagePath = safeProjectPath(projectRoot, config.usagePath);
+  mkdirSync(path.dirname(usagePath), {recursive: true});
+  writeFileSync(usagePath, `${JSON.stringify(usage, null, 2)}\n`);
+}
+
+function getTodayKey() {
+  return new Date().toISOString().slice(0, 10);
+}
+
+function assertGroundingBudget(config, projectRoot, requestIndex = 0) {
+  const maxPromptsPerRun = Number(config.maxPromptsPerRun ?? 0);
+  if (maxPromptsPerRun > 0 && requestIndex >= maxPromptsPerRun) {
+    throw new Error(`Gemini grounding run budget exhausted: ${requestIndex}/${maxPromptsPerRun}`);
+  }
+
+  const dailySoftLimit = Number(config.dailySoftLimit ?? 0);
+  if (dailySoftLimit > 0) {
+    const usage = readGroundingUsage(config, projectRoot);
+    const today = getTodayKey();
+    const used = Number(usage.days?.[today]?.groundedPromptCount ?? 0);
+    if (used >= dailySoftLimit) {
+      throw new Error(`Gemini grounding daily soft limit exhausted: ${used}/${dailySoftLimit}`);
+    }
+  }
+}
+
+function recordGroundingUse(config, projectRoot, metadata, requestInfo = {}) {
+  const usage = readGroundingUsage(config, projectRoot);
+  const today = getTodayKey();
+  const day = usage.days[today] ?? {
+    groundedPromptCount: 0,
+    webSearchQueryCount: 0,
+    requests: [],
+  };
+  const webSearchQueries = Array.isArray(metadata?.webSearchQueries) ? metadata.webSearchQueries : [];
+  day.groundedPromptCount += 1;
+  day.webSearchQueryCount += webSearchQueries.length;
+  day.requests.push({
+    at: new Date().toISOString(),
+    model: config.model,
+    provider: requestInfo.provider,
+    requestId: requestInfo.requestId,
+    webSearchQueryCount: webSearchQueries.length,
+    webSearchQueries,
+  });
+  usage.days[today] = day;
+  writeGroundingUsage(config, projectRoot, usage);
+  return day;
+}
+
+// Call Gemini API
+async function callGemini(systemPrompt, userPrompt, config, options = {}) {
+  assertGeminiApiKey(config);
+  await waitForRateLimit(config);
+  const genAI = new GoogleGenAI({apiKey: config.apiKey});
+  const response = await genAI.models.generateContent({
+    model: config.model,
+    contents: `${systemPrompt}\n\n${userPrompt}`,
+    config: {
       temperature: config.temperature,
       maxOutputTokens: config.maxTokens,
+      tools: config.grounding ? [{googleSearch: {}}] : undefined,
     },
   });
 
-  const text = result.response.text();
-  return text;
+  const text = getTextFromGeminiResponse(response);
+  return {
+    text,
+    groundingMetadata: getGroundingMetadata(response),
+    response,
+    requestInfo: options.requestInfo ?? {},
+  };
 }
 
 // Call Ollama API (OpenAI-compatible endpoint)
@@ -134,8 +224,8 @@ export async function callAI(systemPrompt, userPrompt, providerOverride) {
   let rawContent;
   if (activeProvider === "ollama") {
     rawContent = await callOllama(systemPrompt, userPrompt, config);
-  } else if (activeProvider === "gemini-flash" || activeProvider === "gemini-pro") {
-    rawContent = await callGemini(systemPrompt, userPrompt, config);
+  } else if (activeProvider === "gemini-flash" || activeProvider === "gemini-pro" || activeProvider === "gemini-3.5-flash") {
+    rawContent = (await callGemini(systemPrompt, userPrompt, config)).text;
   } else {
     throw new Error(`Unsupported provider: ${activeProvider}`);
   }
@@ -144,6 +234,44 @@ export async function callAI(systemPrompt, userPrompt, providerOverride) {
     return {raw: rawContent, parsed: parseJsonResponse(rawContent)};
   } catch {
     return {raw: rawContent, parsed: null};
+  }
+}
+
+export async function callGeminiGrounded(systemPrompt, userPrompt, {
+  providerOverride = "gemini-grounded",
+  requestIndex = 0,
+  requestId,
+} = {}) {
+  const {config, projectRoot} = getConfig(providerOverride);
+  if (!config.grounding) {
+    throw new Error(`Provider ${providerOverride} is not configured for Gemini grounding`);
+  }
+
+  assertGroundingBudget(config, projectRoot, requestIndex);
+  const result = await callGemini(systemPrompt, userPrompt, config, {
+    requestInfo: {provider: providerOverride, requestId},
+  });
+  const usage = recordGroundingUse(config, projectRoot, result.groundingMetadata, {
+    provider: providerOverride,
+    requestId,
+  });
+
+  try {
+    return {
+      raw: result.text,
+      parsed: parseJsonResponse(result.text),
+      groundingMetadata: result.groundingMetadata,
+      usage,
+      limitPolicy: config.limitPolicy,
+    };
+  } catch {
+    return {
+      raw: result.text,
+      parsed: null,
+      groundingMetadata: result.groundingMetadata,
+      usage,
+      limitPolicy: config.limitPolicy,
+    };
   }
 }
 
@@ -159,10 +287,13 @@ export async function checkHealth(providerOverride) {
       const data = await res.json();
       return {ok: true, model: data.data?.[0]?.id || "unknown", provider: "ollama"};
     } else {
-      const genAI = new GoogleGenerativeAI(config.apiKey);
-      const model = genAI.getGenerativeModel({model: config.model});
-      const result = await model.generateContent("test");
-      if (!result.response) throw new Error("Gemini not reachable");
+      assertGeminiApiKey(config);
+      const genAI = new GoogleGenAI({apiKey: config.apiKey});
+      const result = await genAI.models.generateContent({
+        model: config.model,
+        contents: "test",
+      });
+      if (!getTextFromGeminiResponse(result)) throw new Error("Gemini not reachable");
       return {ok: true, model: config.model, provider: "gemini"};
     }
   } catch (error) {

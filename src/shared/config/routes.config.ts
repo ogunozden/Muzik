@@ -10,6 +10,7 @@ export type RoutePath =
   | "home"
   | "studio"
   | "studioFollow"
+  | "studioScoreEngine"
   | "references"
   | "referencesCuration"
   | "archive"
@@ -47,6 +48,7 @@ export const routes = {
   home: "/",
   studio: "/studio",
   studioFollow: "/studio/follow",
+  studioScoreEngine: "/studio/score-engine",
   references: "/references",
   referencesCuration: "/references/curation",
   archive: "/archive",
@@ -83,6 +85,12 @@ export const routeMetadata: Record<RoutePath, Route> = {
     name: "studioFollow",
     titleKey: "nav.studioFollow",
     description: "Kaynak nota üzerinden eser takip ve orkestra çalışma",
+  },
+  studioScoreEngine: {
+    path: routes.studioScoreEngine,
+    name: "studioScoreEngine",
+    titleKey: "nav.studioScoreEngine",
+    description: "Canonical skor motoru, temiz render ve noteId tabanlı takip prototipi",
   },
   references: {
     path: routes.references,

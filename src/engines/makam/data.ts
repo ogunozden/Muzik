@@ -1,5 +1,5 @@
 import {Makam} from "@/types";
-import {NOTE_NAMES} from "@/lib/centralized";
+import {NOTE_NAMES} from "@/lib/app-constants";
 
 export const MAKAM_DATA: Makam[] = [
   {

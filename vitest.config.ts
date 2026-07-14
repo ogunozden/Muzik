@@ -7,11 +7,44 @@ export default defineConfig({
   test: {
     globals: true,
     environment: 'jsdom',
+    setupFiles: ['./vitest.setup.ts'],
     include: ['src/**/*.test.ts', 'src/**/*.test.tsx', 'scripts/**/*.test.mjs'],
+    // Coverage instrumentation yavaslatir; zamanlama-hassas async testlerin
+    // (debounce/playback) coverage altinda timeout almasini engeller.
+    testTimeout: 20000,
+    coverage: {
+      provider: 'v8',
+      reporter: ['text-summary', 'json-summary'],
+      // Saf mantik katmanlari icin coverage kapisi (F6.1). Buyuk UI bilesenleri
+      // RTL ile davranis-testli ama satir-coverage'a dahil degil; bu esik
+      // motor/domain/veri-erisim/yardimci katmanina uygulanir.
+      include: [
+        'src/core/**/*.ts',
+        'src/engines/**/*.ts',
+        'src/data/score-engine/*.ts',
+        'src/data/symbtr/parser.ts',
+        'src/shared/api/**/*.ts',
+        'src/shared/hooks/**/*.ts',
+        'src/app/studio/follow/parts/follow-helpers.ts',
+        'src/features/references/curation-helpers.ts',
+      ],
+      exclude: ['**/__tests__/**', '**/*.test.*', '**/*.generated.*'],
+      // Mevcut olculen seviyenin hemen altinda ratchet; regresyonu yakalar,
+      // yeni test eklendikce yukari cekilir (F6.1).
+      thresholds: {
+        statements: 55,
+        branches: 55,
+        functions: 65,
+        lines: 55,
+      },
+    },
   },
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),
+      // `server-only` client ortaminda firlatir; test ortami bir client
+      // bundle degildir, bu yuzden paketin kendi no-op modulune yonlendirilir.
+      'server-only': path.resolve(__dirname, './node_modules/server-only/empty.js'),
     },
   },
 });

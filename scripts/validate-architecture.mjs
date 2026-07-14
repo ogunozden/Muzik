@@ -130,7 +130,7 @@ if (exists(navigationConfigPath)) {
   }
 }
 
-const unifiedLayoutPath = "src/components/layout/UnifiedLayout.tsx";
+const unifiedLayoutPath = "src/shared/ui/layout/UnifiedLayout.tsx";
 if (exists(unifiedLayoutPath)) {
   const unifiedLayout = fs.readFileSync(path.join(root, unifiedLayoutPath), "utf8");
   if (!unifiedLayout.includes('href="/"')) {
@@ -163,6 +163,26 @@ function walk(dir, files = []) {
   return files;
 }
 
+// Server-only sinir kontrolu (F2.3): generated agir veri tasiyan moduller
+// yalniz server tarafinda okunur. `"use client"` dosyalari bunlari dogrudan
+// import edemez; veri API dilimi uzerinden gelir (ADR 0001). `server-only`
+// paketi bunu build sirasinda da zorlar; bu kapi daha erken ve net sinyal verir.
+const SERVER_ONLY_MODULE_SPECIFIERS = [
+  "@/data/symbtr/layout",
+  "@/data/symbtr/catalog",
+  "@/data/score-engine/canonical-score-anchors",
+];
+
+function importsServerOnlyModule(content) {
+  return SERVER_ONLY_MODULE_SPECIFIERS.filter((specifier) => {
+    // type-only import client bundle'a girmez; yalniz value importlari yakala.
+    const valueImport = new RegExp(
+      `import\\s+(?!type\\b)[^;]*?from\\s+["']${specifier.replace(/[/\\]/g, "\\$&")}["']`,
+    );
+    return valueImport.test(content);
+  });
+}
+
 for (const file of walk(path.join(root, "src"))) {
   const content = fs.readFileSync(file.fullPath, "utf8");
   if (content.includes("gereksiz/") || content.includes("gereksiz\\")) {
@@ -170,6 +190,76 @@ for (const file of walk(path.join(root, "src"))) {
   }
   if (content.includes("@heroui/")) {
     failures.push(`Active source must not import HeroUI: ${file.relativePath}`);
+  }
+
+  const isClientModule = /^\s*["']use client["']/.test(content);
+  if (isClientModule) {
+    for (const specifier of importsServerOnlyModule(content)) {
+      failures.push(
+        `Client module must not value-import server-only data (${specifier}); use an API slice: ${file.relativePath}`,
+      );
+    }
+  }
+
+  // Katman-yonu sinirlari (F4.2, ADR 0001 Karar 3):
+  // app -> features -> core/application -> core/domain; core/application ->
+  // core/infrastructure; engines/data saf alt katmandir. Ters yon yasaktir.
+  const rel = file.relativePath;
+  const importsFeatures = /from\s+["']@\/features\//.test(content);
+  const importsApp = /from\s+["']@\/app\//.test(content);
+
+  if (rel.startsWith("src/core/domain/")) {
+    if (/from\s+["']@\/(features|app|core\/application|core\/infrastructure|engines)\//.test(content)) {
+      failures.push(`core/domain must stay pure (no app/features/application/infrastructure/engines import): ${rel}`);
+    }
+  }
+  if (rel.startsWith("src/core/") && (importsFeatures || importsApp)) {
+    failures.push(`core layer must not import upward into features/app: ${rel}`);
+  }
+  if ((rel.startsWith("src/engines/") || rel.startsWith("src/data/")) && !rel.includes("__tests__")) {
+    if (importsFeatures || importsApp) {
+      failures.push(`engines/data are lower layers and must not import features/app: ${rel}`);
+    }
+  }
+
+  // Tek tema kaynagi: yalniz shared/tokens `@/lib/design-system` importlayabilir
+  // (ADR/ENGINEERING_RULESET: tek tema kaynagi shared/tokens).
+  if (!rel.startsWith("src/shared/tokens/") && !rel.startsWith("src/lib/design-system/")) {
+    if (/from\s+["']@\/lib\/design-system/.test(content)) {
+      failures.push(`Design tokens must be imported via @/shared/tokens, not @/lib/design-system directly: ${rel}`);
+    }
+  }
+}
+
+// Max-line guardrail (F4.8): dosyalar <=800 satir. Mevcut buyuk dosyalar
+// aktif decomposition hedefidir (M8.1-M8.3) ve grandfather edilir; bu allowlist
+// yalniz kuculdukce kisalir (ratchet). YENI dosya 800'u asamaz.
+const MAX_LINES = 800;
+const GRANDFATHERED_LARGE_FILES = new Map([
+  // [dosya, tavan] — mevcut satirin ustune cikamaz; decomposition ile azalir.
+  ["src/app/api/external-references/route.ts", 800],
+  ["src/app/studio/follow/page.tsx", 1025],
+  ["src/app/references/curation/page.tsx", 855],
+  ["src/features/references/ReferencesCurationDetail.tsx", 810],
+  ["src/engines/usul/data.ts", 810], // saf veri dosyasi (usul tanimlari)
+  ["src/app/api/external-references/route-state.ts", 685],
+]);
+
+for (const file of walk(path.join(root, "src"))) {
+  const rel = file.relativePath;
+  if (rel.includes("__tests__") || rel.endsWith(".generated.json") || rel.endsWith(".css")) continue;
+  if (!/\.(ts|tsx)$/.test(rel)) continue;
+  const lineCount = fs.readFileSync(file.fullPath, "utf8").split("\n").length;
+  const grandfatherCeiling = GRANDFATHERED_LARGE_FILES.get(rel);
+
+  if (grandfatherCeiling !== undefined) {
+    if (lineCount > grandfatherCeiling) {
+      failures.push(
+        `Large file grew past its ratchet ceiling (${lineCount} > ${grandfatherCeiling}); decompose, don't grow: ${rel}`,
+      );
+    }
+  } else if (lineCount > MAX_LINES) {
+    failures.push(`File exceeds ${MAX_LINES} lines (${lineCount}); split into modules: ${rel}`);
   }
 }
 

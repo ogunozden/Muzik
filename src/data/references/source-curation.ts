@@ -22,6 +22,28 @@ export const SOURCE_FEEDBACK_EVENT_TYPES = [
   "manual-entry",
 ] as const;
 
+export const SOURCE_SUGGESTION_STATUSES = [
+  "auto-suggested",
+  "user-attached",
+  "community-verified",
+  "disputed",
+  "user-removed",
+  "rejected",
+  "deferred",
+] as const;
+
+export const SOURCE_SUGGESTION_EVENT_TYPES = [
+  "source_suggested",
+  "source_added",
+  "source_removed",
+  "alternate_proposed",
+  "comment_added",
+  "verified",
+  "disputed",
+  "rejected",
+  "rolled_back",
+] as const;
+
 export const EMBED_CAPABILITIES = ["none", "iframe", "pdf", "youtube"] as const;
 export const EMBED_TYPES = ["none", "iframe", "pdf", "youtube"] as const;
 export const METADATA_STRATEGIES = ["none", "html-title", "og-title", "oembed", "site-specific"] as const;
@@ -29,6 +51,8 @@ export const CURATION_CONFIDENCE_LEVELS = ["high", "medium", "low", "conflict"] 
 
 export type AutoAttachedReferenceStatus = (typeof AUTO_ATTACHED_REFERENCE_STATUSES)[number];
 export type SourceFeedbackEventType = (typeof SOURCE_FEEDBACK_EVENT_TYPES)[number];
+export type SourceSuggestionStatus = (typeof SOURCE_SUGGESTION_STATUSES)[number];
+export type SourceSuggestionEventType = (typeof SOURCE_SUGGESTION_EVENT_TYPES)[number];
 export type EmbedCapability = (typeof EMBED_CAPABILITIES)[number];
 export type EmbedType = (typeof EMBED_TYPES)[number];
 export type MetadataStrategy = (typeof METADATA_STRATEGIES)[number];
@@ -70,6 +94,50 @@ export interface SourceFeedbackEvent {
 export interface SourceFeedbackEventRegistry {
   version: 1;
   events: SourceFeedbackEvent[];
+}
+
+export interface SourceSuggestion {
+  catalogId: string;
+  sourceId: string;
+  suggestionId: string;
+  url: string;
+  normalizedIdentity: string;
+  status: SourceSuggestionStatus;
+  title?: string;
+  sourceProvider?: string;
+  profileId: string;
+  provider: string;
+  confidence: "high" | "medium" | "low";
+  reason?: string;
+  conflicts: string[];
+  validationErrors: string[];
+  checkedAt: string;
+  weakLabelOnly: true;
+  acceptedEligible: false;
+  directAutoAttach: false;
+  mediaDownload: false;
+}
+
+export interface SourceSuggestionEvent {
+  eventId: string;
+  catalogId: string;
+  sourceId: string;
+  eventType: SourceSuggestionEventType;
+  reason?: string;
+  note?: string;
+  createdAt: string;
+  createdBy: string;
+  weakLabel: true;
+  labelPolicy: string;
+  previousValue?: unknown;
+  nextValue?: unknown;
+}
+
+export interface SourceSuggestionRegistry {
+  version: 1;
+  type: "gemini-grounded-source-suggestions";
+  suggestions: SourceSuggestion[];
+  events: SourceSuggestionEvent[];
 }
 
 export interface ManualSourceCorrection {

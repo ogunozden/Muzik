@@ -2,75 +2,28 @@
 
 import {useTranslation} from "react-i18next";
 import Link from "next/link";
-import {UnifiedLayout} from "@/components/layout/UnifiedLayout";
-import {MAKAM_DATA} from "@/engines/makam/data";
-import {USUL_DATA} from "@/engines/usul/data";
+import {UnifiedLayout} from "@/shared/ui/layout/UnifiedLayout";
 import {navigation} from "@/shared/config";
 import {PageHeader, PageShell, PageSurface} from "@/shared/ui";
 import {tokens} from "@/shared/tokens";
+import {OperatorDashboard} from "@/features/dashboard/OperatorDashboard";
 
 export default function HomePage() {
   const {t} = useTranslation();
 
-  const primaryWorkflows = [
-    {
-      href: "/studio",
-      icon: "🎼",
-      title: t("home.studioCard"),
-      description: t("home.studioDesc"),
-      metric: `${MAKAM_DATA.length} makam`,
-      action: "Çalışma stüdyosunu aç",
-    },
-    {
-      href: "/studio/follow",
-      icon: "🎧",
-      title: t("home.followCard"),
-      description: t("home.followDesc"),
-      metric: "SymbTr takip",
-      action: "Eser takip ekranına git",
-    },
-    {
-      href: "/rhythm",
-      icon: "🥁",
-      title: t("home.rhythmCard"),
-      description: t("home.rhythmDesc"),
-      metric: `${USUL_DATA.length} usul`,
-      action: "Ritim çalış",
-    },
-  ];
-
-  const operations = navigation.filter((item) => item.href && !["studio", "studioFollow", "rhythm"].includes(item.id));
+  // Hub dropdown'larinin tum alt yuzeyleri (F7): panodan da dogrudan erisim.
+  const operations = navigation.flatMap((item) => item.children ?? []).filter((item) => item.href);
 
   return (
     <UnifiedLayout>
       <PageShell>
         <PageHeader
-          meta="Ürün merkezi"
+          meta="Operatör panosu"
           title={t("home.title")}
           description="Çalışma, ritim, eser takip, kaynak yönetimi ve yerel operasyon ekranları tek girişten yönetilir."
         />
 
-        <div className="grid gap-4 lg:grid-cols-3">
-          {primaryWorkflows.map((workflow) => (
-            <Link
-              key={workflow.href}
-              href={workflow.href}
-              className="group rounded-lg border border-[var(--color-border-default)] bg-[var(--color-bg-surface)] p-5 transition-shadow hover:shadow-md"
-            >
-              <div className="flex items-start justify-between gap-4">
-                <span className="text-2xl" aria-hidden="true">{workflow.icon}</span>
-                <span className={`rounded-md border border-[var(--color-border-subtle)] px-2 py-1 text-xs ${tokens.colors.text.secondary}`}>
-                  {workflow.metric}
-                </span>
-              </div>
-              <h2 className="mt-4 text-lg font-semibold text-[var(--color-text-primary)]">{workflow.title}</h2>
-              <p className={`mt-2 min-h-12 text-sm leading-relaxed ${tokens.colors.text.secondary}`}>{workflow.description}</p>
-              <p className="mt-5 text-sm font-medium text-[var(--color-primary-700)] group-hover:text-[var(--color-primary-600)]">
-                {workflow.action}
-              </p>
-            </Link>
-          ))}
-        </div>
+        <OperatorDashboard />
 
         <PageSurface className="mt-6 overflow-hidden">
           <div className="border-b border-[var(--color-border-subtle)] px-5 py-4">

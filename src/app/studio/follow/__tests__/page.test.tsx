@@ -2,6 +2,18 @@ import {fireEvent, render, screen, waitFor} from "@testing-library/react";
 import type {ReactNode} from "react";
 import {afterEach, beforeEach, describe, expect, it, vi} from "vitest";
 import {koma53ToFrequency} from "@/data/pieces/hicazkarPesrev";
+import {
+  getSymbTrEntryById,
+  getSymbTrEntrySourceReferences,
+  searchSymbTrCatalog,
+  SYMBTR_CATALOG_COUNT,
+} from "@/data/symbtr/catalog";
+import {
+  getSymbTrPdfLayout,
+  getSymbTrPdfLayoutVerificationStatus,
+  getSymbTrVerifiedPdfMeasureBoxes,
+} from "@/data/symbtr/layout";
+import {getPieceExternalReferences} from "@/data/references/piece-external-references";
 import EserTakipPage from "../page";
 
 const playArrangementMock = vi.hoisted(() => vi.fn(async () => 1));
@@ -28,7 +40,7 @@ const layoutMockState = vi.hoisted(() => ({
   }>,
 }));
 
-vi.mock("@/components/layout/UnifiedLayout", () => ({
+vi.mock("@/shared/ui/layout/UnifiedLayout", () => ({
   UnifiedLayout: ({children}: {children: ReactNode}) => <main>{children}</main>,
 }));
 
@@ -73,14 +85,44 @@ const SCORE_FIXTURE = [
   "4\t9\tSol5\tG5\t352\t352\t3\t16\t625\t95\t96\t\t0.0982142857143",
 ].join("\n");
 
+function jsonResponse(body: unknown): Response {
+  return new Response(JSON.stringify(body), {
+    headers: {"Content-Type": "application/json"},
+    status: 200,
+  });
+}
+
 function mockFetch(scoreFixtures: Record<string, string> = {}) {
   return vi.fn(async (input: RequestInfo | URL) => {
     const url = input.toString();
 
     if (url.includes("/api/samples")) {
-      return new Response(JSON.stringify({slots: []}), {
-        headers: {"Content-Type": "application/json"},
-        status: 200,
+      return jsonResponse({slots: []});
+    }
+
+    if (url.includes("/api/symbtr/piece/")) {
+      const catalogId = decodeURIComponent(url.split("/api/symbtr/piece/")[1].split("?")[0]);
+      const entry = getSymbTrEntryById(catalogId) ?? null;
+      return jsonResponse({
+        catalogId,
+        catalogCount: SYMBTR_CATALOG_COUNT,
+        catalogEntry: entry,
+        sourceReferences: entry ? getSymbTrEntrySourceReferences(entry) : [],
+        externalReferences: getPieceExternalReferences(catalogId),
+        layout: getSymbTrPdfLayout(catalogId),
+        verificationStatus: getSymbTrPdfLayoutVerificationStatus(catalogId),
+        verifiedMeasureBoxes: getSymbTrVerifiedPdfMeasureBoxes(catalogId),
+      });
+    }
+
+    if (url.includes("/api/symbtr/catalog/search")) {
+      const parsed = new URL(url, "http://localhost");
+      const query = (parsed.searchParams.get("q") ?? "").trim();
+      const limit = Number.parseInt(parsed.searchParams.get("limit") ?? "8", 10);
+      return jsonResponse({
+        query,
+        catalogCount: SYMBTR_CATALOG_COUNT,
+        entries: query ? searchSymbTrCatalog(query, limit) : [],
       });
     }
 
@@ -121,16 +163,16 @@ describe("EserTakipPage", () => {
 
     await waitFor(() => expect(screen.getByRole("heading", {name: "Rast Deneme Peşrev"})).toBeDefined());
     expect(screen.getByText("Rast Deneme Peşrev görsellerle eklendi ve takip için seçildi.")).toBeDefined();
-    expect(screen.getByText(/Aktif satır: 1\. sayfa üst satır/)).toBeDefined();
+    expect(screen.getByText(/Yaklaşık satır: 1\. sayfa üst satır/)).toBeDefined();
     expect(screen.queryByLabelText("SymbTr TXT bağlantısı")).toBeNull();
   });
 
-  it("fills visual piece metadata from the local SymbTr catalog without adding duplicates by URL", () => {
+  it("fills visual piece metadata from the local SymbTr catalog without adding duplicates by URL", async () => {
     render(<EserTakipPage />);
 
     fireEvent.change(screen.getByLabelText("SymbTr katalog ara"), {target: {value: "aldanma dunya"}});
     fireEvent.click(
-      screen.getByRole("button", {
+      await screen.findByRole("button", {
         name: /Katalogdan doldur acem--ilahi--duyek--aldanma_dunya--zekai_dede/,
       }),
     );
@@ -151,7 +193,7 @@ describe("EserTakipPage", () => {
 
     fireEvent.change(screen.getByLabelText("SymbTr katalog ara"), {target: {value: "aldanma dunya"}});
     fireEvent.click(
-      screen.getByRole("button", {
+      await screen.findByRole("button", {
         name: /Katalogdan doldur acem--ilahi--duyek--aldanma_dunya--zekai_dede/,
       }),
     );
@@ -312,8 +354,9 @@ describe("EserTakipPage", () => {
     expect(screen.getByText("Rast=A4")).toBeDefined();
     expect(screen.getByText("Sayfa eşleme")).toBeDefined();
     expect(screen.getByText("Yakın notalar")).toBeDefined();
-    expect(screen.getByText(/Aktif satır: 1\. sayfa üst satır/)).toBeDefined();
-    expect(screen.getByText(/Takip noktası: 1\. sayfa üst satır · x 6% \/ y 22%/)).toBeDefined();
+    expect(screen.getByText(/Yaklaşık satır: 1\. sayfa üst satır/)).toBeDefined();
+    expect(screen.getByText(/Yaklaşık takip noktası: 1\. sayfa üst satır · x 18% \/ y 22%/)).toBeDefined();
+    expect(screen.getByRole("img", {name: "Yaklaşık takip görsel işareti: Fa♯4/5"})).toBeDefined();
     expect(screen.getByText("Yerel SymbTr kaynakları: 5 format")).toBeDefined();
     expect(screen.getByText(/PDF vektör ölçü adayları: 49 aday · 10 porte satırı/)).toBeDefined();
     expect(screen.getByText(/Bu veriler kesin ölçü kutusu olarak işaretlenmez/)).toBeDefined();

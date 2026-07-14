@@ -1,0 +1,12 @@
+node_modules
+.next
+.git
+var
+output
+symb
+all-samples
+.agents
+*.log
+coverage
+.playwright-mcp
+.layout-guard

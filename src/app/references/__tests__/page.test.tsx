@@ -3,7 +3,7 @@ import type {ReactNode} from "react";
 import {afterEach, beforeEach, describe, expect, it, vi} from "vitest";
 import {ReferencesOperationsDashboard} from "@/features/references/ReferencesOperationsDashboard";
 
-vi.mock("@/components/layout/UnifiedLayout", () => ({
+vi.mock("@/shared/ui/layout/UnifiedLayout", () => ({
   UnifiedLayout: ({children}: {children: ReactNode}) => <main>{children}</main>,
 }));
 

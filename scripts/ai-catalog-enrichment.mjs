@@ -3,7 +3,7 @@ import {readFileSync, mkdirSync, writeFileSync} from "node:fs";
 import {resolve, dirname} from "node:path";
 import {fileURLToPath} from "node:url";
 import {getConfig} from "./lib/ai-config.mjs";
-import {callAI, checkHealth, parseJsonResponse} from "./lib/ai-client.mjs";
+import {callAI, checkHealth} from "./lib/ai-client.mjs";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const PROJECT_ROOT = resolve(__dirname, "..");

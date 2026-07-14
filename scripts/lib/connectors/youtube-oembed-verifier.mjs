@@ -71,7 +71,7 @@ export function findYouTubeUrl(group, candidateUrl = null) {
   return null;
 }
 
-export async function verifyYouTubeOEmbedGroup({group, provider, checkedAt, timeoutMs=8000, candidateUrl=null, cache, rateLimitState, respectRateLimit, acceptedThreshold=80}) {
+export async function verifyYouTubeOEmbedGroup({group, provider, checkedAt, timeoutMs=8000, candidateUrl=null, cache, acceptedThreshold=80}) {
   const youtubeUrl = findYouTubeUrl(group, candidateUrl);
   const cacheKey = `${group.catalogId}:youtube-oembed:${youtubeUrl || 'no-url'}`;
   const cached = cache?.entries?.[cacheKey];

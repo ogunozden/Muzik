@@ -1,7 +1,8 @@
 export function scoreDiscoveryCandidate({provider, group, policy}) {
   const sp = policy?.scoringParams ?? {};
   const trustWeight = Number(provider.trustWeight ?? provider.policy?.trustWeight ?? sp.defaultTrustWeight ?? 0.5);
-  const base = Math.round((trustWeight || sp.defaultTrustWeight ?? 0.5) * (sp.baseWeightMultiplier ?? 60));
+  const baseTrustWeight = trustWeight || (sp.defaultTrustWeight ?? 0.5);
+  const base = Math.round(baseTrustWeight * (sp.baseWeightMultiplier ?? 60));
   const formatBonus = group.priorityGroup === "pdf-and-musicxml" ? (sp.bonusPdfAndMusicxml ?? 10) : group.priorityGroup === "pdf-only" ? (sp.bonusPdfOnly ?? 6) : 0;
   const statusPenalty = group.status === "conflict" ? (sp.penaltyConflict ?? 30) : group.status === "deferred" ? (sp.penaltyDeferred ?? 20) : 0;
   const maxScore = sp.maxDiscoveryScore ?? 89;

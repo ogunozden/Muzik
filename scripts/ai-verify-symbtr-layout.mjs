@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 /**
- * LLM-powered SymbTr PDF layout auto-verification
- * Uses local Ollama (qwen2.5:14b) to analyze review artifacts and produce
- * verification entries for layout-verification.generated.json
+ * LLM-powered SymbTr PDF layout triage.
+ * LLM output is review guidance only. It never produces promoted
+ * layout-verification.generated.json entries.
  *
  * Usage:
  *   npm run ai:verify-symbtr-layout -- --limit 10
@@ -12,6 +12,7 @@
 
 import {existsSync, mkdirSync, readFileSync, writeFileSync} from "node:fs";
 import path from "node:path";
+import {fileURLToPath} from "node:url";
 import {callAI} from "./lib/ai-client.mjs";
 import {parseReviewSvg, validateReviewArtifactGeometry} from "./lib/visual-regression.mjs";
 
@@ -19,40 +20,32 @@ const PROJECT_ROOT = process.cwd();
 const DEFAULT_REVIEW_DIR = "output/symbtr-layout-review";
 const DEFAULT_OUT_DIR = "output/ai-verified-layout";
 const DEFAULT_BATCH_SIZE = 5;
-const DEFAULT_TIMEOUT = 300000;
 
-// System prompt for LLM visual analysis of music notation
+// System prompt for LLM triage of music notation review artifacts.
 const SYSTEM_PROMPT = `You are an expert in Turkish classical music notation analysis.
 You are reviewing a computer-generated SVG overlay that marks "measure candidates" (orange boxes)
-on a music staff. Your task is to determine if these candidates correctly identify actual musical measures.
+on a music staff. Your task is triage only: classify uncertainty and failure modes for human review.
+You are NOT allowed to verify measures, promote entries, or create final measure boxes.
 
 Respond ONLY with a valid JSON object. No markdown, no comments, no explanations outside JSON.
 
 The JSON must have this structure:
 {
-  "verified": true|false,
+  "triageStatus": "deterministic-gate-candidate"|"needs-human-review"|"geometry-failure"|"llm-uncertain",
   "confidence": "high"|"medium"|"low",
+  "failureMode": "none"|"barline-ambiguity"|"staff-overlap-risk"|"candidate-gap-or-overlap"|"wrong-crop"|"insufficient-context"|"other",
   "reason": "brief explanation in Turkish",
-  "measureBoxes": [
-    {
-      "measureIndex": 1,
-      "leftPercent": 10.5,
-      "topPercent": 20.3,
-      "widthPercent": 15.0,
-      "heightPercent": 8.0,
-      "confidence": "verified"
-    }
-  ],
   "rejectedCandidates": [0, 2],
+  "recommendedAction": "run-deterministic-gate"|"human-review"|"fix-crop"|"defer",
   "notes": "any extra observations"
 }
 
 Rules:
-- "verified": true only if the candidates align with actual measure boundaries
-- "measureBoxes" should map valid candidates to sequential measure indices starting from 1
-- "rejectedCandidates" lists candidate indices (0-based) that are false positives
+- Never output measureBoxes.
+- "deterministic-gate-candidate" means the overlay looks clean enough for the deterministic validator to evaluate; it is not verification.
+- "rejectedCandidates" lists candidate indices (0-based) that look suspicious.
 - Use Turkish for "reason" and "notes"
-- If unsure, set confidence to "low" and verified to false`;
+- If unsure, set confidence to "low" and triageStatus to "llm-uncertain"`;
 
 function parseCliOptions(args) {
   const options = new Map();
@@ -101,7 +94,7 @@ function buildPromptForArtifact(svgPath, htmlPath, catalogId) {
     geometryText += `  Aday ${i + 1}: x=${c.x.toFixed(1)}, y=${c.y.toFixed(1)}, w=${c.width.toFixed(1)}, h=${c.height.toFixed(1)}\n`;
   }
 
-  geometryText += `\nGörev: Yukarıdaki porte satırlarına ve ölçü adaylarına bak. Adaylar gerçek ölçü sınırlarını doğru şekilde işaretliyor mu? Her adayı tek tek değerlendir. Doğru olanları measureIndex ile eşleştir. Yanlış olanları rejectedCandidates listesine ekle.`;
+  geometryText += `\nGörev: Yukarıdaki porte satırlarına ve ölçü adaylarına bak. Bu sadece triage çalışmasıdır; ölçü doğrulaması veya measureBoxes üretme. Belirsiz crop, staff overlap, komşu aday boşluğu/çakışması ve barline sınırı risklerini sınıflandır.`;
 
   return geometryText;
 }
@@ -124,12 +117,15 @@ async function verifyArtifactWithLLM(svgPath, htmlPath, catalogId, options = {})
 
     return {
       catalogId,
-      status: parsed.verified ? "verified" : "needs-review",
+      status: "triage-only",
+      triageStatus: parsed.triageStatus || "llm-uncertain",
       confidence: parsed.confidence || "low",
+      failureMode: parsed.failureMode || "insufficient-context",
       reason: parsed.reason || "",
-      measureBoxes: parsed.measureBoxes || [],
       rejectedCandidates: parsed.rejectedCandidates || [],
+      recommendedAction: parsed.recommendedAction || "human-review",
       notes: parsed.notes || "",
+      promotionEligible: false,
       raw,
     };
   } catch (error) {
@@ -137,38 +133,44 @@ async function verifyArtifactWithLLM(svgPath, htmlPath, catalogId, options = {})
       catalogId,
       status: "llm-error",
       verified: false,
+      promotionEligible: false,
       error: error.message,
     };
   }
 }
 
-function buildVerificationEntry(result, catalogId, layoutData) {
+function buildVerificationEntry() {
+  return null;
+}
+
+function buildTriageEntry(result, catalogId, layoutData, geometryResult = null) {
   const layoutEntry = layoutData.entries?.[catalogId];
   if (!layoutEntry) return null;
 
   return {
+    type: "symbtr-layout-llm-triage-entry",
     catalogId,
     sourceLayoutGeneratedAt: layoutData.generatedAt,
     sourceArchiveMemberPath: layoutEntry.source.archiveMemberPath,
     sourceMeasureCandidateCount: layoutEntry.measureCandidates?.length || 0,
-    reviewer: "ollama-qwen2.5:14b",
-    method: "ai-visual-assessment",
+    reviewer: "llm-triage",
+    method: "llm-triage-only",
+    promotionEligible: false,
+    promotionPolicy: "LLM output cannot promote PDF measure boxes; deterministic geometry/staff/barline/fingerprint evidence is required.",
+    triageStatus: result.triageStatus || result.status,
     confidence: result.confidence,
+    failureMode: result.failureMode,
     reason: result.reason,
     notes: result.notes,
-    measureBoxes: (result.measureBoxes || []).map(box => ({
-      ...box,
-      verifiedAt: new Date().toISOString(),
-      method: "ai-visual-assessment",
-      confidence: box.confidence || result.confidence,
-    })),
+    recommendedAction: result.recommendedAction || "human-review",
     rejectedCandidateIndexes: result.rejectedCandidates || [],
+    deterministicChecks: geometryResult?.checks ?? null,
     llmRaw: result.raw?.substring(0, 2000) || "",
   };
 }
 
 function loadCheckpoint(outDir) {
-  const checkpointPath = path.join(outDir, "ai-verification-checkpoint.json");
+  const checkpointPath = path.join(outDir, "ai-triage-checkpoint.json");
   if (existsSync(checkpointPath)) {
     return JSON.parse(readFileSync(checkpointPath, "utf8"));
   }
@@ -176,8 +178,32 @@ function loadCheckpoint(outDir) {
 }
 
 function saveCheckpoint(outDir, checkpoint) {
-  const checkpointPath = path.join(outDir, "ai-verification-checkpoint.json");
+  const checkpointPath = path.join(outDir, "ai-triage-checkpoint.json");
   writeFileSync(checkpointPath, JSON.stringify(checkpoint, null, 2));
+}
+
+function writeTriageArtifacts(outDir, triageEntries, results) {
+  const generatedAt = new Date().toISOString();
+  writeFileSync(
+    path.join(outDir, "ai-triage-entries.json"),
+    JSON.stringify({version: 1, type: "symbtr-layout-llm-triage", generatedAt, entries: triageEntries}, null, 2),
+  );
+
+  writeFileSync(
+    path.join(outDir, "ai-verification-entries.json"),
+    JSON.stringify({
+      version: 1,
+      type: "symbtr-layout-llm-verification-disabled",
+      generatedAt,
+      policy: "LLM triage cannot create verified measure boxes.",
+      entries: {},
+    }, null, 2),
+  );
+
+  writeFileSync(
+    path.join(outDir, "ai-triage-results.json"),
+    JSON.stringify({version: 1, generatedAt, results}, null, 2),
+  );
 }
 
 async function runBatchVerification({
@@ -198,11 +224,6 @@ async function runBatchVerification({
   if (catalogIds) {
     targetCatalogIds = catalogIds;
   } else {
-    const reviewFiles = readFileSync
-      ? [] // Will use readdir
-      : [];
-    // Since we can't easily readdir in ESM without import, let's use a glob approach
-    // For now, scan the directory
     const {readdirSync} = await import("node:fs");
     const files = readdirSync(reviewDir).filter(f => f.endsWith("-layout-review.svg"));
     targetCatalogIds = files.map(f => f.replace("-layout-review.svg", ""));
@@ -213,11 +234,12 @@ async function runBatchVerification({
   const checkpoint = loadCheckpoint(outDir);
 
   const results = [];
-  const verificationEntries = {};
+  const triageEntries = {};
 
-  console.log(`AI Layout Verification Batch: ${selectedIds.length} artifacts`);
+  console.log(`AI Layout Triage Batch: ${selectedIds.length} artifacts`);
   console.log(`Provider: ${provider}`);
   console.log(`Offset: ${offset}, Limit: ${limit}`);
+  console.log("Promotion: disabled; LLM output is triage-only");
   console.log("---");
 
   for (let i = 0; i < selectedIds.length; i++) {
@@ -244,25 +266,41 @@ async function runBatchVerification({
     const geoResult = validateReviewArtifactGeometry(svgContent);
     if (!geoResult.valid) {
       console.log(`[${globalIndex + 1}/${targetCatalogIds.length}] GEO-FAIL ${catalogId}`);
-      checkpoint.failed.push({catalogId, reason: "geometric-validation-failed", checks: geoResult.checks});
+      const result = {
+        catalogId,
+        status: "geometry-failure",
+        triageStatus: "geometry-failure",
+        confidence: "high",
+        failureMode: "staff-overlap-risk",
+        reason: "Deterministic geometry validation failed before LLM triage.",
+        recommendedAction: "human-review",
+        rejectedCandidates: [],
+        promotionEligible: false,
+      };
+      results.push(result);
+      const entry = buildTriageEntry(result, catalogId, layoutData, geoResult);
+      if (entry) triageEntries[catalogId] = entry;
+      checkpoint.completed.push(catalogId);
+      checkpoint.lastIndex = globalIndex;
       saveCheckpoint(outDir, checkpoint);
+      writeTriageArtifacts(outDir, triageEntries, results);
       continue;
     }
 
-    console.log(`[${globalIndex + 1}/${targetCatalogIds.length}] VERIFY ${catalogId}...`);
+    console.log(`[${globalIndex + 1}/${targetCatalogIds.length}] TRIAGE ${catalogId}...`);
     const startTime = Date.now();
     const result = await verifyArtifactWithLLM(svgPath, htmlPath, catalogId, {provider});
     const duration = Date.now() - startTime;
 
-    console.log(`  → ${result.status} (${result.confidence || 'n/a'}) in ${duration}ms`);
+    console.log(`  → ${result.triageStatus || result.status} (${result.confidence || 'n/a'}) in ${duration}ms`);
     if (result.reason) console.log(`  → reason: ${result.reason.substring(0, 80)}...`);
 
     results.push(result);
 
-    if (result.status === "verified" || result.status === "needs-review") {
-      const entry = buildVerificationEntry(result, catalogId, layoutData);
+    if (result.status === "triage-only") {
+      const entry = buildTriageEntry(result, catalogId, layoutData, geoResult);
       if (entry) {
-        verificationEntries[catalogId] = entry;
+        triageEntries[catalogId] = entry;
       }
       checkpoint.completed.push(catalogId);
     } else {
@@ -272,16 +310,7 @@ async function runBatchVerification({
     checkpoint.lastIndex = globalIndex;
     saveCheckpoint(outDir, checkpoint);
 
-    // Write incremental results
-    writeFileSync(
-      path.join(outDir, "ai-verification-entries.json"),
-      JSON.stringify({version: 1, generatedAt: new Date().toISOString(), entries: verificationEntries}, null, 2),
-    );
-
-    writeFileSync(
-      path.join(outDir, "ai-verification-results.json"),
-      JSON.stringify({version: 1, generatedAt: new Date().toISOString(), results}, null, 2),
-    );
+    writeTriageArtifacts(outDir, triageEntries, results);
 
     // Small delay between requests to avoid overwhelming the LLM
     if (i < selectedIds.length - 1) {
@@ -291,21 +320,23 @@ async function runBatchVerification({
 
   const summary = {
     total: selectedIds.length,
-    verified: results.filter(r => r.status === "verified").length,
-    needsReview: results.filter(r => r.status === "needs-review").length,
+    deterministicGateCandidates: results.filter(r => r.triageStatus === "deterministic-gate-candidate").length,
+    needsHumanReview: results.filter(r => r.triageStatus === "needs-human-review").length,
+    geometryFailures: results.filter(r => r.triageStatus === "geometry-failure").length,
+    llmUncertain: results.filter(r => r.triageStatus === "llm-uncertain").length,
     failed: results.filter(r => r.status === "llm-error" || r.status === "llm-parse-failed").length,
-    geometricRejected: checkpoint.failed.length,
+    promotedVerificationEntries: 0,
   };
 
   writeFileSync(
-    path.join(outDir, "ai-verification-summary.json"),
+    path.join(outDir, "ai-triage-summary.json"),
     JSON.stringify({version: 1, generatedAt: new Date().toISOString(), summary, checkpoint}, null, 2),
   );
 
-  console.log("\n=== AI Verification Summary ===");
+  console.log("\n=== AI Triage Summary ===");
   console.log(JSON.stringify(summary, null, 2));
 
-  return {summary, results, verificationEntries};
+  return {summary, results, triageEntries};
 }
 
 async function main() {
@@ -346,7 +377,7 @@ async function main() {
 }
 
 // Only run if this file is executed directly
-const isMain = process.argv[1] && import.meta.url.replace(/\\/g, "/") === `file://${process.argv[1].replace(/\\/g, "/")}`;
+const isMain = process.argv[1] && path.resolve(fileURLToPath(import.meta.url)) === path.resolve(process.argv[1]);
 if (isMain) {
   main().catch(error => {
     console.error(error);
@@ -354,4 +385,4 @@ if (isMain) {
   });
 }
 
-export {verifyArtifactWithLLM, buildVerificationEntry, runBatchVerification};
+export {verifyArtifactWithLLM, buildVerificationEntry, buildTriageEntry, runBatchVerification};

@@ -1,6 +1,5 @@
-import {mkdirSync, readFileSync, writeFileSync, existsSync, readdirSync} from "node:fs";
+import {readFileSync, existsSync, readdirSync} from "node:fs";
 import path from "node:path";
-import {fileURLToPath} from "node:url";
 
 /**
  * Visual regression test infrastructure for SymbTr PDF layout review artifacts.
@@ -10,8 +9,6 @@ import {fileURLToPath} from "node:url";
  * 3. Baseline screenshot comparison (Playwright-based, optional)
  * 4. HTML review page structure validation
  */
-
-const PROJECT_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..", "..");
 
 // Parse an SVG review artifact and extract geometric data
 export function parseReviewSvg(svgContent) {
@@ -74,7 +71,10 @@ export function validateCandidatesOverlapStaffRows(geometry, minOverlapPercent =
       issues.push({type: "no-staff-overlap", candidate: c});
     }
   }
-  return {valid: issues.length === 0, issues, overlapRate: issues.length === 0 ? 100 : ((geometry.candidates.length - issues.length) / geometry.candidates.length * 100).toFixed(1)};
+  const overlapRate = geometry.candidates.length === 0
+    ? 100
+    : Number(((geometry.candidates.length - issues.length) / geometry.candidates.length * 100).toFixed(1));
+  return {valid: issues.length === 0 && overlapRate >= minOverlapPercent, issues, overlapRate};
 }
 
 // Validate candidate density (no excessive candidates per staff band)
@@ -114,6 +114,152 @@ export function validateReviewArtifactGeometry(svgContent, options = {}) {
       staffOverlap: overlapCheck,
       density: densityCheck,
     },
+  };
+}
+
+function findStaffBandIndexForCandidate(candidate, staffBands) {
+  const cx = candidate.x + candidate.width / 2;
+  const cy = candidate.y + candidate.height / 2;
+  return staffBands.findIndex((band) => (
+    cx >= band.x &&
+    cx <= band.x + band.width &&
+    cy >= band.y &&
+    cy <= band.y + band.height
+  ));
+}
+
+function groupCandidatesByStaffBand(geometry) {
+  const rows = new Map();
+  for (const [candidateIndex, candidate] of geometry.candidates.entries()) {
+    const bandIndex = findStaffBandIndexForCandidate(candidate, geometry.staffBands);
+    if (bandIndex < 0) continue;
+    rows.set(bandIndex, [...(rows.get(bandIndex) ?? []), {...candidate, candidateIndex}]);
+  }
+  return rows;
+}
+
+export function validateDeterministicMeasureCandidateGate(svgContent, options = {}) {
+  const base = validateReviewArtifactGeometry(svgContent, options);
+  const {geometry} = base;
+  const fingerprint = options.candidateGeometryFingerprint ?? "";
+  const measureIndexes = Array.isArray(options.measureIndexes) ? options.measureIndexes : [];
+  const expectedMeasureCount = Number.isInteger(options.expectedMeasureCount)
+    ? options.expectedMeasureCount
+    : measureIndexes.length || null;
+  const edgeTolerance = Number(options.edgeTolerance ?? 1);
+  const neighborOverlapTolerance = Number(options.neighborOverlapTolerance ?? 0.5);
+  const neighborGapTolerance = Number(options.neighborGapTolerance ?? 2);
+  const requireCompleteStaffCoverage = options.requireCompleteStaffCoverage !== false;
+
+  const fingerprintCheck = {
+    valid: typeof fingerprint === "string" && fingerprint.trim().length > 0,
+    algorithm: options.fingerprintAlgorithm ?? null,
+    value: fingerprint,
+  };
+
+  const measureIndexIssues = [];
+  if (expectedMeasureCount !== null && expectedMeasureCount !== geometry.candidates.length) {
+    measureIndexIssues.push({
+      type: "measure-count-mismatch",
+      expected: expectedMeasureCount,
+      candidateCount: geometry.candidates.length,
+    });
+  }
+  for (const measureIndex of measureIndexes) {
+    if (!Number.isInteger(measureIndex) || measureIndex < 1) {
+      measureIndexIssues.push({type: "invalid-measure-index", measureIndex});
+    }
+  }
+
+  const neighborIssues = [];
+  const barlineIssues = [];
+  const rows = groupCandidatesByStaffBand(geometry);
+  for (const [bandIndex, candidates] of rows.entries()) {
+    const band = geometry.staffBands[bandIndex];
+    const sorted = candidates.sort((left, right) => left.x - right.x);
+    const first = sorted[0];
+    const last = sorted[sorted.length - 1];
+
+    if (requireCompleteStaffCoverage && Math.abs(first.x - band.x) > edgeTolerance) {
+      barlineIssues.push({type: "row-start-not-aligned", bandIndex, expectedX: band.x, actualX: first.x});
+    }
+    if (requireCompleteStaffCoverage && Math.abs((last.x + last.width) - (band.x + band.width)) > edgeTolerance) {
+      barlineIssues.push({
+        type: "row-end-not-aligned",
+        bandIndex,
+        expectedX: band.x + band.width,
+        actualX: last.x + last.width,
+      });
+    }
+
+    for (let index = 0; index < sorted.length - 1; index += 1) {
+      const current = sorted[index];
+      const next = sorted[index + 1];
+      const gap = next.x - (current.x + current.width);
+      if (gap < -neighborOverlapTolerance) {
+        neighborIssues.push({
+          type: "neighbor-overlap",
+          bandIndex,
+          leftCandidateIndex: current.candidateIndex,
+          rightCandidateIndex: next.candidateIndex,
+          overlap: Math.abs(gap),
+        });
+      } else if (gap > neighborGapTolerance) {
+        neighborIssues.push({
+          type: "neighbor-gap",
+          bandIndex,
+          leftCandidateIndex: current.candidateIndex,
+          rightCandidateIndex: next.candidateIndex,
+          gap,
+        });
+      }
+    }
+  }
+
+  const rowCoverageIssues = geometry.candidates.length > 0 && rows.size === 0
+    ? [{type: "no-candidates-assigned-to-staff"}]
+    : [];
+
+  const checks = {
+    ...base.checks,
+    fingerprint: fingerprintCheck,
+    measureIndex: {
+      valid: measureIndexIssues.length === 0,
+      expectedMeasureCount,
+      measureIndexCount: measureIndexes.length,
+      issues: measureIndexIssues,
+    },
+    rowCoverage: {
+      valid: rowCoverageIssues.length === 0,
+      checkedRowCount: rows.size,
+      issues: rowCoverageIssues,
+    },
+    neighborGeometry: {
+      valid: neighborIssues.length === 0,
+      issues: neighborIssues,
+    },
+    barlineAlignment: {
+      valid: barlineIssues.length === 0,
+      evidence: "candidate-rectangle edges aligned to staff-row bounds and neighboring candidate edges",
+      issues: barlineIssues,
+    },
+  };
+
+  const valid = (
+    base.valid &&
+    fingerprintCheck.valid &&
+    checks.measureIndex.valid &&
+    checks.rowCoverage.valid &&
+    checks.neighborGeometry.valid &&
+    checks.barlineAlignment.valid
+  );
+
+  return {
+    valid,
+    promotionEligible: valid,
+    policy: "Auto-pass requires page bounds, staff overlap, neighbor gap/overlap, barline edge alignment, current fingerprint and valid measureIndex evidence.",
+    geometry,
+    checks,
   };
 }
 
@@ -197,14 +343,16 @@ export function batchValidateReviewArtifacts(reviewDir, options = {}) {
   };
 }
 
-// Default export for testing
-export default {
+const visualRegression = {
   parseReviewSvg,
   validateCandidatesWithinPage,
   validateCandidatesOverlapStaffRows,
   validateCandidateDensity,
   validateReviewArtifactGeometry,
+  validateDeterministicMeasureCandidateGate,
   validateReviewHtmlStructure,
   compareSvgGeometry,
   batchValidateReviewArtifacts,
 };
+
+export default visualRegression;

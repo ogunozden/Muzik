@@ -2,9 +2,10 @@
 
 import {FormEvent, useCallback, useMemo, useState} from "react";
 import Link from "next/link";
-import {UnifiedLayout} from "@/components/layout/UnifiedLayout";
+import {UnifiedLayout} from "@/shared/ui/layout/UnifiedLayout";
 import {Button, Input} from "@/shared/ui";
 import {tokens} from "@/shared/tokens";
+import {CurationTabs} from "./CurationTabs";
 
 type OperationAction = "stage" | "map" | "sync" | "audit";
 
@@ -266,6 +267,7 @@ export function ReferencesOperationsDashboard({
     <UnifiedLayout>
       <div className={`min-h-screen ${tokens.colors.background.base}`}>
         <div className="mx-auto flex max-w-7xl flex-col gap-6 px-4 py-8 sm:px-6">
+          <CurationTabs />
           <header className="flex flex-col gap-4 border-b border-[var(--color-border)] pb-5 lg:flex-row lg:items-end lg:justify-between">
             <div>
               <p className={`text-xs font-semibold uppercase tracking-[0.12em] ${tokens.colors.text.secondary}`}>

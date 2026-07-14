@@ -1,0 +1,24 @@
+# Muzik tek-node self-host (F9). Serverless degil; kalici disk baglanir.
+services:
+  muzik:
+    build: .
+    ports:
+      - "4015:4015"
+    environment:
+      - NODE_ENV=production
+      - PORT=4015
+      - MUZIK_DB_PATH=/data/var/muzik.db
+      # AI script'leri opsiyonel; kullanilacaksa .env ile besle:
+      # - GOOGLE_GEMINI_API_KEY=
+    volumes:
+      # Runtime mutable durum (SQLite) — ADR 0001 Karar 3
+      - muzik-var:/data/var
+      # Pipeline artefactleri
+      - muzik-output:/data/output
+      # Lokal SymbTr korpusu (opsiyonel; host'ta varsa read-only bagla)
+      # - ./symb:/app/symb:ro
+    restart: unless-stopped
+
+volumes:
+  muzik-var:
+  muzik-output:

@@ -2,16 +2,17 @@
 
 import { useEffect, useState, memo } from "react";
 import { useTranslation } from "react-i18next";
-import { UnifiedLayout } from "@/components/layout/UnifiedLayout";
+import { UnifiedLayout } from "@/shared/ui/layout/UnifiedLayout";
 import { tokens } from "@/shared/tokens";
 import { Badge, Button, Card, CardBody, PageHeader, PageShell } from "@/shared/ui";
+import { LibraryTabs } from "@/features/library/LibraryTabs";
 import Link from "next/link";
 import dynamic from "next/dynamic";
 import { NotaEvent } from "@/types";
 
 // Dynamic import for VexFlow Viewer to prevent SSR issues
 const VexFlowViewer = dynamic(
-  () => import("@/components/organisms/VexFlowViewer").then((mod) => mod.VexFlowViewer),
+  () => import("@/shared/ui/organisms/VexFlowViewer").then((mod) => mod.VexFlowViewer),
   { ssr: false, loading: () => <div className="h-24 bg-gray-100 rounded animate-pulse" /> }
 );
 
@@ -82,6 +83,8 @@ function ArchivePage() {
           </Link>
           )}
         />
+
+        <LibraryTabs />
 
         {isLoading ? (
           <div className="flex justify-center p-12">

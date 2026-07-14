@@ -1,253 +1,62 @@
 "use client";
 
 import {useCallback, useEffect, useMemo, useRef, useState} from "react";
-import type {ReactNode} from "react";
-import {UnifiedLayout} from "@/components/layout/UnifiedLayout";
+import {UnifiedLayout} from "@/shared/ui/layout/UnifiedLayout";
 import {
   PIECE_LIBRARY,
-  createVisualMeasureSegments,
-  createDefaultVisualMap,
-  getActiveVisualMeasureSegment,
   getCurrentScoreEvent,
-  getVisualBeatPosition,
   parseSymbtrScore,
   type PieceDefinition,
   type PieceLayer,
   type PiecePercussionLayer,
-  type PieceScoreEvent,
-  type PieceUsulHit,
-  type PieceVisualStaffBand,
 } from "@/data/pieces/hicazkarPesrev";
+import {
+  createDefaultVisualMap,
+  createVisualMeasureSegments,
+  getActiveVisualMeasureSegment,
+  getVisualBeatPosition,
+  isExactVisualMap,
+} from "@/data/pieces/visual-map";
 import {playArrangement, stopAll, type InstrumentType, type PercussionSymbol} from "@/engines/ses/engine";
 import {USUL_DATA, getUsulBeatDuration} from "@/engines/usul/data";
-import {ENSTRUMAN_LIST, MELODIC_INSTRUMENTS, PERCUSSION_INSTRUMENTS} from "@/lib/centralized";
+import {ENSTRUMAN_LIST, MELODIC_INSTRUMENTS, PERCUSSION_INSTRUMENTS} from "@/lib/app-constants";
 import {tokens} from "@/shared/tokens";
-import {
-  SYMBTR_CATALOG_COUNT,
-  getSymbTrEntryById,
-  getSymbTrEntrySourceReferences,
-  searchSymbTrCatalog,
-  type SymbTrCatalogEntry,
-} from "@/data/symbtr/catalog";
-import {
-  getSymbTrPdfLayout,
-  getSymbTrPdfLayoutVerificationStatus,
-  getSymbTrVerifiedPdfMeasureBoxes,
-} from "@/data/symbtr/layout";
-import {getPieceExternalReferences} from "@/data/references/piece-external-references";
+import type {SymbTrCatalogEntry} from "@/data/symbtr/catalog";
+import {useSymbtrPieceBundle} from "@/features/studio/useSymbtrPieceBundle";
+import {useSymbtrCatalogSearch} from "@/features/studio/useSymbtrCatalogSearch";
 import {SourceSubmissionForm} from "@/features/references/SourceSubmissionForm";
-
-interface SampleSlotStatus {
-  category: "melodic" | "percussion";
-  instrumentId: string;
-  installed: boolean;
-  symbol: PercussionSymbol | null;
-}
-
-interface SampleApiResponse {
-  slots?: SampleSlotStatus[];
-}
-
-const DEFAULT_PIECE = PIECE_LIBRARY[0];
-const MIN_BPM = 40;
-const MAX_BPM = 180;
-const MELODIC_MIX_GAIN_CEILING = 0.34;
-const ADDED_MELODIC_LAYER_GAIN = 0.1;
-const VISUAL_GUIDE_TICKS = [0, 0.25, 0.5, 0.75, 1] as const;
-
-interface CustomPieceDraft {
-  title: string;
-  composer: string;
-  makam: string;
-  form: string;
-  catalogId: string;
-  scoreImages: CustomScoreImage[];
-}
-
-interface CustomScoreImage {
-  name: string;
-  size: number;
-  type: string;
-  url: string;
-}
-
-type DisplayUsulHit = Pick<PieceUsulHit, "beat" | "isAccent" | "syllable" | "timeValue"> & {
-  symbol: PercussionSymbol | "";
-};
-
-function clampBpm(value: number, fallbackBpm: number = DEFAULT_PIECE.bpm): number {
-  if (!Number.isFinite(value)) return fallbackBpm;
-  return Math.min(MAX_BPM, Math.max(MIN_BPM, Math.round(value)));
-}
-
-function getInstrumentLabel(instrumentId: InstrumentType): string {
-  const instrument = ENSTRUMAN_LIST.find((item) => item.id === instrumentId);
-  return instrument?.nameTr ?? instrumentId;
-}
-
-function makeLayerId(instrument: InstrumentType, existingIds: Set<string>): string {
-  const base = instrument.replace(/[^a-zA-Z0-9_-]/g, "-");
-  let candidate = base;
-  let index = 2;
-
-  while (existingIds.has(candidate)) {
-    candidate = `${base}-${index}`;
-    index += 1;
-  }
-
-  return candidate;
-}
-
-function formatBeatLabel(beat: number): string {
-  return Number.isInteger(beat) ? beat.toString() : beat.toFixed(1);
-}
-
-function hasMelodicSamples(slots: SampleSlotStatus[], instrument: InstrumentType): boolean {
-  return slots.some((slot) => slot.installed && slot.category === "melodic" && slot.instrumentId === instrument);
-}
-
-function hasPercussionSamples(
-  slots: SampleSlotStatus[],
-  instrument: InstrumentType,
-  requiredSymbols: readonly PercussionSymbol[],
-): boolean {
-  return requiredSymbols.every((symbol) =>
-    slots.some(
-      (slot) =>
-        slot.installed &&
-        slot.category === "percussion" &&
-        slot.instrumentId === instrument &&
-        slot.symbol === symbol,
-    ),
-  );
-}
-
-function formatTime(seconds: number): string {
-  const minutes = Math.floor(seconds / 60);
-  const rest = Math.floor(seconds % 60).toString().padStart(2, "0");
-  return `${minutes}:${rest}`;
-}
-
-function formatFrequency(frequency: number | null | undefined): string {
-  if (!frequency) return "Hazır";
-  return `${frequency.toFixed(2)} Hz`;
-}
-
-function isHttpUrl(value: string): boolean {
-  const trimmed = value.trim();
-  if (!trimmed) return false;
-
-  try {
-    const url = new URL(trimmed);
-    return url.protocol === "http:" || url.protocol === "https:";
-  } catch {
-    return false;
-  }
-}
-
-function makeVisualPieceSignature(title: string, images: readonly CustomScoreImage[]): string {
-  const imageKeys = images.map((image) => `${image.name}:${image.size}`).sort().join("|");
-  return `local-images:${title.toLocaleLowerCase("tr-TR")}:${imageKeys}`;
-}
-
-function clamp(value: number, min: number, max: number): number {
-  return Math.min(max, Math.max(min, value));
-}
-
-function getPlaybackEventPosition(eventCount: number, currentEventPosition: number, progressPercent: number): number {
-  if (eventCount <= 0) return -1;
-  if (currentEventPosition >= 0) return clamp(currentEventPosition, 0, eventCount - 1);
-  return clamp(Math.floor((progressPercent / 100) * eventCount), 0, eventCount - 1);
-}
-
-function estimateScorePageIndex(scorePageCount: number, totalBeats: number, currentBeat: number): number {
-  if (scorePageCount <= 0) return -1;
-  if (totalBeats <= 0 || currentBeat < 0) return 0;
-  return clamp(Math.floor((clamp(currentBeat, 0, totalBeats) / totalBeats) * scorePageCount), 0, scorePageCount - 1);
-}
-
-function estimateScorePageProgress(scorePageCount: number, totalBeats: number, currentBeat: number, pageIndex: number): number {
-  if (scorePageCount <= 0 || totalBeats <= 0 || currentBeat < 0 || pageIndex < 0) return 0;
-
-  const beatsPerPage = totalBeats / scorePageCount;
-  const pageStart = pageIndex * beatsPerPage;
-  const raw = ((clamp(currentBeat, 0, totalBeats) - pageStart) / Math.max(beatsPerPage, 1)) * 100;
-  return clamp(raw, 0, 100);
-}
-
-function getActiveVisualBand(
-  bands: readonly PieceVisualStaffBand[] | undefined,
-  currentBeat: number,
-): PieceVisualStaffBand | null {
-  if (!bands || bands.length === 0 || !Number.isFinite(currentBeat)) return null;
-
-  return (
-    bands.find((band) => currentBeat >= band.startBeat && currentBeat < band.endBeat) ??
-    bands.find((band) => currentBeat <= band.endBeat) ??
-    bands[bands.length - 1] ??
-    null
-  );
-}
-
-function formatCatalogSegment(value: string): string {
-  return value
-    .split(/[_\s]+/)
-    .filter(Boolean)
-    .map((part) => part.charAt(0).toLocaleUpperCase("tr-TR") + part.slice(1))
-    .join(" ");
-}
-
-function getCatalogEntryDisplay(entry: SymbTrCatalogEntry): string {
-  return [
-    formatCatalogSegment(entry.makam),
-    formatCatalogSegment(entry.form),
-    formatCatalogSegment(entry.usul),
-    formatCatalogSegment(entry.title),
-    formatCatalogSegment(entry.composer),
-  ].join(" · ");
-}
-
-function getMelodicGainScale(layers: PieceLayer[]): number {
-  const totalGain = layers.reduce((total, layer) => total + layer.gain, 0);
-  if (totalGain <= MELODIC_MIX_GAIN_CEILING) return 1;
-  return MELODIC_MIX_GAIN_CEILING / totalGain;
-}
-
-function assertParseableSymbtrScore(raw: string, bpm: number): void {
-  if (parseSymbtrScore(raw, bpm).length === 0) {
-    throw new Error("SymbTr skoru okunamadı: nota olayı bulunamadı.");
-  }
-}
-
-function getSectionAt(events: PieceScoreEvent[], elapsedSeconds: number): string {
-  let section = events.find((event) => event.section)?.section ?? "1. HANE";
-
-  for (const event of events) {
-    if (event.startTime > elapsedSeconds) break;
-    if (event.section) section = event.section;
-  }
-
-  return section;
-}
-
-function Panel({className = "", children}: {className?: string; children: ReactNode}) {
-  return (
-    <div className={`${tokens.colors.background.surface} ${tokens.colors.border.base} rounded-md border p-4 ${className}`}>
-      {children}
-    </div>
-  );
-}
-
-function Pill({tone = "primary", children}: {tone?: "primary" | "secondary" | "success"; children: ReactNode}) {
-  const toneClass =
-    tone === "success"
-      ? "bg-[#388E3C] text-white"
-      : tone === "secondary"
-        ? "border border-[var(--color-border-base)] text-[var(--color-text-primary)]"
-        : "bg-[var(--color-primary-500)] text-white";
-
-  return <span className={`${toneClass} inline-flex rounded-full px-2.5 py-1 text-sm`}>{children}</span>;
-}
+import {Panel, Pill} from "./parts/FollowPrimitives";
+import {TempoControl} from "./parts/TempoControl";
+import {FollowCuePanel} from "./parts/FollowCuePanel";
+import {FollowLayersPanel} from "./parts/FollowLayersPanel";
+import {FollowPieceAddPanel} from "./parts/FollowPieceAddPanel";
+import {StudioTabs} from "@/features/studio/StudioTabs";
+import {
+  ADDED_MELODIC_LAYER_GAIN,
+  DEFAULT_PIECE,
+  assertParseableSymbtrScore,
+  clamp,
+  clampBpm,
+  estimateScorePageIndex,
+  estimateScorePageProgress,
+  formatBeatLabel,
+  formatCatalogSegment,
+  formatTime,
+  getActiveVisualBand,
+  getInstrumentLabel,
+  getMelodicGainScale,
+  getPlaybackEventPosition,
+  getSectionAt,
+  hasMelodicSamples,
+  hasPercussionSamples,
+  isHttpUrl,
+  makeLayerId,
+  makeVisualPieceSignature,
+  type CustomPieceDraft,
+  type DisplayUsulHit,
+  type SampleApiResponse,
+  type SampleSlotStatus,
+} from "./parts/follow-helpers";
 
 export default function EserTakipPage() {
   const [pieceLibrary, setPieceLibrary] = useState<PieceDefinition[]>(() => [...PIECE_LIBRARY]);
@@ -323,6 +132,11 @@ export default function EserTakipPage() {
     ? clamp(((currentBeat - activeVisualBand.startBeat) / Math.max(activeVisualBand.endBeat - activeVisualBand.startBeat, 1)) * 100, 0, 100)
     : currentScorePageProgress;
   const activeVisualBeatPosition = activeVisualBand ? getVisualBeatPosition(activeVisualBand, currentBeat) : null;
+  const activeVisualNoteLabel = currentEvent
+    ? currentEvent.isRest
+      ? "Es"
+      : currentEvent.solfegePitch ?? currentEvent.sourcePitch
+    : null;
   const visualMeasureSegments = useMemo(
     () => createVisualMeasureSegments(events, visualStaffBands ?? []),
     [events, visualStaffBands],
@@ -337,34 +151,27 @@ export default function EserTakipPage() {
           Math.min(events.length, visibleScoreStart + 24),
         );
   const currentSection = getSectionAt(events, playbackPosition);
+  const pieceBundle = useSymbtrPieceBundle(selectedPiece.symbtrCatalogId ?? null);
+  const catalogSearch = useSymbtrCatalogSearch(catalogQuery);
+
   const referenceSources = (
     selectedPiece.symbtrCatalogId
-      ? getPieceExternalReferences(selectedPiece.symbtrCatalogId)
+      ? pieceBundle.data?.externalReferences ?? []
       : selectedPiece.referenceSources ?? []
   ).filter((source) => isHttpUrl(source.url));
-  const selectedSymbTrEntry = selectedPiece.symbtrCatalogId
-    ? getSymbTrEntryById(selectedPiece.symbtrCatalogId)
-    : null;
-  const selectedSymbTrSourceReferences = selectedSymbTrEntry
-    ? getSymbTrEntrySourceReferences(selectedSymbTrEntry)
-    : [];
-  const selectedSymbTrPdfLayout = selectedPiece.symbtrCatalogId
-    ? getSymbTrPdfLayout(selectedPiece.symbtrCatalogId)
-    : null;
-  const selectedSymbTrPdfLayoutVerificationStatus = selectedPiece.symbtrCatalogId
-    ? getSymbTrPdfLayoutVerificationStatus(selectedPiece.symbtrCatalogId)
-    : null;
-  const selectedSymbTrVerifiedPdfMeasureBoxes = selectedPiece.symbtrCatalogId
-    ? getSymbTrVerifiedPdfMeasureBoxes(selectedPiece.symbtrCatalogId)
-    : [];
+  const selectedSymbTrSourceReferences = pieceBundle.data?.sourceReferences ?? [];
+  const selectedSymbTrPdfLayout = pieceBundle.data?.layout ?? null;
+  const selectedSymbTrPdfLayoutVerificationStatus =
+    pieceBundle.data?.verificationStatus ?? null;
+  const visualTrackingIsExact = isExactVisualMap(selectedPiece.visualMap);
+  const selectedSymbTrVerifiedPdfMeasureBoxes =
+    pieceBundle.data?.verifiedMeasureBoxes ?? [];
   const activeVerifiedPdfMeasureBox =
     selectedSymbTrVerifiedPdfMeasureBoxes.find(
       (box) => box.measureIndex === activeVisualMeasureSegment?.measureIndex,
     ) ?? null;
-  const catalogResults = useMemo(
-    () => searchSymbTrCatalog(catalogQuery, catalogQuery.trim() ? 8 : 0),
-    [catalogQuery],
-  );
+  const catalogResults = catalogSearch.data?.entries ?? [];
+  const symbtrCatalogCount = pieceBundle.data?.catalogCount ?? catalogSearch.data?.catalogCount ?? null;
 
   const layerSampleMessages = useMemo(() => {
     if (!sampleSlots) return [];
@@ -535,7 +342,7 @@ export default function EserTakipPage() {
       referenceSources: [],
       scorePageUrls: customPieceDraft.scoreImages.map((image) => image.url),
       visualMap: createDefaultVisualMap(customPieceDraft.scoreImages.length, {
-        notes: "Kullanıcı görselleri için varsayılan satır bantları otomatik üretildi; kesin ölçü hizalaması sonradan düzenlenebilir.",
+        notes: "Kullanıcı görselleri için varsayılan satır bantları otomatik üretildi; nota başı ve ölçü hizalaması doğrulanmış değildir.",
       }),
       melodicLayers: selectedPiece.melodicLayers,
       percussionLayers: selectedPiece.percussionLayers,
@@ -743,6 +550,7 @@ export default function EserTakipPage() {
 
   return (
     <UnifiedLayout>
+      <StudioTabs />
       <div className={`mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8 ${tokens.colors.background.base}`}>
         <div className="mb-6 flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
           <div>
@@ -875,7 +683,7 @@ export default function EserTakipPage() {
                         <div className="sticky top-0 z-10 flex items-center justify-between gap-3 border-b border-[var(--color-border-subtle)] bg-white/95 px-3 py-2 text-xs backdrop-blur">
                           <span className="font-medium text-[var(--color-text-primary)]">{index + 1}. sayfa</span>
                           <span className={activePage ? "text-[var(--color-primary-700)]" : tokens.colors.text.secondary}>
-                            {activePage ? "aktif takip" : "bekliyor"}
+                            {activePage ? (visualTrackingIsExact ? "aktif takip" : "yaklaşık takip") : "bekliyor"}
                           </span>
                         </div>
                         {activePage && (
@@ -889,30 +697,24 @@ export default function EserTakipPage() {
                         <div className="relative mx-auto max-w-[980px]">
                           {pageBands.map((band) => {
                             const activeBand = activeVisualBand?.id === band.id;
+                            const activeLaneTopPercent = band.topPercent + band.heightPercent * 0.12;
+                            const activeLaneHeightPercent = Math.max(3, Math.min(6, band.heightPercent * 0.42));
                             return (
                               <div
                                 key={band.id}
                                 aria-hidden="true"
-                                className={`pointer-events-none absolute z-10 rounded-sm border transition-colors ${
+                                className={`pointer-events-none absolute z-10 rounded-sm transition-colors ${
                                   activeBand
-                                    ? "border-[var(--color-primary-500)] bg-[var(--color-primary-100)]/35 shadow-[0_0_0_1px_var(--color-primary-300)]"
-                                    : "border-transparent"
+                                    ? "bg-[var(--color-primary-100)]/40 shadow-[0_0_0_1px_var(--color-primary-300)]"
+                                    : "bg-transparent"
                                 }`}
                                 style={{
                                   left: `${band.leftPercent}%`,
                                   width: `${band.widthPercent}%`,
-                                  top: `${band.topPercent}%`,
-                                  height: `${band.heightPercent}%`,
+                                  top: `${activeBand ? activeLaneTopPercent : band.topPercent}%`,
+                                  height: `${activeBand ? activeLaneHeightPercent : band.heightPercent}%`,
                                 }}
-                              >
-                                {activeBand && VISUAL_GUIDE_TICKS.map((tick) => (
-                                  <span
-                                    key={tick}
-                                    className="absolute top-0 h-full w-px bg-[var(--color-primary-300)]/55"
-                                    style={{left: `${tick * 100}%`}}
-                                  />
-                                ))}
-                              </div>
+                              />
                             );
                           })}
                           {pageMeasureSegments.map((segment) => {
@@ -923,7 +725,7 @@ export default function EserTakipPage() {
                                 aria-hidden="true"
                                 className={`pointer-events-none absolute z-20 rounded-sm border-l transition-colors ${
                                   activeMeasure
-                                    ? "border-l-[var(--color-primary-700)] bg-[var(--color-primary-200)]/25"
+                                    ? "border-l-[var(--color-primary-700)]"
                                     : "border-l-[var(--color-primary-300)]/70 bg-transparent"
                                 }`}
                                 style={{
@@ -936,18 +738,28 @@ export default function EserTakipPage() {
                             );
                           })}
                           {activePage && activeVisualBand && activeVisualBeatPosition && (
+                            (() => {
+                              const activeLaneTopPercent = activeVisualBand.topPercent + activeVisualBand.heightPercent * 0.12;
+                              const activeLaneHeightPercent = Math.max(3, Math.min(6, activeVisualBand.heightPercent * 0.42));
+
+                              return (
                             <div
-                              aria-hidden="true"
-                              className="pointer-events-none absolute z-20 -translate-x-1/2"
+                              role={activeVisualNoteLabel ? "img" : undefined}
+                              aria-label={activeVisualNoteLabel ? `${visualTrackingIsExact ? "Aktif nota" : "Yaklaşık takip"} görsel işareti: ${activeVisualNoteLabel}` : undefined}
+                              className="pointer-events-none absolute z-30 -translate-x-1/2"
                               style={{
                                 left: `${activeVisualBeatPosition.xPercent}%`,
-                                top: `${activeVisualBand.topPercent}%`,
-                                height: `${activeVisualBand.heightPercent}%`,
+                                top: `${activeLaneTopPercent}%`,
+                                height: `${activeLaneHeightPercent}%`,
                               }}
                             >
                               <span className="block h-full w-0.5 rounded-full bg-[var(--color-primary-700)] shadow-[0_0_0_2px_rgba(255,255,255,0.92)]" />
-                              <span className="absolute -top-1 left-1/2 size-2 -translate-x-1/2 rounded-full bg-[var(--color-primary-700)] shadow-[0_0_0_2px_rgba(255,255,255,0.92)]" />
+                              <span className="absolute left-1/2 top-1/2 size-4 -translate-x-1/2 -translate-y-1/2 rounded-full bg-white/20 shadow-[0_0_0_2px_var(--color-primary-700),0_0_0_4px_rgba(255,255,255,0.82)]">
+                                <span className="absolute left-1/2 top-1/2 size-1.5 -translate-x-1/2 -translate-y-1/2 rounded-full bg-[var(--color-primary-700)]" />
+                              </span>
                             </div>
+                              );
+                            })()
                           )}
                           {/* eslint-disable-next-line @next/next/no-img-element -- Keep the source notation image untouched; optimization can alter remote GIF rendering. */}
                           <img
@@ -972,7 +784,12 @@ export default function EserTakipPage() {
                   <div>
                     <p className={`text-xs font-semibold uppercase ${tokens.colors.text.secondary}`}>Sayfa eşleme</p>
                     <p className={`text-sm ${tokens.colors.text.secondary}`}>
-                      Vuruş ilerlemesi görsel sayfa ve satır bantlarına bağlanır; aktif satır kaynak notada işaretlenir.
+                      {visualTrackingIsExact
+                        ? "Vuruş ilerlemesi doğrulanmış nota/ölçü anchor verisine bağlanır."
+                        : "Vuruş ilerlemesi yalnız yaklaşık sayfa ve satır bantlarına bağlanır; nota başı doğrulanmış değildir."}
+                    </p>
+                    <p className={`mt-1 text-xs ${tokens.colors.text.secondary}`}>
+                      Aktif satır ve Yakın notalar göstergeleri exact anchor yoksa yaklaşık takip olarak işaretlenir.
                     </p>
                   </div>
                   <Pill tone={currentEvent ? "success" : "secondary"}>
@@ -981,12 +798,12 @@ export default function EserTakipPage() {
                 </div>
                 {activeVisualBand && (
                   <div className="mt-3 rounded-md border border-[var(--color-primary-200)] bg-[var(--color-primary-50)] px-3 py-2 text-sm text-[var(--color-primary-700)]">
-                    Aktif satır: {activeVisualBand.label} · {formatBeatLabel(activeVisualBand.startBeat + 1)}-{formatBeatLabel(activeVisualBand.endBeat)}. vuruş
+                    {visualTrackingIsExact ? "Aktif satır" : "Yaklaşık satır"}: {activeVisualBand.label} · {formatBeatLabel(activeVisualBand.startBeat + 1)}-{formatBeatLabel(activeVisualBand.endBeat)}. vuruş
                   </div>
                 )}
                 {activeVisualBeatPosition && (
                   <div className="mt-2 rounded-md border border-[var(--color-border-subtle)] bg-white px-3 py-2 text-sm text-[var(--color-text-secondary)]">
-                    Takip noktası: {activeVisualBeatPosition.label} · x {Math.round(activeVisualBeatPosition.xPercent)}% / y {Math.round(activeVisualBeatPosition.yPercent)}% · satır %{Math.round(activeVisualBeatPosition.progressPercent)}
+                    {visualTrackingIsExact ? "Takip noktası" : "Yaklaşık takip noktası"}: {activeVisualBeatPosition.label} · x {Math.round(activeVisualBeatPosition.xPercent)}% / y {Math.round(activeVisualBeatPosition.yPercent)}% · satır %{Math.round(activeVisualBeatPosition.progressPercent)}
                   </div>
                 )}
                 {activeVisualMeasureSegment && (
@@ -1119,360 +936,68 @@ export default function EserTakipPage() {
           </Panel>
 
           <div className="flex flex-col gap-4">
-            <Panel>
-                <p className={`text-xs font-semibold uppercase ${tokens.colors.text.secondary}`}>Takip</p>
-                <div className="mt-3 flex items-end justify-between gap-4">
-                  <div>
-                    <p className={`text-2xl font-bold ${tokens.colors.text.primary}`}>{currentSection}</p>
-                    <p className="mt-2 flex items-center gap-3 text-4xl font-bold text-[var(--color-primary-700)]" aria-live="polite">
-                      <span className="text-5xl leading-none" aria-hidden="true">
-                        {currentEvent?.notationSymbol ?? "♩"}
-                      </span>
-                      <span>{currentEvent?.isRest ? "Es" : currentEvent?.solfegePitch ?? "Hazır"}</span>
-                    </p>
-                    <p className={`mt-2 text-sm ${tokens.colors.text.secondary}`}>
-                      {currentEvent
-                        ? `${currentEvent.index}. olay · ${(currentEvent.startBeat + 1).toFixed(currentEvent.startBeat % 1 === 0 ? 0 : 2)}. vuruş`
-                        : "Parça çalmaya hazır"} · {formatTime(playbackPosition)} / {formatTime(totalDuration)}
-                    </p>
-                    <p className={`mt-1 text-xs ${tokens.colors.text.secondary}`}>
-                      {activeVisualPageIndex >= 0
-                        ? `Görsel ${activeVisualPageIndex + 1}. sayfa / ${selectedPiece.scorePageUrls.length} · satır ilerleme %${Math.round(activeVisualBandProgress)} · ölçü ${activeVisualMeasureSegment?.measureIndex ?? "-"}`
-                        : "Görsel sayfa eklenmedi"}
-                    </p>
-                    <p className={`mt-1 text-xs ${tokens.colors.text.secondary}`}>
-                      {usul
-                        ? `Usul ${usul.name} · ${selectedPiece.meter} · darp ${activeUsulHit?.syllable ?? activeUsulHit?.symbol ?? "-"} (${formatBeatLabel(currentCycleBeat)}. vuruş)`
-                        : "Usul eşleşmesi yok"}
-                    </p>
-                    {currentEvent && (
-                      <p className={`mt-1 text-xs ${tokens.colors.text.secondary}`}>
-                        SymbTr {currentEvent.sourcePitch} · Batı perde {currentEvent.playbackPitch ?? "Sustain"}
-                      </p>
-                    )}
-                    <p className={`mt-1 text-xs ${tokens.colors.text.secondary}`}>
-                      {currentEvent?.koma53 !== null && currentEvent?.koma53 !== undefined
-                        ? `SymbTr Koma53 ${currentEvent.koma53} · Çalım Koma53 ${currentPlaybackKoma53} · ${formatFrequency(currentEvent.targetFrequency)}`
-                        : "Koma53 bekleniyor"}
-                    </p>
-                  </div>
-                  <Pill tone={isPlaying ? "success" : "secondary"}>{isPlaying ? "Çalıyor" : "Hazır"}</Pill>
-                </div>
+            <FollowCuePanel
+              currentSection={currentSection}
+              currentEvent={currentEvent}
+              playbackPosition={playbackPosition}
+              totalDuration={totalDuration}
+              activeVisualPageIndex={activeVisualPageIndex}
+              scorePageCount={selectedPiece.scorePageUrls.length}
+              visualTrackingIsExact={visualTrackingIsExact}
+              activeVisualBandProgress={activeVisualBandProgress}
+              activeMeasureIndex={activeVisualMeasureSegment?.measureIndex ?? null}
+              usulName={usul?.name ?? null}
+              meter={selectedPiece.meter}
+              activeUsulHit={activeUsulHit}
+              currentCycleBeat={currentCycleBeat}
+              currentPlaybackKoma53={currentPlaybackKoma53}
+              isPlaying={isPlaying}
+              progress={progress}
+              totalBeats={totalBeats}
+              currentBeat={currentBeat}
+            />
 
-                <div className="mt-5 h-2 overflow-hidden rounded-full bg-[var(--color-bg-muted)]">
-                  <div
-                    className="h-full rounded-full bg-[var(--color-primary-500)] transition-[width]"
-                    style={{width: `${progress}%`}}
-                  />
-                </div>
+            <TempoControl bpm={bpm} onBpmChange={handleBpmChange} />
 
-                <div className="mt-5 grid grid-cols-4 gap-2">
-                  {Array.from({length: Math.max(1, Math.ceil(totalBeats / 28))}).map((_, index) => {
-                    const start = index * 28;
-                    const active = currentBeat >= start && currentBeat < start + 28;
+            <FollowPieceAddPanel
+              pieceLibrary={pieceLibrary}
+              selectedPieceId={selectedPiece.id}
+              selectedPieceMakam={selectedPiece.makam}
+              onSelectPiece={selectPiece}
+              symbtrCatalogCount={symbtrCatalogCount}
+              customPieceDraft={customPieceDraft}
+              catalogQuery={catalogQuery}
+              onCatalogQueryChange={setCatalogQuery}
+              catalogSearchIsLoading={catalogSearch.isLoading}
+              catalogSearchError={catalogSearch.error}
+              catalogResults={catalogResults}
+              onApplyCatalogEntry={applyCatalogEntry}
+              onUpdateDraftField={updateCustomPieceDraft}
+              onScoreImagesSelected={handleCustomScoreImages}
+              onRemoveScoreImage={removeCustomScoreImage}
+              onAddPiece={addCustomPiece}
+              isAddingPiece={isAddingPiece}
+              pieceMessage={pieceMessage}
+            />
 
-                    return (
-                      <div
-                        key={index}
-                        className={`rounded-md border px-3 py-2 text-sm ${
-                          active
-                            ? "border-[var(--color-primary-500)] bg-[var(--color-primary-50)] text-[var(--color-primary-700)]"
-                            : "border-[var(--color-border-subtle)] text-[var(--color-text-secondary)]"
-                        }`}
-                      >
-                        {index + 1}. devir
-                      </div>
-                    );
-                  })}
-                </div>
-            </Panel>
-
-            <Panel>
-                <div className="flex items-start justify-between gap-4">
-                  <div>
-                    <p className={`text-xs font-semibold uppercase ${tokens.colors.text.secondary}`}>Hız</p>
-                    <p className={`mt-1 text-sm ${tokens.colors.text.secondary}`}>
-                      Tempo değişince nota süreleri ve vuruş çizgisi birlikte yeniden hesaplanır.
-                    </p>
-                  </div>
-                  <Pill>{bpm} BPM</Pill>
-                </div>
-                <input
-                  aria-label="BPM"
-                  type="range"
-                  min={MIN_BPM}
-                  max={MAX_BPM}
-                  step={1}
-                  value={bpm}
-                  onChange={(event) => handleBpmChange(Number(event.target.value))}
-                  className="mt-4 w-full accent-[var(--color-primary-500)]"
-                />
-                <div className="mt-3 flex items-center gap-3">
-                  <input
-                    aria-label="BPM değeri"
-                    type="number"
-                    min={MIN_BPM}
-                    max={MAX_BPM}
-                    value={bpm}
-                    onChange={(event) => handleBpmChange(Number(event.target.value))}
-                    className="w-24 rounded-md border border-[var(--color-border-default)] bg-white px-3 py-2 text-sm text-[var(--color-text-primary)]"
-                  />
-                  <span className={`text-xs ${tokens.colors.text.secondary}`}>{MIN_BPM}-{MAX_BPM} BPM</span>
-                </div>
-            </Panel>
-
-            <Panel>
-                <div className="flex items-start justify-between gap-4">
-                  <div>
-                    <p className={`text-xs font-semibold uppercase ${tokens.colors.text.secondary}`}>Parça ekle</p>
-                    <p className={`mt-1 text-sm ${tokens.colors.text.secondary}`}>
-                      Bu bölüm takip edilecek eserin nota görsellerini ekler; TXT bağlantısı gerekmez.
-                    </p>
-                  </div>
-                  <Pill tone="secondary">{pieceLibrary.length} parça</Pill>
-                </div>
-
-                <label className="mt-3 grid gap-1 text-sm">
-                  <span className={tokens.colors.text.secondary}>Aktif parça</span>
-                  <select
-                    aria-label="Aktif parça seç"
-                    value={selectedPiece.id}
-                    onChange={(event) => selectPiece(event.target.value)}
-                    className="rounded-md border border-[var(--color-border-default)] bg-white px-3 py-2 text-sm"
-                  >
-                    {pieceLibrary.map((libraryPiece) => (
-                      <option key={libraryPiece.id} value={libraryPiece.id}>
-                        {libraryPiece.displayTitle} · {libraryPiece.composer}
-                      </option>
-                    ))}
-                  </select>
-                </label>
-
-                <div className="mt-4 rounded-md border border-[var(--color-border-subtle)] bg-[var(--color-bg-base)] p-3">
-                  <div className="flex items-start justify-between gap-3">
-                    <div>
-                      <p className="text-sm font-medium text-[var(--color-text-primary)]">SymbTr katalog</p>
-                      <p className={`mt-1 text-xs ${tokens.colors.text.secondary}`}>
-                        {SYMBTR_CATALOG_COUNT} yerel eser; sonuçlar kanonik ID ile tekilleştirilir.
-                      </p>
-                    </div>
-                    {customPieceDraft.catalogId && <Pill tone="success">Eşlendi</Pill>}
-                  </div>
-                  <label className="mt-3 grid gap-1 text-sm">
-                    <span className={tokens.colors.text.secondary}>Katalog ara</span>
-                    <input
-                      aria-label="SymbTr katalog ara"
-                      value={catalogQuery}
-                      onChange={(event) => setCatalogQuery(event.target.value)}
-                      className="rounded-md border border-[var(--color-border-default)] bg-white px-3 py-2 text-sm"
-                      placeholder="Makam, usul, eser adı veya besteci"
-                    />
-                  </label>
-                  {catalogResults.length > 0 && (
-                    <div className="mt-3 grid gap-2">
-                      {catalogResults.map((entry) => (
-                        <button
-                          key={entry.id}
-                          type="button"
-                          aria-label={`Katalogdan doldur ${entry.id}`}
-                          onClick={() => applyCatalogEntry(entry)}
-                          className="rounded-md border border-[var(--color-border-subtle)] bg-white px-3 py-2 text-left text-sm hover:border-[var(--color-primary-300)]"
-                        >
-                          <span className="block font-medium text-[var(--color-text-primary)]">{getCatalogEntryDisplay(entry)}</span>
-                          <span className={`mt-1 block text-xs ${tokens.colors.text.secondary}`}>
-                            {entry.id} · {entry.formats.join(", ")}
-                          </span>
-                        </button>
-                      ))}
-                    </div>
-                  )}
-                </div>
-
-                <div className="mt-4 grid grid-cols-2 gap-3">
-                  <label className="grid gap-1 text-sm">
-                    <span className={tokens.colors.text.secondary}>Eser adı</span>
-                    <input
-                      aria-label="Eser adı"
-                      value={customPieceDraft.title}
-                      onChange={(event) => updateCustomPieceDraft("title", event.target.value)}
-                      className="rounded-md border border-[var(--color-border-default)] bg-white px-3 py-2 text-sm"
-                      placeholder="Örn. Rast Peşrev"
-                    />
-                  </label>
-                  <label className="grid gap-1 text-sm">
-                    <span className={tokens.colors.text.secondary}>Besteci</span>
-                    <input
-                      aria-label="Besteci"
-                      value={customPieceDraft.composer}
-                      onChange={(event) => updateCustomPieceDraft("composer", event.target.value)}
-                      className="rounded-md border border-[var(--color-border-default)] bg-white px-3 py-2 text-sm"
-                      placeholder="Opsiyonel"
-                    />
-                  </label>
-                  <label className="grid gap-1 text-sm">
-                    <span className={tokens.colors.text.secondary}>Makam</span>
-                    <input
-                      aria-label="Makam"
-                      value={customPieceDraft.makam}
-                      onChange={(event) => updateCustomPieceDraft("makam", event.target.value)}
-                      className="rounded-md border border-[var(--color-border-default)] bg-white px-3 py-2 text-sm"
-                      placeholder={selectedPiece.makam}
-                    />
-                  </label>
-                  <label className="grid gap-1 text-sm">
-                    <span className={tokens.colors.text.secondary}>Form</span>
-                    <input
-                      aria-label="Form"
-                      value={customPieceDraft.form}
-                      onChange={(event) => updateCustomPieceDraft("form", event.target.value)}
-                      className="rounded-md border border-[var(--color-border-default)] bg-white px-3 py-2 text-sm"
-                      placeholder="Eser"
-                    />
-                  </label>
-                  <label className="col-span-2 grid gap-1 text-sm">
-                    <span className={tokens.colors.text.secondary}>Nota görselleri</span>
-                    <input
-                      aria-label="Nota görselleri"
-                      type="file"
-                      accept="image/png,image/jpeg,image/webp,image/gif"
-                      multiple
-                      onChange={(event) => {
-                        handleCustomScoreImages(event.currentTarget.files);
-                        event.currentTarget.value = "";
-                      }}
-                      className="rounded-md border border-[var(--color-border-default)] bg-white px-3 py-2 text-sm"
-                    />
-                  </label>
-                </div>
-                {customPieceDraft.scoreImages.length > 0 && (
-                  <div className="mt-3 grid gap-2">
-                    {customPieceDraft.scoreImages.map((image) => (
-                      <div
-                        key={`${image.name}-${image.size}`}
-                        className="flex items-center justify-between gap-3 rounded-md border border-[var(--color-border-subtle)] bg-white px-3 py-2 text-sm"
-                      >
-                        <span className="min-w-0 truncate text-[var(--color-text-primary)]">{image.name}</span>
-                        <button
-                          type="button"
-                          onClick={() => removeCustomScoreImage(image.name, image.size)}
-                          className="shrink-0 text-[var(--color-error)]"
-                        >
-                          Kaldır
-                        </button>
-                      </div>
-                    ))}
-                  </div>
-                )}
-                <button
-                  type="button"
-                  onClick={addCustomPiece}
-                  disabled={isAddingPiece}
-                  className="mt-4 w-full rounded-md bg-[var(--color-primary-500)] px-4 py-2 text-sm font-medium text-white hover:bg-[var(--color-primary-600)]"
-                >
-                  {isAddingPiece ? "Ekleniyor" : "Parçayı ekle ve seç"}
-                </button>
-                {pieceMessage && (
-                  <div className="mt-3 rounded-md border border-[var(--color-border-subtle)] bg-[var(--color-bg-base)] px-3 py-2 text-sm text-[var(--color-text-secondary)]">
-                    {pieceMessage}
-                  </div>
-                )}
-            </Panel>
-
-            <Panel>
-                <p className={`text-xs font-semibold uppercase ${tokens.colors.text.secondary}`}>Çalınan katmanlar</p>
-                <p className={`mt-1 text-sm ${tokens.colors.text.secondary}`}>
-                  Aynı enstrüman ikinci kez eklenmez; ezgi katmanları çalarken toplam gain {MELODIC_MIX_GAIN_CEILING.toFixed(2)} tavanına göre dengelenir. Vurmalı çalgı tek katman olarak değiştirilir.
-                </p>
-                <div className="mt-3 grid gap-3">
-                  <div className="flex gap-2">
-                    <select
-                      aria-label="Melodik enstrüman ekle"
-                      value={layerInstrument}
-                      onChange={(event) => setLayerInstrument(event.target.value as InstrumentType)}
-                      className="min-w-0 flex-1 rounded-md border border-[var(--color-border-default)] bg-white px-3 py-2 text-sm"
-                    >
-                      {melodicInstrumentItems.map((instrument) => (
-                        <option key={instrument.id} value={instrument.id}>{instrument.label}</option>
-                      ))}
-                    </select>
-                    <button
-                      type="button"
-                      onClick={addMelodicLayer}
-                      className="rounded-md bg-[var(--color-primary-500)] px-3 py-2 text-sm font-medium text-white hover:bg-[var(--color-primary-600)]"
-                    >
-                      Ekle
-                    </button>
-                  </div>
-
-                  <div className="flex gap-2">
-                    <select
-                      aria-label="Vurmalı enstrüman ekle"
-                      value={percussionInstrument}
-                      onChange={(event) => setPercussionInstrument(event.target.value as InstrumentType)}
-                      className="min-w-0 flex-1 rounded-md border border-[var(--color-border-default)] bg-white px-3 py-2 text-sm"
-                    >
-                      {percussionInstrumentItems.map((instrument) => (
-                        <option key={instrument.id} value={instrument.id}>{instrument.label}</option>
-                      ))}
-                    </select>
-                    <button
-                      type="button"
-                      onClick={addPercussionLayer}
-                      className="rounded-md border border-[var(--color-border-default)] px-3 py-2 text-sm font-medium text-[var(--color-text-primary)] hover:bg-[var(--color-bg-muted)]"
-                    >
-                      Değiştir
-                    </button>
-                  </div>
-                </div>
-
-                {layerMessage && (
-                  <div className="mt-3 rounded-md border border-[var(--color-border-subtle)] bg-[var(--color-bg-base)] px-3 py-2 text-sm text-[var(--color-text-secondary)]">
-                    {layerMessage}
-                  </div>
-                )}
-
-                <div className="mt-4 space-y-2">
-                  {melodicLayers.map((layer) => (
-                    <div key={layer.id} className="flex items-center justify-between gap-3 rounded-md border border-[var(--color-border-subtle)] px-3 py-2 text-sm">
-                      <span>{layer.label} · ezgi</span>
-                      <button
-                        type="button"
-                        onClick={() => removeMelodicLayer(layer.id)}
-                        disabled={melodicLayers.length <= 1}
-                        className="text-[var(--color-error)] disabled:opacity-40"
-                      >
-                        Kaldır
-                      </button>
-                    </div>
-                  ))}
-                  {percussionLayers.map((layer) => (
-                    <div key={layer.id} className="flex items-center justify-between gap-3 rounded-md border border-[var(--color-border-subtle)] px-3 py-2 text-sm">
-                      <span>{layer.label} · vuruş</span>
-                      <button
-                        type="button"
-                        onClick={() => removePercussionLayer(layer.id)}
-                        className="text-[var(--color-error)]"
-                      >
-                        Kaldır
-                      </button>
-                    </div>
-                  ))}
-                </div>
-
-                {layerSampleMessages.length > 0 && (
-                  <div className="mt-4 space-y-1 text-sm text-[var(--color-text-secondary)]">
-                    {layerSampleMessages.map((message) => (
-                      <p key={message}>{message}</p>
-                    ))}
-                  </div>
-                )}
-
-                {(sampleError || scoreError) && (
-                  <p className="mt-4 text-sm text-[var(--color-error)]">
-                    {sampleError ?? scoreError}
-                  </p>
-                )}
-            </Panel>
+            <FollowLayersPanel
+              layerInstrument={layerInstrument}
+              onLayerInstrumentChange={setLayerInstrument}
+              percussionInstrument={percussionInstrument}
+              onPercussionInstrumentChange={setPercussionInstrument}
+              melodicInstrumentItems={melodicInstrumentItems}
+              percussionInstrumentItems={percussionInstrumentItems}
+              onAddMelodicLayer={addMelodicLayer}
+              onChangePercussionLayer={addPercussionLayer}
+              onRemoveMelodicLayer={removeMelodicLayer}
+              onRemovePercussionLayer={removePercussionLayer}
+              melodicLayers={melodicLayers}
+              percussionLayers={percussionLayers}
+              layerMessage={layerMessage}
+              layerSampleMessages={layerSampleMessages}
+              hasSampleSlots={Boolean(sampleSlots)}
+              errorMessage={sampleError ?? scoreError ?? null}
+            />
 
             {sectionMarkers.length > 0 && (
               <Panel>

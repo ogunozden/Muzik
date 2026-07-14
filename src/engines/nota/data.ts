@@ -1,5 +1,5 @@
 import {Nota} from "@/types";
-import {PIANO_CONFIG, NOTE_NAMES} from "@/lib/constants";
+import {PIANO_CONFIG, NOTE_NAMES} from "@/lib/app-constants";
 
 export const NOTE_DATA: Nota[] = [
   {midinetoName: "C", englishName: "C", frequency: 261.63, octave: 4, midiNumber: 60},

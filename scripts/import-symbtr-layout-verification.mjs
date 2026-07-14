@@ -175,8 +175,6 @@ const incomingEntries = normalizeEntries(incoming);
 
 validateIncomingEntries({incomingEntries, layoutData});
 
-const existingBoxCount = Object.values(isObject(current.entries) ? current.entries : {})
-  .reduce((total, entry) => total + (Array.isArray(entry.measureBoxes) ? entry.measureBoxes.length : 0), 0);
 const newBoxCount = Object.values(incomingEntries)
   .reduce((total, entry) => total + (Array.isArray(entry.measureBoxes) ? entry.measureBoxes.length : 0), 0);
 

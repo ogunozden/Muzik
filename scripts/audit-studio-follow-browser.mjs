@@ -291,6 +291,12 @@ const AUDIT_EXPRESSION = String.raw`
   const catalogSearch = labelControl("Katalog ara");
   if (catalogSearch) {
     setInputValue(catalogSearch, "aldanma dunya");
+    // Katalog aramasi debounce'lu (250ms) + async API dilimidir; sabit kisa
+    // bekleme yarisa acikti. Sonuc karti gorunene dek (maks ~6s) poll et.
+    for (let attempt = 0; attempt < 40; attempt += 1) {
+      await new Promise((resolve) => setTimeout(resolve, 150));
+      if (hasText("Aldanma Dunya") || has("aldanma_dunya")) break;
+    }
   }
   await new Promise((resolve) => setTimeout(resolve, 300));
 

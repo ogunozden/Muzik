@@ -1,31 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
-import path from "node:path";
-import { readJson, writeJson } from "@/lib/json-store";
 import { parseScoreUpdatePayload } from "@/core/application/score-payload";
-
-const DATA_DIR = path.join(process.cwd(), "src", "data", "scores");
-const FILE = path.join(DATA_DIR, "scores.json");
-
-export interface ScoreRecord {
-  id: string;
-  title: string;
-  composer: string | null;
-  makam: string;
-  usul: string;
-  form: string | null;
-  notesData: unknown[];
-  userId: null;
-  createdAt: string;
-  updatedAt: string;
-}
-
-async function readScores(): Promise<ScoreRecord[]> {
-  return (await readJson<ScoreRecord[]>(FILE)) ?? [];
-}
-
-async function writeScores(scores: ScoreRecord[]): Promise<void> {
-  await writeJson(FILE, scores);
-}
+import {
+  deleteScore,
+  getScoreById,
+  updateScore,
+} from "@/core/infrastructure/scores/score-repository";
+export type { ScoreRecord } from "@/core/infrastructure/scores/score-repository";
 
 export async function GET(
   _request: NextRequest,
@@ -33,8 +13,7 @@ export async function GET(
 ) {
   try {
     const { id } = await params;
-    const allScores = await readScores();
-    const score = allScores.find((s) => s.id === id);
+    const score = getScoreById(id);
 
     if (!score) {
       return NextResponse.json({ error: "Eser bulunamadı" }, { status: 404 });
@@ -63,22 +42,13 @@ export async function PUT(
       return NextResponse.json({ error: payload.error }, { status: 400 });
     }
 
-    const allScores = await readScores();
-    const index = allScores.findIndex((s) => s.id === id);
+    const score = updateScore(id, payload.value);
 
-    if (index === -1) {
+    if (!score) {
       return NextResponse.json({ error: "Eser bulunamadı" }, { status: 404 });
     }
 
-    allScores[index] = {
-      ...allScores[index],
-      ...payload.value,
-      updatedAt: new Date().toISOString(),
-    };
-
-    await writeScores(allScores);
-
-    return NextResponse.json({ score: allScores[index] });
+    return NextResponse.json({ score });
   } catch (error) {
     console.error("[API] Score update error:", error);
     return NextResponse.json(
@@ -94,15 +64,11 @@ export async function DELETE(
 ) {
   try {
     const { id } = await params;
-    const allScores = await readScores();
-    const index = allScores.findIndex((s) => s.id === id);
+    const deleted = deleteScore(id);
 
-    if (index === -1) {
+    if (!deleted) {
       return NextResponse.json({ error: "Eser bulunamadı" }, { status: 404 });
     }
-
-    const [deleted] = allScores.splice(index, 1);
-    await writeScores(allScores);
 
     return NextResponse.json({ message: "Eser silindi", score: deleted });
   } catch (error) {

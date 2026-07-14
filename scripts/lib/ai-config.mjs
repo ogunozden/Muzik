@@ -6,14 +6,18 @@ import {existsSync} from "node:fs";
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const PROJECT_ROOT = resolve(__dirname, "..", "..");
 
-// Load .env from project root
-const envPath = resolve(PROJECT_ROOT, ".env");
-if (existsSync(envPath)) {
-  loadEnvFile(envPath);
+// Load local script env files without exposing their values.
+for (const envFile of [".env", ".env.local"]) {
+  const envPath = resolve(PROJECT_ROOT, envFile);
+  if (existsSync(envPath)) {
+    loadEnvFile(envPath);
+  }
 }
 
 export function getConfig(providerOverride) {
   const provider = providerOverride || process.env.AI_PROVIDER || "gemini-flash";
+  const groundingMaxPrompts = Number(process.env.GEMINI_GROUNDING_MAX_PROMPTS_PER_RUN ?? 10);
+  const groundingDailySoftLimit = Number(process.env.GEMINI_GROUNDING_DAILY_SOFT_LIMIT ?? 20);
 
   const configs = {
     "gemini-flash": {
@@ -23,7 +27,9 @@ export function getConfig(providerOverride) {
       temperature: 0.1,
       maxTokens: 8192,
       timeout: 60000,
-      freeTier: true,      // 4K RPM, Unlimited RPD, $0
+      grounding: false,
+      minIntervalMs: 1000,
+      limitPolicy: "Model quotas are provider-managed; scripts must not assume unlimited free use.",
     },
     "gemini-pro": {
       provider: "gemini",
@@ -32,7 +38,23 @@ export function getConfig(providerOverride) {
       temperature: 0.1,
       maxTokens: 8192,
       timeout: 120000,
-      freeTier: false,     // billing gerekli
+      grounding: false,
+      minIntervalMs: 1000,
+      limitPolicy: "Use only when an explicit batch budget is set.",
+    },
+    "gemini-grounded": {
+      provider: "gemini",
+      apiKey: process.env.GOOGLE_GEMINI_API_KEY,
+      model: process.env.GEMINI_GROUNDING_MODEL || "gemini-2.5-flash",
+      temperature: 0.1,
+      maxTokens: 8192,
+      timeout: 120000,
+      grounding: true,
+      minIntervalMs: Number(process.env.GEMINI_GROUNDING_MIN_INTERVAL_MS ?? 2500),
+      maxPromptsPerRun: Number.isFinite(groundingMaxPrompts) ? Math.max(0, groundingMaxPrompts) : 25,
+      dailySoftLimit: Number.isFinite(groundingDailySoftLimit) ? Math.max(0, groundingDailySoftLimit) : 450,
+      usagePath: "output/ai-usage/gemini-grounding-usage.json",
+      limitPolicy: "Grounding calls are capped per run and per local-day soft limit; search results stay suggestions until validated.",
     },
     "gemini-3.5-flash": {
       provider: "gemini",
@@ -41,7 +63,9 @@ export function getConfig(providerOverride) {
       temperature: 0.1,
       maxTokens: 8192,
       timeout: 120000,
-      freeTier: true,      // 1K RPM, 10K RPD, $0
+      grounding: false,
+      minIntervalMs: 1000,
+      limitPolicy: "Preview/new model quotas can change; scripts must use explicit limits.",
     },
     ollama: {
       provider: "ollama",

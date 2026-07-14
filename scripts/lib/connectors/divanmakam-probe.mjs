@@ -72,7 +72,7 @@ export async function searchDivanMakam(query, timeoutMs) {
   }
 }
 
-export async function verifyDivanMakamGroup({group, provider, checkedAt, timeoutMs=8000, maxResponseBytes=262144, rows=3, cache, rateLimitState, respectRateLimit, acceptedThreshold=80}) {
+export async function verifyDivanMakamGroup({group, provider, checkedAt, timeoutMs=8000, rows=3, cache, acceptedThreshold=80}) {
   const query = `site:divanmakam.com "${group.title}" "${group.composer}"`;
   const cacheKey = `${group.catalogId}:${provider.id}:${query}`;
   const cached = cache?.entries?.[cacheKey];

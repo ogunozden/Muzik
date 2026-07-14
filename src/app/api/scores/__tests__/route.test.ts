@@ -1,48 +1,42 @@
-import { beforeEach, describe, expect, it, vi } from "vitest";
-import type { NextRequest } from "next/server";
-import { GET, POST } from "../route";
+import {afterAll, beforeEach, describe, expect, it} from "vitest";
+import os from "node:os";
+import path from "node:path";
+import fs from "node:fs";
+import type {NextRequest} from "next/server";
+import {resetDatabaseForTests} from "@/core/infrastructure/persistence/database";
 
-vi.mock("@/lib/json-store", () => {
-  let store: unknown[] = [];
-  return {
-    readJson: vi.fn(async () => store),
-    writeJson: vi.fn(async (_path: string, data: unknown) => {
-      store = data as unknown[];
-    }),
-    generateId: vi.fn(() => "mock-uuid-12345"),
-  };
-});
+const DB_PATH = path.join(os.tmpdir(), `muzik-scores-test-${process.pid}.db`);
+process.env.MUZIK_DB_PATH = DB_PATH;
 
-const sampleScore = {
-  id: "mock-uuid-12345",
-  title: "Nihavend Peşrev",
-  composer: null,
-  makam: "nihavend",
-  usul: "duyek",
-  form: null,
-  notesData: [{pitch: "C4", duration: 0.5, velocity: 100, startTime: 0}],
-  userId: null,
-  createdAt: expect.any(String),
-  updatedAt: expect.any(String),
-};
+import {GET, POST} from "../route";
+
+function cleanDatabase(): void {
+  resetDatabaseForTests();
+  for (const suffix of ["", "-wal", "-shm"]) {
+    try {
+      fs.rmSync(DB_PATH + suffix);
+    } catch {
+      // dosya yoksa sorun degil
+    }
+  }
+}
 
 describe("/api/scores route", () => {
-  beforeEach(() => {
-    vi.clearAllMocks();
-  });
+  beforeEach(cleanDatabase);
+  afterAll(cleanDatabase);
 
   it("returns scores with the archive response shape", async () => {
     const response = await GET();
     const body = await response.json();
 
     expect(response.status).toBe(200);
-    expect(body).toEqual({ scores: [] });
+    expect(body).toEqual({scores: []});
   });
 
   it("rejects create requests with missing required fields", async () => {
     const request = new Request("http://localhost/api/scores", {
       method: "POST",
-      body: JSON.stringify({ title: "Eksik eser" }),
+      body: JSON.stringify({title: "Eksik eser"}),
     }) as NextRequest;
 
     const response = await POST(request);
@@ -56,9 +50,9 @@ describe("/api/scores route", () => {
     const request = new Request("http://localhost/api/scores", {
       method: "POST",
       body: JSON.stringify({
-        title: sampleScore.title,
-        makam: sampleScore.makam,
-        usul: sampleScore.usul,
+        title: "Nihavend Peşrev",
+        makam: "nihavend",
+        usul: "duyek",
         notesData: [{pitch: "C4", duration: 0}],
       }),
     }) as NextRequest;
@@ -92,8 +86,29 @@ describe("/api/scores route", () => {
       usul: "duyek",
       userId: null,
     });
-    expect(body.score.id).toBe("mock-uuid-12345");
+    expect(typeof body.score.id).toBe("string");
+    expect(body.score.id.length).toBeGreaterThan(0);
     expect(body.score.createdAt).toEqual(expect.any(String));
     expect(body.score.updatedAt).toEqual(expect.any(String));
+  });
+
+  it("persists created scores so a subsequent GET returns them", async () => {
+    const request = new Request("http://localhost/api/scores", {
+      method: "POST",
+      body: JSON.stringify({
+        title: "Rast Peşrev",
+        makam: "rast",
+        usul: "duyek",
+        notesData: [{pitch: "C4", duration: 0.5, startTime: 0}],
+      }),
+    }) as NextRequest;
+
+    await POST(request);
+    const response = await GET();
+    const body = await response.json();
+
+    expect(response.status).toBe(200);
+    expect(body.scores).toHaveLength(1);
+    expect(body.scores[0]).toMatchObject({title: "Rast Peşrev", makam: "rast"});
   });
 });

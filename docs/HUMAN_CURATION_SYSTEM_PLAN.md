@@ -10,14 +10,35 @@ modele indirgenmiştir.
 Yeni model:
 
 - sistem kaynakları derin analizle bulur;
-- güçlü eşleşmeleri parça ekranına `auto-attached` olarak iliştirir;
-- kullanıcı uygun bulmadığını kaldırır, siler, düzeltir, notlar veya öne alır;
+- Gemini/Search ve benzeri araştırma katmanları kaynakları önce
+  `auto-suggested` öneri olarak üretir;
+- yalnız validator'dan geçmiş accepted kaynaklar mevcut `auto-attached`
+  manifestine iliştirilebilir;
+- kullanıcı öneriyi silebilir, ekleyebilir, alternatif önerebilir, yorumlayabilir
+  veya doğrulama/itiraz sinyali verebilir;
 - her kullanıcı aksiyonu append-only event log olarak saklanır;
+- terminal karar event log'u filtre, rollback ve community-verified talep
+  eventlerini destekler;
+- terminal feedback eventleri terminal karar manifestindeki `catalogId` ile
+  doğrulanır, alternatif URL yalnız HTTPS olabilir, rollback hedef event'i
+  mevcut olmalı ve aynı event ikinci kez rollback edilemez;
+- feedback manifest yazımı lock dosyası ve atomik temp-file rename ile yapılır;
 - bu log daha sonra mapping, kaynak güven puanı, filtre ve raporları
-  iyileştirmek için kullanılır;
+  iyileştirmek için kullanılır, ama tek başına doğruluk kabul edilmez;
 - medya indirme kapsam dışıdır;
 - YouTube, PDF ve güvenli kaynak sayfaları inline preview/embed olarak
   gösterilebilir.
+
+2026-06-04 güvenlik kararı:
+
+- `auto-suggested`: LLM/search adayı; accepted değildir.
+- `user-attached`: kullanıcı tarafından eklenen aday; metadata/validator bekler.
+- `community-verified`: validator, metadata ve tekrar eden kullanıcı kanıtıyla
+  doğrulanmış kaynak.
+- `disputed`, `user-removed`, `rejected`, `deferred`: ürün ve raporlamada ayrı
+  tutulur.
+- `rolled_back`: hatalı kullanıcı/review sinyalini geri alır; önceki event'i
+  işaretler ama accepted kaynak veya PDF verified manifestine yazmaz.
 
 ## Mevcut Kanıt
 
@@ -26,15 +47,18 @@ Yerel proje kanıtları:
 - `npm run guardrails:architecture` başarılı.
 - `npm run typecheck` başarılı.
 - `npm run lint` başarılı.
-- `npm run test:run` başarılı: 29 test dosyası, 250 test.
+- `npm run test:run` başarılı: 68 test dosyası, 448 test.
 - `npm run audit:security` başarılı: 0 moderate+ vulnerability.
-- `npm run guardrails:layout` başarılı: 14 route, mobil ve desktop viewport.
+- `npm run guardrails:layout` başarılı: 15 route, mobil ve desktop viewport.
 - `npm run audit:external-references` başarılı; ancak policy metni hâlâ eski
   "No media is downloaded or embedded" kararını raporluyor.
 - SymbTr katalog coverage'i: 3000 / 3000.
 - Resmi SymbTr metadata coverage'i: 3000 / 3000.
 - Kürasyonlu harici kaynak coverage'i: 22 / 3000.
-- Eksik harici kaynak coverage'i: 2978.
+- Eksik harici kaynak coverage'i: 2978, terminal karar coverage'i 2978 / 2978.
+- Terminal feedback UI: `/references/curation` durum/arama/feedback tipi
+  filtresi, yorum, alternatif, doğrulama, community-verified talep, ret ve
+  rollback eventleri.
 - Accepted bulk candidate: 7.
 - Mevcut curation decision: 5.
 
@@ -44,8 +68,9 @@ Yerel proje kanıtları:
    Kaynaklar task merkezli değil, eser/parça ana başlığı altında yönetilir.
 
 2. **Otomatik iliştir, kullanıcı ayıklar**
-   Sistem yüksek güvenli kaynakları bekletmez; ekranda kullanılabilir hale
-   getirir. Kullanıcı yanlışları temizler.
+   Sistem search/LLM kaynaklarını doğrulanmış gibi iliştirmez. Önce
+   `auto-suggested` olarak görünür kılar; validator'dan geçen accepted kaynaklar
+   mevcut `auto-attached` yoluna girebilir.
 
 3. **Feedback üründür**
    Kaldırma, silme, not, düzeltme ve öncelik değişiklikleri öğrenme verisidir.
@@ -88,7 +113,7 @@ statik route'lar da ön yüzde görünür tutulur; bu plan için karar:
 
 ### `AutoAttachedReference`
 
-Sistemin parça ekranına otomatik iliştirdiği kaynak.
+Accepted-source validator'ından geçmiş, parça ekranına iliştirilebilen kaynak.
 
 - `catalogId`
 - `sourceId`
@@ -102,6 +127,42 @@ Sistemin parça ekranına otomatik iliştirdiği kaynak.
 - `conflicts`
 - `attachedAt`
 - `matcherVersion`
+
+### `SourceSuggestion`
+
+Search/Gemini veya kullanıcı sinyaliyle oluşan ama henüz accepted olmayan kaynak
+adayı.
+
+- `catalogId`
+- `sourceId`
+- `suggestionId`
+- `url`
+- `normalizedIdentity`
+- `status`: `auto-suggested`, `user-attached`, `community-verified`,
+  `disputed`, `user-removed`, `rejected`, `deferred`
+- `title`
+- `sourceProvider`
+- `profileId`
+- `provider`
+- `confidence`
+- `reason`
+- `conflicts`
+- `validationErrors`
+- `checkedAt`
+- `weakLabelOnly: true`
+- `acceptedEligible: false`
+- `directAutoAttach: false`
+- `mediaDownload: false`
+
+### `SourceSuggestionEvent`
+
+Öneri ve kullanıcı feedback'i için append-only weak-label kayıt.
+
+- `eventType`: `source_suggested`, `source_added`, `source_removed`,
+  `alternate_proposed`, `comment_added`, `verified`, `disputed`, `rejected`,
+  `rolled_back`
+- `weakLabel: true`
+- `labelPolicy`: feedback'in tek başına doğruluk sağlamadığını açıklar.
 
 ### `SourceFeedbackEvent`
 

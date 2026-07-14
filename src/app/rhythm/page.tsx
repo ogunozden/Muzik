@@ -7,12 +7,12 @@
 import {useCallback, useEffect, useRef, useState} from "react";
 import {useTranslation} from "react-i18next";
 import {LabeledSelect, LabeledSlider, PageHeader, PageShell, PageSurface, UsulPanel} from "@/shared/ui";
-import {UnifiedLayout} from "@/components/layout/UnifiedLayout";
+import {UnifiedLayout} from "@/shared/ui/layout/UnifiedLayout";
 import {USUL_DATA, getUsulBeatDuration} from "@/engines/usul/data";
 import type {InstrumentType} from "@/engines/ses/engine";
 import {initAudio, playRhythm, stopAll} from "@/engines/ses/engine";
 import {useEditorStore} from "@/store/editorStore";
-import {ENSTRUMAN_LIST, PERCUSSION_INSTRUMENTS} from "@/lib/centralized";
+import {ENSTRUMAN_LIST, PERCUSSION_INSTRUMENTS} from "@/lib/app-constants";
 
 export default function UsulPage() {
   const {t, i18n} = useTranslation();

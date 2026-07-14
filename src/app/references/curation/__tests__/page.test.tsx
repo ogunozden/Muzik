@@ -3,7 +3,7 @@ import type {ReactNode} from "react";
 import {afterEach, beforeEach, describe, expect, it, vi} from "vitest";
 import {ReferencesCurationDashboard} from "@/features/references/ReferencesCurationDashboard";
 
-vi.mock("@/components/layout/UnifiedLayout", () => ({
+vi.mock("@/shared/ui/layout/UnifiedLayout", () => ({
   UnifiedLayout: ({children}: {children: ReactNode}) => <main>{children}</main>,
 }));
 
@@ -157,6 +157,48 @@ const stateFixture = {
       validationGateCount: 6,
       validationErrorCount: 0,
       targetScript: "npm run verify:external-source-intake",
+    },
+    sourceTerminalDecisions: {
+      artifactPath: "output/prod-closure/source-terminal-decisions.json",
+      generatedAt: "2026-06-04T19:22:58.715Z",
+      terminalDecisionGroupCount: 2978,
+      disputedCount: 1919,
+      verifiedUnavailableCount: 984,
+      deferredCount: 75,
+      directAutoAttachCount: 0,
+      mediaDownloadCount: 0,
+      statusCounts: {
+        disputed: 1919,
+        "verified-unavailable": 984,
+        deferred: 75,
+      },
+      visibleEntries: [
+        {
+          catalogId,
+          status: "disputed",
+          reason: "Provider evidence exists but metadata is incomplete or ambiguous; no accepted source is created.",
+          providerResultCount: 5,
+          importValidationRequired: true,
+          sourceUrl: "https://archive.org/details/example",
+        },
+      ],
+      feedbackArtifactPath: "output/prod-closure/source-terminal-feedback-events.json",
+      feedbackEventCount: 1,
+      feedbackActiveEventCount: 1,
+      feedbackRolledBackEventCount: 0,
+      feedbackEventTypeCounts: {comment_added: 1},
+      feedbackEvents: [
+        {
+          eventId: "terminal-feedback-1",
+          catalogId,
+          eventType: "comment_added",
+          reason: "fixture-comment",
+          createdAt: "2026-06-04T19:22:58.715Z",
+          weakLabel: true,
+        },
+      ],
+      allowedEventTypes: ["comment_added", "alternate_proposed", "verified", "community_verified_requested", "disputed", "rejected", "rolled_back"],
+      policy: "Terminal decisions are not accepted sources. User feedback is weak-label evidence until source intake validation passes.",
     },
     symbtrLayoutVerificationManifest: {
       summaryPath: "output/symbtr-layout-review/layout-verification-summary.json",
@@ -392,6 +434,8 @@ function mockFetch() {
               }
           : body.action === "candidate-import"
             ? {dryRun: true, addedCandidateCount: 1, skippedDuplicateCount: 0}
+            : body.action === "source-terminal-feedback"
+              ? {eventCount: 2, activeEventCount: 2, rolledBackEventCount: 0}
             : {feedbackEvents: 1};
 
       return new Response(
@@ -444,6 +488,15 @@ describe("ReferencesCurationPage", () => {
     expect(screen.getByLabelText("Artifact durum")).toBeDefined();
     expect(screen.getByText("Coverage summary")).toBeDefined();
     expect(screen.getByRole("heading", {name: "Prod-cycle audit"})).toBeDefined();
+    expect(screen.getByRole("heading", {name: "Terminal kaynak kararları"})).toBeDefined();
+    expect(screen.getAllByText("output/prod-closure/source-terminal-decisions.json").length).toBeGreaterThan(0);
+    expect(screen.getAllByText("output/prod-closure/source-terminal-feedback-events.json").length).toBeGreaterThan(0);
+    expect(screen.getAllByText(/1\.919 disputed/).length).toBeGreaterThan(0);
+    expect(screen.getByLabelText("Terminal ara")).toBeDefined();
+    expect(screen.getByLabelText("Terminal durum")).toBeDefined();
+    expect(screen.getByLabelText("Feedback tipi")).toBeDefined();
+    expect(screen.getAllByText("comment_added").length).toBeGreaterThan(0);
+    expect(screen.getByRole("button", {name: "Rollback"})).toBeDefined();
     expect(screen.getByText("Prod-cycle audit summary")).toBeDefined();
     expect(screen.getAllByText(/prod-cycle-summary\.json/).length).toBeGreaterThan(0);
     expect(screen.getAllByText(/npm run audit:prod-cycle/).length).toBeGreaterThan(0);
@@ -500,6 +553,60 @@ describe("ReferencesCurationPage", () => {
     fireEvent.change(screen.getByLabelText("Artifact ara"), {target: {value: ""}});
     fireEvent.change(screen.getByLabelText("Artifact durum"), {target: {value: "all"}});
     fireEvent.change(screen.getByLabelText("Artifact kategori"), {target: {value: "all"}});
+
+    fireEvent.change(screen.getByLabelText("Terminal durum"), {target: {value: "verified-unavailable"}});
+    expect(screen.getAllByText("Kayıt yok.").length).toBeGreaterThan(0);
+    fireEvent.change(screen.getByLabelText("Terminal durum"), {target: {value: "all"}});
+    fireEvent.change(screen.getByLabelText("Terminal ara"), {target: {value: "archive.org"}});
+    expect(screen.getByText("https://archive.org/details/example")).toBeDefined();
+    fireEvent.change(screen.getByLabelText("Terminal ara"), {target: {value: ""}});
+    fireEvent.change(screen.getByLabelText("Feedback tipi"), {target: {value: "verified"}});
+    expect(screen.getAllByText("Kayıt yok.").length).toBeGreaterThan(0);
+    fireEvent.change(screen.getByLabelText("Feedback tipi"), {target: {value: "all"}});
+
+    fireEvent.click(screen.getByRole("button", {name: "Yorum"}));
+    await waitFor(() => expect(fetchMock.mock.calls.some(([, init]) => (
+      init?.method === "POST" &&
+      JSON.parse(String(init.body)).action === "source-terminal-feedback"
+    ))).toBe(true));
+    const terminalFeedbackCall = fetchMock.mock.calls.find(([, init]) => (
+      init?.method === "POST" &&
+      JSON.parse(String(init.body)).action === "source-terminal-feedback"
+    ));
+    expect(JSON.parse(String(terminalFeedbackCall?.[1]?.body))).toEqual(
+      expect.objectContaining({
+        action: "source-terminal-feedback",
+        sourceTerminalFeedback: expect.objectContaining({
+          catalogId,
+          eventType: "comment_added",
+        }),
+      }),
+    );
+
+    fireEvent.click(screen.getByRole("button", {name: "Community"}));
+    await waitFor(() => expect(fetchMock.mock.calls.some(([, init]) => (
+      init?.method === "POST" &&
+      JSON.parse(String(init.body)).sourceTerminalFeedback?.eventType === "community_verified_requested"
+    ))).toBe(true));
+
+    fireEvent.click(screen.getByRole("button", {name: "Rollback"}));
+    await waitFor(() => expect(fetchMock.mock.calls.some(([, init]) => (
+      init?.method === "POST" &&
+      JSON.parse(String(init.body)).sourceTerminalFeedback?.eventType === "rolled_back"
+    ))).toBe(true));
+    const rollbackCall = fetchMock.mock.calls.find(([, init]) => (
+      init?.method === "POST" &&
+      JSON.parse(String(init.body)).sourceTerminalFeedback?.eventType === "rolled_back"
+    ));
+    expect(JSON.parse(String(rollbackCall?.[1]?.body))).toEqual(
+      expect.objectContaining({
+        sourceTerminalFeedback: expect.objectContaining({
+          catalogId,
+          eventType: "rolled_back",
+          previousEventId: "terminal-feedback-1",
+        }),
+      }),
+    );
 
     fireEvent.change(screen.getByLabelText("Besteci"), {target: {value: "Ali Rifat Cagatay"}});
     fireEvent.change(screen.getByLabelText("Grup durum"), {target: {value: "conflict"}});
@@ -721,10 +828,11 @@ describe("ReferencesCurationPage", () => {
     await screen.findByRole("heading", {name: "Kaynak kürasyonu"});
 
     expect(screen.getByText(/Read-only batch snapshot/)).toBeDefined();
-    expect(screen.getByText("2.978")).toBeDefined();
+    expect(screen.getAllByText("2.978").length).toBeGreaterThan(0);
     expect(screen.getByText(/14\.890 queue/)).toBeDefined();
     expect(screen.getAllByText(catalogId).length).toBeGreaterThan(0);
     expect(screen.getByRole("heading", {name: "Aday review grupları"})).toBeDefined();
+    expect(screen.getByRole("heading", {name: "Terminal kaynak kararları"})).toBeDefined();
     expect(screen.getByRole("heading", {name: "Sıradaki kaynak backlog batch listesi"})).toBeDefined();
     expect(fetchMock).not.toHaveBeenCalled();
   });

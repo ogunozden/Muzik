@@ -4,7 +4,7 @@ import {afterEach, beforeEach, describe, expect, it, vi} from "vitest";
 import {ReferencesCurationDetail} from "@/features/references/ReferencesCurationDetail";
 import ReferencesCurationDetailPage from "../page";
 
-vi.mock("@/components/layout/UnifiedLayout", () => ({
+vi.mock("@/shared/ui/layout/UnifiedLayout", () => ({
   UnifiedLayout: ({children}: {children: ReactNode}) => <main>{children}</main>,
 }));
 

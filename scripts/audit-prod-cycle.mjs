@@ -295,10 +295,22 @@ function collectErrors({
     if (pdfSummary.errors?.length) {
       errors.push(`PDF layout verification has ${pdfSummary.errors.length} errors`);
     }
-    if ((pdfSummary.verifiedMeasureBoxes ?? 0) !== 0) {
-      errors.push("PDF verified measure boxes must stay 0 until explicit human/visual approval");
+    const verifiedMeasureBoxes = pdfSummary.verifiedMeasureBoxes ?? 0;
+    if (verifiedMeasureBoxes > 0) {
+      if (pdfSummary.candidateStatus !== "verified-measure-boxes-present") {
+        errors.push("PDF verified measure boxes must be reported with verified-measure-boxes-present status");
+      }
+      if (!/human-reviewed|visual-regression|symbtr-txt-aligned/i.test(pdfSummary.promotionPolicy ?? "")) {
+        errors.push("PDF promotion policy must name the allowed verification methods");
+      }
+    }
+    if ((pdfSummary.unresolvedCandidateEntries ?? 0) < 0) {
+      errors.push("PDF unresolvedCandidateEntries must be non-negative");
     }
     const emptyImport = pdfSummary.emptyImportDryRun ?? {};
+    if ((emptyImport.dryRunVerifiedMeasureBoxCount ?? 0) !== 0) {
+      errors.push("PDF empty-import dry-run must not add verified measure boxes");
+    }
     if (emptyImport.verificationManifestUnchanged !== true) {
       errors.push("PDF empty-import dry-run must prove verification manifest unchanged");
     }
@@ -393,6 +405,7 @@ function buildSummary({
   sourceProviderVerificationCoverage,
   sourceProviderVerificationBatchRun,
   pdfSummary,
+  prodClosureReadiness,
   studioFollowAudit,
   referencesRuntimeAudit,
   securityAudit,
@@ -407,6 +420,7 @@ function buildSummary({
     sourceProviderVerificationCoverage,
     sourceProviderVerificationBatchRun,
     pdfSummary,
+    prodClosureReadiness,
     studioFollowAudit,
     referencesRuntimeAudit,
     securityAudit,
@@ -499,9 +513,23 @@ function buildSummary({
       verificationEntries: pdfSummary?.verificationEntries ?? 0,
       verifiedEntries: pdfSummary?.verifiedEntries ?? 0,
       verifiedMeasureBoxes: pdfSummary?.verifiedMeasureBoxes ?? 0,
+      unresolvedCandidateEntries: pdfSummary?.unresolvedCandidateEntries ?? 0,
+      fingerprintAlgorithm: pdfSummary?.fingerprintAlgorithm ?? null,
       candidateStatus: pdfSummary?.candidateStatus ?? null,
       promotionPolicy: pdfSummary?.promotionPolicy ?? null,
       emptyImportDryRun: pdfSummary?.emptyImportDryRun ?? null,
+    },
+    prodClosure: {
+      ok: prodClosureReadiness?.ok === true,
+      blockers: prodClosureReadiness?.blockers ?? [],
+      sourceTerminalGroups: prodClosureReadiness?.sourceClosure?.terminalDecisionGroupCount ?? 0,
+      sourceUnresolvedGroups: prodClosureReadiness?.sourceClosure?.unresolvedGroupCount ?? null,
+      pdfTerminalEntries: prodClosureReadiness?.pdfClosure?.terminalDecisionEntryCount ?? 0,
+      pdfUnresolvedEntries: prodClosureReadiness?.pdfClosure?.unresolvedEntryCount ?? null,
+      directAutoAttachCount: prodClosureReadiness?.safety?.directAutoAttachCount ?? null,
+      mediaDownloadCount: prodClosureReadiness?.safety?.mediaDownloadCount ?? null,
+      sourceContentCopiedCount: prodClosureReadiness?.safety?.sourceContentCopiedCount ?? null,
+      artifactPath: "output/prod-closure/prod-closure-readiness.json",
     },
     runtime: {
       studioFollow: {
@@ -526,15 +554,19 @@ function buildSummary({
     openWork: [
       {
         id: "external-reference-coverage",
-        status: "batch-queue",
-        count: coverageSummary?.missingCuratedEntries ?? 0,
-        reason: "Missing works require validated real external sources; search candidates are not evidence and are not auto-attached.",
+        status: prodClosureReadiness?.sourceClosure?.complete === true ? "terminal-closed" : "batch-queue",
+        count: prodClosureReadiness?.sourceClosure?.unresolvedGroupCount ?? coverageSummary?.missingCuratedEntries ?? 0,
+        reason: prodClosureReadiness?.sourceClosure?.complete === true
+          ? "All missing source groups have terminal provider/user-review decisions; no search-only candidate was accepted or auto-attached."
+          : "Missing works require validated real external sources; search candidates are not evidence and are not auto-attached.",
       },
       {
         id: "pdf-measure-verification",
-        status: "candidate-only",
-        count: pdfSummary?.unresolvedCandidateEntries ?? 0,
-        reason: "PDF measure boxes remain candidate data until human or visual-regression verification promotes them.",
+        status: prodClosureReadiness?.pdfClosure?.complete === true ? "terminal-closed" : "candidate-only",
+        count: prodClosureReadiness?.pdfClosure?.unresolvedEntryCount ?? pdfSummary?.unresolvedCandidateEntries ?? 0,
+        reason: prodClosureReadiness?.pdfClosure?.complete === true
+          ? "All unresolved PDF candidate entries have terminal decisions; unverified boxes remain candidate-only and are not promoted."
+          : "PDF measure boxes remain candidate data until human or visual-regression verification promotes them.",
       },
     ],
     artifacts: {
@@ -547,6 +579,7 @@ function buildSummary({
       sourceProviderVerificationBatchRun: "output/external-source-discovery/provider-verification-batch-run.json",
       sourceIntakeDryRun: "output/external-reference-coverage/source-intake-accepted-import-dry-run.json",
       pdfLayoutVerificationSummary: "output/symbtr-layout-review/layout-verification-summary.json",
+      prodClosureReadiness: "output/prod-closure/prod-closure-readiness.json",
       referencesRuntimeAudit: "output/playwright/references-curation-batch-runtime-audit-20260601.json",
       studioFollowAudit: "output/playwright/studio-follow-browser-audit-20260601.json",
     },
@@ -639,6 +672,11 @@ export async function runProdCycleAudit({
     "PDF layout verification summary",
     readErrors,
   );
+  const prodClosureReadiness = readJson(
+    "output/prod-closure/prod-closure-readiness.json",
+    "prod closure readiness",
+    readErrors,
+  );
   const studioFollowAudit = readJson(
     "output/playwright/studio-follow-browser-audit-20260601.json",
     "studio follow browser audit",
@@ -662,6 +700,7 @@ export async function runProdCycleAudit({
     sourceProviderVerificationCoverage,
     sourceProviderVerificationBatchRun,
     pdfSummary,
+    prodClosureReadiness,
     studioFollowAudit,
     referencesRuntimeAudit,
     securityAudit,

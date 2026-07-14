@@ -1,9 +1,9 @@
 "use client";
 
 import {useState} from "react";
-import {Button} from "@/components/atoms/Button";
-import {Input} from "@/components/atoms/Input";
-import {Card, CardBody, CardHeader} from "@/components/atoms/Card";
+import {Button} from "@/shared/ui/atoms/Button";
+import {Input} from "@/shared/ui/atoms/Input";
+import {Card, CardBody, CardHeader} from "@/shared/ui/atoms/Card";
 
 interface SourceSubmissionFormProps {
   catalogId?: string;
@@ -39,7 +39,7 @@ export function SourceSubmissionForm({catalogId, title, makam, composer}: Source
       if (!res.ok) throw new Error(await res.text());
       setStatus("ok");
       setTimeout(() => { setOpen(false); setStatus("idle"); setUrl(""); setDesc(""); }, 2000);
-    } catch (e: unknown) {
+    } catch {
       setStatus("err");
     }
   }

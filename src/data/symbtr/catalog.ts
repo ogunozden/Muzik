@@ -1,3 +1,4 @@
+import "server-only";
 import catalogData from "./catalog.generated.json";
 
 export type SymbTrFormat = "txt" | "mid" | "xml" | "mu2" | "pdf";

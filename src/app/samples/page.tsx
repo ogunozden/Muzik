@@ -1,10 +1,11 @@
 "use client";
 
 import {ChangeEvent, useCallback, useEffect, useMemo, useState} from "react";
-import {UnifiedLayout} from "@/components/layout/UnifiedLayout";
+import {UnifiedLayout} from "@/shared/ui/layout/UnifiedLayout";
 import {clearSampleCache, playNote, playRhythm} from "@/engines/ses/engine";
 import type {InstrumentType} from "@/engines/ses/engine";
 import {Button, PageHeader, PageShell} from "@/shared/ui";
+import {LibraryTabs} from "@/features/library/LibraryTabs";
 import {tokens} from "@/shared/tokens";
 
 interface SampleSlotStatus {
@@ -258,6 +259,8 @@ export default function SeslerPage() {
           </div>
           )}
         />
+
+        <LibraryTabs />
 
         <form
           className={`mb-4 grid gap-2 border ${tokens.colors.border.base} ${tokens.radius.md} ${tokens.colors.background.surface} p-3 md:max-w-md`}

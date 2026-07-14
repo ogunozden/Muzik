@@ -9,7 +9,10 @@
  *   Düm 2 vurus kaplar; esit-aralik varsayimi imleci kaydiriyordu).
  * - Ses hazirlanmadan (init + sample preload) gorsel sayac baslamaz.
  * - Dongu: startRhythmLoop tum vuruslari WebAudio saatinde ileriye-bakisli
- *   planlar (tur basi setTimeout dikisi yok); imlec ayni saatten okunur.
+ *   planlar (tur basi setTimeout dikisi yok).
+ * - Imlec requestAnimationFrame ile ekran tazelemesine hizali; her karede
+ *   "DUYULAN" saati (getOutputTimestamp) okur -> ses-gorsel senkron (imlec
+ *   artik outputLatency kadar onde gitmiyor; bkz. heardContextTime).
  */
 
 "use client";
@@ -24,7 +27,6 @@ import {startRhythmLoop, stopAll, type RhythmLoopController} from "@/engines/ses
 import {useEditorStore} from "@/store/editorStore";
 import {ENSTRUMAN_LIST, PERCUSSION_INSTRUMENTS} from "@/lib/app-constants";
 
-const CURSOR_TICK_MS = 40;
 const SYMBOL_LABELS: Record<string, string> = {
   dum: "Düm",
   tek: "Tek",
@@ -53,7 +55,7 @@ export default function UsulPage() {
   const [cycleCount, setCycleCount] = useState(0);
   const isPlayingRef = useRef(false);
   const isLoopRef = useRef(true);
-  const cursorTimerRef = useRef<number | null>(null);
+  const cursorRafRef = useRef<number | null>(null);
   const loopControllerRef = useRef<RhythmLoopController | null>(null);
 
   const usulItems = USUL_DATA.map((usul) => ({
@@ -75,8 +77,8 @@ export default function UsulPage() {
 
   const stopRhythm = useCallback(() => {
     isPlayingRef.current = false;
-    if (cursorTimerRef.current) window.clearInterval(cursorTimerRef.current);
-    cursorTimerRef.current = null;
+    if (cursorRafRef.current) cancelAnimationFrame(cursorRafRef.current);
+    cursorRafRef.current = null;
     loopControllerRef.current?.stop();
     loopControllerRef.current = null;
     stopAll();
@@ -113,7 +115,11 @@ export default function UsulPage() {
     setCurrentSymbolIndex(0);
     setCycleCount(1);
 
-    cursorTimerRef.current = window.setInterval(() => {
+    // Imlec requestAnimationFrame ile ekran tazelemesine hizali (akici) ve her
+    // karede "duyulan" saati (getPositionBeats -> getOutputTimestamp) taze okur;
+    // sekme gizlenip donerse otomatik yeniden senkron olur (drift birikmez).
+    const tick = () => {
+      if (!isPlayingRef.current) return;
       const positionBeats = controller.getPositionBeats();
       if (!isLoopRef.current && positionBeats >= usul.beats) {
         stopRhythm();
@@ -128,7 +134,9 @@ export default function UsulPage() {
         if (pattern[index].beat <= beatInCycle + 1 + 1e-6) active = index;
       }
       setCurrentSymbolIndex(active);
-    }, CURSOR_TICK_MS);
+      cursorRafRef.current = requestAnimationFrame(tick);
+    };
+    cursorRafRef.current = requestAnimationFrame(tick);
   }, [bpm, isVelveleEnabled, selectedPercussionInstrument, selectedUsulObj, stopRhythm]);
 
   useEffect(() => {

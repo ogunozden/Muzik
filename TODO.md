@@ -379,6 +379,38 @@ Surec icinde tespit edilenler listeye eklendi ve tamamlananlar isaretlendi:
       tur sayaci getPositionBeats/getCycleCount ile AYNI saatten okunur.
       Canli olcum: currentTime=elapsed birebir, tur hizi 1/dongu; 3 sayfa
       testi yeni sozlesmeye tasindi
+- [x] F11.9 SES-GORSEL SENKRON (kullanici raporu: "hareket cubugu ile ses
+      senkron degil"): imlec "currentTime"i (sesin PLANLANDIGI saat) okuyordu;
+      kulaga ulasan ses "outputLatency" kadar geridedir, imlec onde gidiyordu.
+      Bu sistemde CANLI olculen fark ~53ms (outputLatency 40 + baseLatency 10).
+      Duzeltme (arastirma: MDN getOutputTimestamp, web.dev audio-output-latency,
+      Chris Wilson "A Tale of Two Clocks"): "heardContextTime" =
+      getOutputTimestamp().contextTime (cikistan O AN ayrilan/duyulan frame),
+      yoksa currentTime - outputLatency (Safari fallback). Imlec ayrica
+      setInterval(40ms) yerine requestAnimationFrame (akici + sekme donusunde
+      otomatik resync). 4 saf senkron testi + kontrolor "getOutputLatencySeconds".
+      NOT: onceki "dogrulama" yalniz tempo'yu olcuyordu; senkron ancak imleci
+      ses ile ORTAK koordinata baglayarak (getOutputTimestamp) yapisal olarak
+      garanti edilir.
+
+### Ritim Motoru Gelistirme Yol Haritasi (2026-07-14 arastirmasi)
+
+Motorun bir sonraki seviyeye tasinmasi icin (oncelik sirasiyla):
+- [ ] F12.1 Latency kalibrasyonu: bazi sistemler outputLatency'yi yanlis
+      bildirir; kullaniciya el ile +/- ofset kaydirici (gorsel/isitsel
+      calibrate) + localStorage'da saklama
+- [ ] F12.2 Canli tempo/usul degisimi: BPM veya usul degisince oynatma
+      duruyor; startRhythmLoop faz koruyarak yeniden planlanabilir
+      (duraksamasiz gecis)
+- [ ] F12.3 Sayilma (count-in) + gorsel metronom flash; hazirlik icin
+      1-2 tur bos vurus secenegi
+- [ ] F12.4 Vurus dinamigi: darp turune gore hafif/kuvvetli oynatma
+      (dum>tek>ke) zaten var; velvele hecelerine (te-ke) daha kisik gain
+- [ ] F12.5 Buyuk usullerde (Zincir 120) SVG imlec performansi:
+      progressBeat'i React state yerine imperative ref/transform ile
+      surerek 60fps'te re-render maliyetini dusur
+- [ ] F12.6 AudioWorklet'e gecis (ornek-hassas planlama) — mevcut
+      lookahead yeterli; yalniz cok dusuk-latency hedefi olursa
 - [ ] F11.7 Velvele 2. asama: sekli yogun/cok satirli oldugu icin bu turda
       DAHIL EDILMEYENLER (fabrikasyon yapilmadi): darb(s.29), oynak(s.63),
       aksaksemai+curcuna(s.67), lenkfahte(s.76), frenkcin(s.85),

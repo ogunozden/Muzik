@@ -1,5 +1,42 @@
 import {describe, expect, it} from "vitest";
-import {buildRhythmSchedule} from "../instruments";
+import {buildRhythmSchedule, heardContextTime} from "../instruments";
+
+/**
+ * Gorsel senkron cekirdegi: imlec, sesin PLANLANDIGI `currentTime`'i degil,
+ * o an DUYULAN frame'in zamanini okumali (aksi halde ~outputLatency kadar
+ * onde gider). Regresyon: birisi currentTime'a geri donerse bu testler kirilir.
+ */
+describe("heardContextTime (gorsel-ses senkronu)", () => {
+  it("prefers getOutputTimestamp().contextTime (the frame currently leaving the device)", () => {
+    const heard = heardContextTime({
+      currentTime: 1.49,
+      outputLatency: 0.04,
+      baseLatency: 0.01,
+      getOutputTimestamp: () => ({contextTime: 1.438}),
+    });
+    // Planlama saati degil, duyulan-frame saati; olculen ~53ms geride.
+    expect(heard).toBeCloseTo(1.438, 3);
+  });
+
+  it("falls back to currentTime minus outputLatency when getOutputTimestamp is absent (e.g. Safari)", () => {
+    expect(heardContextTime({currentTime: 2, outputLatency: 0.05, baseLatency: 0.01})).toBeCloseTo(1.95, 3);
+  });
+
+  it("uses baseLatency when outputLatency is unavailable, and never leads currentTime", () => {
+    expect(heardContextTime({currentTime: 2, baseLatency: 0.012})).toBeCloseTo(1.988, 3);
+    // Hicbir latency bilgisi yoksa en kotu ihtimalle currentTime; asla ONUNDE degil.
+    expect(heardContextTime({currentTime: 2})).toBe(2);
+  });
+
+  it("ignores a zero/absent contextTime (device not yet outputting) and falls back", () => {
+    const heard = heardContextTime({
+      currentTime: 0.5,
+      outputLatency: 0.04,
+      getOutputTimestamp: () => ({contextTime: 0}),
+    });
+    expect(heard).toBeCloseTo(0.46, 3);
+  });
+});
 
 describe("buildRhythmSchedule", () => {
   it("uses explicit beat positions instead of array index order", () => {

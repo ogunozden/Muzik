@@ -386,15 +386,48 @@ export interface RhythmLoopController {
   getPositionBeats: () => number;
   /** Kacinci turda oldugumuz (1-tabanli). */
   getCycleCount: () => number;
+  /** Uygulanan cikis gecikmesi (saniye); tanilamada ve kalibrasyonda kullanilir. */
+  getOutputLatencySeconds: () => number;
   stop: () => void;
+}
+
+/** getOutputTimestamp'in test edilebilir minimal yuzeyi. */
+export interface OutputTimingContext {
+  currentTime: number;
+  outputLatency?: number;
+  baseLatency?: number;
+  getOutputTimestamp?: () => {contextTime?: number; performanceTime?: number};
+}
+
+/**
+ * "Su an DUYULAN" context zamani (gorsel senkronun cekirdegi).
+ *
+ * `currentTime` sesin PLANLANDIGI saattir; kulaga ulasan ses ondan
+ * `outputLatency` kadar GERIDEDIR — imlec bu yuzden sesin onunde gidiyordu
+ * (bu sistemde olculen fark ~53ms). `getOutputTimestamp().contextTime` cikis
+ * aygitindan O AN ayrilan frame'in context zamanidir; onu tercih ederiz.
+ * Safari getOutputTimestamp'i eksik uygular; o zaman planlama saatinden
+ * outputLatency (yoksa baseLatency) dusulur. Referans: MDN getOutputTimestamp,
+ * web.dev "audio-output-latency".
+ */
+export function heardContextTime(context: OutputTimingContext): number {
+  const timestamp = context.getOutputTimestamp?.();
+  if (timestamp && typeof timestamp.contextTime === "number" && timestamp.contextTime > 0) {
+    return timestamp.contextTime;
+  }
+  const latency = context.outputLatency || context.baseLatency || 0;
+  return context.currentTime - latency;
 }
 
 /**
  * Dikissiz ritim dongusu (2026-07-14): tum turlar TEK mutlak ses-saati
  * ekseninden ileriye-bakisli planlanir. Onceki surum her turu ayri
  * setTimeout ile playRhythm cagirarak kuruyordu; timer titremesi tur
- * baslarinda duyulur duraksamalar yaratiyordu ("duzgun calismiyor").
- * Gorsel imlec de getPositionBeats ile AYNI saate kilitlenir.
+ * baslarinda duyulur duraksamalar yaratiyordu.
+ *
+ * Gorsel imlec `heardContextTime` ile SES ile ortak koordinata kilitlenir:
+ * bir darbin `at`'i cikisa dustugunde `contextTime === at` olur ve imlec
+ * formulu de tam o darbin vurusunu gosterir.
  */
 export async function startRhythmLoop(
   beats: number,
@@ -451,8 +484,9 @@ export async function startRhythmLoop(
   const pump = window.setInterval(scheduleDueHits, PUMP_INTERVAL_MS);
 
   return {
-    getPositionBeats: () => Math.max(0, (context.currentTime - startAtCtx) / beatSeconds),
-    getCycleCount: () => Math.max(1, Math.floor((context.currentTime - startAtCtx) / cycleSeconds) + 1),
+    getPositionBeats: () => Math.max(0, (heardContextTime(context) - startAtCtx) / beatSeconds),
+    getCycleCount: () => Math.max(1, Math.floor((heardContextTime(context) - startAtCtx) / cycleSeconds) + 1),
+    getOutputLatencySeconds: () => context.outputLatency || context.baseLatency || 0,
     stop: () => {
       stopped = true;
       window.clearInterval(pump);

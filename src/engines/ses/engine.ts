@@ -3,6 +3,7 @@
 import {
   playInstrumentNote,
   playScaleWithInstrument,
+  playScaleFrequencies,
   playRhythmWithPercussion,
   playInstrumentNoteScheduled,
   playPercussionSymbolScheduled,
@@ -61,6 +62,18 @@ export async function playScale(
   instrument: InstrumentType = "ney"
 ): Promise<void> {
   await playScaleWithInstrument(notes, instrument, duration);
+}
+
+/**
+ * Diziyi OTANTIK FREKANSLARDA calar (makam koma perdeleri; 12-TET degil).
+ * Bkz. getMakamKomaFrequencies (53-EDO / AEU koma).
+ */
+export async function playScaleAtFrequencies(
+  frequencies: number[],
+  duration: number = 0.4,
+  instrument: InstrumentType = "ney"
+): Promise<void> {
+  await playScaleFrequencies(frequencies, instrument, duration);
 }
 
 // Nazariyat darplarinin vurmali sample kanallarina eslenmesi: te/hek sol-el

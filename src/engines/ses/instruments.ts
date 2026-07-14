@@ -284,6 +284,43 @@ export async function playScaleWithInstrument(
   });
 }
 
+const frequencyToNearestMidi = (frequency: number): number =>
+  Math.round(69 + 12 * Math.log2(frequency / 440));
+
+/**
+ * Diziyi OTANTIK FREKANSLARDA calar (12-TET degil): makam koma perdeleri gibi
+ * mikrotonal degerler icin. Her frekans en yakin sample'a demirlenip
+ * `targetFrequency` ile tam perdeye kaydirilir (hem sample hem synth yolu
+ * targetFrequency destekler). Bkz. getMakamKomaFrequencies (53-EDO).
+ */
+export async function playScaleFrequencies(
+  frequencies: number[],
+  instrument: InstrumentType,
+  noteDuration: number = 0.4,
+): Promise<void> {
+  const ok = await initAudio();
+  const context = getOrCreateAudioContext();
+  if (!ok || !context) return;
+
+  const spacing = noteDuration + 0.08;
+  const startAt = context.currentTime + 0.02;
+  const profile = INSTRUMENT_PROFILES[instrument];
+  if (profile.type !== "melodic") return;
+
+  await preloadInstrumentSamples(instrument);
+
+  frequencies.forEach((frequency, index) => {
+    if (!Number.isFinite(frequency) || frequency <= 0) return;
+    const nearestMidi = frequencyToNearestMidi(frequency);
+    const noteStartAt = startAt + index * spacing;
+    if (scheduleSampledMelodicNote(context, nearestMidi, instrument, noteStartAt, noteDuration, 0.28, frequency)) {
+      return;
+    }
+    if (!SYNTHETIC_FALLBACK_ENABLED) return;
+    scheduleSynthMelodicNote(context, nearestMidi, instrument, noteStartAt, noteDuration, 0.2, frequency);
+  });
+}
+
 export async function playRhythmWithPercussion(
   beats: number,
   symbols: RhythmSymbolInput[],

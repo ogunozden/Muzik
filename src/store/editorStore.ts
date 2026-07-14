@@ -1,10 +1,10 @@
 import { create } from 'zustand';
 import type { InstrumentType } from '@/engines/ses/instruments';
 import type { NotaEvent, Makam, Usul, UsulSymbol } from '@/types';
-import { MAKAM_DATA, getMakamScale } from '@/engines/makam/data';
+import { MAKAM_DATA, getMakamScale, getMakamKomaFrequencies } from '@/engines/makam/data';
 import { USUL_DATA } from '@/engines/usul/data';
 import { noteNameToMidi } from '@/engines/nota/data';
-import { playScale, playRhythm, initAudio, stopAll } from '@/engines/ses/engine';
+import { playScale, playScaleAtFrequencies, playRhythm, initAudio, stopAll } from '@/engines/ses/engine';
 
 interface EditorState {
   // Veri (Data)
@@ -113,6 +113,16 @@ export const useEditorStore = create<EditorState>((set, get) => ({
 
     try {
       await initAudio();
+
+      // Otantik 53-EDO koma dizisi varsa GERCEK mikrotonal perdelerde cal(12-TET
+      // degil): hicaz'in 113c ikilisi, ussak'in 158c ikilisi duyulur. Korpus
+      // disi makamda 12-TET yaklasik diziye duser.
+      const komaFrequencies = getMakamKomaFrequencies(selectedMakamObj);
+      if (komaFrequencies) {
+        await playScaleAtFrequencies(komaFrequencies, 0.5, selectedInstrument);
+        return;
+      }
+
       let octave = 4;
       let previousMidi = -1;
       const scaleMidi = currentScale.map((note) => {

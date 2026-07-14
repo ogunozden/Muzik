@@ -1,14 +1,18 @@
-import {Makam, MakamKeyAccidental} from "@/types";
+import {Makam, MakamKeyAccidental, MakamKomaScale} from "@/types";
 import {NOTE_NAMES} from "@/lib/app-constants";
+import {midiToFrequency, noteNameToMidi} from "@/engines/nota/data";
 import makamCorpus from "./__generated__/makam-corpus.json";
 
 /**
- * Makamin OTANTIK koma arizasi elle yazilmaz; SymbTr korpusundan turetilmis
- * `makam-corpus.json`den (npm run derive:makam-corpus) makam adiyla eslenerek
- * baglanir. Editoryal alanlar (aciklama, dominant) yazili kalir; ariza otonom.
+ * Makamin OTANTIK koma arizasi + 53-EDO koma dizisi elle yazilmaz; SymbTr
+ * korpusundan turetilmis `makam-corpus.json`den (npm run derive:makam-corpus)
+ * makam adiyla eslenerek baglanir. Editoryal alanlar (aciklama, dominant)
+ * yazili kalir; ariza ve koma dizisi otonom.
  */
 type MakamCorpusEntry = {display: string; total: number; consensus: number; keySignature: MakamKeyAccidental[]};
 const CORPUS_MAKAMS = makamCorpus.makams as Record<string, MakamCorpusEntry>;
+const CORPUS_KOMA_SCALES = (makamCorpus.komaScales ?? {}) as Record<string, MakamKomaScale>;
+const KOMA_PER_OCTAVE = makamCorpus.komaPerOctave ?? 53;
 
 function normalizeMakamName(name: string): string {
   return name
@@ -45,19 +49,50 @@ function withinOneEdit(a: string, b: string): boolean {
   return edits + (long.length - j) + (short.length - i) <= 1;
 }
 
-function findCorpusEntry(makam: Makam): MakamCorpusEntry | undefined {
+// Makam adini korpus anahtarina cozumler (ariza ve koma dizisi ayni eslemeyi
+// paylasir): once tam ad/id, sonra BENZERSIZ tek-harf yazim varyanti.
+function resolveCorpusKey(makam: Makam): string | undefined {
   const norm = normalizeMakamName(makam.nameTr);
-  const exact = CORPUS_MAKAMS[norm] ?? CORPUS_MAKAMS[normalizeMakamName(makam.id)];
-  if (exact) return exact;
-  // Tek-harf yazim varyanti: yalniz BENZERSIZ aday varsa kabul (guvenli).
+  if (CORPUS_MAKAMS[norm]) return norm;
+  const idNorm = normalizeMakamName(makam.id);
+  if (CORPUS_MAKAMS[idNorm]) return idNorm;
   const near = Object.keys(CORPUS_MAKAMS).filter((key) => withinOneEdit(key, norm));
-  return near.length === 1 ? CORPUS_MAKAMS[near[0]] : undefined;
+  return near.length === 1 ? near[0] : undefined;
 }
 
-function attachCorpusKeySignature(makam: Makam): Makam {
-  const entry = findCorpusEntry(makam);
-  if (!entry) return makam;
-  return {...makam, keySignature: entry.keySignature, keySignatureConsensus: entry.consensus};
+function attachCorpusData(makam: Makam): Makam {
+  const key = resolveCorpusKey(makam);
+  if (!key) return makam;
+  const entry = CORPUS_MAKAMS[key];
+  const komaScale = CORPUS_KOMA_SCALES[key];
+  return {
+    ...makam,
+    keySignature: entry.keySignature,
+    keySignatureConsensus: entry.consensus,
+    ...(komaScale ? {komaScale} : {}),
+  };
+}
+
+/**
+ * 53-EDO koma -> frekans: freq = kararHz × 2^(koma/53). Otantik makam perdesi
+ * (12-TET yaklasik degil); Holder komasi = 1200/53 ≈ 22.64 cent.
+ */
+export function komaToFrequency(kararHz: number, koma: number): number {
+  return kararHz * Math.pow(2, koma / KOMA_PER_OCTAVE);
+}
+
+/**
+ * Makamin otantik koma dizisini SES FREKANSLARINA cevirir. Karar, makamin
+ * nominal tonic perdesine demirlenir (register icin); dereceler korpus-turevli
+ * gercek mikrotonal araliklari verir. Ustteki karar (oktav) da eklenir.
+ * komaScale yoksa (korpus disi) null.
+ */
+export function getMakamKomaFrequencies(makam: Makam, octave = 4): number[] | null {
+  if (!makam.komaScale || makam.komaScale.degrees.length === 0) return null;
+  const kararHz = midiToFrequency(noteNameToMidi(makam.tonic, octave));
+  const freqs = makam.komaScale.degrees.map((degree) => komaToFrequency(kararHz, degree.koma));
+  freqs.push(komaToFrequency(kararHz, KOMA_PER_OCTAVE)); // ust karar (oktav)
+  return freqs;
 }
 
 const MAKAM_BASE: Makam[] = [
@@ -547,8 +582,9 @@ const MAKAM_BASE: Makam[] = [
   },
 ];
 
-// Otantik ariza korpustan baglanir (otonom); editoryal metin yazili kalir.
-export const MAKAM_DATA: Makam[] = MAKAM_BASE.map(attachCorpusKeySignature);
+// Otantik ariza + koma dizisi korpustan baglanir (otonom); editoryal metin
+// yazili kalir.
+export const MAKAM_DATA: Makam[] = MAKAM_BASE.map(attachCorpusData);
 
 export function getMakamById(id: string): Makam | undefined {
   return MAKAM_DATA.find((m) => m.id === id);

@@ -1,7 +1,9 @@
 {
-  "source": "SymbTr v3.0 (Zenodo 15470412, CC-BY 4.0), MusicXML <key> bloklari",
+  "source": "SymbTr v3.0 (Zenodo 15470412, CC-BY 4.0); ariza=MusicXML <key>, koma dizisi=txt Koma53 (53-EDO/AEU)",
   "generatedFrom": "symb/SymbTr-3.0/MusicXML",
   "minPieces": 3,
+  "komaPerOctave": 53,
+  "centsPerKoma": 22.642,
   "makams": {
     "acem": {
       "display": "acem",
@@ -1275,6 +1277,4053 @@
           "step": "F",
           "alter": "1",
           "accidental": "slash-quarter-sharp"
+        }
+      ]
+    }
+  },
+  "komaScales": {
+    "acem": {
+      "display": "acem",
+      "pieceCount": 7,
+      "noteCount": 2428,
+      "kararPC": 52,
+      "kararAgreement": 0.71,
+      "degrees": [
+        {
+          "koma": 0,
+          "cents": 0,
+          "share": 0.035
+        },
+        {
+          "koma": 1,
+          "cents": 23,
+          "share": 0.145
+        },
+        {
+          "koma": 10,
+          "cents": 226,
+          "share": 0.163
+        },
+        {
+          "koma": 19,
+          "cents": 430,
+          "share": 0.191
+        },
+        {
+          "koma": 23,
+          "cents": 521,
+          "share": 0.138
+        },
+        {
+          "koma": 32,
+          "cents": 725,
+          "share": 0.097
+        },
+        {
+          "koma": 41,
+          "cents": 928,
+          "share": 0.098
+        },
+        {
+          "koma": 48,
+          "cents": 1087,
+          "share": 0.049
+        }
+      ]
+    },
+    "acemasiran": {
+      "display": "acemasiran",
+      "pieceCount": 70,
+      "noteCount": 26858,
+      "kararPC": 22,
+      "kararAgreement": 0.54,
+      "degrees": [
+        {
+          "koma": 0,
+          "cents": 0,
+          "share": 0.183
+        },
+        {
+          "koma": 9,
+          "cents": 204,
+          "share": 0.139
+        },
+        {
+          "koma": 18,
+          "cents": 408,
+          "share": 0.133
+        },
+        {
+          "koma": 22,
+          "cents": 498,
+          "share": 0.079
+        },
+        {
+          "koma": 30,
+          "cents": 679,
+          "share": 0.04
+        },
+        {
+          "koma": 31,
+          "cents": 702,
+          "share": 0.132
+        },
+        {
+          "koma": 40,
+          "cents": 906,
+          "share": 0.111
+        },
+        {
+          "koma": 49,
+          "cents": 1109,
+          "share": 0.12
+        }
+      ]
+    },
+    "acemkurdi": {
+      "display": "acemkurdi",
+      "pieceCount": 46,
+      "noteCount": 16233,
+      "kararPC": 40,
+      "kararAgreement": 0.59,
+      "degrees": [
+        {
+          "koma": 0,
+          "cents": 0,
+          "share": 0.167
+        },
+        {
+          "koma": 4,
+          "cents": 91,
+          "share": 0.103
+        },
+        {
+          "koma": 12,
+          "cents": 272,
+          "share": 0.05
+        },
+        {
+          "koma": 13,
+          "cents": 294,
+          "share": 0.133
+        },
+        {
+          "koma": 22,
+          "cents": 498,
+          "share": 0.144
+        },
+        {
+          "koma": 31,
+          "cents": 702,
+          "share": 0.133
+        },
+        {
+          "koma": 35,
+          "cents": 792,
+          "share": 0.131
+        },
+        {
+          "koma": 44,
+          "cents": 996,
+          "share": 0.101
+        }
+      ]
+    },
+    "arazbar": {
+      "display": "arazbar",
+      "pieceCount": 5,
+      "noteCount": 1204,
+      "kararPC": 52,
+      "kararAgreement": 0.6,
+      "degrees": [
+        {
+          "koma": 0,
+          "cents": 0,
+          "share": 0.06
+        },
+        {
+          "koma": 1,
+          "cents": 23,
+          "share": 0.098
+        },
+        {
+          "koma": 10,
+          "cents": 226,
+          "share": 0.099
+        },
+        {
+          "koma": 17,
+          "cents": 385,
+          "share": 0.114
+        },
+        {
+          "koma": 23,
+          "cents": 521,
+          "share": 0.159
+        },
+        {
+          "koma": 32,
+          "cents": 725,
+          "share": 0.2
+        },
+        {
+          "koma": 41,
+          "cents": 928,
+          "share": 0.13
+        },
+        {
+          "koma": 49,
+          "cents": 1109,
+          "share": 0.036
+        }
+      ]
+    },
+    "arazbarbuselik": {
+      "display": "arazbarbuselik",
+      "pieceCount": 3,
+      "noteCount": 2139,
+      "kararPC": 52,
+      "kararAgreement": 1,
+      "degrees": [
+        {
+          "koma": 0,
+          "cents": 0,
+          "share": 0.045
+        },
+        {
+          "koma": 1,
+          "cents": 23,
+          "share": 0.147
+        },
+        {
+          "koma": 10,
+          "cents": 226,
+          "share": 0.131
+        },
+        {
+          "koma": 17,
+          "cents": 385,
+          "share": 0.035
+        },
+        {
+          "koma": 19,
+          "cents": 430,
+          "share": 0.088
+        },
+        {
+          "koma": 23,
+          "cents": 521,
+          "share": 0.126
+        },
+        {
+          "koma": 32,
+          "cents": 725,
+          "share": 0.138
+        },
+        {
+          "koma": 41,
+          "cents": 928,
+          "share": 0.12
+        },
+        {
+          "koma": 50,
+          "cents": 1132,
+          "share": 0.043
+        }
+      ]
+    },
+    "askefza": {
+      "display": "askefza",
+      "pieceCount": 5,
+      "noteCount": 1515,
+      "kararPC": 18,
+      "kararAgreement": 0.8,
+      "degrees": [
+        {
+          "koma": 0,
+          "cents": 0,
+          "share": 0.184
+        },
+        {
+          "koma": 4,
+          "cents": 91,
+          "share": 0.116
+        },
+        {
+          "koma": 13,
+          "cents": 294,
+          "share": 0.112
+        },
+        {
+          "koma": 22,
+          "cents": 498,
+          "share": 0.145
+        },
+        {
+          "koma": 31,
+          "cents": 702,
+          "share": 0.136
+        },
+        {
+          "koma": 34,
+          "cents": 770,
+          "share": 0.069
+        },
+        {
+          "koma": 35,
+          "cents": 792,
+          "share": 0.102
+        },
+        {
+          "koma": 44,
+          "cents": 996,
+          "share": 0.08
+        }
+      ]
+    },
+    "besteisfahan": {
+      "display": "besteisfahan",
+      "pieceCount": 3,
+      "noteCount": 656,
+      "kararPC": 52,
+      "kararAgreement": 0.67,
+      "degrees": [
+        {
+          "koma": 0,
+          "cents": 0,
+          "share": 0.061
+        },
+        {
+          "koma": 1,
+          "cents": 23,
+          "share": 0.14
+        },
+        {
+          "koma": 10,
+          "cents": 226,
+          "share": 0.22
+        },
+        {
+          "koma": 19,
+          "cents": 430,
+          "share": 0.098
+        },
+        {
+          "koma": 26,
+          "cents": 589,
+          "share": 0.07
+        },
+        {
+          "koma": 32,
+          "cents": 725,
+          "share": 0.078
+        },
+        {
+          "koma": 41,
+          "cents": 928,
+          "share": 0.072
+        },
+        {
+          "koma": 48,
+          "cents": 1087,
+          "share": 0.082
+        },
+        {
+          "koma": 49,
+          "cents": 1109,
+          "share": 0.046
+        }
+      ]
+    },
+    "bestenigar": {
+      "display": "bestenigar",
+      "pieceCount": 14,
+      "noteCount": 4783,
+      "kararPC": 52,
+      "kararAgreement": 0.43,
+      "degrees": [
+        {
+          "koma": 0,
+          "cents": 0,
+          "share": 0.031
+        },
+        {
+          "koma": 1,
+          "cents": 23,
+          "share": 0.175
+        },
+        {
+          "koma": 7,
+          "cents": 158,
+          "share": 0.112
+        },
+        {
+          "koma": 19,
+          "cents": 430,
+          "share": 0.089
+        },
+        {
+          "koma": 23,
+          "cents": 521,
+          "share": 0.082
+        },
+        {
+          "koma": 26,
+          "cents": 589,
+          "share": 0.041
+        },
+        {
+          "koma": 27,
+          "cents": 611,
+          "share": 0.031
+        },
+        {
+          "koma": 32,
+          "cents": 725,
+          "share": 0.117
+        },
+        {
+          "koma": 41,
+          "cents": 928,
+          "share": 0.128
+        },
+        {
+          "koma": 48,
+          "cents": 1087,
+          "share": 0.137
+        }
+      ]
+    },
+    "beyati": {
+      "display": "beyati",
+      "pieceCount": 78,
+      "noteCount": 35499,
+      "kararPC": 40,
+      "kararAgreement": 0.56,
+      "degrees": [
+        {
+          "koma": 0,
+          "cents": 0,
+          "share": 0.12
+        },
+        {
+          "koma": 7,
+          "cents": 158,
+          "share": 0.118
+        },
+        {
+          "koma": 12,
+          "cents": 272,
+          "share": 0.036
+        },
+        {
+          "koma": 13,
+          "cents": 294,
+          "share": 0.152
+        },
+        {
+          "koma": 22,
+          "cents": 498,
+          "share": 0.202
+        },
+        {
+          "koma": 31,
+          "cents": 702,
+          "share": 0.133
+        },
+        {
+          "koma": 35,
+          "cents": 792,
+          "share": 0.078
+        },
+        {
+          "koma": 44,
+          "cents": 996,
+          "share": 0.095
+        }
+      ]
+    },
+    "beyatiaraban": {
+      "display": "beyatiaraban",
+      "pieceCount": 12,
+      "noteCount": 3440,
+      "kararPC": 52,
+      "kararAgreement": 0.67,
+      "degrees": [
+        {
+          "koma": 1,
+          "cents": 23,
+          "share": 0.121
+        },
+        {
+          "koma": 10,
+          "cents": 226,
+          "share": 0.126
+        },
+        {
+          "koma": 15,
+          "cents": 340,
+          "share": 0.04
+        },
+        {
+          "koma": 19,
+          "cents": 430,
+          "share": 0.061
+        },
+        {
+          "koma": 23,
+          "cents": 521,
+          "share": 0.05
+        },
+        {
+          "koma": 27,
+          "cents": 611,
+          "share": 0.063
+        },
+        {
+          "koma": 32,
+          "cents": 725,
+          "share": 0.15
+        },
+        {
+          "koma": 41,
+          "cents": 928,
+          "share": 0.177
+        },
+        {
+          "koma": 45,
+          "cents": 1019,
+          "share": 0.044
+        },
+        {
+          "koma": 48,
+          "cents": 1087,
+          "share": 0.063
+        }
+      ]
+    },
+    "buselik": {
+      "display": "buselik",
+      "pieceCount": 73,
+      "noteCount": 26489,
+      "kararPC": 40,
+      "kararAgreement": 0.53,
+      "degrees": [
+        {
+          "koma": 0,
+          "cents": 0,
+          "share": 0.136
+        },
+        {
+          "koma": 9,
+          "cents": 204,
+          "share": 0.134
+        },
+        {
+          "koma": 12,
+          "cents": 272,
+          "share": 0.044
+        },
+        {
+          "koma": 13,
+          "cents": 294,
+          "share": 0.169
+        },
+        {
+          "koma": 22,
+          "cents": 498,
+          "share": 0.142
+        },
+        {
+          "koma": 31,
+          "cents": 702,
+          "share": 0.149
+        },
+        {
+          "koma": 35,
+          "cents": 792,
+          "share": 0.068
+        },
+        {
+          "koma": 44,
+          "cents": 996,
+          "share": 0.072
+        },
+        {
+          "koma": 48,
+          "cents": 1087,
+          "share": 0.033
+        }
+      ]
+    },
+    "cargah": {
+      "display": "cargah",
+      "pieceCount": 9,
+      "noteCount": 1957,
+      "kararPC": 0,
+      "kararAgreement": 0.56,
+      "degrees": [
+        {
+          "koma": 0,
+          "cents": 0,
+          "share": 0.213
+        },
+        {
+          "koma": 6,
+          "cents": 136,
+          "share": 0.05
+        },
+        {
+          "koma": 9,
+          "cents": 204,
+          "share": 0.161
+        },
+        {
+          "koma": 18,
+          "cents": 408,
+          "share": 0.182
+        },
+        {
+          "koma": 22,
+          "cents": 498,
+          "share": 0.096
+        },
+        {
+          "koma": 31,
+          "cents": 702,
+          "share": 0.095
+        },
+        {
+          "koma": 40,
+          "cents": 906,
+          "share": 0.044
+        },
+        {
+          "koma": 48,
+          "cents": 1087,
+          "share": 0.039
+        },
+        {
+          "koma": 49,
+          "cents": 1109,
+          "share": 0.036
+        },
+        {
+          "koma": 52,
+          "cents": 1177,
+          "share": 0.05
+        }
+      ]
+    },
+    "dilkeshaveran": {
+      "display": "dilkeshaveran",
+      "pieceCount": 9,
+      "noteCount": 3264,
+      "kararPC": 52,
+      "kararAgreement": 0.44,
+      "degrees": [
+        {
+          "koma": 0,
+          "cents": 0,
+          "share": 0.049
+        },
+        {
+          "koma": 1,
+          "cents": 23,
+          "share": 0.112
+        },
+        {
+          "koma": 10,
+          "cents": 226,
+          "share": 0.159
+        },
+        {
+          "koma": 19,
+          "cents": 430,
+          "share": 0.163
+        },
+        {
+          "koma": 23,
+          "cents": 521,
+          "share": 0.039
+        },
+        {
+          "koma": 26,
+          "cents": 589,
+          "share": 0.073
+        },
+        {
+          "koma": 27,
+          "cents": 611,
+          "share": 0.04
+        },
+        {
+          "koma": 32,
+          "cents": 725,
+          "share": 0.136
+        },
+        {
+          "koma": 41,
+          "cents": 928,
+          "share": 0.119
+        },
+        {
+          "koma": 48,
+          "cents": 1087,
+          "share": 0.053
+        },
+        {
+          "koma": 49,
+          "cents": 1109,
+          "share": 0.032
+        }
+      ]
+    },
+    "dugah": {
+      "display": "dugah",
+      "pieceCount": 7,
+      "noteCount": 1969,
+      "kararPC": 52,
+      "kararAgreement": 0.57,
+      "degrees": [
+        {
+          "koma": 0,
+          "cents": 0,
+          "share": 0.071
+        },
+        {
+          "koma": 1,
+          "cents": 23,
+          "share": 0.171
+        },
+        {
+          "koma": 7,
+          "cents": 158,
+          "share": 0.088
+        },
+        {
+          "koma": 19,
+          "cents": 430,
+          "share": 0.05
+        },
+        {
+          "koma": 23,
+          "cents": 521,
+          "share": 0.039
+        },
+        {
+          "koma": 32,
+          "cents": 725,
+          "share": 0.036
+        },
+        {
+          "koma": 36,
+          "cents": 815,
+          "share": 0.069
+        },
+        {
+          "koma": 41,
+          "cents": 928,
+          "share": 0.212
+        },
+        {
+          "koma": 46,
+          "cents": 1042,
+          "share": 0.051
+        },
+        {
+          "koma": 49,
+          "cents": 1109,
+          "share": 0.107
+        }
+      ]
+    },
+    "evcara": {
+      "display": "evcara",
+      "pieceCount": 10,
+      "noteCount": 3209,
+      "kararPC": 52,
+      "kararAgreement": 0.6,
+      "degrees": [
+        {
+          "koma": 0,
+          "cents": 0,
+          "share": 0.036
+        },
+        {
+          "koma": 5,
+          "cents": 113,
+          "share": 0.116
+        },
+        {
+          "koma": 10,
+          "cents": 226,
+          "share": 0.108
+        },
+        {
+          "koma": 23,
+          "cents": 521,
+          "share": 0.11
+        },
+        {
+          "koma": 27,
+          "cents": 611,
+          "share": 0.196
+        },
+        {
+          "koma": 32,
+          "cents": 725,
+          "share": 0.113
+        },
+        {
+          "koma": 41,
+          "cents": 928,
+          "share": 0.055
+        },
+        {
+          "koma": 45,
+          "cents": 1019,
+          "share": 0.082
+        },
+        {
+          "koma": 49,
+          "cents": 1109,
+          "share": 0.124
+        }
+      ]
+    },
+    "evic": {
+      "display": "evic",
+      "pieceCount": 37,
+      "noteCount": 14847,
+      "kararPC": 26,
+      "kararAgreement": 0.62,
+      "degrees": [
+        {
+          "koma": 0,
+          "cents": 0,
+          "share": 0.175
+        },
+        {
+          "koma": 5,
+          "cents": 113,
+          "share": 0.136
+        },
+        {
+          "koma": 14,
+          "cents": 317,
+          "share": 0.159
+        },
+        {
+          "koma": 22,
+          "cents": 498,
+          "share": 0.097
+        },
+        {
+          "koma": 27,
+          "cents": 611,
+          "share": 0.066
+        },
+        {
+          "koma": 31,
+          "cents": 702,
+          "share": 0.042
+        },
+        {
+          "koma": 36,
+          "cents": 815,
+          "share": 0.139
+        },
+        {
+          "koma": 45,
+          "cents": 1019,
+          "share": 0.062
+        },
+        {
+          "koma": 49,
+          "cents": 1109,
+          "share": 0.04
+        }
+      ]
+    },
+    "ferahfeza": {
+      "display": "ferahfeza",
+      "pieceCount": 18,
+      "noteCount": 8108,
+      "kararPC": 9,
+      "kararAgreement": 0.5,
+      "degrees": [
+        {
+          "koma": 0,
+          "cents": 0,
+          "share": 0.153
+        },
+        {
+          "koma": 9,
+          "cents": 204,
+          "share": 0.142
+        },
+        {
+          "koma": 13,
+          "cents": 294,
+          "share": 0.137
+        },
+        {
+          "koma": 22,
+          "cents": 498,
+          "share": 0.134
+        },
+        {
+          "koma": 31,
+          "cents": 702,
+          "share": 0.146
+        },
+        {
+          "koma": 35,
+          "cents": 792,
+          "share": 0.072
+        },
+        {
+          "koma": 44,
+          "cents": 996,
+          "share": 0.078
+        },
+        {
+          "koma": 48,
+          "cents": 1087,
+          "share": 0.034
+        }
+      ]
+    },
+    "ferahnak": {
+      "display": "ferahnak",
+      "pieceCount": 16,
+      "noteCount": 5278,
+      "kararPC": 26,
+      "kararAgreement": 0.56,
+      "degrees": [
+        {
+          "koma": 0,
+          "cents": 0,
+          "share": 0.175
+        },
+        {
+          "koma": 5,
+          "cents": 113,
+          "share": 0.141
+        },
+        {
+          "koma": 14,
+          "cents": 317,
+          "share": 0.162
+        },
+        {
+          "koma": 23,
+          "cents": 521,
+          "share": 0.087
+        },
+        {
+          "koma": 26,
+          "cents": 589,
+          "share": 0.035
+        },
+        {
+          "koma": 31,
+          "cents": 702,
+          "share": 0.062
+        },
+        {
+          "koma": 36,
+          "cents": 815,
+          "share": 0.14
+        },
+        {
+          "koma": 45,
+          "cents": 1019,
+          "share": 0.111
+        }
+      ]
+    },
+    "ferahnuma": {
+      "display": "ferahnuma",
+      "pieceCount": 4,
+      "noteCount": 1787,
+      "kararPC": 9,
+      "kararAgreement": 0.5,
+      "degrees": [
+        {
+          "koma": 0,
+          "cents": 0,
+          "share": 0.224
+        },
+        {
+          "koma": 4,
+          "cents": 91,
+          "share": 0.125
+        },
+        {
+          "koma": 13,
+          "cents": 294,
+          "share": 0.098
+        },
+        {
+          "koma": 17,
+          "cents": 385,
+          "share": 0.044
+        },
+        {
+          "koma": 22,
+          "cents": 498,
+          "share": 0.15
+        },
+        {
+          "koma": 31,
+          "cents": 702,
+          "share": 0.118
+        },
+        {
+          "koma": 35,
+          "cents": 792,
+          "share": 0.043
+        },
+        {
+          "koma": 43,
+          "cents": 974,
+          "share": 0.083
+        },
+        {
+          "koma": 44,
+          "cents": 996,
+          "share": 0.083
+        }
+      ]
+    },
+    "gerdaniye": {
+      "display": "gerdaniye",
+      "pieceCount": 32,
+      "noteCount": 11184,
+      "kararPC": 40,
+      "kararAgreement": 0.75,
+      "degrees": [
+        {
+          "koma": 0,
+          "cents": 0,
+          "share": 0.136
+        },
+        {
+          "koma": 7,
+          "cents": 158,
+          "share": 0.127
+        },
+        {
+          "koma": 12,
+          "cents": 272,
+          "share": 0.039
+        },
+        {
+          "koma": 13,
+          "cents": 294,
+          "share": 0.167
+        },
+        {
+          "koma": 22,
+          "cents": 498,
+          "share": 0.175
+        },
+        {
+          "koma": 31,
+          "cents": 702,
+          "share": 0.116
+        },
+        {
+          "koma": 38,
+          "cents": 860,
+          "share": 0.066
+        },
+        {
+          "koma": 44,
+          "cents": 996,
+          "share": 0.129
+        }
+      ]
+    },
+    "gulizar": {
+      "display": "gulizar",
+      "pieceCount": 9,
+      "noteCount": 3553,
+      "kararPC": 52,
+      "kararAgreement": 0.67,
+      "degrees": [
+        {
+          "koma": 0,
+          "cents": 0,
+          "share": 0.036
+        },
+        {
+          "koma": 1,
+          "cents": 23,
+          "share": 0.111
+        },
+        {
+          "koma": 10,
+          "cents": 226,
+          "share": 0.164
+        },
+        {
+          "koma": 15,
+          "cents": 340,
+          "share": 0.035
+        },
+        {
+          "koma": 19,
+          "cents": 430,
+          "share": 0.132
+        },
+        {
+          "koma": 23,
+          "cents": 521,
+          "share": 0.037
+        },
+        {
+          "koma": 26,
+          "cents": 589,
+          "share": 0.069
+        },
+        {
+          "koma": 32,
+          "cents": 725,
+          "share": 0.147
+        },
+        {
+          "koma": 41,
+          "cents": 928,
+          "share": 0.133
+        },
+        {
+          "koma": 48,
+          "cents": 1087,
+          "share": 0.078
+        }
+      ]
+    },
+    "hicaz": {
+      "display": "hicaz",
+      "pieceCount": 182,
+      "noteCount": 65633,
+      "kararPC": 40,
+      "kararAgreement": 0.64,
+      "degrees": [
+        {
+          "koma": 0,
+          "cents": 0,
+          "share": 0.172
+        },
+        {
+          "koma": 5,
+          "cents": 113,
+          "share": 0.118
+        },
+        {
+          "koma": 12,
+          "cents": 272,
+          "share": 0.037
+        },
+        {
+          "koma": 17,
+          "cents": 385,
+          "share": 0.117
+        },
+        {
+          "koma": 22,
+          "cents": 498,
+          "share": 0.169
+        },
+        {
+          "koma": 31,
+          "cents": 702,
+          "share": 0.137
+        },
+        {
+          "koma": 35,
+          "cents": 792,
+          "share": 0.061
+        },
+        {
+          "koma": 39,
+          "cents": 883,
+          "share": 0.042
+        },
+        {
+          "koma": 44,
+          "cents": 996,
+          "share": 0.095
+        }
+      ]
+    },
+    "hicazasiran": {
+      "display": "hicazasiran",
+      "pieceCount": 3,
+      "noteCount": 837,
+      "kararPC": 18,
+      "kararAgreement": 0.67,
+      "degrees": [
+        {
+          "koma": 0,
+          "cents": 0,
+          "share": 0.119
+        },
+        {
+          "koma": 4,
+          "cents": 91,
+          "share": 0.044
+        },
+        {
+          "koma": 8,
+          "cents": 181,
+          "share": 0.075
+        },
+        {
+          "koma": 13,
+          "cents": 294,
+          "share": 0.133
+        },
+        {
+          "koma": 22,
+          "cents": 498,
+          "share": 0.117
+        },
+        {
+          "koma": 27,
+          "cents": 611,
+          "share": 0.079
+        },
+        {
+          "koma": 31,
+          "cents": 702,
+          "share": 0.035
+        },
+        {
+          "koma": 34,
+          "cents": 770,
+          "share": 0.055
+        },
+        {
+          "koma": 35,
+          "cents": 792,
+          "share": 0.036
+        },
+        {
+          "koma": 39,
+          "cents": 883,
+          "share": 0.087
+        },
+        {
+          "koma": 44,
+          "cents": 996,
+          "share": 0.186
+        }
+      ]
+    },
+    "hicazhumayun": {
+      "display": "hicaz_humayun",
+      "pieceCount": 47,
+      "noteCount": 19295,
+      "kararPC": 40,
+      "kararAgreement": 0.6,
+      "degrees": [
+        {
+          "koma": 0,
+          "cents": 0,
+          "share": 0.138
+        },
+        {
+          "koma": 5,
+          "cents": 113,
+          "share": 0.116
+        },
+        {
+          "koma": 12,
+          "cents": 272,
+          "share": 0.049
+        },
+        {
+          "koma": 17,
+          "cents": 385,
+          "share": 0.154
+        },
+        {
+          "koma": 22,
+          "cents": 498,
+          "share": 0.199
+        },
+        {
+          "koma": 31,
+          "cents": 702,
+          "share": 0.129
+        },
+        {
+          "koma": 35,
+          "cents": 792,
+          "share": 0.057
+        },
+        {
+          "koma": 44,
+          "cents": 996,
+          "share": 0.069
+        }
+      ]
+    },
+    "hicazkar": {
+      "display": "hicazkar",
+      "pieceCount": 88,
+      "noteCount": 38654,
+      "kararPC": 52,
+      "kararAgreement": 0.5,
+      "degrees": [
+        {
+          "koma": 0,
+          "cents": 0,
+          "share": 0.037
+        },
+        {
+          "koma": 1,
+          "cents": 23,
+          "share": 0.125
+        },
+        {
+          "koma": 10,
+          "cents": 226,
+          "share": 0.143
+        },
+        {
+          "koma": 15,
+          "cents": 340,
+          "share": 0.113
+        },
+        {
+          "koma": 23,
+          "cents": 521,
+          "share": 0.041
+        },
+        {
+          "koma": 27,
+          "cents": 611,
+          "share": 0.095
+        },
+        {
+          "koma": 32,
+          "cents": 725,
+          "share": 0.193
+        },
+        {
+          "koma": 37,
+          "cents": 838,
+          "share": 0.081
+        },
+        {
+          "koma": 41,
+          "cents": 928,
+          "share": 0.032
+        },
+        {
+          "koma": 49,
+          "cents": 1109,
+          "share": 0.09
+        }
+      ]
+    },
+    "hicazuzzal": {
+      "display": "hicaz_uzzal",
+      "pieceCount": 76,
+      "noteCount": 28993,
+      "kararPC": 40,
+      "kararAgreement": 0.66,
+      "degrees": [
+        {
+          "koma": 0,
+          "cents": 0,
+          "share": 0.166
+        },
+        {
+          "koma": 5,
+          "cents": 113,
+          "share": 0.084
+        },
+        {
+          "koma": 17,
+          "cents": 385,
+          "share": 0.09
+        },
+        {
+          "koma": 22,
+          "cents": 498,
+          "share": 0.14
+        },
+        {
+          "koma": 31,
+          "cents": 702,
+          "share": 0.174
+        },
+        {
+          "koma": 35,
+          "cents": 792,
+          "share": 0.065
+        },
+        {
+          "koma": 39,
+          "cents": 883,
+          "share": 0.065
+        },
+        {
+          "koma": 44,
+          "cents": 996,
+          "share": 0.126
+        }
+      ]
+    },
+    "hicazzirgule": {
+      "display": "hicaz_zirgule",
+      "pieceCount": 27,
+      "noteCount": 7725,
+      "kararPC": 40,
+      "kararAgreement": 0.59,
+      "degrees": [
+        {
+          "koma": 0,
+          "cents": 0,
+          "share": 0.195
+        },
+        {
+          "koma": 5,
+          "cents": 113,
+          "share": 0.123
+        },
+        {
+          "koma": 12,
+          "cents": 272,
+          "share": 0.054
+        },
+        {
+          "koma": 17,
+          "cents": 385,
+          "share": 0.116
+        },
+        {
+          "koma": 22,
+          "cents": 498,
+          "share": 0.146
+        },
+        {
+          "koma": 31,
+          "cents": 702,
+          "share": 0.139
+        },
+        {
+          "koma": 36,
+          "cents": 815,
+          "share": 0.057
+        },
+        {
+          "koma": 44,
+          "cents": 996,
+          "share": 0.054
+        },
+        {
+          "koma": 48,
+          "cents": 1087,
+          "share": 0.052
+        }
+      ]
+    },
+    "hisar": {
+      "display": "hisar",
+      "pieceCount": 5,
+      "noteCount": 1136,
+      "kararPC": 52,
+      "kararAgreement": 0.6,
+      "degrees": [
+        {
+          "koma": 0,
+          "cents": 0,
+          "share": 0.046
+        },
+        {
+          "koma": 1,
+          "cents": 23,
+          "share": 0.129
+        },
+        {
+          "koma": 10,
+          "cents": 226,
+          "share": 0.106
+        },
+        {
+          "koma": 14,
+          "cents": 317,
+          "share": 0.042
+        },
+        {
+          "koma": 19,
+          "cents": 430,
+          "share": 0.21
+        },
+        {
+          "koma": 23,
+          "cents": 521,
+          "share": 0.092
+        },
+        {
+          "koma": 32,
+          "cents": 725,
+          "share": 0.048
+        },
+        {
+          "koma": 36,
+          "cents": 815,
+          "share": 0.055
+        },
+        {
+          "koma": 41,
+          "cents": 928,
+          "share": 0.117
+        },
+        {
+          "koma": 48,
+          "cents": 1087,
+          "share": 0.07
+        }
+      ]
+    },
+    "hisarbuselik": {
+      "display": "hisarbuselik",
+      "pieceCount": 25,
+      "noteCount": 8992,
+      "kararPC": 40,
+      "kararAgreement": 0.52,
+      "degrees": [
+        {
+          "koma": 0,
+          "cents": 0,
+          "share": 0.139
+        },
+        {
+          "koma": 9,
+          "cents": 204,
+          "share": 0.116
+        },
+        {
+          "koma": 12,
+          "cents": 272,
+          "share": 0.041
+        },
+        {
+          "koma": 13,
+          "cents": 294,
+          "share": 0.14
+        },
+        {
+          "koma": 22,
+          "cents": 498,
+          "share": 0.12
+        },
+        {
+          "koma": 31,
+          "cents": 702,
+          "share": 0.172
+        },
+        {
+          "koma": 35,
+          "cents": 792,
+          "share": 0.084
+        },
+        {
+          "koma": 44,
+          "cents": 996,
+          "share": 0.057
+        },
+        {
+          "koma": 48,
+          "cents": 1087,
+          "share": 0.06
+        }
+      ]
+    },
+    "huseyni": {
+      "display": "huseyni",
+      "pieceCount": 118,
+      "noteCount": 44977,
+      "kararPC": 40,
+      "kararAgreement": 0.53,
+      "degrees": [
+        {
+          "koma": 0,
+          "cents": 0,
+          "share": 0.138
+        },
+        {
+          "koma": 7,
+          "cents": 158,
+          "share": 0.105
+        },
+        {
+          "koma": 12,
+          "cents": 272,
+          "share": 0.035
+        },
+        {
+          "koma": 13,
+          "cents": 294,
+          "share": 0.137
+        },
+        {
+          "koma": 22,
+          "cents": 498,
+          "share": 0.182
+        },
+        {
+          "koma": 31,
+          "cents": 702,
+          "share": 0.178
+        },
+        {
+          "koma": 35,
+          "cents": 792,
+          "share": 0.034
+        },
+        {
+          "koma": 38,
+          "cents": 860,
+          "share": 0.056
+        },
+        {
+          "koma": 44,
+          "cents": 996,
+          "share": 0.109
+        }
+      ]
+    },
+    "huseyniasiran": {
+      "display": "huseyniasiran",
+      "pieceCount": 5,
+      "noteCount": 751,
+      "kararPC": 52,
+      "kararAgreement": 0.6,
+      "degrees": [
+        {
+          "koma": 0,
+          "cents": 0,
+          "share": 0.048
+        },
+        {
+          "koma": 1,
+          "cents": 23,
+          "share": 0.052
+        },
+        {
+          "koma": 10,
+          "cents": 226,
+          "share": 0.111
+        },
+        {
+          "koma": 19,
+          "cents": 430,
+          "share": 0.217
+        },
+        {
+          "koma": 26,
+          "cents": 589,
+          "share": 0.063
+        },
+        {
+          "koma": 27,
+          "cents": 611,
+          "share": 0.12
+        },
+        {
+          "koma": 32,
+          "cents": 725,
+          "share": 0.174
+        },
+        {
+          "koma": 41,
+          "cents": 928,
+          "share": 0.117
+        },
+        {
+          "koma": 49,
+          "cents": 1109,
+          "share": 0.043
+        }
+      ]
+    },
+    "huzzam": {
+      "display": "huzzam",
+      "pieceCount": 152,
+      "noteCount": 64379,
+      "kararPC": 48,
+      "kararAgreement": 0.68,
+      "degrees": [
+        {
+          "koma": 0,
+          "cents": 0,
+          "share": 0.095
+        },
+        {
+          "koma": 4,
+          "cents": 91,
+          "share": 0.032
+        },
+        {
+          "koma": 5,
+          "cents": 113,
+          "share": 0.115
+        },
+        {
+          "koma": 14,
+          "cents": 317,
+          "share": 0.197
+        },
+        {
+          "koma": 20,
+          "cents": 453,
+          "share": 0.145
+        },
+        {
+          "koma": 30,
+          "cents": 679,
+          "share": 0.145
+        },
+        {
+          "koma": 36,
+          "cents": 815,
+          "share": 0.143
+        },
+        {
+          "koma": 45,
+          "cents": 1019,
+          "share": 0.06
+        }
+      ]
+    },
+    "irak": {
+      "display": "irak",
+      "pieceCount": 6,
+      "noteCount": 1514,
+      "kararPC": 52,
+      "kararAgreement": 0.5,
+      "degrees": [
+        {
+          "koma": 1,
+          "cents": 23,
+          "share": 0.117
+        },
+        {
+          "koma": 10,
+          "cents": 226,
+          "share": 0.143
+        },
+        {
+          "koma": 19,
+          "cents": 430,
+          "share": 0.081
+        },
+        {
+          "koma": 26,
+          "cents": 589,
+          "share": 0.061
+        },
+        {
+          "koma": 27,
+          "cents": 611,
+          "share": 0.076
+        },
+        {
+          "koma": 32,
+          "cents": 725,
+          "share": 0.116
+        },
+        {
+          "koma": 41,
+          "cents": 928,
+          "share": 0.188
+        },
+        {
+          "koma": 48,
+          "cents": 1087,
+          "share": 0.132
+        }
+      ]
+    },
+    "isfahan": {
+      "display": "isfahan",
+      "pieceCount": 26,
+      "noteCount": 10001,
+      "kararPC": 52,
+      "kararAgreement": 0.65,
+      "degrees": [
+        {
+          "koma": 0,
+          "cents": 0,
+          "share": 0.033
+        },
+        {
+          "koma": 1,
+          "cents": 23,
+          "share": 0.128
+        },
+        {
+          "koma": 10,
+          "cents": 226,
+          "share": 0.217
+        },
+        {
+          "koma": 19,
+          "cents": 430,
+          "share": 0.16
+        },
+        {
+          "koma": 23,
+          "cents": 521,
+          "share": 0.077
+        },
+        {
+          "koma": 32,
+          "cents": 725,
+          "share": 0.085
+        },
+        {
+          "koma": 41,
+          "cents": 928,
+          "share": 0.104
+        },
+        {
+          "koma": 48,
+          "cents": 1087,
+          "share": 0.096
+        }
+      ]
+    },
+    "karcigar": {
+      "display": "karcigar",
+      "pieceCount": 71,
+      "noteCount": 27788,
+      "kararPC": 40,
+      "kararAgreement": 0.58,
+      "degrees": [
+        {
+          "koma": 0,
+          "cents": 0,
+          "share": 0.135
+        },
+        {
+          "koma": 7,
+          "cents": 158,
+          "share": 0.094
+        },
+        {
+          "koma": 12,
+          "cents": 272,
+          "share": 0.035
+        },
+        {
+          "koma": 13,
+          "cents": 294,
+          "share": 0.154
+        },
+        {
+          "koma": 22,
+          "cents": 498,
+          "share": 0.178
+        },
+        {
+          "koma": 28,
+          "cents": 634,
+          "share": 0.095
+        },
+        {
+          "koma": 38,
+          "cents": 860,
+          "share": 0.082
+        },
+        {
+          "koma": 44,
+          "cents": 996,
+          "share": 0.127
+        }
+      ]
+    },
+    "kurdi": {
+      "display": "kurdi",
+      "pieceCount": 20,
+      "noteCount": 5583,
+      "kararPC": 40,
+      "kararAgreement": 0.6,
+      "degrees": [
+        {
+          "koma": 0,
+          "cents": 0,
+          "share": 0.176
+        },
+        {
+          "koma": 4,
+          "cents": 91,
+          "share": 0.098
+        },
+        {
+          "koma": 12,
+          "cents": 272,
+          "share": 0.054
+        },
+        {
+          "koma": 13,
+          "cents": 294,
+          "share": 0.142
+        },
+        {
+          "koma": 22,
+          "cents": 498,
+          "share": 0.156
+        },
+        {
+          "koma": 31,
+          "cents": 702,
+          "share": 0.154
+        },
+        {
+          "koma": 35,
+          "cents": 792,
+          "share": 0.081
+        },
+        {
+          "koma": 44,
+          "cents": 996,
+          "share": 0.074
+        }
+      ]
+    },
+    "kurdilihicazkar": {
+      "display": "kurdilihicazkar",
+      "pieceCount": 141,
+      "noteCount": 59067,
+      "kararPC": 31,
+      "kararAgreement": 0.64,
+      "degrees": [
+        {
+          "koma": 0,
+          "cents": 0,
+          "share": 0.209
+        },
+        {
+          "koma": 4,
+          "cents": 91,
+          "share": 0.095
+        },
+        {
+          "koma": 13,
+          "cents": 294,
+          "share": 0.098
+        },
+        {
+          "koma": 21,
+          "cents": 475,
+          "share": 0.031
+        },
+        {
+          "koma": 22,
+          "cents": 498,
+          "share": 0.118
+        },
+        {
+          "koma": 31,
+          "cents": 702,
+          "share": 0.13
+        },
+        {
+          "koma": 35,
+          "cents": 792,
+          "share": 0.085
+        },
+        {
+          "koma": 44,
+          "cents": 996,
+          "share": 0.131
+        }
+      ]
+    },
+    "mahur": {
+      "display": "mahur",
+      "pieceCount": 103,
+      "noteCount": 46555,
+      "kararPC": 52,
+      "kararAgreement": 0.5,
+      "degrees": [
+        {
+          "koma": 0,
+          "cents": 0,
+          "share": 0.045
+        },
+        {
+          "koma": 1,
+          "cents": 23,
+          "share": 0.098
+        },
+        {
+          "koma": 10,
+          "cents": 226,
+          "share": 0.141
+        },
+        {
+          "koma": 19,
+          "cents": 430,
+          "share": 0.112
+        },
+        {
+          "koma": 28,
+          "cents": 634,
+          "share": 0.1
+        },
+        {
+          "koma": 32,
+          "cents": 725,
+          "share": 0.192
+        },
+        {
+          "koma": 41,
+          "cents": 928,
+          "share": 0.131
+        },
+        {
+          "koma": 50,
+          "cents": 1132,
+          "share": 0.101
+        }
+      ]
+    },
+    "muhayyer": {
+      "display": "muhayyer",
+      "pieceCount": 78,
+      "noteCount": 32309,
+      "kararPC": 40,
+      "kararAgreement": 0.63,
+      "degrees": [
+        {
+          "koma": 0,
+          "cents": 0,
+          "share": 0.205
+        },
+        {
+          "koma": 7,
+          "cents": 158,
+          "share": 0.118
+        },
+        {
+          "koma": 12,
+          "cents": 272,
+          "share": 0.032
+        },
+        {
+          "koma": 13,
+          "cents": 294,
+          "share": 0.138
+        },
+        {
+          "koma": 22,
+          "cents": 498,
+          "share": 0.141
+        },
+        {
+          "koma": 31,
+          "cents": 702,
+          "share": 0.107
+        },
+        {
+          "koma": 38,
+          "cents": 860,
+          "share": 0.058
+        },
+        {
+          "koma": 44,
+          "cents": 996,
+          "share": 0.13
+        }
+      ]
+    },
+    "muhayyerkurdi": {
+      "display": "muhayyerkurdi",
+      "pieceCount": 49,
+      "noteCount": 18651,
+      "kararPC": 40,
+      "kararAgreement": 0.84,
+      "degrees": [
+        {
+          "koma": 0,
+          "cents": 0,
+          "share": 0.204
+        },
+        {
+          "koma": 4,
+          "cents": 91,
+          "share": 0.121
+        },
+        {
+          "koma": 12,
+          "cents": 272,
+          "share": 0.043
+        },
+        {
+          "koma": 13,
+          "cents": 294,
+          "share": 0.124
+        },
+        {
+          "koma": 22,
+          "cents": 498,
+          "share": 0.127
+        },
+        {
+          "koma": 31,
+          "cents": 702,
+          "share": 0.123
+        },
+        {
+          "koma": 35,
+          "cents": 792,
+          "share": 0.099
+        },
+        {
+          "koma": 44,
+          "cents": 996,
+          "share": 0.111
+        }
+      ]
+    },
+    "muhayyersunbule": {
+      "display": "muhayyersunbule",
+      "pieceCount": 4,
+      "noteCount": 984,
+      "kararPC": 52,
+      "kararAgreement": 0.5,
+      "degrees": [
+        {
+          "koma": 0,
+          "cents": 0,
+          "share": 0.05
+        },
+        {
+          "koma": 1,
+          "cents": 23,
+          "share": 0.14
+        },
+        {
+          "koma": 7,
+          "cents": 158,
+          "share": 0.06
+        },
+        {
+          "koma": 19,
+          "cents": 430,
+          "share": 0.046
+        },
+        {
+          "koma": 23,
+          "cents": 521,
+          "share": 0.078
+        },
+        {
+          "koma": 32,
+          "cents": 725,
+          "share": 0.137
+        },
+        {
+          "koma": 41,
+          "cents": 928,
+          "share": 0.217
+        },
+        {
+          "koma": 45,
+          "cents": 1019,
+          "share": 0.098
+        },
+        {
+          "koma": 49,
+          "cents": 1109,
+          "share": 0.056
+        }
+      ]
+    },
+    "mustear": {
+      "display": "mustear",
+      "pieceCount": 9,
+      "noteCount": 2646,
+      "kararPC": 48,
+      "kararAgreement": 0.67,
+      "degrees": [
+        {
+          "koma": 0,
+          "cents": 0,
+          "share": 0.148
+        },
+        {
+          "koma": 4,
+          "cents": 91,
+          "share": 0.041
+        },
+        {
+          "koma": 5,
+          "cents": 113,
+          "share": 0.08
+        },
+        {
+          "koma": 9,
+          "cents": 204,
+          "share": 0.098
+        },
+        {
+          "koma": 14,
+          "cents": 317,
+          "share": 0.235
+        },
+        {
+          "koma": 22,
+          "cents": 498,
+          "share": 0.116
+        },
+        {
+          "koma": 27,
+          "cents": 611,
+          "share": 0.075
+        },
+        {
+          "koma": 31,
+          "cents": 702,
+          "share": 0.045
+        },
+        {
+          "koma": 36,
+          "cents": 815,
+          "share": 0.068
+        },
+        {
+          "koma": 49,
+          "cents": 1109,
+          "share": 0.041
+        }
+      ]
+    },
+    "neva": {
+      "display": "neva",
+      "pieceCount": 24,
+      "noteCount": 12251,
+      "kararPC": 52,
+      "kararAgreement": 0.63,
+      "degrees": [
+        {
+          "koma": 0,
+          "cents": 0,
+          "share": 0.052
+        },
+        {
+          "koma": 1,
+          "cents": 23,
+          "share": 0.108
+        },
+        {
+          "koma": 10,
+          "cents": 226,
+          "share": 0.202
+        },
+        {
+          "koma": 19,
+          "cents": 430,
+          "share": 0.147
+        },
+        {
+          "koma": 23,
+          "cents": 521,
+          "share": 0.036
+        },
+        {
+          "koma": 26,
+          "cents": 589,
+          "share": 0.033
+        },
+        {
+          "koma": 27,
+          "cents": 611,
+          "share": 0.078
+        },
+        {
+          "koma": 32,
+          "cents": 725,
+          "share": 0.12
+        },
+        {
+          "koma": 41,
+          "cents": 928,
+          "share": 0.103
+        },
+        {
+          "koma": 48,
+          "cents": 1087,
+          "share": 0.054
+        }
+      ]
+    },
+    "neveser": {
+      "display": "neveser",
+      "pieceCount": 41,
+      "noteCount": 23560,
+      "kararPC": 52,
+      "kararAgreement": 0.73,
+      "degrees": [
+        {
+          "koma": 0,
+          "cents": 0,
+          "share": 0.034
+        },
+        {
+          "koma": 5,
+          "cents": 113,
+          "share": 0.102
+        },
+        {
+          "koma": 10,
+          "cents": 226,
+          "share": 0.186
+        },
+        {
+          "koma": 15,
+          "cents": 340,
+          "share": 0.116
+        },
+        {
+          "koma": 27,
+          "cents": 611,
+          "share": 0.105
+        },
+        {
+          "koma": 32,
+          "cents": 725,
+          "share": 0.147
+        },
+        {
+          "koma": 41,
+          "cents": 928,
+          "share": 0.127
+        },
+        {
+          "koma": 46,
+          "cents": 1042,
+          "share": 0.106
+        }
+      ]
+    },
+    "nihavent": {
+      "display": "nihavent",
+      "pieceCount": 192,
+      "noteCount": 80737,
+      "kararPC": 31,
+      "kararAgreement": 0.58,
+      "degrees": [
+        {
+          "koma": 0,
+          "cents": 0,
+          "share": 0.156
+        },
+        {
+          "koma": 9,
+          "cents": 204,
+          "share": 0.128
+        },
+        {
+          "koma": 13,
+          "cents": 294,
+          "share": 0.131
+        },
+        {
+          "koma": 21,
+          "cents": 475,
+          "share": 0.049
+        },
+        {
+          "koma": 22,
+          "cents": 498,
+          "share": 0.115
+        },
+        {
+          "koma": 31,
+          "cents": 702,
+          "share": 0.185
+        },
+        {
+          "koma": 35,
+          "cents": 792,
+          "share": 0.097
+        },
+        {
+          "koma": 44,
+          "cents": 996,
+          "share": 0.06
+        },
+        {
+          "koma": 48,
+          "cents": 1087,
+          "share": 0.046
+        }
+      ]
+    },
+    "nikriz": {
+      "display": "nikriz",
+      "pieceCount": 37,
+      "noteCount": 15970,
+      "kararPC": 31,
+      "kararAgreement": 0.68,
+      "degrees": [
+        {
+          "koma": 0,
+          "cents": 0,
+          "share": 0.189
+        },
+        {
+          "koma": 9,
+          "cents": 204,
+          "share": 0.107
+        },
+        {
+          "koma": 14,
+          "cents": 317,
+          "share": 0.096
+        },
+        {
+          "koma": 21,
+          "cents": 475,
+          "share": 0.037
+        },
+        {
+          "koma": 22,
+          "cents": 498,
+          "share": 0.038
+        },
+        {
+          "koma": 26,
+          "cents": 589,
+          "share": 0.096
+        },
+        {
+          "koma": 31,
+          "cents": 702,
+          "share": 0.181
+        },
+        {
+          "koma": 40,
+          "cents": 906,
+          "share": 0.093
+        },
+        {
+          "koma": 44,
+          "cents": 996,
+          "share": 0.041
+        },
+        {
+          "koma": 47,
+          "cents": 1064,
+          "share": 0.031
+        }
+      ]
+    },
+    "nisabur": {
+      "display": "nisabur",
+      "pieceCount": 5,
+      "noteCount": 1374,
+      "kararPC": 52,
+      "kararAgreement": 0.6,
+      "degrees": [
+        {
+          "koma": 0,
+          "cents": 0,
+          "share": 0.045
+        },
+        {
+          "koma": 5,
+          "cents": 113,
+          "share": 0.127
+        },
+        {
+          "koma": 10,
+          "cents": 226,
+          "share": 0.266
+        },
+        {
+          "koma": 19,
+          "cents": 430,
+          "share": 0.17
+        },
+        {
+          "koma": 23,
+          "cents": 521,
+          "share": 0.14
+        },
+        {
+          "koma": 32,
+          "cents": 725,
+          "share": 0.1
+        },
+        {
+          "koma": 41,
+          "cents": 928,
+          "share": 0.039
+        },
+        {
+          "koma": 50,
+          "cents": 1132,
+          "share": 0.066
+        }
+      ]
+    },
+    "nisaburek": {
+      "display": "nisaburek",
+      "pieceCount": 32,
+      "noteCount": 12294,
+      "kararPC": 40,
+      "kararAgreement": 0.56,
+      "degrees": [
+        {
+          "koma": 0,
+          "cents": 0,
+          "share": 0.146
+        },
+        {
+          "koma": 9,
+          "cents": 204,
+          "share": 0.137
+        },
+        {
+          "koma": 12,
+          "cents": 272,
+          "share": 0.042
+        },
+        {
+          "koma": 16,
+          "cents": 362,
+          "share": 0.154
+        },
+        {
+          "koma": 22,
+          "cents": 498,
+          "share": 0.146
+        },
+        {
+          "koma": 31,
+          "cents": 702,
+          "share": 0.176
+        },
+        {
+          "koma": 40,
+          "cents": 906,
+          "share": 0.089
+        },
+        {
+          "koma": 47,
+          "cents": 1064,
+          "share": 0.043
+        }
+      ]
+    },
+    "nuhuft": {
+      "display": "nuhuft",
+      "pieceCount": 4,
+      "noteCount": 1618,
+      "kararPC": 18,
+      "kararAgreement": 0.5,
+      "degrees": [
+        {
+          "koma": 0,
+          "cents": 0,
+          "share": 0.166
+        },
+        {
+          "koma": 4,
+          "cents": 91,
+          "share": 0.033
+        },
+        {
+          "koma": 8,
+          "cents": 181,
+          "share": 0.132
+        },
+        {
+          "koma": 13,
+          "cents": 294,
+          "share": 0.101
+        },
+        {
+          "koma": 22,
+          "cents": 498,
+          "share": 0.082
+        },
+        {
+          "koma": 30,
+          "cents": 679,
+          "share": 0.06
+        },
+        {
+          "koma": 34,
+          "cents": 770,
+          "share": 0.057
+        },
+        {
+          "koma": 35,
+          "cents": 792,
+          "share": 0.095
+        },
+        {
+          "koma": 44,
+          "cents": 996,
+          "share": 0.219
+        }
+      ]
+    },
+    "pencgah": {
+      "display": "pencgah",
+      "pieceCount": 4,
+      "noteCount": 1017,
+      "kararPC": 52,
+      "kararAgreement": 0.75,
+      "degrees": [
+        {
+          "koma": 0,
+          "cents": 0,
+          "share": 0.06
+        },
+        {
+          "koma": 1,
+          "cents": 23,
+          "share": 0.09
+        },
+        {
+          "koma": 5,
+          "cents": 113,
+          "share": 0.071
+        },
+        {
+          "koma": 10,
+          "cents": 226,
+          "share": 0.245
+        },
+        {
+          "koma": 19,
+          "cents": 430,
+          "share": 0.122
+        },
+        {
+          "koma": 23,
+          "cents": 521,
+          "share": 0.039
+        },
+        {
+          "koma": 27,
+          "cents": 611,
+          "share": 0.042
+        },
+        {
+          "koma": 32,
+          "cents": 725,
+          "share": 0.091
+        },
+        {
+          "koma": 41,
+          "cents": 928,
+          "share": 0.103
+        },
+        {
+          "koma": 49,
+          "cents": 1109,
+          "share": 0.086
+        },
+        {
+          "koma": 50,
+          "cents": 1132,
+          "share": 0.038
+        }
+      ]
+    },
+    "pesendide": {
+      "display": "pesendide",
+      "pieceCount": 5,
+      "noteCount": 1100,
+      "kararPC": 52,
+      "kararAgreement": 0.6,
+      "degrees": [
+        {
+          "koma": 0,
+          "cents": 0,
+          "share": 0.051
+        },
+        {
+          "koma": 5,
+          "cents": 113,
+          "share": 0.063
+        },
+        {
+          "koma": 10,
+          "cents": 226,
+          "share": 0.173
+        },
+        {
+          "koma": 19,
+          "cents": 430,
+          "share": 0.128
+        },
+        {
+          "koma": 23,
+          "cents": 521,
+          "share": 0.052
+        },
+        {
+          "koma": 27,
+          "cents": 611,
+          "share": 0.039
+        },
+        {
+          "koma": 32,
+          "cents": 725,
+          "share": 0.175
+        },
+        {
+          "koma": 41,
+          "cents": 928,
+          "share": 0.138
+        },
+        {
+          "koma": 49,
+          "cents": 1109,
+          "share": 0.068
+        },
+        {
+          "koma": 50,
+          "cents": 1132,
+          "share": 0.056
+        }
+      ]
+    },
+    "rast": {
+      "display": "rast",
+      "pieceCount": 154,
+      "noteCount": 61372,
+      "kararPC": 31,
+      "kararAgreement": 0.55,
+      "degrees": [
+        {
+          "koma": 0,
+          "cents": 0,
+          "share": 0.151
+        },
+        {
+          "koma": 9,
+          "cents": 204,
+          "share": 0.138
+        },
+        {
+          "koma": 17,
+          "cents": 385,
+          "share": 0.15
+        },
+        {
+          "koma": 21,
+          "cents": 475,
+          "share": 0.044
+        },
+        {
+          "koma": 22,
+          "cents": 498,
+          "share": 0.137
+        },
+        {
+          "koma": 31,
+          "cents": 702,
+          "share": 0.171
+        },
+        {
+          "koma": 40,
+          "cents": 906,
+          "share": 0.089
+        },
+        {
+          "koma": 48,
+          "cents": 1087,
+          "share": 0.057
+        }
+      ]
+    },
+    "rehavi": {
+      "display": "rehavi",
+      "pieceCount": 6,
+      "noteCount": 1915,
+      "kararPC": 52,
+      "kararAgreement": 0.67,
+      "degrees": [
+        {
+          "koma": 0,
+          "cents": 0,
+          "share": 0.044
+        },
+        {
+          "koma": 1,
+          "cents": 23,
+          "share": 0.128
+        },
+        {
+          "koma": 10,
+          "cents": 226,
+          "share": 0.158
+        },
+        {
+          "koma": 19,
+          "cents": 430,
+          "share": 0.085
+        },
+        {
+          "koma": 26,
+          "cents": 589,
+          "share": 0.032
+        },
+        {
+          "koma": 27,
+          "cents": 611,
+          "share": 0.036
+        },
+        {
+          "koma": 32,
+          "cents": 725,
+          "share": 0.165
+        },
+        {
+          "koma": 41,
+          "cents": 928,
+          "share": 0.147
+        },
+        {
+          "koma": 48,
+          "cents": 1087,
+          "share": 0.054
+        },
+        {
+          "koma": 49,
+          "cents": 1109,
+          "share": 0.081
+        }
+      ]
+    },
+    "rengidil": {
+      "display": "rengidil",
+      "pieceCount": 12,
+      "noteCount": 5543,
+      "kararPC": 52,
+      "kararAgreement": 0.67,
+      "degrees": [
+        {
+          "koma": 0,
+          "cents": 0,
+          "share": 0.04
+        },
+        {
+          "koma": 1,
+          "cents": 23,
+          "share": 0.174
+        },
+        {
+          "koma": 6,
+          "cents": 136,
+          "share": 0.085
+        },
+        {
+          "koma": 18,
+          "cents": 408,
+          "share": 0.098
+        },
+        {
+          "koma": 23,
+          "cents": 521,
+          "share": 0.179
+        },
+        {
+          "koma": 32,
+          "cents": 725,
+          "share": 0.121
+        },
+        {
+          "koma": 37,
+          "cents": 838,
+          "share": 0.108
+        },
+        {
+          "koma": 49,
+          "cents": 1109,
+          "share": 0.104
+        }
+      ]
+    },
+    "ruhnevaz": {
+      "display": "ruhnevaz",
+      "pieceCount": 22,
+      "noteCount": 11608,
+      "kararPC": 18,
+      "kararAgreement": 0.5,
+      "degrees": [
+        {
+          "koma": 0,
+          "cents": 0,
+          "share": 0.177
+        },
+        {
+          "koma": 9,
+          "cents": 204,
+          "share": 0.112
+        },
+        {
+          "koma": 13,
+          "cents": 294,
+          "share": 0.134
+        },
+        {
+          "koma": 22,
+          "cents": 498,
+          "share": 0.112
+        },
+        {
+          "koma": 31,
+          "cents": 702,
+          "share": 0.146
+        },
+        {
+          "koma": 34,
+          "cents": 770,
+          "share": 0.055
+        },
+        {
+          "koma": 35,
+          "cents": 792,
+          "share": 0.08
+        },
+        {
+          "koma": 44,
+          "cents": 996,
+          "share": 0.056
+        },
+        {
+          "koma": 48,
+          "cents": 1087,
+          "share": 0.05
+        }
+      ]
+    },
+    "saba": {
+      "display": "saba",
+      "pieceCount": 74,
+      "noteCount": 29612,
+      "kararPC": 40,
+      "kararAgreement": 0.61,
+      "degrees": [
+        {
+          "koma": 0,
+          "cents": 0,
+          "share": 0.128
+        },
+        {
+          "koma": 7,
+          "cents": 158,
+          "share": 0.161
+        },
+        {
+          "koma": 12,
+          "cents": 272,
+          "share": 0.036
+        },
+        {
+          "koma": 13,
+          "cents": 294,
+          "share": 0.238
+        },
+        {
+          "koma": 19,
+          "cents": 430,
+          "share": 0.129
+        },
+        {
+          "koma": 31,
+          "cents": 702,
+          "share": 0.095
+        },
+        {
+          "koma": 35,
+          "cents": 792,
+          "share": 0.057
+        },
+        {
+          "koma": 44,
+          "cents": 996,
+          "share": 0.073
+        }
+      ]
+    },
+    "sabazemzeme": {
+      "display": "saba-zemzeme",
+      "pieceCount": 3,
+      "noteCount": 715,
+      "kararPC": 52,
+      "kararAgreement": 0.67,
+      "degrees": [
+        {
+          "koma": 0,
+          "cents": 0,
+          "share": 0.06
+        },
+        {
+          "koma": 1,
+          "cents": 23,
+          "share": 0.197
+        },
+        {
+          "koma": 6,
+          "cents": 136,
+          "share": 0.049
+        },
+        {
+          "koma": 7,
+          "cents": 158,
+          "share": 0.064
+        },
+        {
+          "koma": 19,
+          "cents": 430,
+          "share": 0.088
+        },
+        {
+          "koma": 23,
+          "cents": 521,
+          "share": 0.097
+        },
+        {
+          "koma": 32,
+          "cents": 725,
+          "share": 0.101
+        },
+        {
+          "koma": 41,
+          "cents": 928,
+          "share": 0.129
+        },
+        {
+          "koma": 45,
+          "cents": 1019,
+          "share": 0.08
+        },
+        {
+          "koma": 49,
+          "cents": 1109,
+          "share": 0.069
+        }
+      ]
+    },
+    "sazkar": {
+      "display": "sazkar",
+      "pieceCount": 4,
+      "noteCount": 1126,
+      "kararPC": 52,
+      "kararAgreement": 0.75,
+      "degrees": [
+        {
+          "koma": 0,
+          "cents": 0,
+          "share": 0.052
+        },
+        {
+          "koma": 1,
+          "cents": 23,
+          "share": 0.158
+        },
+        {
+          "koma": 10,
+          "cents": 226,
+          "share": 0.163
+        },
+        {
+          "koma": 19,
+          "cents": 430,
+          "share": 0.091
+        },
+        {
+          "koma": 27,
+          "cents": 611,
+          "share": 0.067
+        },
+        {
+          "koma": 32,
+          "cents": 725,
+          "share": 0.115
+        },
+        {
+          "koma": 41,
+          "cents": 928,
+          "share": 0.107
+        },
+        {
+          "koma": 49,
+          "cents": 1109,
+          "share": 0.158
+        }
+      ]
+    },
+    "sedaraban": {
+      "display": "sedaraban",
+      "pieceCount": 15,
+      "noteCount": 5696,
+      "kararPC": 52,
+      "kararAgreement": 0.67,
+      "degrees": [
+        {
+          "koma": 0,
+          "cents": 0,
+          "share": 0.034
+        },
+        {
+          "koma": 1,
+          "cents": 23,
+          "share": 0.064
+        },
+        {
+          "koma": 5,
+          "cents": 113,
+          "share": 0.053
+        },
+        {
+          "koma": 10,
+          "cents": 226,
+          "share": 0.199
+        },
+        {
+          "koma": 15,
+          "cents": 340,
+          "share": 0.122
+        },
+        {
+          "koma": 27,
+          "cents": 611,
+          "share": 0.118
+        },
+        {
+          "koma": 32,
+          "cents": 725,
+          "share": 0.15
+        },
+        {
+          "koma": 41,
+          "cents": 928,
+          "share": 0.14
+        },
+        {
+          "koma": 46,
+          "cents": 1042,
+          "share": 0.06
+        }
+      ]
+    },
+    "segah": {
+      "display": "segah",
+      "pieceCount": 109,
+      "noteCount": 46238,
+      "kararPC": 48,
+      "kararAgreement": 0.56,
+      "degrees": [
+        {
+          "koma": 0,
+          "cents": 0,
+          "share": 0.154
+        },
+        {
+          "koma": 4,
+          "cents": 91,
+          "share": 0.037
+        },
+        {
+          "koma": 5,
+          "cents": 113,
+          "share": 0.132
+        },
+        {
+          "koma": 14,
+          "cents": 317,
+          "share": 0.198
+        },
+        {
+          "koma": 22,
+          "cents": 498,
+          "share": 0.115
+        },
+        {
+          "koma": 27,
+          "cents": 611,
+          "share": 0.039
+        },
+        {
+          "koma": 31,
+          "cents": 702,
+          "share": 0.09
+        },
+        {
+          "koma": 36,
+          "cents": 815,
+          "share": 0.121
+        },
+        {
+          "koma": 45,
+          "cents": 1019,
+          "share": 0.045
+        },
+        {
+          "koma": 49,
+          "cents": 1109,
+          "share": 0.035
+        }
+      ]
+    },
+    "segahmaye": {
+      "display": "segah-maye",
+      "pieceCount": 4,
+      "noteCount": 748,
+      "kararPC": 52,
+      "kararAgreement": 0.5,
+      "degrees": [
+        {
+          "koma": 0,
+          "cents": 0,
+          "share": 0.039
+        },
+        {
+          "koma": 1,
+          "cents": 23,
+          "share": 0.217
+        },
+        {
+          "koma": 10,
+          "cents": 226,
+          "share": 0.254
+        },
+        {
+          "koma": 17,
+          "cents": 385,
+          "share": 0.032
+        },
+        {
+          "koma": 18,
+          "cents": 408,
+          "share": 0.055
+        },
+        {
+          "koma": 27,
+          "cents": 611,
+          "share": 0.032
+        },
+        {
+          "koma": 32,
+          "cents": 725,
+          "share": 0.056
+        },
+        {
+          "koma": 41,
+          "cents": 928,
+          "share": 0.066
+        },
+        {
+          "koma": 48,
+          "cents": 1087,
+          "share": 0.033
+        },
+        {
+          "koma": 49,
+          "cents": 1109,
+          "share": 0.179
+        }
+      ]
+    },
+    "sehnaz": {
+      "display": "sehnaz",
+      "pieceCount": 32,
+      "noteCount": 12435,
+      "kararPC": 52,
+      "kararAgreement": 0.5,
+      "degrees": [
+        {
+          "koma": 0,
+          "cents": 0,
+          "share": 0.032
+        },
+        {
+          "koma": 5,
+          "cents": 113,
+          "share": 0.073
+        },
+        {
+          "koma": 10,
+          "cents": 226,
+          "share": 0.121
+        },
+        {
+          "koma": 19,
+          "cents": 430,
+          "share": 0.145
+        },
+        {
+          "koma": 23,
+          "cents": 521,
+          "share": 0.04
+        },
+        {
+          "koma": 24,
+          "cents": 543,
+          "share": 0.062
+        },
+        {
+          "koma": 32,
+          "cents": 725,
+          "share": 0.08
+        },
+        {
+          "koma": 36,
+          "cents": 815,
+          "share": 0.061
+        },
+        {
+          "koma": 41,
+          "cents": 928,
+          "share": 0.211
+        },
+        {
+          "koma": 46,
+          "cents": 1042,
+          "share": 0.059
+        },
+        {
+          "koma": 50,
+          "cents": 1132,
+          "share": 0.049
+        }
+      ]
+    },
+    "sehnazbuselik": {
+      "display": "sehnazbuselik",
+      "pieceCount": 9,
+      "noteCount": 3670,
+      "kararPC": 52,
+      "kararAgreement": 0.67,
+      "degrees": [
+        {
+          "koma": 0,
+          "cents": 0,
+          "share": 0.039
+        },
+        {
+          "koma": 1,
+          "cents": 23,
+          "share": 0.126
+        },
+        {
+          "koma": 10,
+          "cents": 226,
+          "share": 0.113
+        },
+        {
+          "koma": 19,
+          "cents": 430,
+          "share": 0.142
+        },
+        {
+          "koma": 23,
+          "cents": 521,
+          "share": 0.08
+        },
+        {
+          "koma": 32,
+          "cents": 725,
+          "share": 0.038
+        },
+        {
+          "koma": 36,
+          "cents": 815,
+          "share": 0.097
+        },
+        {
+          "koma": 41,
+          "cents": 928,
+          "share": 0.179
+        },
+        {
+          "koma": 50,
+          "cents": 1132,
+          "share": 0.134
+        }
+      ]
+    },
+    "sevkefza": {
+      "display": "sevkefza",
+      "pieceCount": 12,
+      "noteCount": 3724,
+      "kararPC": 52,
+      "kararAgreement": 0.58,
+      "degrees": [
+        {
+          "koma": 0,
+          "cents": 0,
+          "share": 0.042
+        },
+        {
+          "koma": 1,
+          "cents": 23,
+          "share": 0.128
+        },
+        {
+          "koma": 6,
+          "cents": 136,
+          "share": 0.062
+        },
+        {
+          "koma": 19,
+          "cents": 430,
+          "share": 0.13
+        },
+        {
+          "koma": 23,
+          "cents": 521,
+          "share": 0.182
+        },
+        {
+          "koma": 32,
+          "cents": 725,
+          "share": 0.175
+        },
+        {
+          "koma": 37,
+          "cents": 838,
+          "share": 0.079
+        },
+        {
+          "koma": 41,
+          "cents": 928,
+          "share": 0.042
+        },
+        {
+          "koma": 45,
+          "cents": 1019,
+          "share": 0.069
+        },
+        {
+          "koma": 49,
+          "cents": 1109,
+          "share": 0.032
+        }
+      ]
+    },
+    "sultaniyegah": {
+      "display": "sultaniyegah",
+      "pieceCount": 29,
+      "noteCount": 10775,
+      "kararPC": 9,
+      "kararAgreement": 0.66,
+      "degrees": [
+        {
+          "koma": 0,
+          "cents": 0,
+          "share": 0.186
+        },
+        {
+          "koma": 9,
+          "cents": 204,
+          "share": 0.149
+        },
+        {
+          "koma": 13,
+          "cents": 294,
+          "share": 0.144
+        },
+        {
+          "koma": 22,
+          "cents": 498,
+          "share": 0.11
+        },
+        {
+          "koma": 31,
+          "cents": 702,
+          "share": 0.138
+        },
+        {
+          "koma": 35,
+          "cents": 792,
+          "share": 0.074
+        },
+        {
+          "koma": 43,
+          "cents": 974,
+          "share": 0.037
+        },
+        {
+          "koma": 44,
+          "cents": 996,
+          "share": 0.044
+        },
+        {
+          "koma": 48,
+          "cents": 1087,
+          "share": 0.079
+        }
+      ]
+    },
+    "suzidil": {
+      "display": "suzidil",
+      "pieceCount": 37,
+      "noteCount": 15688,
+      "kararPC": 52,
+      "kararAgreement": 0.65,
+      "degrees": [
+        {
+          "koma": 0,
+          "cents": 0,
+          "share": 0.04
+        },
+        {
+          "koma": 1,
+          "cents": 23,
+          "share": 0.1
+        },
+        {
+          "koma": 10,
+          "cents": 226,
+          "share": 0.063
+        },
+        {
+          "koma": 14,
+          "cents": 317,
+          "share": 0.061
+        },
+        {
+          "koma": 19,
+          "cents": 430,
+          "share": 0.203
+        },
+        {
+          "koma": 23,
+          "cents": 521,
+          "share": 0.061
+        },
+        {
+          "koma": 24,
+          "cents": 543,
+          "share": 0.06
+        },
+        {
+          "koma": 36,
+          "cents": 815,
+          "share": 0.104
+        },
+        {
+          "koma": 41,
+          "cents": 928,
+          "share": 0.14
+        },
+        {
+          "koma": 50,
+          "cents": 1132,
+          "share": 0.124
+        }
+      ]
+    },
+    "suzidilara": {
+      "display": "suzidilara",
+      "pieceCount": 9,
+      "noteCount": 3202,
+      "kararPC": 52,
+      "kararAgreement": 0.56,
+      "degrees": [
+        {
+          "koma": 0,
+          "cents": 0,
+          "share": 0.032
+        },
+        {
+          "koma": 1,
+          "cents": 23,
+          "share": 0.121
+        },
+        {
+          "koma": 5,
+          "cents": 113,
+          "share": 0.038
+        },
+        {
+          "koma": 10,
+          "cents": 226,
+          "share": 0.127
+        },
+        {
+          "koma": 19,
+          "cents": 430,
+          "share": 0.095
+        },
+        {
+          "koma": 23,
+          "cents": 521,
+          "share": 0.037
+        },
+        {
+          "koma": 28,
+          "cents": 634,
+          "share": 0.037
+        },
+        {
+          "koma": 32,
+          "cents": 725,
+          "share": 0.167
+        },
+        {
+          "koma": 41,
+          "cents": 928,
+          "share": 0.16
+        },
+        {
+          "koma": 46,
+          "cents": 1042,
+          "share": 0.033
+        },
+        {
+          "koma": 50,
+          "cents": 1132,
+          "share": 0.115
+        }
+      ]
+    },
+    "suzinak": {
+      "display": "suzinak",
+      "pieceCount": 46,
+      "noteCount": 16190,
+      "kararPC": 52,
+      "kararAgreement": 0.63,
+      "degrees": [
+        {
+          "koma": 0,
+          "cents": 0,
+          "share": 0.036
+        },
+        {
+          "koma": 1,
+          "cents": 23,
+          "share": 0.153
+        },
+        {
+          "koma": 10,
+          "cents": 226,
+          "share": 0.198
+        },
+        {
+          "koma": 15,
+          "cents": 340,
+          "share": 0.126
+        },
+        {
+          "koma": 27,
+          "cents": 611,
+          "share": 0.087
+        },
+        {
+          "koma": 32,
+          "cents": 725,
+          "share": 0.146
+        },
+        {
+          "koma": 37,
+          "cents": 838,
+          "share": 0.043
+        },
+        {
+          "koma": 41,
+          "cents": 928,
+          "share": 0.051
+        },
+        {
+          "koma": 49,
+          "cents": 1109,
+          "share": 0.105
+        }
+      ]
+    },
+    "suzinakzirgule": {
+      "display": "suzinak-zirgule",
+      "pieceCount": 24,
+      "noteCount": 9384,
+      "kararPC": 31,
+      "kararAgreement": 0.79,
+      "degrees": [
+        {
+          "koma": 0,
+          "cents": 0,
+          "share": 0.147
+        },
+        {
+          "koma": 5,
+          "cents": 113,
+          "share": 0.065
+        },
+        {
+          "koma": 17,
+          "cents": 385,
+          "share": 0.115
+        },
+        {
+          "koma": 22,
+          "cents": 498,
+          "share": 0.153
+        },
+        {
+          "koma": 31,
+          "cents": 702,
+          "share": 0.211
+        },
+        {
+          "koma": 36,
+          "cents": 815,
+          "share": 0.144
+        },
+        {
+          "koma": 48,
+          "cents": 1087,
+          "share": 0.082
+        }
+      ]
+    },
+    "tahir": {
+      "display": "tahir",
+      "pieceCount": 35,
+      "noteCount": 12619,
+      "kararPC": 40,
+      "kararAgreement": 0.86,
+      "degrees": [
+        {
+          "koma": 0,
+          "cents": 0,
+          "share": 0.235
+        },
+        {
+          "koma": 7,
+          "cents": 158,
+          "share": 0.153
+        },
+        {
+          "koma": 13,
+          "cents": 294,
+          "share": 0.175
+        },
+        {
+          "koma": 22,
+          "cents": 498,
+          "share": 0.16
+        },
+        {
+          "koma": 31,
+          "cents": 702,
+          "share": 0.08
+        },
+        {
+          "koma": 38,
+          "cents": 860,
+          "share": 0.049
+        },
+        {
+          "koma": 44,
+          "cents": 996,
+          "share": 0.098
+        }
+      ]
+    },
+    "tahirbuselik": {
+      "display": "tahirbuselik",
+      "pieceCount": 3,
+      "noteCount": 1083,
+      "kararPC": 52,
+      "kararAgreement": 1,
+      "degrees": [
+        {
+          "koma": 0,
+          "cents": 0,
+          "share": 0.037
+        },
+        {
+          "koma": 1,
+          "cents": 23,
+          "share": 0.114
+        },
+        {
+          "koma": 10,
+          "cents": 226,
+          "share": 0.114
+        },
+        {
+          "koma": 19,
+          "cents": 430,
+          "share": 0.137
+        },
+        {
+          "koma": 23,
+          "cents": 521,
+          "share": 0.063
+        },
+        {
+          "koma": 26,
+          "cents": 589,
+          "share": 0.049
+        },
+        {
+          "koma": 27,
+          "cents": 611,
+          "share": 0.046
+        },
+        {
+          "koma": 32,
+          "cents": 725,
+          "share": 0.138
+        },
+        {
+          "koma": 41,
+          "cents": 928,
+          "share": 0.166
+        },
+        {
+          "koma": 48,
+          "cents": 1087,
+          "share": 0.03
+        },
+        {
+          "koma": 49,
+          "cents": 1109,
+          "share": 0.035
+        },
+        {
+          "koma": 50,
+          "cents": 1132,
+          "share": 0.054
+        }
+      ]
+    },
+    "ussak": {
+      "display": "ussak",
+      "pieceCount": 160,
+      "noteCount": 59049,
+      "kararPC": 40,
+      "kararAgreement": 0.57,
+      "degrees": [
+        {
+          "koma": 0,
+          "cents": 0,
+          "share": 0.162
+        },
+        {
+          "koma": 7,
+          "cents": 158,
+          "share": 0.151
+        },
+        {
+          "koma": 12,
+          "cents": 272,
+          "share": 0.038
+        },
+        {
+          "koma": 13,
+          "cents": 294,
+          "share": 0.172
+        },
+        {
+          "koma": 22,
+          "cents": 498,
+          "share": 0.186
+        },
+        {
+          "koma": 31,
+          "cents": 702,
+          "share": 0.111
+        },
+        {
+          "koma": 35,
+          "cents": 792,
+          "share": 0.046
+        },
+        {
+          "koma": 44,
+          "cents": 996,
+          "share": 0.087
+        }
+      ]
+    },
+    "yegah": {
+      "display": "yegah",
+      "pieceCount": 30,
+      "noteCount": 10248,
+      "kararPC": 52,
+      "kararAgreement": 0.6,
+      "degrees": [
+        {
+          "koma": 0,
+          "cents": 0,
+          "share": 0.051
+        },
+        {
+          "koma": 1,
+          "cents": 23,
+          "share": 0.061
+        },
+        {
+          "koma": 4,
+          "cents": 91,
+          "share": 0.036
+        },
+        {
+          "koma": 10,
+          "cents": 226,
+          "share": 0.196
+        },
+        {
+          "koma": 19,
+          "cents": 430,
+          "share": 0.142
+        },
+        {
+          "koma": 26,
+          "cents": 589,
+          "share": 0.114
+        },
+        {
+          "koma": 32,
+          "cents": 725,
+          "share": 0.112
+        },
+        {
+          "koma": 41,
+          "cents": 928,
+          "share": 0.126
+        },
+        {
+          "koma": 48,
+          "cents": 1087,
+          "share": 0.051
+        },
+        {
+          "koma": 50,
+          "cents": 1132,
+          "share": 0.032
+        }
+      ]
+    },
+    "yenicargah": {
+      "display": "yeni_cargah",
+      "pieceCount": 6,
+      "noteCount": 1782,
+      "kararPC": 0,
+      "kararAgreement": 0.5,
+      "degrees": [
+        {
+          "koma": 0,
+          "cents": 0,
+          "share": 0.296
+        },
+        {
+          "koma": 9,
+          "cents": 204,
+          "share": 0.243
+        },
+        {
+          "koma": 18,
+          "cents": 408,
+          "share": 0.142
+        },
+        {
+          "koma": 22,
+          "cents": 498,
+          "share": 0.053
+        },
+        {
+          "koma": 31,
+          "cents": 702,
+          "share": 0.075
+        },
+        {
+          "koma": 40,
+          "cents": 906,
+          "share": 0.043
+        },
+        {
+          "koma": 49,
+          "cents": 1109,
+          "share": 0.103
+        },
+        {
+          "koma": 52,
+          "cents": 1177,
+          "share": 0.032
+        }
+      ]
+    },
+    "zavil": {
+      "display": "zavil",
+      "pieceCount": 9,
+      "noteCount": 2631,
+      "kararPC": 31,
+      "kararAgreement": 0.67,
+      "degrees": [
+        {
+          "koma": 0,
+          "cents": 0,
+          "share": 0.209
+        },
+        {
+          "koma": 9,
+          "cents": 204,
+          "share": 0.143
+        },
+        {
+          "koma": 14,
+          "cents": 317,
+          "share": 0.036
+        },
+        {
+          "koma": 18,
+          "cents": 408,
+          "share": 0.045
+        },
+        {
+          "koma": 21,
+          "cents": 475,
+          "share": 0.035
+        },
+        {
+          "koma": 22,
+          "cents": 498,
+          "share": 0.07
+        },
+        {
+          "koma": 26,
+          "cents": 589,
+          "share": 0.041
+        },
+        {
+          "koma": 31,
+          "cents": 702,
+          "share": 0.132
+        },
+        {
+          "koma": 40,
+          "cents": 906,
+          "share": 0.108
+        },
+        {
+          "koma": 49,
+          "cents": 1109,
+          "share": 0.105
         }
       ]
     }

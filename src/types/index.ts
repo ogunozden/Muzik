@@ -5,6 +5,30 @@ export interface MakamKeyAccidental {
   accidental: string;
 }
 
+/** Karar-goreli bir dizi derecesi (53-EDO koma). */
+export interface MakamKomaDegree {
+  /** Karara gore koma (0..52); 0 = karar (durak). */
+  koma: number;
+  /** Karara gore cent (koma × 1200/53). */
+  cents: number;
+  /** Bu derecenin korpustaki kullanim payi (0..1). */
+  share: number;
+}
+
+/**
+ * Makamin OTANTIK 53-EDO (Holder komasi / AEU) dizisi — SymbTr `Koma53`
+ * sutunundan OTONOM turetilir. 12-TET yaklasik `intervals`'in aksine gercek
+ * mikrotonal perdeleri tasir (hicaz'in 113c ikilisi, ussak'in 158c ikilisi).
+ */
+export interface MakamKomaScale {
+  /** Karar perde-sinifi (mutlak, 0..52); korpus son-nota modundan. */
+  kararPC: number;
+  /** Karar tespitinin korpustaki tutarliligi (0..1). */
+  kararAgreement: number;
+  /** Karara gore artan dizi dereceleri (koma/cent/pay). */
+  degrees: MakamKomaDegree[];
+}
+
 export interface Makam {
   id: string;
   name: string;
@@ -22,6 +46,11 @@ export interface Makam {
   keySignature?: MakamKeyAccidental[];
   /** Arizanin korpustaki tutarliligi (0..1); tanilama/dogrulama icin. */
   keySignatureConsensus?: number;
+  /**
+   * Otantik 53-EDO koma dizisi (SymbTr Koma53'ten otonom). Sesin makam-dogru
+   * calinmasi icin: freq = kararHz × 2^(koma/53). Korpus disinda undefined.
+   */
+  komaScale?: MakamKomaScale;
 }
 
 export interface Usul {

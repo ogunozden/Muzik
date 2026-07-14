@@ -438,6 +438,32 @@ Motorun bir sonraki seviyeye tasinmasi icin (oncelik sirasiyla):
       (Darb-i Turki: kitap velvelesiz der; Darb-i Fetih 1. sekil zaten
       velveleli kaliptir; Zincir halkalarin birlesimidir)
 
+### F13 — Otantik makam perdesi (53-EDO / AEU koma) [ARASTIRMA + UYGULAMA]
+
+Kullanici: "kalanlar icin kapsamli arastirma yap. en dogru kurgu ne? en dogru
+teknoloji ne". Arastirma sonucu (SymbTr Koma53 sutunu + tomato/makam_information
++ AEU 53-EDO + VexFlow koma arizalari): makam perdesi icin EN DOGRU TEKNOLOJI
+53-EDO (Holder komasi, 1 koma=1200/53≈22.64c), veri korpusta MEVCUT.
+
+- [x] F13.1 Otonom koma dizisi turetimi: derive-makam-corpus.mjs artik txt
+      `Koma53` sutunundan makam basina KARAR-GORELI koma dizisi turetir (karar =
+      son-nota perde-sinifi modu; dereceler karara normalize -> transpozisyondan
+      bagimsiz). 75 makam. Dogrulama: hicaz 113c ikili, ussak/huseyni 158c notr
+      ikili, rast 385c notr uclu — hepsi 12-TET'te IMKANSIZ, saf korpustan sifir
+      fabrikasyon. makam-corpus.json'a komaScales alani (committed kaynak-truth).
+- [x] F13.2 Tip + bag + ses: Makam.komaScale (MakamKomaScale/MakamKomaDegree);
+      MAKAM_DATA korpustan baglar. komaToFrequency(kararHz,koma)=kararHz×2^(koma/
+      53); getMakamKomaFrequencies makam perdelerini Hz'e cevirir (karar makamin
+      nominal tonic'ine demirlenir). Motor: playScaleFrequencies/playScaleAt-
+      Frequencies (mevcut targetFrequency sample+synth yolu). editorStore.play-
+      MakamScale koma dizisi varsa GERCEK mikrotonal perdede calar, yoksa 12-TET
+      diziye duser. 9 test (turetim dogrulugu + 53-EDO matematigi + Hz uretimi).
+- [ ] F13.3 Notasyon: VexFlow koma arizalari (+ =1 koma, bs =5 koma, bss =8
+      koma; Bakiye 4 koma ≈ ceyrek-ton). SymbTr NotaAE/Nota53 adlari zaten koma
+      arizasini tasir; skor motorunda koma dizisi -> arıza glyph eslemesi.
+- [ ] F13.4 Perde adlari (Rast/Dugah/Segah/...) + karar/guclu tomato
+      makam_information'a karsi capraz-dogrulama gate'i (opsiyonel saglamlik).
+
 ### Dis Girdi Bekleyenler (ADR 0002 Karar 3 sozlesmesi)
 
 Kod tarafinda yapilabilecek her sey bitti; kapanis DIS girdiye bagli. Cikis

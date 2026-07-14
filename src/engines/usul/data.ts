@@ -168,7 +168,12 @@ export const USUL_DATA: Usul[] = [
     [1, "dum", 1], [2, "tek", 1], [3, "tek", 1], [4, "dum", 2], [6, "tek", 2], [8, "tek", 2],
   ]), // s.63
   makeUsul("aksaksemai", "Aksaksemâî", "Aksak Semai", 10, "8", AKSAK_SEMAI), // s.67
-  makeUsul("curcuna", "Curcuna", "Curcuna", 10, "16", AKSAK_SEMAI), // s.66: 10/16 mertebesine curcuna denir
+  // Curcuna = 10/8 (gercek notasyon). Kitap (s.66) onu Aksak Semai'nin 10/16
+  // mertebesi sayar ama SymbTr v3 korpusundaki curcuna eserlerinin TAMAMI 10/8
+  // notalidir; pedagoji de 10/8 der (darp: 3+2+2+3 = Düm2 Te1 Kâ2 Düm2 Tek2
+  // Tek1, Aksak Semai ile ayni desen — kaynaklar ikisini esitler; curcuna
+  // livelier/hizli karakterdir). 10/16 curcuna'yi 2x hizli caliyordu.
+  makeUsul("curcuna", "Curcuna", "Curcuna", 10, "8", AKSAK_SEMAI), // s.66 + korpus 10/8
   makeUsul("lenkfahte", "Lenk Fahte", "Lenk Fahte", 10, "4", [
     [1, "dum", 2], [3, "tek", 3], [6, "dum", 1], [7, "tek", 2], [9, "te", 1], [10, "ke", 1],
   ]), // s.76 (daima 2. mertebesi 10/4 kullanilir)

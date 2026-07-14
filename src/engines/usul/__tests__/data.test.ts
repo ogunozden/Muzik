@@ -89,9 +89,11 @@ describe("usul/data", () => {
       expect(getUsulById("ciftesofyan")?.symbols).toEqual(aksak?.symbols);
     });
 
-    it("Curcuna is the 10/16 mertebe of Aksak Semai (s.66)", () => {
+    it("Curcuna is notated 10/8 (corpus) with the Aksak Semai stroke pattern", () => {
+      // Kitap s.66 curcuna'yi 10/16 mertebe sayar, ama SymbTr korpusundaki tum
+      // curcuna eserleri 10/8'dir; 10/16 curcuna'yi 2x hizli caliyordu.
       const curcuna = getUsulById("curcuna");
-      expect(curcuna?.unit).toBe("16");
+      expect(curcuna?.unit).toBe("8");
       expect(curcuna?.symbols).toEqual(getUsulById("aksaksemai")?.symbols);
     });
 
@@ -155,7 +157,7 @@ describe("usul/data", () => {
       expect(getUsulBeatDuration(getUsulById("yuruksemai")!, 120)).toBeCloseTo(0.25); // 6/8
       expect(getUsulBeatDuration(getUsulById("senginsemai")!, 120)).toBeCloseTo(0.5); // 6/4
       expect(getUsulBeatDuration(getUsulById("agirsemai")!, 120)).toBeCloseTo(1); // 6/2
-      expect(getUsulBeatDuration(getUsulById("curcuna")!, 120)).toBeCloseTo(0.125); // 10/16
+      expect(getUsulBeatDuration(getUsulById("curcuna")!, 120)).toBeCloseTo(0.25); // 10/8
     });
 
     it("returns a positive duration for every usul", () => {

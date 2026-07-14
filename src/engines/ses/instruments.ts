@@ -331,7 +331,11 @@ export function buildRhythmSchedule(
     .sort((left, right) => left.beat - right.beat)
     .map((symbol) => ({
       startOffset: (symbol.beat - 1) * beatDuration,
-      beatDuration: beatDuration * Math.max(symbol.timeValue ?? 1, 0.25),
+      // Zarf penceresi EN FAZLA bir vurus: uzun degerli darplarda (orn.
+      // Devr-i Kebir'in 2 vurusluk Tek'leri) pencere degerle olceklenince
+      // sample kaydindaki dogal seken ikinci vurus da duyuluyordu
+      // (2026-07-14 kullanici raporu: "teklerde iki vurus geliyor").
+      beatDuration: beatDuration * Math.min(Math.max(symbol.timeValue ?? 1, 0.25), 1),
       symbol: symbol.symbol,
       isAccent: symbol.isAccent,
     }));

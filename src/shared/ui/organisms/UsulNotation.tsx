@@ -228,7 +228,7 @@ export function UsulNotation({
                     fill={isCurrent ? COLORS.playing : style.color}
                     letterSpacing="0.04em"
                   >
-                    {style.label}
+                    {(sym.syllable ?? style.label).toLocaleUpperCase("tr")}
                   </text>
                 </g>
               );

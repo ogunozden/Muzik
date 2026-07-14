@@ -58,4 +58,18 @@ describe("UsulPage", () => {
       "4",
     );
   });
+
+  it("plays the velvele pattern when the velvele toggle is enabled", async () => {
+    render(<UsulPage />);
+
+    const velveleToggle = await screen.findByRole("checkbox", {name: "Velvele"});
+    fireEvent.click(velveleToggle);
+    fireEvent.click(screen.getByRole("button", {name: "Ritmi Çal"}));
+
+    await waitFor(() => expect(playRhythmMock).toHaveBeenCalled());
+    // Sofyan ana deseni 3 darb, velvelesi 5 darbdir (s.18): Dum Te Ke Tek Ka.
+    const symbols = (playRhythmMock.mock.calls[0] as unknown[])[1] as Array<{symbol: string}>;
+    expect(symbols).toHaveLength(5);
+    expect(symbols.map((s) => s.symbol)).toEqual(["dum", "te", "ke", "tek", "ka"]);
+  });
 });

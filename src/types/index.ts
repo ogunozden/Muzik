@@ -19,11 +19,15 @@ export interface Usul {
   unit: string;
   symbols: UsulSymbol[];
   stressPattern: number[];
+  /** Kitaptaki VELVELESI dizilisi (susleme vuruslari); kaynakta yoksa tanimsiz. */
+  velvele?: UsulSymbol[];
 }
 
 export interface UsulSymbol {
   beat: number;
   symbol: "dum" | "tek" | "te" | "ke" | "ka" | "ta" | "hek" | "";
+  /** Gorsel hece etiketi (velvelede DU/ME gibi); yoksa sembol adi kullanilir. */
+  syllable?: string;
   isAccent: boolean;
   timeValue: number;
 }

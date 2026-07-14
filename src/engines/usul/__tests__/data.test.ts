@@ -41,6 +41,26 @@ describe("usul/data", () => {
       }
     });
 
+    it("velvele patterns tile the cycle exactly like the main pattern", () => {
+      const withVelvele = USUL_DATA.filter((usul) => usul.velvele?.length);
+      expect(withVelvele.length).toBeGreaterThanOrEqual(17);
+      for (const usul of withVelvele) {
+        let cursor = 1;
+        for (const symbol of usul.velvele!) {
+          expect(symbol.beat, `${usul.id} velvele: vurus ${symbol.beat} beklenen ${cursor}`).toBe(cursor);
+          cursor += symbol.timeValue;
+        }
+        expect(cursor, `${usul.id} velvele: dongu sonu`).toBe(usul.beats + 1);
+      }
+    });
+
+    it("Aksak velvelesi is Düm TeKe Tek Kâ DüMe Düm Hek Tek (s.47)", () => {
+      const velvele = getUsulById("aksak")?.velvele;
+      expect(velvele?.map((s) => s.syllable ?? s.symbol)).toEqual([
+        "dum", "te", "ke", "tek", "ka", "Dü", "Me", "dum", "hek", "tek",
+      ]);
+    });
+
     it("accents are exactly the right-hand strong strokes (dum/ta)", () => {
       for (const usul of USUL_DATA) {
         for (const symbol of usul.symbols) {

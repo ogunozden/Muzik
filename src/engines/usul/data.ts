@@ -22,18 +22,25 @@ import {Usul, UsulSymbol} from "@/types";
  * desende timeValue toplami usulun zaman adedine esittir (test guvencesi).
  */
 
-type Stroke = [beat: number, symbol: UsulSymbol["symbol"], timeValue: number];
+type Stroke = [beat: number, symbol: UsulSymbol["symbol"], timeValue: number, syllable?: string];
 
 const ACCENTED: ReadonlySet<string> = new Set(["dum", "ta"]);
 
 function toSymbols(strokes: readonly Stroke[]): UsulSymbol[] {
-  return strokes.map(([beat, symbol, timeValue]) => ({
+  return strokes.map(([beat, symbol, timeValue, syllable]) => ({
     beat,
     symbol,
     isAccent: ACCENTED.has(symbol),
     timeValue,
+    ...(syllable ? {syllable} : {}),
   }));
 }
+
+// Velvele kisayollari: DU = kisa dum hecesi ("dü", sag el), ME = sol elin
+// donus vurusu (ses ailesi ke). Kitap velvele satirlarindaki heceler
+// `syllable` olarak korunur; ses eslemesi sembol uzerinden yapilir.
+const DU = (beat: number, timeValue = 0.5): Stroke => [beat, "dum", timeValue, "Dü"];
+const ME = (beat: number, timeValue = 0.5): Stroke => [beat, "ke", timeValue, "Me"];
 
 function toStressPattern(beats: number, symbols: readonly UsulSymbol[]): number[] {
   const stress = new Array<number>(beats).fill(0);
@@ -55,6 +62,7 @@ function makeUsul(
   beats: number,
   unit: string,
   strokes: readonly Stroke[],
+  velvele?: readonly Stroke[],
 ): Usul {
   const symbols = toSymbols(strokes);
   return {
@@ -66,6 +74,7 @@ function makeUsul(
     unit,
     symbols,
     stressPattern: toStressPattern(beats, symbols),
+    ...(velvele ? {velvele: toSymbols(velvele)} : {}),
   };
 }
 
@@ -75,6 +84,33 @@ const CIFTE_DUYEK: Stroke[] = [...DUYEK, ...shift(DUYEK, 8)]; // s.109: iki duye
 const AKSAK: Stroke[] = [[1, "dum", 2], [3, "te", 1], [4, "ke", 1], [5, "dum", 2], [7, "tek", 2], [9, "tek", 1]]; // s.47
 const AKSAK_SEMAI: Stroke[] = [[1, "dum", 2], [3, "te", 1], [4, "ka", 2], [6, "dum", 2], [8, "tek", 2], [10, "tek", 1]]; // s.67
 const YURUK_SEMAI: Stroke[] = [[1, "dum", 1], [2, "tek", 1], [3, "tek", 1], [4, "dum", 1], [5, "tek", 2]]; // s.25
+// Velveleler (ayni sayfalardaki VELVELESI satirlari). Yalniz sekli net
+// okunanlar aktarildi; kalanlar icin bkz. TODO "velvele 2. asama".
+const YURUK_SEMAI_VELVELE: Stroke[] = [
+  [1, "dum", 1], [2, "tek", 1], [3, "ka", 1], DU(4), ME(4.5), [5, "tek", 0.5], [5.5, "ka", 1.5],
+]; // s.25
+const DUYEK_VELVELE: Stroke[] = [
+  [1, "dum", 1], [2, "te", 0.5], [2.5, "ke", 0.5], [3, "tek", 1], [4, "ka", 1],
+  DU(5), ME(5.5), [6, "dum", 1], [7, "hek", 1], [8, "te", 0.5], [8.5, "ke", 0.5],
+]; // s.40
+const AKSAK_VELVELE: Stroke[] = [
+  [1, "dum", 1], [2, "te", 0.5], [2.5, "ke", 0.5], [3, "tek", 1], [4, "ka", 1],
+  DU(5), ME(5.5), [6, "dum", 1], [7, "hek", 1], [8, "tek", 2],
+]; // s.47
+const EVFER_VELVELE: Stroke[] = [
+  [1, "dum", 1], [2, "te", 0.5], [2.5, "ke", 0.5], [3, "tek", 1], [4, "ka", 1],
+  DU(5), ME(5.5), [6, "dum", 1], [7, "hek", 1], [8, "hek", 2],
+]; // s.53
+const MUSEMMEN_VELVELE: Stroke[] = [
+  [1, "dum", 1], [2, "dum", 1], [3, "te", 0.5], [3.5, "ke", 0.5], [4, "tek", 1], [5, "ka", 1],
+  DU(6), ME(6.5), [7, "tek", 0.5], [7.5, "ka", 1.5],
+]; // s.44-45
+const DEVRI_HINDI_VELVELE: Stroke[] = [
+  [1, "dum", 1], [2, "tek", 1], [3, "te", 0.5], [3.5, "ke", 0.5], [4, "tek", 1], [5, "ka", 1], [6, "tek", 1], [7, "ka", 1],
+]; // s.34
+const DEVRI_TURAN_VELVELE: Stroke[] = [
+  DU(1), ME(1.5), DU(2), ME(2.5), [3, "dum", 2], [5, "tek", 2], [7, "tek", 1],
+]; // s.37
 const FAHTE: Stroke[] = [
   [1, "dum", 2], [3, "dum", 1], [4, "dum", 1], [5, "tek", 2], [7, "tek", 2],
   [9, "tek", 2], [11, "dum", 2], [13, "ta", 2], [15, "hek", 2],
@@ -99,30 +135,35 @@ const BERAFSAN: Stroke[] = [
 
 export const USUL_DATA: Usul[] = [
   // --- Kucuk usuller ---
-  makeUsul("nimsofyan", "Nimsofyan", "Nimsofyan", 2, "4", [[1, "dum", 1], [2, "tek", 1]]), // s.11
-  makeUsul("semai", "Semai", "Semai", 3, "4", [[1, "dum", 1], [2, "tek", 1], [3, "tek", 1]]), // s.15
-  makeUsul("sofyan", "Sofyan", "Sofyan", 4, "4", [[1, "dum", 2], [3, "te", 1], [4, "ke", 1]]), // s.18
-  makeUsul("turkaksagi", "Türk Aksağı", "Turkish Aksak", 5, "8", [[1, "dum", 2], [3, "tek", 2], [5, "tek", 1]]), // s.20
-  makeUsul("zafer", "Zafer", "Zafer", 5, "8", [[1, "dum", 1], [2, "tek", 2], [4, "dum", 1], [5, "tek", 1]]), // s.23
-  makeUsul("yuruksemai", "Yürüksemâî", "Yuruk Semai", 6, "8", YURUK_SEMAI), // s.25
-  makeUsul("senginsemai", "Sengin Semai", "Sengin Semai", 6, "4", YURUK_SEMAI), // s.25: YS 2. mertebesi
-  makeUsul("agirsemai", "Ağır Semai", "Agir Semai", 6, "2", YURUK_SEMAI), // s.25: YS 3. mertebesi (agir semai)
+  makeUsul("nimsofyan", "Nimsofyan", "Nimsofyan", 2, "4", [[1, "dum", 1], [2, "tek", 1]],
+    [[1, "dum", 1], [2, "te", 0.5], [2.5, "ke", 0.5]]), // s.11
+  makeUsul("semai", "Semai", "Semai", 3, "4", [[1, "dum", 1], [2, "tek", 1], [3, "tek", 1]],
+    [[1, "dum", 1], [2, "tek", 1], [3, "te", 0.5], [3.5, "ke", 0.5]]), // s.15
+  makeUsul("sofyan", "Sofyan", "Sofyan", 4, "4", [[1, "dum", 2], [3, "te", 1], [4, "ke", 1]],
+    [[1, "dum", 2], [3, "te", 0.5], [3.5, "ke", 0.5], [4, "tek", 0.5], [4.5, "ka", 0.5]]), // s.18
+  makeUsul("turkaksagi", "Türk Aksağı", "Turkish Aksak", 5, "8", [[1, "dum", 2], [3, "tek", 2], [5, "tek", 1]],
+    [DU(1), ME(1.5), [2, "dum", 1], [3, "hek", 1], [4, "tek", 2]]), // s.20
+  makeUsul("zafer", "Zafer", "Zafer", 5, "8", [[1, "dum", 1], [2, "tek", 2], [4, "dum", 1], [5, "tek", 1]],
+    [[1, "dum", 1], [2, "te", 0.5], [2.5, "ke", 1.5], [4, "dum", 1], [5, "tek", 1]]), // s.23
+  makeUsul("yuruksemai", "Yürüksemâî", "Yuruk Semai", 6, "8", YURUK_SEMAI, YURUK_SEMAI_VELVELE), // s.25
+  makeUsul("senginsemai", "Sengin Semai", "Sengin Semai", 6, "4", YURUK_SEMAI, YURUK_SEMAI_VELVELE), // s.25: YS 2. mertebesi
+  makeUsul("agirsemai", "Ağır Semai", "Agir Semai", 6, "2", YURUK_SEMAI, YURUK_SEMAI_VELVELE), // s.25: YS 3. mertebesi (agir semai)
   makeUsul("darb", "Darb", "Darb", 6, "4", [[1, "dum", 2], [3, "tek", 2], [5, "tek", 2]]), // s.29
   makeUsul("devirhindi", "Devr-i Hindi", "Devr-i Hindi", 7, "8", [
     [1, "dum", 1], [2, "tek", 1], [3, "tek", 1], [4, "dum", 2], [6, "tek", 2],
-  ]), // s.34
+  ], DEVRI_HINDI_VELVELE), // s.34
   makeUsul("devirituran", "Devr-i Turan", "Devr-i Turan", 7, "8", [
     [1, "dum", 2], [3, "tek", 2], [5, "tek", 3],
-  ]), // s.37 (yaygin mertebesi 7/16; 7/8 de gosterilir)
-  makeUsul("duyek", "Düyek", "Duyek", 8, "8", DUYEK), // s.40 (birinci mertebe 8/8)
-  makeUsul("agirduyek", "Ağırdüyek", "Agir Duyek", 8, "4", DUYEK), // s.40: duyek 2. mertebesi
-  makeUsul("musemmen", "Müsemmen", "Musemmen", 8, "8", [[1, "dum", 3], [4, "tek", 2], [6, "tek", 3]]), // s.44
-  makeUsul("aksak", "Aksak", "Aksak", 9, "8", AKSAK), // s.47
-  makeUsul("ciftesofyan", "Çiftesofyan", "Cifte Sofyan", 9, "8", AKSAK), // s.46: aksagin yurukce vurulusu
-  makeUsul("agiraksak", "Ağır Aksak", "Agir Aksak", 9, "4", AKSAK), // s.46-47: aksak 2. mertebesi
+  ], DEVRI_TURAN_VELVELE), // s.37 (yaygin mertebesi 7/16; 7/8 de gosterilir)
+  makeUsul("duyek", "Düyek", "Duyek", 8, "8", DUYEK, DUYEK_VELVELE), // s.40 (birinci mertebe 8/8)
+  makeUsul("agirduyek", "Ağırdüyek", "Agir Duyek", 8, "4", DUYEK, DUYEK_VELVELE), // s.40: duyek 2. mertebesi
+  makeUsul("musemmen", "Müsemmen", "Musemmen", 8, "8", [[1, "dum", 3], [4, "tek", 2], [6, "tek", 3]], MUSEMMEN_VELVELE), // s.44
+  makeUsul("aksak", "Aksak", "Aksak", 9, "8", AKSAK, AKSAK_VELVELE), // s.47
+  makeUsul("ciftesofyan", "Çiftesofyan", "Cifte Sofyan", 9, "8", AKSAK, AKSAK_VELVELE), // s.46: aksagin yurukce vurulusu
+  makeUsul("agiraksak", "Ağır Aksak", "Agir Aksak", 9, "4", AKSAK, AKSAK_VELVELE), // s.46-47: aksak 2. mertebesi
   makeUsul("evfer", "Evfer", "Evfer", 9, "8", [
     [1, "dum", 2], [3, "te", 1], [4, "ke", 1], [5, "dum", 2], [7, "tek", 1], [8, "tek", 2],
-  ]), // s.53: aksaktan farki son iki tek'in deger degisimi
+  ], EVFER_VELVELE), // s.53: aksaktan farki son iki tek'in deger degisimi
   makeUsul("oynak", "Oynak", "Oynak", 9, "8", [
     [1, "dum", 1], [2, "tek", 1], [3, "tek", 1], [4, "dum", 2], [6, "tek", 2], [8, "tek", 2],
   ]), // s.63

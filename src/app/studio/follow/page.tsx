@@ -195,7 +195,7 @@ export default function EserTakipPage() {
       symbol: normalizePercussionSymbol(hit.symbol),
       isAccent: hit.isAccent,
       timeValue: hit.timeValue,
-      syllable: "syllable" in hit ? hit.syllable : hit.symbol || "-",
+      syllable: hit.syllable ?? (hit.symbol || "-"),
     }));
   }, [selectedPiece.usulHits, usul]);
   const currentCycleBeat = usul ? (currentBeat % usul.beats) + 1 : 0;

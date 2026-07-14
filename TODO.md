@@ -361,6 +361,25 @@ Surec icinde tespit edilenler listeye eklendi ve tamamlananlar isaretlendi:
 - [x] F11.4 Yeni darplarin ses eslemesi: te/hek->tek, ka->ke, ta->dum
       (normalizePercussionSymbol); kesirli kuyruk vuruslari (32.5 gibi)
       schedule filtresinde artik dusmuyor (beat < beats+1)
+- [x] F11.5 Cift-vurus duzeltmesi: vurus zarfi nota degeriyle olcekleniyordu;
+      2 vurusluk Tek'lerde pencere uzayinca kudum kaydindaki seken ikinci
+      vurus duyuluyordu (kullanici raporu). Zarf artik en fazla 1 vurus
+      (min(timeValue,1)); sozlesme testi eklendi
+- [x] F11.6 VELVELE DESTEGI: Usul tipine velvele alani + UsulSymbol.syllable
+      (Du/Me heceleri); /rhythm'de Velvele anahtari (yalniz kaynakta velvelesi
+      olanlarda gorunur); kitaptaki VELVELESI satirlarindan 17 kayit aktarildi
+      (nimsofyan, semai, sofyan, turkaksagi, zafer, YS+sengin+agir, devirhindi,
+      devirituran, duyek+agirduyek, musemmen, aksak+cifte+agir, evfer);
+      velvele dosum degismezleri + Aksak ornegi + toggle davranisi testte
+- [ ] F11.7 Velvele 2. asama: sekli yogun/cok satirli oldugu icin bu turda
+      DAHIL EDILMEYENLER (fabrikasyon yapilmadi): darb(s.29), oynak(s.63),
+      aksaksemai+curcuna(s.67), lenkfahte(s.76), frenkcin(s.85),
+      nimcember(s.90), devrirevan(s.101), raksan(s.103) + buyuk usuller
+      (nimberafsan s.122, fahte s.140, cember s.158, devrikebir s.182+,
+      hafif s.200, berafsan s.209). Yontem hazir: render'li sayfalar
+      scratchpad'de; zoom/parca okumayla ayni boru hattina eklenir.
+      (Darb-i Turki: kitap velvelesiz der; Darb-i Fetih 1. sekil zaten
+      velveleli kaliptir; Zincir halkalarin birlesimidir)
 
 ### Dis Girdi Bekleyenler (ADR 0002 Karar 3 sozlesmesi)
 

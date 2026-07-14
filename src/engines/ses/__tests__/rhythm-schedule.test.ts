@@ -58,4 +58,12 @@ describe("buildRhythmSchedule", () => {
 
     expect(schedule).toEqual([{startOffset: 1, beatDuration: 1, symbol: "dum", isAccent: true}]);
   });
+
+  it("caps the hit envelope at one beat so long-valued strokes do not expose sample rebound", () => {
+    // Devr-i Kebir'in 2 vurusluk Tek'lerinde pencere degerle olceklenince
+    // kudum kaydindaki seken ikinci vurus da duyuluyordu.
+    const schedule = buildRhythmSchedule(4, [{beat: 1, symbol: "tek", isAccent: false, timeValue: 2}], 60);
+
+    expect(schedule).toEqual([{startOffset: 0, beatDuration: 1, symbol: "tek", isAccent: false}]);
+  });
 });

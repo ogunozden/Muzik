@@ -48,6 +48,7 @@ export default function UsulPage() {
   } = useEditorStore();
   const [isRhythmPlaying, setIsRhythmPlaying] = useState(false);
   const [isLoopEnabled, setIsLoopEnabled] = useState(true);
+  const [isVelveleEnabled, setIsVelveleEnabled] = useState(false);
   const [currentSymbolIndex, setCurrentSymbolIndex] = useState(-1);
   const [progressBeat, setProgressBeat] = useState(-1);
   const [cycleCount, setCycleCount] = useState(0);
@@ -61,7 +62,10 @@ export default function UsulPage() {
     label: usul.name,
   }));
 
-  const symbols = selectedUsulObj?.symbols;
+  // Velvele modu: kitaptaki susleme dizilisi varsa ve secildiyse onu cal/goster.
+  const hasVelvele = Boolean(selectedUsulObj?.velvele?.length);
+  const symbols =
+    isVelveleEnabled && selectedUsulObj?.velvele?.length ? selectedUsulObj.velvele : selectedUsulObj?.symbols;
   const activeSymbol = currentSymbolIndex >= 0 ? symbols?.[currentSymbolIndex] : null;
   const percussionItems = ENSTRUMAN_LIST.filter((instrument) =>
     (PERCUSSION_INSTRUMENTS as readonly string[]).includes(instrument.id as string)
@@ -86,12 +90,13 @@ export default function UsulPage() {
   const playSelectedUsul = useCallback(async () => {
     const usul = selectedUsulObj;
     if (!usul || isPlayingRef.current) return;
+    const pattern = isVelveleEnabled && usul.velvele?.length ? usul.velvele : usul.symbols;
 
     // Ses tamamen hazir olmadan gorsel sayac baslamaz; aksi halde ilk turda
     // imlec, sample indirme suresi kadar one geciyordu.
     const audioReady = await initAudio();
     if (!audioReady) return;
-    await preloadRhythm(usul.symbols, selectedPercussionInstrument);
+    await preloadRhythm(pattern, selectedPercussionInstrument);
     if (isPlayingRef.current) return;
 
     const beatDuration = getUsulBeatDuration(usul, bpm);
@@ -106,7 +111,7 @@ export default function UsulPage() {
 
     const scheduleCycle = (cycleIndex: number) => {
       if (!isPlayingRef.current) return;
-      void playRhythm(usul.beats, usul.symbols, bpm, selectedPercussionInstrument, usul.unit).catch(stopRhythm);
+      void playRhythm(usul.beats, pattern, bpm, selectedPercussionInstrument, usul.unit).catch(stopRhythm);
       if (!isLoopRef.current) {
         audioTimerRef.current = window.setTimeout(stopRhythm, cycleMs + CYCLE_TAIL_MS);
         return;
@@ -132,12 +137,12 @@ export default function UsulPage() {
       setCycleCount(Math.floor(elapsedBeats / usul.beats) + 1);
       // Aktif darp = pozisyonu gecilmis SON sembol (beat kolonuna gore).
       let active = 0;
-      for (let index = 0; index < usul.symbols.length; index += 1) {
-        if (usul.symbols[index].beat <= beatInCycle + 1 + 1e-6) active = index;
+      for (let index = 0; index < pattern.length; index += 1) {
+        if (pattern[index].beat <= beatInCycle + 1 + 1e-6) active = index;
       }
       setCurrentSymbolIndex(active);
     }, CURSOR_TICK_MS);
-  }, [bpm, selectedPercussionInstrument, selectedUsulObj, stopRhythm]);
+  }, [bpm, isVelveleEnabled, selectedPercussionInstrument, selectedUsulObj, stopRhythm]);
 
   useEffect(() => {
     if (!selectedUsulObj) setSelectedUsul("sofyan");
@@ -196,19 +201,36 @@ export default function UsulPage() {
             step={10}
             size="sm"
           />
-          <label className="flex cursor-pointer items-center gap-2 pb-1 text-sm text-[var(--color-text-primary)]">
-            <input
-              type="checkbox"
-              aria-label="Döngü"
-              checked={isLoopEnabled}
-              onChange={(event) => {
-                isLoopRef.current = event.target.checked;
-                setIsLoopEnabled(event.target.checked);
-              }}
-              className="h-4 w-4 accent-[var(--color-primary-600)]"
-            />
-            Döngü
-          </label>
+          <div className="flex flex-col gap-2 pb-1">
+            <label className="flex cursor-pointer items-center gap-2 text-sm text-[var(--color-text-primary)]">
+              <input
+                type="checkbox"
+                aria-label="Döngü"
+                checked={isLoopEnabled}
+                onChange={(event) => {
+                  isLoopRef.current = event.target.checked;
+                  setIsLoopEnabled(event.target.checked);
+                }}
+                className="h-4 w-4 accent-[var(--color-primary-600)]"
+              />
+              Döngü
+            </label>
+            {hasVelvele && (
+              <label className="flex cursor-pointer items-center gap-2 text-sm text-[var(--color-text-primary)]">
+                <input
+                  type="checkbox"
+                  aria-label="Velvele"
+                  checked={isVelveleEnabled}
+                  onChange={(event) => {
+                    stopRhythm();
+                    setIsVelveleEnabled(event.target.checked);
+                  }}
+                  className="h-4 w-4 accent-[var(--color-primary-600)]"
+                />
+                Velvele
+              </label>
+            )}
+          </div>
         </PageSurface>
 
         {selectedUsulObj && (
@@ -223,7 +245,7 @@ export default function UsulPage() {
               <p className="mb-1 text-xs text-[var(--color-text-secondary)]">Aktif darp</p>
               <p className="font-semibold text-[var(--color-text-primary)]">
                 {activeSymbol
-                  ? `${SYMBOL_LABELS[activeSymbol.symbol] ?? activeSymbol.symbol} (${activeSymbol.beat}. vuruş)`
+                  ? `${activeSymbol.syllable ?? SYMBOL_LABELS[activeSymbol.symbol] ?? activeSymbol.symbol} (${activeSymbol.beat}. vuruş)`
                   : "Hazır"}
               </p>
             </div>

@@ -50,8 +50,8 @@ describe("buildRhythmSchedule", () => {
     );
 
     expect(schedule).toEqual([
-      {startOffset: 0, beatDuration: 0.5, symbol: "dum", isAccent: true},
-      {startOffset: 1, beatDuration: 0.5, symbol: "ke", isAccent: false},
+      {startOffset: 0, beatDuration: 0.5, symbol: "dum", isAccent: true, gainScale: 1},
+      {startOffset: 1, beatDuration: 0.5, symbol: "ke", isAccent: false, gainScale: 1},
     ]);
   });
 
@@ -66,8 +66,8 @@ describe("buildRhythmSchedule", () => {
     );
 
     expect(schedule).toEqual([
-      {startOffset: 8, beatDuration: 0.5, symbol: "tek", isAccent: false},
-      {startOffset: 8.5, beatDuration: 0.5, symbol: "ke", isAccent: false},
+      {startOffset: 8, beatDuration: 0.5, symbol: "tek", isAccent: false, gainScale: 0.68},
+      {startOffset: 8.5, beatDuration: 0.5, symbol: "ke", isAccent: false, gainScale: 0.68},
     ]);
   });
 
@@ -85,15 +85,15 @@ describe("buildRhythmSchedule", () => {
     );
 
     expect(schedule).toEqual([
-      {startOffset: 0, beatDuration: 0.25, symbol: "dum", isAccent: true},
-      {startOffset: 0.5, beatDuration: 0.25, symbol: "tek", isAccent: false},
+      {startOffset: 0, beatDuration: 0.25, symbol: "dum", isAccent: true, gainScale: 1},
+      {startOffset: 0.5, beatDuration: 0.25, symbol: "tek", isAccent: false, gainScale: 1},
     ]);
   });
 
   it("keeps the quarter-note default when unit is omitted (backward compat)", () => {
     const schedule = buildRhythmSchedule(2, [{beat: 2, symbol: "dum", isAccent: true}], 60);
 
-    expect(schedule).toEqual([{startOffset: 1, beatDuration: 1, symbol: "dum", isAccent: true}]);
+    expect(schedule).toEqual([{startOffset: 1, beatDuration: 1, symbol: "dum", isAccent: true, gainScale: 1}]);
   });
 
   it("caps the hit envelope at one beat so long-valued strokes do not expose sample rebound", () => {
@@ -101,6 +101,21 @@ describe("buildRhythmSchedule", () => {
     // kudum kaydindaki seken ikinci vurus da duyuluyordu.
     const schedule = buildRhythmSchedule(4, [{beat: 1, symbol: "tek", isAccent: false, timeValue: 2}], 60);
 
-    expect(schedule).toEqual([{startOffset: 0, beatDuration: 1, symbol: "tek", isAccent: false}]);
+    expect(schedule).toEqual([{startOffset: 0, beatDuration: 1, symbol: "tek", isAccent: false, gainScale: 1}]);
+  });
+
+  it("softens ornament (short-value) strokes so the main darbs stay prominent (F12.4)", () => {
+    // buildRhythmSchedule normalize sonrasi calisir (te->tek, ka->ke). Kisa
+    // deger (0.5) velvele suslemesidir -> daha kisik gain.
+    const schedule = buildRhythmSchedule(
+      4,
+      [
+        {beat: 1, symbol: "dum", isAccent: true, timeValue: 2},
+        {beat: 3, symbol: "tek", isAccent: false, timeValue: 0.5},
+        {beat: 3.5, symbol: "ke", isAccent: false, timeValue: 0.5},
+      ],
+      60,
+    );
+    expect(schedule.map((hit) => hit.gainScale)).toEqual([1, 0.68, 0.68]);
   });
 });

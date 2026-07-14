@@ -408,8 +408,9 @@ Motorun bir sonraki seviyeye tasinmasi icin (oncelik sirasiyla):
       (duraksamasiz gecis)
 - [ ] F12.3 Sayilma (count-in) + gorsel metronom flash; hazirlik icin
       1-2 tur bos vurus secenegi
-- [ ] F12.4 Vurus dinamigi: darp turune gore hafif/kuvvetli oynatma
-      (dum>tek>ke) zaten var; velvele hecelerine (te-ke) daha kisik gain
+- [x] F12.4 Vurus dinamigi: darp gain'i (dum>tek>ke) + velvele susleme
+      vuruslarina (kisa deger, te-ke) ORNAMENT_GAIN_SCALE 0.68 -> ana darplar
+      one cikar; gainScale schedule->hit boyunca tasinir; 2 test
 - [x] F12.5 IMPERATIF IMLEC (motor refaktoru): imlec artik React state ile
       degil, `UsulNotation.setProgress` ile DOGRUDAN DOM'a yazilir (forwardRef
       + useImperativeHandle; UsulPanel de ref'i iletir). SVG her karede

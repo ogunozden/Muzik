@@ -209,6 +209,7 @@ export function scheduleSampledPercussionHit(
   startAt: number,
   beatDuration: number,
   percussionInstrument?: InstrumentType,
+  gainScale: number = 1,
 ): boolean {
   const buffer = getFirstLoadedPercussionSample(symbol, isAccent, percussionInstrument);
   if (!buffer) return false;
@@ -224,6 +225,7 @@ export function scheduleSampledPercussionHit(
     ke: isAccent ? 0.55 : 0.4,
   };
 
-  scheduleSampleBuffer(context, buffer, 1, startAt, durationBySymbol[symbol], gainBySymbol[symbol], 0.05);
+  // gainScale: velvele susleme vuruslarini (F12.4) ana darplardan kisar.
+  scheduleSampleBuffer(context, buffer, 1, startAt, durationBySymbol[symbol], gainBySymbol[symbol] * gainScale, 0.05);
   return true;
 }

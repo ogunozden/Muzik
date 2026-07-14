@@ -21,7 +21,13 @@ export type RhythmScheduleHit = {
   beatDuration: number;
   symbol: PercussionSymbol;
   isAccent: boolean;
+  /** Ana darplar 1.0; velvele susleme vuruslari (kisa deger) daha kisik. */
+  gainScale: number;
 };
+
+// Susleme (velvele) vuruslari — kisa deger (timeValue < 1, orn. te-ke) — ana
+// darplardan daha kisik calinir ki usulun ana iskeleti one ciksin (F12.4).
+const ORNAMENT_GAIN_SCALE = 0.68;
 
 export async function initAudio(): Promise<boolean> {
   if (typeof window === "undefined") {
@@ -300,7 +306,7 @@ export async function playRhythmWithPercussion(
   for (const hit of schedule) {
     const startAt = baseTime + hit.startOffset;
 
-    if (!scheduleSampledPercussionHit(context, hit.symbol, hit.isAccent, startAt, hit.beatDuration, percussionInstrument)) {
+    if (!scheduleSampledPercussionHit(context, hit.symbol, hit.isAccent, startAt, hit.beatDuration, percussionInstrument, hit.gainScale)) {
       if (!SYNTHETIC_FALLBACK_ENABLED) continue;
       schedulePercussionHit(context, hit.symbol, hit.isAccent, startAt, hit.beatDuration, percussionInstrument);
     }
@@ -338,6 +344,7 @@ export function buildRhythmSchedule(
       beatDuration: beatDuration * Math.min(Math.max(symbol.timeValue ?? 1, 0.25), 1),
       symbol: symbol.symbol,
       isAccent: symbol.isAccent,
+      gainScale: (symbol.timeValue ?? 1) < 1 ? ORNAMENT_GAIN_SCALE : 1,
     }));
 }
 
@@ -471,7 +478,7 @@ export async function startRhythmLoop(
       const hit = schedule[hitIndex];
       const at = startAtCtx + cycleIndex * cycleSeconds + hit.startOffset;
       if (at > horizon) break;
-      if (!scheduleSampledPercussionHit(context, hit.symbol, hit.isAccent, at, hit.beatDuration, percussionInstrument)) {
+      if (!scheduleSampledPercussionHit(context, hit.symbol, hit.isAccent, at, hit.beatDuration, percussionInstrument, hit.gainScale)) {
         if (SYNTHETIC_FALLBACK_ENABLED) {
           schedulePercussionHit(context, hit.symbol, hit.isAccent, at, hit.beatDuration, percussionInstrument);
         }

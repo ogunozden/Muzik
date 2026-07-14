@@ -21,6 +21,9 @@ const eslintConfig = [
       "build/**",
       "gereksiz/**",
       "next-env.d.ts",
+      // GitNexus indeksleyicisinin urettigi arac dosyalari (git-ignored);
+      // .cjs icinde mesru require() kullanir, bizim lint kapsamimiz disi.
+      ".gitnexus/**",
     ],
   },
 ];

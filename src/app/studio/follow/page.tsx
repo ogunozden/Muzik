@@ -17,7 +17,7 @@ import {
   getVisualBeatPosition,
   isExactVisualMap,
 } from "@/data/pieces/visual-map";
-import {playArrangement, stopAll, type InstrumentType, type PercussionSymbol} from "@/engines/ses/engine";
+import {normalizePercussionSymbol, playArrangement, stopAll, type InstrumentType, type PercussionSymbol} from "@/engines/ses/engine";
 import {USUL_DATA, getUsulBeatDuration} from "@/engines/usul/data";
 import {ENSTRUMAN_LIST, MELODIC_INSTRUMENTS, PERCUSSION_INSTRUMENTS} from "@/lib/app-constants";
 import {tokens} from "@/shared/tokens";
@@ -191,7 +191,8 @@ export default function EserTakipPage() {
     if (!usul) return [];
     return (selectedPiece.usulHits ?? usul.symbols).map((hit) => ({
       beat: hit.beat,
-      symbol: hit.symbol,
+      // Nazariyat darplari (te/ka/ta/hek) calinabilir sample ailesine indirgenir.
+      symbol: normalizePercussionSymbol(hit.symbol),
       isAccent: hit.isAccent,
       timeValue: hit.timeValue,
       syllable: "syllable" in hit ? hit.syllable : hit.symbol || "-",

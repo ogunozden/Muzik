@@ -8,11 +8,13 @@ import {
   playPercussionSymbolScheduled,
   preloadInstrumentSamples,
   preloadPercussionSamples,
+  preloadPercussionSymbolSamples,
   clearSampleCache as clearSampleCacheBase,
   initAudio as initAudioBase,
   stopAll as stopAllBase,
   getAudioContext,
 } from "./instruments";
+import {isPercussionSymbol} from "./profiles";
 import type {InstrumentType, PercussionSymbol} from "./instruments";
 
 export type ScheduledNote = {
@@ -59,21 +61,55 @@ export async function playScale(
   await playScaleWithInstrument(notes, instrument, duration);
 }
 
+// Nazariyat darplarinin vurmali sample kanallarina eslenmesi: te/hek sol-el
+// hafif vurus ailesinden (tek), ka ke ailesinden, ta sag-el kuvvetli vurus
+// (dum) ailesindendir ("Turk Musikisinde Usuller ve Kudum", s.14).
+const PERCUSSION_SYMBOL_ALIASES: Record<string, string> = {
+  te: "tek",
+  hek: "tek",
+  ka: "ke",
+  ta: "dum",
+};
+
+/** Nazariyat darbini calinabilir sample sembolune indirger (bilinmeyen -> ""). */
+export function normalizePercussionSymbol(symbol: string): PercussionSymbol | "" {
+  const mapped = PERCUSSION_SYMBOL_ALIASES[symbol] ?? symbol;
+  return isPercussionSymbol(mapped) ? mapped : "";
+}
+
 export async function playRhythm(
   beats: number,
   symbols: RhythmSymbolInput[],
   bpm: number = 120,
   percussionInstrument?: InstrumentType,
+  unit: string = "4",
 ): Promise<void> {
   const percussionSymbols: RhythmSymbolInput[] = symbols.map(
     (s) => ({
       beat: s.beat,
-      symbol: s.symbol,
+      symbol: PERCUSSION_SYMBOL_ALIASES[s.symbol] ?? s.symbol,
       isAccent: s.isAccent,
       timeValue: s.timeValue,
     })
   );
-  await playRhythmWithPercussion(beats, percussionSymbols, bpm, percussionInstrument);
+  await playRhythmWithPercussion(beats, percussionSymbols, bpm, percussionInstrument, unit);
+}
+
+/**
+ * Ritim sample'larini calmadan ONCE isitir: usul sayfasi gorsel sayaci
+ * baslatmadan bunu bekler; aksi halde ilk turda imlec, sample indirme
+ * gecikmesi kadar sesin onune geciyordu (2026-07-14 duzeltmesi).
+ */
+export async function preloadRhythm(
+  symbols: RhythmSymbolInput[],
+  percussionInstrument?: InstrumentType,
+): Promise<boolean> {
+  return preloadPercussionSymbolSamples(
+    symbols
+      .map((symbol) => PERCUSSION_SYMBOL_ALIASES[symbol.symbol] ?? symbol.symbol)
+      .filter(isPercussionSymbol),
+    percussionInstrument,
+  );
 }
 
 export async function playSequence(

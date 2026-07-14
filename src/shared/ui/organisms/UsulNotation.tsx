@@ -1,13 +1,16 @@
 /**
- * UsulNotation - Professional Musical Staff Visualization
- * 
- * Oynatma sırasında aktif vuruşu takip eder
- * Video'daki gibi dinamik animasyon
+ * UsulNotation - usul vurus akisinin porte gorunumu.
+ *
+ * Yerlesim VURUS POZISYONUNA orantilidir (dizin sirasina degil): Sofyan'da
+ * Düm 2 vurus kaplar ve Tek 3. vurusta gorunur; esit-aralik varsayimi
+ * imleci kaydiriyordu (2026-07-14 yeniden tasarimi). Oynatma imleci
+ * `progressBeat` (kesirli vurus, 0..beats) ile surekli akar; aktif darp
+ * `currentBeat` (sembol dizini) ile vurgulanir.
  */
 
 "use client";
 
-import React, {useRef, useEffect} from "react";
+import React, {useEffect, useRef} from "react";
 import type {UsulSymbol} from "@/types";
 
 interface UsulNotationProps {
@@ -15,39 +18,37 @@ interface UsulNotationProps {
   unit: string;
   beats: number;
   isPlaying?: boolean;
+  /** Aktif sembolun dizini (vurgu/etiket için). */
   currentBeat?: number;
+  /** Dongu icindeki kesirli vurus konumu (0..beats); oynatma cizgisi bunu izler. */
+  progressBeat?: number;
   size?: "sm" | "md" | "lg";
   className?: string;
 }
 
-// ============================================
-// CONSTANTS
-// ============================================
-
 const COLORS = {
-  staff: "#3E2723",
-  note: "#5D4037",
-  noteHead: "#3E2723",
-  stem: "#3E2723",
-  beam: "#5D4037",
-  accent: "#8B5A2B",
-  ledger: "#9E9E9E",
-  playing: "#D4A574",
-  playingGlow: "#FFB74D",
-  inactive: "#BDBDBD",
+  staff: "#8D6E63",
+  grid: "#D7CCC8",
+  dum: "#8B4513",
+  tek: "#2E5D4B",
+  ke: "#9E7540",
+  playing: "#D84315",
+  playhead: "#D84315",
+  beatNumber: "#8D6E63",
+  label: "#5D4037",
 };
 
-// Note positions on staff
-const NOTE_POSITIONS: Record<string, number> = {
-  dum: 6,
-  tek: 2,
-  ke: -2,
-};
-
-const NOTE_COLORS: Record<string, string> = {
-  dum: COLORS.accent,
-  tek: COLORS.note,
-  ke: "#9E9E9E",
+const SYMBOL_STYLES: Record<string, {color: string; label: string; position: number}> = {
+  // position: orta cizgiden yarim-aralik adimi (pozitif = yukari).
+  // Kudum pedagojisi: sag-el kuvvetli darplar (dum/ta) pes hatta, sol-el
+  // hafif darplar (tek/te/ke/ka) tiz hatta; hek (cift el) ikisinin ortasinda.
+  dum: {color: COLORS.dum, label: "DÜM", position: -2},
+  ta: {color: COLORS.dum, label: "TA", position: -2},
+  tek: {color: COLORS.tek, label: "TEK", position: 2},
+  te: {color: COLORS.tek, label: "TE", position: 2},
+  ke: {color: COLORS.ke, label: "KE", position: 3},
+  ka: {color: COLORS.ke, label: "KÂ", position: 3},
+  hek: {color: COLORS.label, label: "HEK", position: 0},
 };
 
 export function UsulNotation({
@@ -56,454 +57,230 @@ export function UsulNotation({
   beats,
   isPlaying = false,
   currentBeat = -1,
+  progressBeat = -1,
   size = "md",
   className = "",
 }: UsulNotationProps) {
   const scrollRef = useRef<HTMLDivElement>(null);
-  
-  // Size configurations
+
   const configs = {
-    sm: {lineSpacing: 10, noteWidth: 28},
-    md: {lineSpacing: 14, noteWidth: 36},
-    lg: {lineSpacing: 18, noteWidth: 44},
+    sm: {lineSpacing: 8, minPerBeat: 34, maxPerBeat: 56},
+    md: {lineSpacing: 11, minPerBeat: 44, maxPerBeat: 84},
+    lg: {lineSpacing: 14, minPerBeat: 52, maxPerBeat: 96},
   };
-  
   const config = configs[size];
+
+  // Az vuruslu usuller genis nefes alir, cok vuruslular sabit yogunlukta
+  // yatay kaydirmaya gecer.
+  const perBeat = Math.max(config.minPerBeat, Math.min(config.maxPerBeat, Math.round(560 / Math.max(beats, 1))));
+  const headStart = config.lineSpacing * 6; // anahtar + olcu rakami alani
+  const marginRight = config.lineSpacing * 1.5;
+  const gridStart = headStart + config.lineSpacing;
+  const totalWidth = gridStart + beats * perBeat + marginRight;
+
+  const staffTop = config.lineSpacing * 2.4;
   const staffHeight = 4 * config.lineSpacing;
-  const clefWidth = config.lineSpacing * 2.5;
-  const timeWidth = config.lineSpacing * 2;
-  const noteAreaStart = clefWidth + timeWidth + 20;
-  const noteAreaWidth = symbols.length * config.noteWidth;
-  const totalWidth = noteAreaStart + noteAreaWidth + 100;
-  const totalHeight = staffHeight + config.lineSpacing * 6 + 60;
-  const staffY = config.lineSpacing * 2;
-  
-  // Scroll to current beat when playing
+  const middleY = staffTop + 2 * config.lineSpacing;
+  const labelY = staffTop + staffHeight + config.lineSpacing * 1.9;
+  const beatNumberY = staffTop + staffHeight + config.lineSpacing * 3.1;
+  const totalHeight = beatNumberY + config.lineSpacing * 1.2;
+
+  const beatX = (beat: number) => gridStart + (beat - 1) * perBeat + perBeat / 2;
+  const beatNumberStep = beats > 32 ? 4 : beats > 16 ? 2 : 1;
+
+  // Oynatma cizgisini gorunurde tut (genis usullerde yatay takip).
   useEffect(() => {
-    if (isPlaying && currentBeat >= 0 && scrollRef.current) {
-      const scrollTo = Math.max(0, currentBeat * config.noteWidth - 100);
-      scrollRef.current.scrollTo({
-        left: scrollTo,
-        behavior: "smooth",
-      });
-    }
-  }, [currentBeat, isPlaying, config.noteWidth]);
+    const scroller = scrollRef.current;
+    if (!isPlaying || progressBeat < 0 || !scroller) return;
+    const x = gridStart + progressBeat * perBeat;
+    const target = Math.max(0, x - scroller.clientWidth / 2);
+    scroller.scrollTo({left: target, behavior: "auto"});
+  }, [gridStart, isPlaying, perBeat, progressBeat]);
 
   return (
     <div className={className}>
-      {/* Time signature header */}
-      <div 
-        className="flex items-center gap-2 mb-2"
-        style={{marginBottom: "var(--space-2)"}}
-      >
-        <span 
-          className="font-bold"
-          style={{fontSize: "1.25rem", color: COLORS.staff, fontFamily: "Times New Roman, serif"}}
-        >
-          {beats}
-        </span>
-        <span 
-          style={{fontSize: "1.25rem", color: COLORS.staff, fontFamily: "Times New Roman, serif"}}
-        >
-          /
-        </span>
-        <span 
-          style={{fontSize: "1.25rem", color: COLORS.staff, fontFamily: "Times New Roman, serif"}}
-        >
-          {unit}
-        </span>
-        <span 
-          className="ml-2 text-sm"
-          style={{color: COLORS.inactive}}
-        >
-          𝄞
-        </span>
-      </div>
-      
-      {/* Scrolling notation area */}
       <div
         ref={scrollRef}
-        className="overflow-x-auto"
-        style={{
-          overflowX: "auto",
-          maxHeight: totalHeight,
-          scrollBehavior: "smooth",
-          borderRadius: "var(--radius-md)",
-          backgroundColor: "white",
-          boxShadow: "inset 0 2px 4px rgba(0,0,0,0.05)",
-        }}
+        className="overflow-x-auto rounded-md border border-[var(--color-border-subtle)] bg-white"
       >
-        <svg
-          width={totalWidth}
-          height={totalHeight}
-          viewBox={`0 0 ${totalWidth} ${totalHeight}`}
-          style={{overflow: "visible"}}
-        >
-          {/* Staff lines */}
-          {[0, 1, 2, 3, 4].map((i) => (
-            <line
-              key={`staff-${i}`}
-              x1={noteAreaStart - 10}
-              y1={staffY + i * config.lineSpacing}
-              x2={totalWidth - 20}
-              y2={staffY + i * config.lineSpacing}
-              stroke={COLORS.staff}
-              strokeWidth="1"
-              opacity="0.4"
-            />
-          ))}
-          
-          {/* Notes */}
-          {symbols.map((sym, idx) => {
-            const noteX = noteAreaStart + idx * config.noteWidth + config.noteWidth / 2;
-            const position = NOTE_POSITIONS[sym.symbol] || 0;
-            const noteY = staffY + 2 * config.lineSpacing - (position * config.lineSpacing / 2);
-            const isCurrent = isPlaying && currentBeat === idx;
-            const isPast = isPlaying && currentBeat > idx;
-            const color = isCurrent 
-              ? COLORS.playingGlow 
-              : isPast 
-                ? COLORS.inactive 
-                : NOTE_COLORS[sym.symbol] || COLORS.note;
-            
-            // Ledger lines
-            const ledgerLines: React.ReactNode[] = [];
-            if (position > 4) {
-              for (let p = 6; p <= position; p += 2) {
-                const ledgerY = staffY + 2 * config.lineSpacing - (p * config.lineSpacing / 2);
-                ledgerLines.push(
-                  <line
-                    key={`ledger-above-${idx}-${p}`}
-                    x1={noteX - config.noteWidth / 3}
-                    y1={ledgerY}
-                    x2={noteX + config.noteWidth / 3}
-                    y2={ledgerY}
-                    stroke={COLORS.ledger}
-                    strokeWidth="1"
-                    opacity={isPast ? 0.3 : 0.5}
-                  />
-                );
-              }
-            }
-            if (position < -4) {
-              for (let p = -6; p >= position; p -= 2) {
-                const ledgerY = staffY + 2 * config.lineSpacing - (p * config.lineSpacing / 2);
-                ledgerLines.push(
-                  <line
-                    key={`ledger-below-${idx}-${p}`}
-                    x1={noteX - config.noteWidth / 3}
-                    y1={ledgerY}
-                    x2={noteX + config.noteWidth / 3}
-                    y2={ledgerY}
-                    stroke={COLORS.ledger}
-                    strokeWidth="1"
-                    opacity={isPast ? 0.3 : 0.5}
-                  />
-                );
-              }
-            }
-            
-            return (
-              <g key={`note-${idx}`}>
-                {/* Ledger lines */}
-                {ledgerLines}
-                
-                {/* Highlight background for current note */}
-                {isCurrent && (
-                  <rect
-                    x={noteX - config.noteWidth / 2 - 4}
-                    y={staffY - config.lineSpacing}
-                    width={config.noteWidth + 8}
-                    height={staffHeight + config.lineSpacing * 2}
-                    fill={COLORS.playingGlow}
-                    opacity="0.15"
-                    rx="4"
-                  >
-                    <animate
-                      attributeName="opacity"
-                      values="0.15;0.25;0.15"
-                      dur="0.5s"
-                      repeatCount="indefinite"
-                    />
-                  </rect>
-                )}
-                
-                {/* Note head */}
-                <ellipse
-                  cx={noteX}
-                  cy={noteY}
-                  rx={config.lineSpacing * 0.5}
-                  ry={config.lineSpacing * 0.4}
-                  fill={sym.timeValue >= 2 ? color : "none"}
-                  stroke={color}
-                  strokeWidth={sym.isAccent ? 2.5 : 1.5}
-                  transform={`rotate(-15, ${noteX}, ${noteY})`}
-                  style={{
-                    filter: isCurrent ? `drop-shadow(0 0 8px ${COLORS.playingGlow})` : undefined,
-                    transition: "all 0.15s ease-out",
-                  }}
-                />
-                
-                {/* Stem */}
-                {sym.timeValue >= 2 && (
-                  <line
-                    x1={noteX + config.lineSpacing * 0.35}
-                    y1={noteY}
-                    x2={noteX + config.lineSpacing * 0.35}
-                    y2={noteY - config.lineSpacing * 2.5}
-                    stroke={color}
-                    strokeWidth="1.5"
-                    style={{
-                      opacity: isPast ? 0.4 : 1,
-                      transition: "all 0.15s ease-out",
-                    }}
-                  />
-                )}
-                
-                {/* Accent indicator */}
-                {sym.isAccent && (
-                  <circle
-                    cx={noteX}
-                    cy={staffY + staffHeight + config.lineSpacing * 0.8}
-                    r={isCurrent ? 5 : 3}
-                    fill={isCurrent ? COLORS.playingGlow : COLORS.accent}
-                    style={{
-                      filter: isCurrent ? `drop-shadow(0 0 6px ${COLORS.playingGlow})` : undefined,
-                      transition: "all 0.15s ease-out",
-                    }}
-                  />
-                )}
-                
-                {/* Beat number */}
-                <text
-                  x={noteX}
-                  y={staffY + staffHeight + config.lineSpacing * 1.5}
-                  textAnchor="middle"
-                  fontSize={config.lineSpacing * 0.6}
-                  fill={isCurrent ? COLORS.accent : COLORS.inactive}
-                  fontWeight={isCurrent ? 700 : 400}
-                  style={{
-                    opacity: isPast ? 0.4 : 1,
-                    transition: "all 0.15s ease-out",
-                  }}
-                >
-                  {sym.beat}
-                </text>
-              </g>
-            );
-          })}
-          
-          {/* Beam connecting notes */}
-          <rect
-            x={noteAreaStart + config.lineSpacing * 0.35}
-            y={staffY - config.lineSpacing * 0.3}
-            width={noteAreaWidth - config.lineSpacing}
-            height={config.lineSpacing * 0.35}
-            fill={COLORS.beam}
-            opacity={isPlaying ? 0.8 : 0.4}
-          />
-          
-          {/* Current position indicator */}
-          {isPlaying && currentBeat >= 0 && currentBeat < symbols.length && (
-            <line
-              x1={noteAreaStart + currentBeat * config.noteWidth + config.noteWidth / 2}
-              y1={staffY - config.lineSpacing * 0.5}
-              x2={noteAreaStart + currentBeat * config.noteWidth + config.noteWidth / 2}
-              y2={staffY + staffHeight + config.lineSpacing}
-              stroke={COLORS.playingGlow}
-              strokeWidth="2"
-              strokeDasharray="4,4"
-              opacity="0.6"
+        <div className="flex min-w-full justify-center">
+          <svg
+            width={totalWidth}
+            height={totalHeight}
+            viewBox={`0 0 ${totalWidth} ${totalHeight}`}
+            role="img"
+            aria-label={`${beats}/${unit} usul kalıbı`}
+          >
+            {/* Vurus izgarasi: her tam vurusta acik dikey cizgi */}
+            {Array.from({length: beats + 1}, (_, i) => (
+              <line
+                key={`grid-${i}`}
+                x1={gridStart + i * perBeat}
+                y1={staffTop - config.lineSpacing * 0.6}
+                x2={gridStart + i * perBeat}
+                y2={staffTop + staffHeight + config.lineSpacing * 0.6}
+                stroke={COLORS.grid}
+                strokeWidth={i === 0 || i === beats ? 1.4 : 1}
+              />
+            ))}
+
+            {/* Porte cizgileri */}
+            {[0, 1, 2, 3, 4].map((i) => (
+              <line
+                key={`staff-${i}`}
+                x1={config.lineSpacing}
+                y1={staffTop + i * config.lineSpacing}
+                x2={totalWidth - config.lineSpacing / 2}
+                y2={staffTop + i * config.lineSpacing}
+                stroke={COLORS.staff}
+                strokeWidth="1"
+                opacity="0.55"
+              />
+            ))}
+
+            {/* Anahtar + olcu rakami portenin USTUNDE degil ICINDE */}
+            <text
+              x={config.lineSpacing * 1.2}
+              y={staffTop + staffHeight - config.lineSpacing * 0.4}
+              fontSize={config.lineSpacing * 3.4}
+              fontFamily="Georgia, 'Times New Roman', serif"
+              fill={COLORS.label}
             >
-              <animate
-                attributeName="stroke-dashoffset"
-                values="0;8"
-                dur="0.5s"
-                repeatCount="indefinite"
+              𝄞
+            </text>
+            <text
+              x={config.lineSpacing * 4.6}
+              y={middleY - config.lineSpacing * 0.35}
+              textAnchor="middle"
+              fontSize={config.lineSpacing * 1.9}
+              fontWeight="bold"
+              fontFamily="Georgia, serif"
+              fill={COLORS.label}
+            >
+              {beats}
+            </text>
+            <text
+              x={config.lineSpacing * 4.6}
+              y={middleY + config.lineSpacing * 1.55}
+              textAnchor="middle"
+              fontSize={config.lineSpacing * 1.9}
+              fontWeight="bold"
+              fontFamily="Georgia, serif"
+              fill={COLORS.label}
+            >
+              {unit}
+            </text>
+
+            {/* Darplar (vurus pozisyonunda) */}
+            {symbols.map((sym, idx) => {
+              const style = SYMBOL_STYLES[sym.symbol];
+              if (!style) return null;
+              const x = beatX(sym.beat);
+              const y = middleY - (style.position * config.lineSpacing) / 2;
+              const isCurrent = isPlaying && currentBeat === idx;
+              const color = isCurrent ? COLORS.playing : style.color;
+              // Standart notasyon: uzun deger (>=2 vurus) BOS kafa, kisa deger dolu.
+              const isHollow = (sym.timeValue ?? 1) >= 2;
+
+              return (
+                <g key={`sym-${idx}`}>
+                  {isCurrent && (
+                    <circle cx={x} cy={y} r={config.lineSpacing * 1.5} fill={COLORS.playing} opacity="0.16">
+                      <animate attributeName="r" values={`${config.lineSpacing * 1.2};${config.lineSpacing * 1.7};${config.lineSpacing * 1.2}`} dur="0.6s" repeatCount="indefinite" />
+                    </circle>
+                  )}
+                  <line
+                    x1={x + config.lineSpacing * 0.55}
+                    y1={y}
+                    x2={x + config.lineSpacing * 0.55}
+                    y2={y - config.lineSpacing * 2.6}
+                    stroke={color}
+                    strokeWidth="1.4"
+                  />
+                  <ellipse
+                    cx={x}
+                    cy={y}
+                    rx={config.lineSpacing * 0.62}
+                    ry={config.lineSpacing * 0.46}
+                    fill={isHollow ? "white" : color}
+                    stroke={color}
+                    strokeWidth={isHollow ? 1.8 : 1.4}
+                    transform={`rotate(-18, ${x}, ${y})`}
+                  />
+                  {sym.isAccent && (
+                    <text
+                      x={x}
+                      y={y - config.lineSpacing * 3.1}
+                      textAnchor="middle"
+                      fontSize={config.lineSpacing * 1.15}
+                      fontWeight="bold"
+                      fill={color}
+                    >
+                      &gt;
+                    </text>
+                  )}
+                  <text
+                    x={x}
+                    y={labelY}
+                    textAnchor="middle"
+                    fontSize={config.lineSpacing * 0.95}
+                    fontWeight={isCurrent ? 800 : 600}
+                    fill={isCurrent ? COLORS.playing : style.color}
+                    letterSpacing="0.04em"
+                  >
+                    {style.label}
+                  </text>
+                </g>
+              );
+            })}
+
+            {/* Vurus numaralari */}
+            {Array.from({length: beats}, (_, i) => i + 1)
+              .filter((beat) => beat === 1 || beat === beats || beat % beatNumberStep === 0)
+              .map((beat) => (
+                <text
+                  key={`beat-${beat}`}
+                  x={beatX(beat)}
+                  y={beatNumberY}
+                  textAnchor="middle"
+                  fontSize={config.lineSpacing * 0.85}
+                  fill={COLORS.beatNumber}
+                >
+                  {beat}
+                </text>
+              ))}
+
+            {/* Oynatma cizgisi: kesirli vurusu surekli izler */}
+            {isPlaying && progressBeat >= 0 && (
+              <line
+                x1={gridStart + Math.min(progressBeat, beats) * perBeat}
+                y1={staffTop - config.lineSpacing * 1.1}
+                x2={gridStart + Math.min(progressBeat, beats) * perBeat}
+                y2={staffTop + staffHeight + config.lineSpacing * 1.1}
+                stroke={COLORS.playhead}
+                strokeWidth="2"
+                opacity="0.75"
               />
-            </line>
-          )}
-        </svg>
+            )}
+          </svg>
+        </div>
       </div>
-      
-      {/* Legend */}
-      <div 
-        className="flex items-center justify-center gap-4 mt-2"
-        style={{
-          marginTop: "var(--space-2)",
-          gap: "var(--space-4)",
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-        }}
-      >
-        <span className="flex items-center gap-1 text-xs" style={{color: COLORS.inactive}}>
-          <span style={{color: COLORS.accent, fontSize: "1rem"}}>●</span>
-          Düm
-        </span>
-        <span className="flex items-center gap-1 text-xs" style={{color: COLORS.inactive}}>
-          <span style={{color: COLORS.note, fontSize: "1rem"}}>●</span>
-          Tek
-        </span>
-        <span className="flex items-center gap-1 text-xs" style={{color: COLORS.inactive}}>
-          <span style={{color: "#9E9E9E", fontSize: "1rem"}}>●</span>
-          Ke
+
+      {/* Lejant: yalniz desende gecen darp turleri, gercek renklerle */}
+      <div className="mt-2 flex flex-wrap items-center justify-center gap-x-4 gap-y-1 text-xs">
+        {Object.keys(SYMBOL_STYLES)
+          .filter((key) => symbols.some((sym) => sym.symbol === key))
+          .map((key) => (
+            <span key={key} className="flex items-center gap-1.5 text-[var(--color-text-secondary)]">
+              <span aria-hidden style={{color: SYMBOL_STYLES[key].color, fontSize: "0.9rem", lineHeight: 1}}>●</span>
+              {SYMBOL_STYLES[key].label.charAt(0) + SYMBOL_STYLES[key].label.slice(1).toLocaleLowerCase("tr")}
+            </span>
+          ))}
+        <span className="flex items-center gap-1.5 text-[var(--color-text-secondary)]">
+          <span aria-hidden className="font-bold" style={{color: COLORS.label}}>&gt;</span>
+          Vurgu
         </span>
       </div>
-    </div>
-  );
-}
-
-// ============================================
-// COMPACT VERSION
-// ============================================
-
-interface UsulNotationCompactProps {
-  symbols: UsulSymbol[];
-  unit: string;
-  beats: number;
-  isPlaying?: boolean;
-  currentBeat?: number;
-  className?: string;
-}
-
-export function UsulNotationCompact({
-  symbols,
-  unit,
-  beats,
-  isPlaying = false,
-  currentBeat = -1,
-  className = "",
-}: UsulNotationCompactProps) {
-  const lineSpacing = 8;
-  const noteWidth = 20;
-  const staffY = 20;
-  const clefWidth = 24;
-  const timeWidth = 16;
-  const noteAreaStart = clefWidth + timeWidth + 8;
-  const totalWidth = noteAreaStart + symbols.length * noteWidth + 16;
-  
-  return (
-    <div className={`flex items-center gap-1 ${className}`}>
-      <svg
-        width={totalWidth}
-        height={56}
-        viewBox={`0 0 ${totalWidth} 56`}
-        className="flex-shrink-0"
-      >
-        {/* Staff lines */}
-        {[0, 1, 2, 3, 4].map((i) => (
-          <line
-            key={i}
-            x1="8"
-            y1={staffY + i * lineSpacing}
-            x2={totalWidth - 8}
-            y2={staffY + i * lineSpacing}
-            stroke={COLORS.staff}
-            strokeWidth="0.75"
-            opacity="0.4"
-          />
-        ))}
-        
-        {/* Treble clef */}
-        <text
-          x="12"
-          y={staffY + 18}
-          fontSize="20"
-          fontFamily="Georgia, serif"
-          fill={COLORS.staff}
-        >
-          𝄞
-        </text>
-        
-        {/* Time signature */}
-        <text
-          x={clefWidth + 4}
-          y={staffY + 14}
-          fontSize="12"
-          fontWeight="bold"
-          fill={COLORS.staff}
-        >
-          {beats}
-        </text>
-        <text
-          x={clefWidth + 4}
-          y={staffY + 26}
-          fontSize="12"
-          fontWeight="bold"
-          fill={COLORS.staff}
-        >
-          {unit}
-        </text>
-        
-        {/* Notes */}
-        {symbols.map((sym, idx) => {
-          const noteX = noteAreaStart + idx * noteWidth;
-          const position = NOTE_POSITIONS[sym.symbol] || 0;
-          const noteY = staffY + 16 - (position * lineSpacing / 2);
-          const isCurrent = isPlaying && currentBeat === idx;
-          const isPast = isPlaying && currentBeat > idx;
-          const color = isCurrent 
-            ? COLORS.playingGlow 
-            : isPast 
-              ? COLORS.inactive 
-              : NOTE_COLORS[sym.symbol] || COLORS.note;
-          
-          return (
-            <g key={idx}>
-              {/* Highlight */}
-              {isCurrent && (
-                <rect
-                  x={noteX - 2}
-                  y={staffY - 4}
-                  width={noteWidth + 4}
-                  height={40}
-                  fill={COLORS.playingGlow}
-                  opacity="0.15"
-                  rx="2"
-                />
-              )}
-              
-              {/* Note head */}
-              <ellipse
-                cx={noteX + noteWidth / 2}
-                cy={noteY}
-                rx="4"
-                ry="3"
-                fill={sym.timeValue >= 2 ? color : "none"}
-                stroke={color}
-                strokeWidth="1.5"
-                transform={`rotate(-15, ${noteX + noteWidth / 2}, ${noteY})`}
-                style={{
-                  filter: isCurrent ? `drop-shadow(0 0 4px ${COLORS.playingGlow})` : undefined,
-                }}
-              />
-              
-              {/* Stem */}
-              {sym.timeValue >= 2 && (
-                <line
-                  x1={noteX + noteWidth / 2 + 3}
-                  y1={noteY}
-                  x2={noteX + noteWidth / 2 + 3}
-                  y2={noteY - 12}
-                  stroke={color}
-                  strokeWidth="1"
-                />
-              )}
-              
-              {/* Accent dot */}
-              {sym.isAccent && (
-                <circle
-                  cx={noteX + noteWidth / 2}
-                  cy={staffY + 38}
-                  r={isCurrent ? 3 : 2}
-                  fill={isCurrent ? COLORS.playingGlow : COLORS.accent}
-                />
-              )}
-            </g>
-          );
-        })}
-      </svg>
     </div>
   );
 }

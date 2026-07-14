@@ -5,6 +5,7 @@ import UsulPage from "../page";
 import {useEditorStore} from "@/store/editorStore";
 
 const initAudioMock = vi.hoisted(() => vi.fn(async () => true));
+const preloadRhythmMock = vi.hoisted(() => vi.fn(async () => true));
 const playRhythmMock = vi.hoisted(() => vi.fn(() => new Promise<void>(() => undefined)));
 const stopAllMock = vi.hoisted(() => vi.fn());
 
@@ -18,6 +19,7 @@ vi.mock("@/engines/ses/engine", async (importOriginal) => {
   return {
     ...actual,
     initAudio: initAudioMock,
+    preloadRhythm: preloadRhythmMock,
     playRhythm: playRhythmMock,
     stopAll: stopAllMock,
   };
@@ -35,21 +37,25 @@ describe("UsulPage", () => {
     });
   });
 
-  it("shows the rhythm as playing immediately while percussion samples are still scheduling", async () => {
+  it("starts playback only after audio init + preload, with unit-aware scheduling", async () => {
     render(<UsulPage />);
 
     const playButton = await screen.findByRole("button", {name: "Ritmi Çal"});
     fireEvent.click(playButton);
 
     await waitFor(() => expect(screen.getByRole("button", {name: "Dur"})).toBeDefined());
-    expect(screen.getByText("Çalıyor")).toBeDefined();
-    expect(screen.getByText("1. DUM")).toBeDefined();
+    expect(screen.getByText("Sürekli çalıyor")).toBeDefined();
+    expect(screen.getByText(/Düm \(1\. vuruş\)/)).toBeDefined();
     expect(initAudioMock).toHaveBeenCalledTimes(1);
+    // Gorsel sayac baslamadan once sample'lar isinir (ses/gorsel senkron kaniti).
+    expect(preloadRhythmMock).toHaveBeenCalledTimes(1);
+    // Olcu birimi ses motoruna da gecer: 8'lik usullerde 2x ayrismanin onlemi.
     expect(playRhythmMock).toHaveBeenCalledWith(
       4,
       expect.any(Array),
       120,
       "kudum",
+      "4",
     );
   });
 });

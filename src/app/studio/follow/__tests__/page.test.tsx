@@ -44,10 +44,15 @@ vi.mock("@/shared/ui/layout/UnifiedLayout", () => ({
   UnifiedLayout: ({children}: {children: ReactNode}) => <main>{children}</main>,
 }));
 
-vi.mock("@/engines/ses/engine", () => ({
-  playArrangement: playArrangementMock,
-  stopAll: stopAllMock,
-}));
+vi.mock("@/engines/ses/engine", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("@/engines/ses/engine")>();
+
+  return {
+    ...actual,
+    playArrangement: playArrangementMock,
+    stopAll: stopAllMock,
+  };
+});
 
 vi.mock("@/data/symbtr/layout", async (importOriginal) => {
   const actual = await importOriginal<typeof import("@/data/symbtr/layout")>();

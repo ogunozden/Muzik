@@ -53,7 +53,7 @@ export async function preloadInstrumentSamples(instrument: InstrumentType): Prom
   return false;
 }
 
-async function preloadPercussionSymbolSamples(
+export async function preloadPercussionSymbolSamples(
   symbols: PercussionSymbol[],
   percussionInstrument?: InstrumentType,
 ): Promise<boolean> {
@@ -283,12 +283,13 @@ export async function playRhythmWithPercussion(
   symbols: RhythmSymbolInput[],
   bpm: number = 120,
   percussionInstrument?: InstrumentType,
+  unit: string = "4",
 ): Promise<void> {
   const ok = await initAudio();
   const context = getOrCreateAudioContext();
   if (!ok || !context) return;
 
-  const schedule = buildRhythmSchedule(beats, symbols, bpm);
+  const schedule = buildRhythmSchedule(beats, symbols, bpm, unit);
   await preloadPercussionSymbolSamples(
     symbols.map((symbol) => symbol.symbol).filter(isPercussionSymbol),
     percussionInstrument,
@@ -310,14 +311,21 @@ export function buildRhythmSchedule(
   beats: number,
   symbols: RhythmSymbolInput[],
   bpm: number = 120,
+  unit: string = "4",
 ): RhythmScheduleHit[] {
-  const beatDuration = 60 / bpm;
+  // Vurus suresi olcu birimine olceklenir (usul sayfasindaki
+  // getUsulBeatDuration ile ayni formul). Ceyreklik varsayimi, 8'lik 14
+  // usulde sesi gorsel imlecten 2x ayristiriyordu (2026-07-14 duzeltmesi).
+  const beatUnit = Number.parseInt(unit, 10) || 4;
+  const beatDuration = (60 / bpm) * (4 / beatUnit);
 
   return symbols
     .filter((symbol): symbol is RhythmSymbolInput & {symbol: PercussionSymbol} =>
       Number.isFinite(symbol.beat) &&
       symbol.beat >= 1 &&
-      symbol.beat <= beats &&
+      // Kesirli kuyruk vuruslari (orn. Hafif'te 32.5'teki ke) dongu icinde
+      // kalir: sinir `beat < beats + 1`; eski `<= beats` bunlari dusuruyordu.
+      symbol.beat < beats + 1 &&
       isPercussionSymbol(symbol.symbol),
     )
     .sort((left, right) => left.beat - right.beat)

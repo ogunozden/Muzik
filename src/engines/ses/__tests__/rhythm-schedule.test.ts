@@ -33,4 +33,29 @@ describe("buildRhythmSchedule", () => {
       {startOffset: 8.5, beatDuration: 0.5, symbol: "ke", isAccent: false},
     ]);
   });
+
+  it("scales beat duration by the usul unit (9/8 aksak is eighth-note based)", () => {
+    // Onceki surumde birim yok sayilip ceyreklik varsayiliyordu; 8'lik 14
+    // usulde ses, sayfadaki gorsel imlecten 2x yavas akiyordu (2026-07-14).
+    const schedule = buildRhythmSchedule(
+      9,
+      [
+        {beat: 1, symbol: "dum", isAccent: true},
+        {beat: 3, symbol: "tek", isAccent: false},
+      ],
+      120,
+      "8",
+    );
+
+    expect(schedule).toEqual([
+      {startOffset: 0, beatDuration: 0.25, symbol: "dum", isAccent: true},
+      {startOffset: 0.5, beatDuration: 0.25, symbol: "tek", isAccent: false},
+    ]);
+  });
+
+  it("keeps the quarter-note default when unit is omitted (backward compat)", () => {
+    const schedule = buildRhythmSchedule(2, [{beat: 2, symbol: "dum", isAccent: true}], 60);
+
+    expect(schedule).toEqual([{startOffset: 1, beatDuration: 1, symbol: "dum", isAccent: true}]);
+  });
 });

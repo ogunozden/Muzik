@@ -336,6 +336,32 @@ Surec icinde tespit edilenler listeye eklendi ve tamamlananlar isaretlendi:
       state sifirlanir, restler atlanir; 5 birim testi; glyph-class manifestine
       `natural-accidental-token:policy-derived` token'i eklendi
 
+### FAZ 11 - Ritim Motoru Dogrulugu ve Kaynakli Usul Verisi (2026-07-14)
+
+- [x] F11.1 Ritim motoru isletim hatalari: (1) ses zamanlayicisi olcu birimini
+      yok sayiyordu — 8'lik 14 usulde gorselden 2x ayrisma; birim artik
+      buildRhythmSchedule/playRhythm'e gecer (+2 sozlesme testi); (2) imlec
+      sembol dizinini esit-aralikli saniyordu — vurus POZISYONU uzerinden
+      hesaplanir; (3) dongu yoktu — drift'siz surekli tekrar + Dongu anahtari;
+      (4) gorsel sayac ses hazir olmadan basliyordu — preloadRhythm beklenir
+- [x] F11.2 UsulNotation yeniden tasarimi: vurus-pozisyonuna orantili yerlesim,
+      portede anahtar+olcu rakami, dogru dolu/bos kafa (uzun deger bos),
+      sahte tam-genislik beam kaldirildi, DUM/TEK/KE/TE/KA/TA/HEK etiket ve
+      renkleri, vurus izgarasi + numaralari, kesirli oynatma cizgisi
+      (progressBeat), okunur lejant; olu UsulNotationCompact silindi
+- [x] F11.3 USUL VERISI KAYNAKLANDI: onceki desenler jenerik dolguydu
+      (cogu 'her vurusa bir darb'; Darb-i Fetih ve Zincir BOSTU; Darb-i Turki
+      20 yazilmisti, 18 olmali). 36 usulun ana-darb dizilisi 'Turk Musikisinde
+      Usuller ve Kudum' kitabindan (symb/ altindaki taranmis nusha; WinRT ile
+      sayfa sayfa render edilip okundu) sayfa referanslariyla aktarildi;
+      te/ka/ta/hek darplari tip+gorsel+ses eslemesiyle eklendi; Zincir 120
+      zaman olarak 5 buyuk usulun zincirinden kuruldu; Curcuna = Aksak Semai
+      10/16 mertebesi (s.66). Desen degismezleri test guvencesinde (dosum,
+      toplam, siralama); data.ts 810->211 satir, ratchet kaydi kaldirildi
+- [x] F11.4 Yeni darplarin ses eslemesi: te/hek->tek, ka->ke, ta->dum
+      (normalizePercussionSymbol); kesirli kuyruk vuruslari (32.5 gibi)
+      schedule filtresinde artik dusmuyor (beat < beats+1)
+
 ### Dis Girdi Bekleyenler (ADR 0002 Karar 3 sozlesmesi)
 
 Kod tarafinda yapilabilecek her sey bitti; kapanis DIS girdiye bagli. Cikis

@@ -23,7 +23,7 @@ export interface Usul {
 
 export interface UsulSymbol {
   beat: number;
-  symbol: "dum" | "tek" | "ke" | "";
+  symbol: "dum" | "tek" | "te" | "ke" | "ka" | "ta" | "hek" | "";
   isAccent: boolean;
   timeValue: number;
 }

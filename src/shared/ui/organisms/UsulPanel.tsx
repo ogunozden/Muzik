@@ -26,6 +26,8 @@ interface UsulPanelProps {
   unit?: string;
   isPlaying?: boolean;
   currentBeat?: number;
+  /** Dongu icindeki kesirli vurus (0..beats); oynatma cizgisi bunu izler. */
+  progressBeat?: number;
   className?: string;
 }
 
@@ -42,6 +44,7 @@ function UsulPanelComponent({
   unit = "4",
   isPlaying = false,
   currentBeat = -1,
+  progressBeat = -1,
   className = "",
 }: UsulPanelProps) {
   const {t} = useTranslation();
@@ -101,17 +104,15 @@ function UsulPanelComponent({
             </span>
           </div>
 
-          <div style={{overflowX: "auto"}}>
-            <UsulNotation
-              symbols={symbols}
-              unit={unit}
-              beats={beats}
-              isPlaying={isPlaying}
-              currentBeat={currentBeat}
-              size="md"
-              className="mx-auto"
-            />
-          </div>
+          <UsulNotation
+            symbols={symbols}
+            unit={unit}
+            beats={beats}
+            isPlaying={isPlaying}
+            currentBeat={currentBeat}
+            progressBeat={progressBeat}
+            size="md"
+          />
         </section>
       )}
       

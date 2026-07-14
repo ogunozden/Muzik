@@ -1,799 +1,208 @@
-import {Usul} from "@/types";
+import {Usul, UsulSymbol} from "@/types";
+
+/**
+ * Usul ana-darb desenleri — KAYNAKLI VERI (2026-07-14 duzeltmesi).
+ *
+ * Kaynak: "Turk Musikisinde Usuller ve Kudum" (ITU TMDK Ercumend Berker
+ * Kutuphanesi nushasi; Sadettin Heper aktarimli) — repo'daki `symb/` altinda
+ * taranmis PDF olarak mevcut. Her usulun "ZAMAN VE VURGULARI" bolumundeki
+ * ana darb dizilisi sayfa referansiyla birebir aktarildi; velvele alinmadi.
+ * Onceki surumdeki desenler jenerik dolguydu (her vurusa bir darb) ve
+ * kitapla eslesmiyordu; Darb-i Fetih ile Zincir tamamen bostu.
+ *
+ * Kitapta bulunmayan tek kayit Curcuna'dir: kitap Aksak Semai bolumunde
+ * (s.66) 10/16 mertebesine Curcuna dendigini yazar; desen oradan alinir.
+ * Cifte Duyek kitapta iki duyekin ardarda vurulusu olarak tanimlanir
+ * (s.109); Zincir (s.234) bes buyuk usulun zinciridir:
+ * Cifte Duyek(16) + Fahte(20) + Cember(24) + Devr-i Kebir(28) + Berefsan(32) = 120.
+ *
+ * Darp turleri (s.14 "OLCULERIN VURULMASI"): dum/ta sag el (kuvvetli),
+ * tek/te/ke/ka sol el (hafif; te-ke yarim degerli ikili, ka uzun), hek iki
+ * elin birlikte vurusu. `timeValue` darbin kitaptaki zaman degeridir; her
+ * desende timeValue toplami usulun zaman adedine esittir (test guvencesi).
+ */
+
+type Stroke = [beat: number, symbol: UsulSymbol["symbol"], timeValue: number];
+
+const ACCENTED: ReadonlySet<string> = new Set(["dum", "ta"]);
+
+function toSymbols(strokes: readonly Stroke[]): UsulSymbol[] {
+  return strokes.map(([beat, symbol, timeValue]) => ({
+    beat,
+    symbol,
+    isAccent: ACCENTED.has(symbol),
+    timeValue,
+  }));
+}
+
+function toStressPattern(beats: number, symbols: readonly UsulSymbol[]): number[] {
+  const stress = new Array<number>(beats).fill(0);
+  for (const symbol of symbols) {
+    const index = Math.floor(symbol.beat) - 1;
+    if (index >= 0 && index < beats && symbol.isAccent) stress[index] = 1;
+  }
+  return stress;
+}
+
+function shift(strokes: readonly Stroke[], offset: number): Stroke[] {
+  return strokes.map(([beat, symbol, timeValue]) => [beat + offset, symbol, timeValue]);
+}
+
+function makeUsul(
+  id: string,
+  name: string,
+  nameEn: string,
+  beats: number,
+  unit: string,
+  strokes: readonly Stroke[],
+): Usul {
+  const symbols = toSymbols(strokes);
+  return {
+    id,
+    name,
+    nameTr: name,
+    nameEn,
+    beats,
+    unit,
+    symbols,
+    stressPattern: toStressPattern(beats, symbols),
+  };
+}
+
+// Paylasilan cekirdek desenler (mertebeler ve birlesik usuller bunlardan kurulur).
+const DUYEK: Stroke[] = [[1, "dum", 1], [2, "tek", 2], [4, "tek", 1], [5, "dum", 2], [7, "tek", 2]]; // s.40
+const CIFTE_DUYEK: Stroke[] = [...DUYEK, ...shift(DUYEK, 8)]; // s.109: iki duyek ardarda
+const AKSAK: Stroke[] = [[1, "dum", 2], [3, "te", 1], [4, "ke", 1], [5, "dum", 2], [7, "tek", 2], [9, "tek", 1]]; // s.47
+const AKSAK_SEMAI: Stroke[] = [[1, "dum", 2], [3, "te", 1], [4, "ka", 2], [6, "dum", 2], [8, "tek", 2], [10, "tek", 1]]; // s.67
+const YURUK_SEMAI: Stroke[] = [[1, "dum", 1], [2, "tek", 1], [3, "tek", 1], [4, "dum", 1], [5, "tek", 2]]; // s.25
+const FAHTE: Stroke[] = [
+  [1, "dum", 2], [3, "dum", 1], [4, "dum", 1], [5, "tek", 2], [7, "tek", 2],
+  [9, "tek", 2], [11, "dum", 2], [13, "ta", 2], [15, "hek", 2],
+  [17, "tek", 1], [18, "ka", 1], [19, "tek", 1], [20, "ka", 1],
+]; // s.139 (1. sekil)
+const CEMBER: Stroke[] = [
+  [1, "dum", 2], [3, "tek", 1], [4, "ka", 1], [5, "dum", 2], [7, "dum", 1], [8, "dum", 1],
+  [9, "tek", 2], [11, "tek", 2], [13, "tek", 2], [15, "dum", 2],
+  [17, "ta", 2], [19, "hek", 2], [21, "tek", 1], [22, "ka", 1], [23, "tek", 1], [24, "ka", 1],
+]; // s.157
+const DEVRI_KEBIR: Stroke[] = [
+  [1, "dum", 2], [3, "dum", 2], [5, "tek", 2], [7, "dum", 1], [8, "tek", 1],
+  [9, "te", 0.5], [9.5, "ke", 0.5], [10, "dum", 1], [11, "tek", 2], [13, "tek", 2],
+  [15, "tek", 2], [17, "dum", 2], [19, "dum", 2], [21, "ta", 2], [23, "hek", 2],
+  [25, "tek", 1], [26, "ka", 1], [27, "tek", 1], [28, "ka", 1],
+]; // s.181 (1. sekil)
+const BERAFSAN: Stroke[] = [
+  [1, "dum", 4], [5, "tek", 2], [7, "dum", 4], [11, "tek", 2], [13, "dum", 4],
+  [17, "dum", 2], [19, "tek", 2], [21, "dum", 2], [23, "dum", 2],
+  [25, "ta", 2], [27, "hek", 2], [29, "tek", 1], [30, "ka", 1], [31, "tek", 1], [32, "ka", 1],
+]; // s.208
 
 export const USUL_DATA: Usul[] = [
-  {
-    id: "nimsofyan",
-    name: "Nimsofyan",
-    nameTr: "Nimsofyan",
-    nameEn: "Nimsofyan",
-    beats: 2,
-    unit: "4",
-    symbols: [
-      {beat: 1, symbol: "dum", isAccent: true, timeValue: 2},
-      {beat: 2, symbol: "tek", isAccent: false, timeValue: 1},
-    ],
-    stressPattern: [1, 0],
-  },
-  {
-    id: "semai",
-    name: "Semai",
-    nameTr: "Semai",
-    nameEn: "Semai",
-    beats: 3,
-    unit: "4",
-    symbols: [
-      {beat: 1, symbol: "dum", isAccent: true, timeValue: 2},
-      {beat: 2, symbol: "tek", isAccent: false, timeValue: 1},
-      {beat: 3, symbol: "ke", isAccent: false, timeValue: 1},
-    ],
-    stressPattern: [1, 0, 0],
-  },
-  {
-    id: "sofyan",
-    name: "Sofyan",
-    nameTr: "Sofyan",
-    nameEn: "Sofyan",
-    beats: 4,
-    unit: "4",
-    symbols: [
-      {beat: 1, symbol: "dum", isAccent: true, timeValue: 2},
-      {beat: 2, symbol: "tek", isAccent: false, timeValue: 1},
-      {beat: 3, symbol: "ke", isAccent: false, timeValue: 1},
-      {beat: 4, symbol: "tek", isAccent: false, timeValue: 1},
-    ],
-    stressPattern: [1, 0, 0, 0],
-  },
-  {
-    id: "nimhafif",
-    name: "Nimhafif",
-    nameTr: "Nimhafif",
-    nameEn: "Nimhafif",
-    beats: 4,
-    unit: "8",
-    symbols: [
-      {beat: 1, symbol: "dum", isAccent: true, timeValue: 2},
-      {beat: 2, symbol: "tek", isAccent: false, timeValue: 1},
-      {beat: 3, symbol: "ke", isAccent: false, timeValue: 1},
-      {beat: 4, symbol: "tek", isAccent: false, timeValue: 1},
-    ],
-    stressPattern: [1, 0, 0, 0],
-  },
-  {
-    id: "turkaksagi",
-    name: "Türk Aksağı",
-    nameTr: "Türk Aksağı",
-    nameEn: "Turkish Aksak",
-    beats: 5,
-    unit: "8",
-    symbols: [
-      {beat: 1, symbol: "dum", isAccent: true, timeValue: 2},
-      {beat: 2, symbol: "tek", isAccent: false, timeValue: 1},
-      {beat: 3, symbol: "tek", isAccent: false, timeValue: 1},
-      {beat: 4, symbol: "tek", isAccent: false, timeValue: 1},
-      {beat: 5, symbol: "dum", isAccent: true, timeValue: 2},
-    ],
-    stressPattern: [1, 0, 0, 0, 1],
-  },
-  {
-    id: "zafer",
-    name: "Zafer",
-    nameTr: "Zafer",
-    nameEn: "Zafer",
-    beats: 5,
-    unit: "4",
-    symbols: [
-      {beat: 1, symbol: "dum", isAccent: true, timeValue: 1},
-      {beat: 2, symbol: "tek", isAccent: false, timeValue: 2},
-      {beat: 3, symbol: "dum", isAccent: true, timeValue: 1},
-      {beat: 4, symbol: "tek", isAccent: false, timeValue: 1},
-      {beat: 5, symbol: "dum", isAccent: true, timeValue: 1},
-    ],
-    stressPattern: [1, 0, 0, 0, 1],
-  },
-  {
-    id: "yuruksemai",
-    name: "Yürüksemâî",
-    nameTr: "Yürüksemâî",
-    nameEn: "Yuruksemai",
-    beats: 6,
-    unit: "4",
-    symbols: [
-      {beat: 1, symbol: "dum", isAccent: true, timeValue: 2},
-      {beat: 2, symbol: "tek", isAccent: false, timeValue: 1},
-      {beat: 3, symbol: "tek", isAccent: false, timeValue: 1},
-      {beat: 4, symbol: "dum", isAccent: true, timeValue: 2},
-      {beat: 5, symbol: "tek", isAccent: false, timeValue: 1},
-      {beat: 6, symbol: "tek", isAccent: false, timeValue: 1},
-    ],
-    stressPattern: [1, 0, 0, 0, 1, 0],
-  },
-  {
-    id: "senginsemai",
-    name: "Sengin Semai",
-    nameTr: "Sengin Semai",
-    nameEn: "Sengin Semai",
-    beats: 6,
-    unit: "4",
-    symbols: [
-      {beat: 1, symbol: "dum", isAccent: true, timeValue: 2},
-      {beat: 2, symbol: "tek", isAccent: false, timeValue: 1},
-      {beat: 3, symbol: "tek", isAccent: false, timeValue: 1},
-      {beat: 4, symbol: "dum", isAccent: true, timeValue: 2},
-      {beat: 5, symbol: "tek", isAccent: false, timeValue: 1},
-      {beat: 6, symbol: "tek", isAccent: false, timeValue: 1},
-    ],
-    stressPattern: [1, 0, 0, 1, 0, 0],
-  },
-  {
-    id: "agirsemai",
-    name: "Ağır Semai",
-    nameTr: "Ağır Semai",
-    nameEn: "Agir Semai",
-    beats: 6,
-    unit: "8",
-    symbols: [
-      {beat: 1, symbol: "dum", isAccent: true, timeValue: 2},
-      {beat: 2, symbol: "tek", isAccent: false, timeValue: 1},
-      {beat: 3, symbol: "ke", isAccent: false, timeValue: 1},
-      {beat: 4, symbol: "tek", isAccent: false, timeValue: 1},
-      {beat: 5, symbol: "dum", isAccent: true, timeValue: 2},
-      {beat: 6, symbol: "tek", isAccent: false, timeValue: 1},
-    ],
-    stressPattern: [1, 0, 0, 0, 1, 0],
-  },
-  {
-    id: "darb",
-    name: "Darb",
-    nameTr: "Darb",
-    nameEn: "Darb",
-    beats: 6,
-    unit: "4",
-    symbols: [
-      {beat: 1, symbol: "dum", isAccent: true, timeValue: 2},
-      {beat: 2, symbol: "tek", isAccent: false, timeValue: 1},
-      {beat: 3, symbol: "tek", isAccent: false, timeValue: 1},
-      {beat: 4, symbol: "dum", isAccent: true, timeValue: 2},
-      {beat: 5, symbol: "tek", isAccent: false, timeValue: 1},
-      {beat: 6, symbol: "tek", isAccent: false, timeValue: 1},
-    ],
-    stressPattern: [1, 0, 0, 1, 0, 0],
-  },
-  {
-    id: "devirhindi",
-    name: "Devr-i Hindi",
-    nameTr: "Devr-i Hindi",
-    nameEn: "Devr-i Hindi",
-    beats: 7,
-    unit: "8",
-    symbols: [
-      {beat: 1, symbol: "dum", isAccent: true, timeValue: 2},
-      {beat: 2, symbol: "tek", isAccent: false, timeValue: 1},
-      {beat: 3, symbol: "tek", isAccent: false, timeValue: 1},
-      {beat: 4, symbol: "dum", isAccent: true, timeValue: 2},
-      {beat: 5, symbol: "tek", isAccent: false, timeValue: 1},
-      {beat: 6, symbol: "tek", isAccent: false, timeValue: 1},
-      {beat: 7, symbol: "ke", isAccent: false, timeValue: 1},
-    ],
-    stressPattern: [1, 0, 0, 1, 0, 0, 0],
-  },
-  {
-    id: "devirituran",
-    name: "Devr-i Turan",
-    nameTr: "Devr-i Turan",
-    nameEn: "Devr-i Turan",
-    beats: 7,
-    unit: "8",
-    symbols: [
-      {beat: 1, symbol: "dum", isAccent: true, timeValue: 2},
-      {beat: 2, symbol: "tek", isAccent: false, timeValue: 1},
-      {beat: 3, symbol: "tek", isAccent: false, timeValue: 1},
-      {beat: 4, symbol: "dum", isAccent: true, timeValue: 2},
-      {beat: 5, symbol: "tek", isAccent: false, timeValue: 1},
-      {beat: 6, symbol: "ke", isAccent: false, timeValue: 1},
-      {beat: 7, symbol: "tek", isAccent: false, timeValue: 1},
-    ],
-    stressPattern: [1, 0, 0, 1, 0, 0, 0],
-  },
-  {
-    id: "duyek",
-    name: "Düyek",
-    nameTr: "Düyek",
-    nameEn: "Duyek",
-    beats: 8,
-    unit: "4",
-    symbols: [
-      {beat: 1, symbol: "dum", isAccent: true, timeValue: 2},
-      {beat: 2, symbol: "tek", isAccent: false, timeValue: 1},
-      {beat: 3, symbol: "ke", isAccent: false, timeValue: 1},
-      {beat: 4, symbol: "tek", isAccent: false, timeValue: 1},
-      {beat: 5, symbol: "dum", isAccent: true, timeValue: 2},
-      {beat: 6, symbol: "tek", isAccent: false, timeValue: 1},
-      {beat: 7, symbol: "ke", isAccent: false, timeValue: 1},
-      {beat: 8, symbol: "tek", isAccent: false, timeValue: 1},
-    ],
-    stressPattern: [1, 0, 0, 0, 1, 0, 0, 0],
-  },
-  {
-    id: "agirduyek",
-    name: "Ağırdüyek",
-    nameTr: "Ağırdüyek",
-    nameEn: "Agirduyek",
-    beats: 8,
-    unit: "8",
-    symbols: [
-      {beat: 1, symbol: "dum", isAccent: true, timeValue: 2},
-      {beat: 2, symbol: "tek", isAccent: false, timeValue: 1},
-      {beat: 3, symbol: "tek", isAccent: false, timeValue: 1},
-      {beat: 4, symbol: "dum", isAccent: true, timeValue: 2},
-      {beat: 5, symbol: "tek", isAccent: false, timeValue: 1},
-      {beat: 6, symbol: "tek", isAccent: false, timeValue: 1},
-      {beat: 7, symbol: "dum", isAccent: true, timeValue: 2},
-      {beat: 8, symbol: "tek", isAccent: false, timeValue: 1},
-    ],
-    stressPattern: [1, 0, 0, 1, 0, 0, 1, 0],
-  },
-  {
-    id: "musemmen",
-    name: "Müsemmen",
-    nameTr: "Müsemmen",
-    nameEn: "Musemmen",
-    beats: 8,
-    unit: "4",
-    symbols: [
-      {beat: 1, symbol: "dum", isAccent: true, timeValue: 2},
-      {beat: 2, symbol: "tek", isAccent: false, timeValue: 1},
-      {beat: 3, symbol: "ke", isAccent: false, timeValue: 1},
-      {beat: 4, symbol: "tek", isAccent: false, timeValue: 1},
-      {beat: 5, symbol: "dum", isAccent: true, timeValue: 2},
-      {beat: 6, symbol: "tek", isAccent: false, timeValue: 1},
-      {beat: 7, symbol: "ke", isAccent: false, timeValue: 1},
-      {beat: 8, symbol: "tek", isAccent: false, timeValue: 1},
-    ],
-    stressPattern: [1, 0, 0, 0, 1, 0, 0, 0],
-  },
-  {
-    id: "aksak",
-    name: "Aksak",
-    nameTr: "Aksak",
-    nameEn: "Aksak",
-    beats: 9,
-    unit: "8",
-    symbols: [
-      {beat: 1, symbol: "dum", isAccent: true, timeValue: 2},
-      {beat: 2, symbol: "tek", isAccent: false, timeValue: 1},
-      {beat: 3, symbol: "tek", isAccent: false, timeValue: 1},
-      {beat: 4, symbol: "dum", isAccent: true, timeValue: 2},
-      {beat: 5, symbol: "tek", isAccent: false, timeValue: 1},
-      {beat: 6, symbol: "tek", isAccent: false, timeValue: 1},
-      {beat: 7, symbol: "dum", isAccent: true, timeValue: 2},
-      {beat: 8, symbol: "tek", isAccent: false, timeValue: 1},
-      {beat: 9, symbol: "ke", isAccent: false, timeValue: 1},
-    ],
-    stressPattern: [1, 0, 0, 1, 0, 0, 1, 0, 0],
-  },
-  {
-    id: "curcuna",
-    name: "Curcuna",
-    nameTr: "Curcuna",
-    nameEn: "Curcuna",
-    beats: 10,
-    unit: "4",
-    symbols: [
-      {beat: 1, symbol: "dum", isAccent: true, timeValue: 2},
-      {beat: 2, symbol: "tek", isAccent: false, timeValue: 1},
-      {beat: 3, symbol: "tek", isAccent: false, timeValue: 1},
-      {beat: 4, symbol: "dum", isAccent: true, timeValue: 2},
-      {beat: 5, symbol: "tek", isAccent: false, timeValue: 1},
-      {beat: 6, symbol: "ke", isAccent: false, timeValue: 1},
-      {beat: 7, symbol: "tek", isAccent: false, timeValue: 1},
-      {beat: 8, symbol: "tek", isAccent: false, timeValue: 1},
-      {beat: 9, symbol: "dum", isAccent: true, timeValue: 2},
-      {beat: 10, symbol: "ke", isAccent: false, timeValue: 1},
-    ],
-    stressPattern: [1, 0, 0, 1, 0, 0, 0, 0, 1, 0],
-  },
-  {
-    id: "agiraksak",
-    name: "Ağır Aksak",
-    nameTr: "Ağır Aksak",
-    nameEn: "Agir Aksak",
-    beats: 9,
-    unit: "4",
-    symbols: [
-      {beat: 1, symbol: "dum", isAccent: true, timeValue: 2},
-      {beat: 2, symbol: "tek", isAccent: false, timeValue: 1},
-      {beat: 3, symbol: "tek", isAccent: false, timeValue: 1},
-      {beat: 4, symbol: "dum", isAccent: true, timeValue: 2},
-      {beat: 5, symbol: "tek", isAccent: false, timeValue: 1},
-      {beat: 6, symbol: "tek", isAccent: false, timeValue: 1},
-      {beat: 7, symbol: "dum", isAccent: true, timeValue: 2},
-      {beat: 8, symbol: "tek", isAccent: false, timeValue: 1},
-      {beat: 9, symbol: "ke", isAccent: false, timeValue: 1},
-    ],
-    stressPattern: [1, 0, 0, 1, 0, 0, 1, 0, 0],
-  },
-  {
-    id: "oynak",
-    name: "Oynak",
-    nameTr: "Oynak",
-    nameEn: "Oynak",
-    beats: 9,
-    unit: "8",
-    symbols: [
-      {beat: 1, symbol: "dum", isAccent: true, timeValue: 2},
-      {beat: 2, symbol: "tek", isAccent: false, timeValue: 1},
-      {beat: 3, symbol: "ke", isAccent: false, timeValue: 1},
-      {beat: 4, symbol: "tek", isAccent: false, timeValue: 1},
-      {beat: 5, symbol: "dum", isAccent: true, timeValue: 2},
-      {beat: 6, symbol: "tek", isAccent: false, timeValue: 1},
-      {beat: 7, symbol: "ke", isAccent: false, timeValue: 1},
-      {beat: 8, symbol: "tek", isAccent: false, timeValue: 1},
-      {beat: 9, symbol: "ke", isAccent: false, timeValue: 1},
-    ],
-    stressPattern: [1, 0, 0, 0, 1, 0, 0, 0, 0],
-  },
-  {
-    id: "evfer",
-    name: "Evfer",
-    nameTr: "Evfer",
-    nameEn: "Evfer",
-    beats: 9,
-    unit: "8",
-    symbols: [
-      {beat: 1, symbol: "dum", isAccent: true, timeValue: 2},
-      {beat: 2, symbol: "tek", isAccent: false, timeValue: 1},
-      {beat: 3, symbol: "ke", isAccent: false, timeValue: 1},
-      {beat: 4, symbol: "tek", isAccent: false, timeValue: 1},
-      {beat: 5, symbol: "dum", isAccent: true, timeValue: 2},
-      {beat: 6, symbol: "tek", isAccent: false, timeValue: 1},
-      {beat: 7, symbol: "ke", isAccent: false, timeValue: 1},
-      {beat: 8, symbol: "tek", isAccent: false, timeValue: 1},
-      {beat: 9, symbol: "dum", isAccent: true, timeValue: 2},
-    ],
-    stressPattern: [1, 0, 0, 0, 1, 0, 0, 0, 1],
-  },
-  {
-    id: "ciftesofyan",
-    name: "Çiftesofyan",
-    nameTr: "Çiftesofyan",
-    nameEn: "Ciftesofyan",
-    beats: 9,
-    unit: "8",
-    symbols: [
-      {beat: 1, symbol: "dum", isAccent: true, timeValue: 2},
-      {beat: 2, symbol: "tek", isAccent: false, timeValue: 1},
-      {beat: 3, symbol: "tek", isAccent: false, timeValue: 1},
-      {beat: 4, symbol: "tek", isAccent: false, timeValue: 1},
-      {beat: 5, symbol: "dum", isAccent: true, timeValue: 2},
-      {beat: 6, symbol: "tek", isAccent: false, timeValue: 1},
-      {beat: 7, symbol: "tek", isAccent: false, timeValue: 1},
-      {beat: 8, symbol: "tek", isAccent: false, timeValue: 1},
-      {beat: 9, symbol: "dum", isAccent: true, timeValue: 2},
-    ],
-    stressPattern: [1, 0, 0, 0, 1, 0, 0, 0, 1],
-  },
-  {
-    id: "lenkfahte",
-    name: "Lenk Fahte",
-    nameTr: "Lenk Fahte",
-    nameEn: "Lenk Fahte",
-    beats: 10,
-    unit: "4",
-    symbols: [
-      {beat: 1, symbol: "dum", isAccent: true, timeValue: 2},
-      {beat: 2, symbol: "tek", isAccent: false, timeValue: 1},
-      {beat: 3, symbol: "ke", isAccent: false, timeValue: 1},
-      {beat: 4, symbol: "tek", isAccent: false, timeValue: 1},
-      {beat: 5, symbol: "dum", isAccent: true, timeValue: 2},
-      {beat: 6, symbol: "tek", isAccent: false, timeValue: 1},
-      {beat: 7, symbol: "ke", isAccent: false, timeValue: 1},
-      {beat: 8, symbol: "tek", isAccent: false, timeValue: 1},
-      {beat: 9, symbol: "dum", isAccent: true, timeValue: 2},
-      {beat: 10, symbol: "tek", isAccent: false, timeValue: 1},
-    ],
-    stressPattern: [1, 0, 0, 0, 1, 0, 0, 0, 1, 0],
-  },
-  {
-    id: "aksaksemai",
-    name: "Aksaksemaî",
-    nameTr: "Aksaksemaî",
-    nameEn: "Aksaksemai",
-    beats: 10,
-    unit: "8",
-    symbols: [
-      {beat: 1, symbol: "dum", isAccent: true, timeValue: 2},
-      {beat: 2, symbol: "tek", isAccent: false, timeValue: 1},
-      {beat: 3, symbol: "ke", isAccent: false, timeValue: 1},
-      {beat: 4, symbol: "tek", isAccent: false, timeValue: 1},
-      {beat: 5, symbol: "dum", isAccent: true, timeValue: 2},
-      {beat: 6, symbol: "tek", isAccent: false, timeValue: 1},
-      {beat: 7, symbol: "ke", isAccent: false, timeValue: 1},
-      {beat: 8, symbol: "tek", isAccent: false, timeValue: 1},
-      {beat: 9, symbol: "dum", isAccent: true, timeValue: 2},
-      {beat: 10, symbol: "ke", isAccent: false, timeValue: 1},
-    ],
-    stressPattern: [1, 0, 0, 0, 1, 0, 0, 0, 1, 0],
-  },
-  {
-    id: "frenkcin",
-    name: "Frenkçin",
-    nameTr: "Frenkçin",
-    nameEn: "Frenkcin",
-    beats: 12,
-    unit: "8",
-    symbols: [
-      {beat: 1, symbol: "dum", isAccent: true, timeValue: 2},
-      {beat: 2, symbol: "tek", isAccent: false, timeValue: 1},
-      {beat: 3, symbol: "ke", isAccent: false, timeValue: 1},
-      {beat: 4, symbol: "tek", isAccent: false, timeValue: 1},
-      {beat: 5, symbol: "dum", isAccent: true, timeValue: 2},
-      {beat: 6, symbol: "tek", isAccent: false, timeValue: 1},
-      {beat: 7, symbol: "ke", isAccent: false, timeValue: 1},
-      {beat: 8, symbol: "tek", isAccent: false, timeValue: 1},
-      {beat: 9, symbol: "dum", isAccent: true, timeValue: 2},
-      {beat: 10, symbol: "tek", isAccent: false, timeValue: 1},
-      {beat: 11, symbol: "ke", isAccent: false, timeValue: 1},
-      {beat: 12, symbol: "tek", isAccent: false, timeValue: 1},
-    ],
-    stressPattern: [1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0],
-  },
-  {
-    id: "nimcember",
-    name: "Nim Çember",
-    nameTr: "Nim Çember",
-    nameEn: "Nim Cember",
-    beats: 12,
-    unit: "4",
-    symbols: [
-      {beat: 1, symbol: "dum", isAccent: true, timeValue: 2},
-      {beat: 2, symbol: "tek", isAccent: false, timeValue: 1},
-      {beat: 3, symbol: "ke", isAccent: false, timeValue: 1},
-      {beat: 4, symbol: "tek", isAccent: false, timeValue: 1},
-      {beat: 5, symbol: "dum", isAccent: true, timeValue: 2},
-      {beat: 6, symbol: "tek", isAccent: false, timeValue: 1},
-      {beat: 7, symbol: "ke", isAccent: false, timeValue: 1},
-      {beat: 8, symbol: "tek", isAccent: false, timeValue: 1},
-      {beat: 9, symbol: "dum", isAccent: true, timeValue: 2},
-      {beat: 10, symbol: "tek", isAccent: false, timeValue: 1},
-      {beat: 11, symbol: "ke", isAccent: false, timeValue: 1},
-      {beat: 12, symbol: "tek", isAccent: false, timeValue: 1},
-    ],
-    stressPattern: [1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0],
-  },
-  {
-    id: "devrirevan",
-    name: "Devrirevan",
-    nameTr: "Devrirevan",
-    nameEn: "Devrirevan",
-    beats: 14,
-    unit: "8",
-    symbols: [
-      {beat: 1, symbol: "dum", isAccent: true, timeValue: 2},
-      {beat: 2, symbol: "tek", isAccent: false, timeValue: 1},
-      {beat: 3, symbol: "ke", isAccent: false, timeValue: 1},
-      {beat: 4, symbol: "tek", isAccent: false, timeValue: 1},
-      {beat: 5, symbol: "dum", isAccent: true, timeValue: 2},
-      {beat: 6, symbol: "tek", isAccent: false, timeValue: 1},
-      {beat: 7, symbol: "ke", isAccent: false, timeValue: 1},
-      {beat: 8, symbol: "tek", isAccent: false, timeValue: 1},
-      {beat: 9, symbol: "dum", isAccent: true, timeValue: 2},
-      {beat: 10, symbol: "tek", isAccent: false, timeValue: 1},
-      {beat: 11, symbol: "ke", isAccent: false, timeValue: 1},
-      {beat: 12, symbol: "tek", isAccent: false, timeValue: 1},
-      {beat: 13, symbol: "dum", isAccent: true, timeValue: 2},
-      {beat: 14, symbol: "ke", isAccent: false, timeValue: 1},
-    ],
-    stressPattern: [1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0],
-  },
-  {
-    id: "nimberafsan",
-    name: "Nim Berafsan",
-    nameTr: "Nim Berafsan",
-    nameEn: "Nim Berafsan",
-    beats: 16,
-    unit: "4",
-    symbols: [
-      {beat: 1, symbol: "dum", isAccent: true, timeValue: 2},
-      {beat: 2, symbol: "tek", isAccent: false, timeValue: 1},
-      {beat: 3, symbol: "ke", isAccent: false, timeValue: 1},
-      {beat: 4, symbol: "tek", isAccent: false, timeValue: 1},
-      {beat: 5, symbol: "dum", isAccent: true, timeValue: 2},
-      {beat: 6, symbol: "tek", isAccent: false, timeValue: 1},
-      {beat: 7, symbol: "ke", isAccent: false, timeValue: 1},
-      {beat: 8, symbol: "tek", isAccent: false, timeValue: 1},
-      {beat: 9, symbol: "dum", isAccent: true, timeValue: 2},
-      {beat: 10, symbol: "tek", isAccent: false, timeValue: 1},
-      {beat: 11, symbol: "ke", isAccent: false, timeValue: 1},
-      {beat: 12, symbol: "tek", isAccent: false, timeValue: 1},
-      {beat: 13, symbol: "dum", isAccent: true, timeValue: 2},
-      {beat: 14, symbol: "tek", isAccent: false, timeValue: 1},
-      {beat: 15, symbol: "ke", isAccent: false, timeValue: 1},
-      {beat: 16, symbol: "tek", isAccent: false, timeValue: 1},
-    ],
-    stressPattern: [1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0],
-  },
-  {
-    id: "raksan",
-    name: "Raksan",
-    nameTr: "Raksan",
-    nameEn: "Raksan",
-    beats: 15,
-    unit: "8",
-    symbols: [
-      {beat: 1, symbol: "dum", isAccent: true, timeValue: 2},
-      {beat: 2, symbol: "tek", isAccent: false, timeValue: 1},
-      {beat: 3, symbol: "ke", isAccent: false, timeValue: 1},
-      {beat: 4, symbol: "tek", isAccent: false, timeValue: 1},
-      {beat: 5, symbol: "dum", isAccent: true, timeValue: 2},
-      {beat: 6, symbol: "tek", isAccent: false, timeValue: 1},
-      {beat: 7, symbol: "ke", isAccent: false, timeValue: 1},
-      {beat: 8, symbol: "tek", isAccent: false, timeValue: 1},
-      {beat: 9, symbol: "dum", isAccent: true, timeValue: 2},
-      {beat: 10, symbol: "tek", isAccent: false, timeValue: 1},
-      {beat: 11, symbol: "ke", isAccent: false, timeValue: 1},
-      {beat: 12, symbol: "tek", isAccent: false, timeValue: 1},
-      {beat: 13, symbol: "dum", isAccent: true, timeValue: 2},
-      {beat: 14, symbol: "tek", isAccent: false, timeValue: 1},
-      {beat: 15, symbol: "ke", isAccent: false, timeValue: 1},
-    ],
-    stressPattern: [1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0],
-  },
-  {
-    id: "cember",
-    name: "Çember",
-    nameTr: "Çember",
-    nameEn: "Cember",
-    beats: 24,
-    unit: "4",
-    symbols: [
-      {beat: 1, symbol: "dum", isAccent: true, timeValue: 2},
-      {beat: 2, symbol: "tek", isAccent: false, timeValue: 1},
-      {beat: 3, symbol: "ke", isAccent: false, timeValue: 1},
-      {beat: 4, symbol: "tek", isAccent: false, timeValue: 1},
-      {beat: 5, symbol: "dum", isAccent: true, timeValue: 2},
-      {beat: 6, symbol: "tek", isAccent: false, timeValue: 1},
-      {beat: 7, symbol: "ke", isAccent: false, timeValue: 1},
-      {beat: 8, symbol: "tek", isAccent: false, timeValue: 1},
-      {beat: 9, symbol: "dum", isAccent: true, timeValue: 2},
-      {beat: 10, symbol: "tek", isAccent: false, timeValue: 1},
-      {beat: 11, symbol: "ke", isAccent: false, timeValue: 1},
-      {beat: 12, symbol: "tek", isAccent: false, timeValue: 1},
-      {beat: 13, symbol: "dum", isAccent: true, timeValue: 2},
-      {beat: 14, symbol: "tek", isAccent: false, timeValue: 1},
-      {beat: 15, symbol: "ke", isAccent: false, timeValue: 1},
-      {beat: 16, symbol: "tek", isAccent: false, timeValue: 1},
-      {beat: 17, symbol: "dum", isAccent: true, timeValue: 2},
-      {beat: 18, symbol: "tek", isAccent: false, timeValue: 1},
-      {beat: 19, symbol: "ke", isAccent: false, timeValue: 1},
-      {beat: 20, symbol: "tek", isAccent: false, timeValue: 1},
-      {beat: 21, symbol: "dum", isAccent: true, timeValue: 2},
-      {beat: 22, symbol: "tek", isAccent: false, timeValue: 1},
-      {beat: 23, symbol: "ke", isAccent: false, timeValue: 1},
-      {beat: 24, symbol: "tek", isAccent: false, timeValue: 1},
-    ],
-    stressPattern: [1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0],
-  },
-  {
-    id: "hafif",
-    name: "Hafif",
-    nameTr: "Hafif",
-    nameEn: "Hafif",
-    beats: 32,
-    unit: "4",
-    symbols: [
-      {beat: 1, symbol: "dum", isAccent: true, timeValue: 2},
-      {beat: 2, symbol: "tek", isAccent: false, timeValue: 1},
-      {beat: 3, symbol: "ke", isAccent: false, timeValue: 1},
-      {beat: 4, symbol: "tek", isAccent: false, timeValue: 1},
-      {beat: 5, symbol: "dum", isAccent: true, timeValue: 2},
-      {beat: 6, symbol: "tek", isAccent: false, timeValue: 1},
-      {beat: 7, symbol: "ke", isAccent: false, timeValue: 1},
-      {beat: 8, symbol: "tek", isAccent: false, timeValue: 1},
-      {beat: 9, symbol: "dum", isAccent: true, timeValue: 2},
-      {beat: 10, symbol: "tek", isAccent: false, timeValue: 1},
-      {beat: 11, symbol: "ke", isAccent: false, timeValue: 1},
-      {beat: 12, symbol: "tek", isAccent: false, timeValue: 1},
-      {beat: 13, symbol: "dum", isAccent: true, timeValue: 2},
-      {beat: 14, symbol: "tek", isAccent: false, timeValue: 1},
-      {beat: 15, symbol: "ke", isAccent: false, timeValue: 1},
-      {beat: 16, symbol: "tek", isAccent: false, timeValue: 1},
-      {beat: 17, symbol: "dum", isAccent: true, timeValue: 2},
-      {beat: 18, symbol: "tek", isAccent: false, timeValue: 1},
-      {beat: 19, symbol: "ke", isAccent: false, timeValue: 1},
-      {beat: 20, symbol: "tek", isAccent: false, timeValue: 1},
-      {beat: 21, symbol: "dum", isAccent: true, timeValue: 2},
-      {beat: 22, symbol: "tek", isAccent: false, timeValue: 1},
-      {beat: 23, symbol: "ke", isAccent: false, timeValue: 1},
-      {beat: 24, symbol: "tek", isAccent: false, timeValue: 1},
-      {beat: 25, symbol: "dum", isAccent: true, timeValue: 2},
-      {beat: 26, symbol: "tek", isAccent: false, timeValue: 1},
-      {beat: 27, symbol: "ke", isAccent: false, timeValue: 1},
-      {beat: 28, symbol: "tek", isAccent: false, timeValue: 1},
-      {beat: 29, symbol: "dum", isAccent: true, timeValue: 2},
-      {beat: 30, symbol: "tek", isAccent: false, timeValue: 1},
-      {beat: 31, symbol: "ke", isAccent: false, timeValue: 1},
-      {beat: 32, symbol: "tek", isAccent: false, timeValue: 1},
-    ],
-    stressPattern: [1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0],
-  },
-  {
-    id: "devrikebir",
-    name: "Devr-i Kebir",
-    nameTr: "Devr-i Kebir",
-    nameEn: "Devr-i Kebir",
-    beats: 28,
-    unit: "4",
-    symbols: [
-      {beat: 1, symbol: "dum", isAccent: true, timeValue: 2},
-      {beat: 2, symbol: "tek", isAccent: false, timeValue: 1},
-      {beat: 3, symbol: "tek", isAccent: false, timeValue: 1},
-      {beat: 4, symbol: "dum", isAccent: true, timeValue: 2},
-      {beat: 5, symbol: "tek", isAccent: false, timeValue: 1},
-      {beat: 6, symbol: "tek", isAccent: false, timeValue: 1},
-      {beat: 7, symbol: "dum", isAccent: true, timeValue: 2},
-      {beat: 8, symbol: "tek", isAccent: false, timeValue: 1},
-      {beat: 9, symbol: "ke", isAccent: false, timeValue: 1},
-      {beat: 10, symbol: "tek", isAccent: false, timeValue: 1},
-      {beat: 11, symbol: "dum", isAccent: true, timeValue: 2},
-      {beat: 12, symbol: "tek", isAccent: false, timeValue: 1},
-      {beat: 13, symbol: "tek", isAccent: false, timeValue: 1},
-      {beat: 14, symbol: "dum", isAccent: true, timeValue: 2},
-      {beat: 15, symbol: "tek", isAccent: false, timeValue: 1},
-      {beat: 16, symbol: "tek", isAccent: false, timeValue: 1},
-      {beat: 17, symbol: "dum", isAccent: true, timeValue: 2},
-      {beat: 18, symbol: "tek", isAccent: false, timeValue: 1},
-      {beat: 19, symbol: "ke", isAccent: false, timeValue: 1},
-      {beat: 20, symbol: "tek", isAccent: false, timeValue: 1},
-      {beat: 21, symbol: "dum", isAccent: true, timeValue: 2},
-      {beat: 22, symbol: "tek", isAccent: false, timeValue: 1},
-      {beat: 23, symbol: "ke", isAccent: false, timeValue: 1},
-      {beat: 24, symbol: "tek", isAccent: false, timeValue: 1},
-      {beat: 25, symbol: "dum", isAccent: true, timeValue: 2},
-      {beat: 26, symbol: "tek", isAccent: false, timeValue: 1},
-      {beat: 27, symbol: "ke", isAccent: false, timeValue: 1},
-      {beat: 28, symbol: "tek", isAccent: false, timeValue: 1},
-    ],
-    stressPattern: [1, 0, 0, 1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0],
-  },
-  {
-    id: "fahte",
-    name: "Fahte",
-    nameTr: "Fahte",
-    nameEn: "Fahte",
-    beats: 20,
-    unit: "4",
-    symbols: [
-      {beat: 1, symbol: "dum", isAccent: true, timeValue: 2},
-      {beat: 2, symbol: "tek", isAccent: false, timeValue: 1},
-      {beat: 3, symbol: "ke", isAccent: false, timeValue: 1},
-      {beat: 4, symbol: "tek", isAccent: false, timeValue: 1},
-      {beat: 5, symbol: "dum", isAccent: true, timeValue: 2},
-      {beat: 6, symbol: "tek", isAccent: false, timeValue: 1},
-      {beat: 7, symbol: "ke", isAccent: false, timeValue: 1},
-      {beat: 8, symbol: "tek", isAccent: false, timeValue: 1},
-      {beat: 9, symbol: "dum", isAccent: true, timeValue: 2},
-      {beat: 10, symbol: "tek", isAccent: false, timeValue: 1},
-      {beat: 11, symbol: "ke", isAccent: false, timeValue: 1},
-      {beat: 12, symbol: "tek", isAccent: false, timeValue: 1},
-      {beat: 13, symbol: "dum", isAccent: true, timeValue: 2},
-      {beat: 14, symbol: "tek", isAccent: false, timeValue: 1},
-      {beat: 15, symbol: "ke", isAccent: false, timeValue: 1},
-      {beat: 16, symbol: "tek", isAccent: false, timeValue: 1},
-      {beat: 17, symbol: "dum", isAccent: true, timeValue: 2},
-      {beat: 18, symbol: "tek", isAccent: false, timeValue: 1},
-      {beat: 19, symbol: "ke", isAccent: false, timeValue: 1},
-      {beat: 20, symbol: "tek", isAccent: false, timeValue: 1},
-    ],
-    stressPattern: [1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0],
-  },
-  {
-    id: "berafsan",
-    name: "Berafsan",
-    nameTr: "Berafsan",
-    nameEn: "Berafsan",
-    beats: 32,
-    unit: "4",
-    symbols: [
-      {beat: 1, symbol: "dum", isAccent: true, timeValue: 2},
-      {beat: 2, symbol: "tek", isAccent: false, timeValue: 1},
-      {beat: 3, symbol: "ke", isAccent: false, timeValue: 1},
-      {beat: 4, symbol: "tek", isAccent: false, timeValue: 1},
-      {beat: 5, symbol: "dum", isAccent: true, timeValue: 2},
-      {beat: 6, symbol: "tek", isAccent: false, timeValue: 1},
-      {beat: 7, symbol: "ke", isAccent: false, timeValue: 1},
-      {beat: 8, symbol: "tek", isAccent: false, timeValue: 1},
-      {beat: 9, symbol: "dum", isAccent: true, timeValue: 2},
-      {beat: 10, symbol: "tek", isAccent: false, timeValue: 1},
-      {beat: 11, symbol: "ke", isAccent: false, timeValue: 1},
-      {beat: 12, symbol: "tek", isAccent: false, timeValue: 1},
-      {beat: 13, symbol: "dum", isAccent: true, timeValue: 2},
-      {beat: 14, symbol: "tek", isAccent: false, timeValue: 1},
-      {beat: 15, symbol: "ke", isAccent: false, timeValue: 1},
-      {beat: 16, symbol: "tek", isAccent: false, timeValue: 1},
-      {beat: 17, symbol: "dum", isAccent: true, timeValue: 2},
-      {beat: 18, symbol: "tek", isAccent: false, timeValue: 1},
-      {beat: 19, symbol: "ke", isAccent: false, timeValue: 1},
-      {beat: 20, symbol: "tek", isAccent: false, timeValue: 1},
-      {beat: 21, symbol: "dum", isAccent: true, timeValue: 2},
-      {beat: 22, symbol: "tek", isAccent: false, timeValue: 1},
-      {beat: 23, symbol: "ke", isAccent: false, timeValue: 1},
-      {beat: 24, symbol: "tek", isAccent: false, timeValue: 1},
-      {beat: 25, symbol: "dum", isAccent: true, timeValue: 2},
-      {beat: 26, symbol: "tek", isAccent: false, timeValue: 1},
-      {beat: 27, symbol: "ke", isAccent: false, timeValue: 1},
-      {beat: 28, symbol: "tek", isAccent: false, timeValue: 1},
-      {beat: 29, symbol: "dum", isAccent: true, timeValue: 2},
-      {beat: 30, symbol: "tek", isAccent: false, timeValue: 1},
-      {beat: 31, symbol: "ke", isAccent: false, timeValue: 1},
-      {beat: 32, symbol: "tek", isAccent: false, timeValue: 1},
-    ],
-    stressPattern: [1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0],
-  },
-  {
-    id: "darbiturki",
-    name: "Darb-ı Türkı",
-    nameTr: "Darb-ı Türkı",
-    nameEn: "Darb-i Turki",
-    beats: 20,
-    unit: "4",
-    symbols: [
-      {beat: 1, symbol: "dum", isAccent: true, timeValue: 2},
-      {beat: 2, symbol: "tek", isAccent: false, timeValue: 1},
-      {beat: 3, symbol: "ke", isAccent: false, timeValue: 1},
-      {beat: 4, symbol: "tek", isAccent: false, timeValue: 1},
-      {beat: 5, symbol: "dum", isAccent: true, timeValue: 2},
-      {beat: 6, symbol: "tek", isAccent: false, timeValue: 1},
-      {beat: 7, symbol: "ke", isAccent: false, timeValue: 1},
-      {beat: 8, symbol: "tek", isAccent: false, timeValue: 1},
-      {beat: 9, symbol: "dum", isAccent: true, timeValue: 2},
-      {beat: 10, symbol: "tek", isAccent: false, timeValue: 1},
-      {beat: 11, symbol: "ke", isAccent: false, timeValue: 1},
-      {beat: 12, symbol: "tek", isAccent: false, timeValue: 1},
-      {beat: 13, symbol: "dum", isAccent: true, timeValue: 2},
-      {beat: 14, symbol: "tek", isAccent: false, timeValue: 1},
-      {beat: 15, symbol: "ke", isAccent: false, timeValue: 1},
-      {beat: 16, symbol: "tek", isAccent: false, timeValue: 1},
-      {beat: 17, symbol: "dum", isAccent: true, timeValue: 2},
-      {beat: 18, symbol: "tek", isAccent: false, timeValue: 1},
-      {beat: 19, symbol: "ke", isAccent: false, timeValue: 1},
-      {beat: 20, symbol: "tek", isAccent: false, timeValue: 1},
-    ],
-    stressPattern: [1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0],
-  },
-  {
-    id: "darbifeth",
-    name: "Darb-ı Feth",
-    nameTr: "Darb-ı Feth",
-    nameEn: "Darb-i Feth",
-    beats: 88,
-    unit: "4",
-    symbols: Array.from({length: 88}, (_, i) => ({
-      beat: i + 1,
-      symbol: (i % 4 === 0) ? "dum" : (i % 2 === 0 ? "ke" : "tek") as "dum" | "tek" | "ke" | "",
-      isAccent: i % 4 === 0,
-      timeValue: i % 4 === 0 ? 2 : 1,
-    })),
-    stressPattern: Array.from({length: 88}, (_, i) => (i % 4 === 0 ? 1 : 0)),
-  },
-  {
-    id: "zincir",
-    name: "Zincir",
-    nameTr: "Zincir",
-    nameEn: "Zincir",
-    beats: 88,
-    unit: "4",
-    symbols: Array.from({length: 88}, (_, i) => ({
-      beat: i + 1,
-      symbol: (i % 4 === 0) ? "dum" : (i % 2 === 0 ? "ke" : "tek") as "dum" | "tek" | "ke" | "",
-      isAccent: i % 4 === 0,
-      timeValue: i % 4 === 0 ? 2 : 1,
-    })),
-    stressPattern: Array.from({length: 88}, (_, i) => (i % 4 === 0 ? 1 : 0)),
-  },
+  // --- Kucuk usuller ---
+  makeUsul("nimsofyan", "Nimsofyan", "Nimsofyan", 2, "4", [[1, "dum", 1], [2, "tek", 1]]), // s.11
+  makeUsul("semai", "Semai", "Semai", 3, "4", [[1, "dum", 1], [2, "tek", 1], [3, "tek", 1]]), // s.15
+  makeUsul("sofyan", "Sofyan", "Sofyan", 4, "4", [[1, "dum", 2], [3, "te", 1], [4, "ke", 1]]), // s.18
+  makeUsul("turkaksagi", "Türk Aksağı", "Turkish Aksak", 5, "8", [[1, "dum", 2], [3, "tek", 2], [5, "tek", 1]]), // s.20
+  makeUsul("zafer", "Zafer", "Zafer", 5, "8", [[1, "dum", 1], [2, "tek", 2], [4, "dum", 1], [5, "tek", 1]]), // s.23
+  makeUsul("yuruksemai", "Yürüksemâî", "Yuruk Semai", 6, "8", YURUK_SEMAI), // s.25
+  makeUsul("senginsemai", "Sengin Semai", "Sengin Semai", 6, "4", YURUK_SEMAI), // s.25: YS 2. mertebesi
+  makeUsul("agirsemai", "Ağır Semai", "Agir Semai", 6, "2", YURUK_SEMAI), // s.25: YS 3. mertebesi (agir semai)
+  makeUsul("darb", "Darb", "Darb", 6, "4", [[1, "dum", 2], [3, "tek", 2], [5, "tek", 2]]), // s.29
+  makeUsul("devirhindi", "Devr-i Hindi", "Devr-i Hindi", 7, "8", [
+    [1, "dum", 1], [2, "tek", 1], [3, "tek", 1], [4, "dum", 2], [6, "tek", 2],
+  ]), // s.34
+  makeUsul("devirituran", "Devr-i Turan", "Devr-i Turan", 7, "8", [
+    [1, "dum", 2], [3, "tek", 2], [5, "tek", 3],
+  ]), // s.37 (yaygin mertebesi 7/16; 7/8 de gosterilir)
+  makeUsul("duyek", "Düyek", "Duyek", 8, "8", DUYEK), // s.40 (birinci mertebe 8/8)
+  makeUsul("agirduyek", "Ağırdüyek", "Agir Duyek", 8, "4", DUYEK), // s.40: duyek 2. mertebesi
+  makeUsul("musemmen", "Müsemmen", "Musemmen", 8, "8", [[1, "dum", 3], [4, "tek", 2], [6, "tek", 3]]), // s.44
+  makeUsul("aksak", "Aksak", "Aksak", 9, "8", AKSAK), // s.47
+  makeUsul("ciftesofyan", "Çiftesofyan", "Cifte Sofyan", 9, "8", AKSAK), // s.46: aksagin yurukce vurulusu
+  makeUsul("agiraksak", "Ağır Aksak", "Agir Aksak", 9, "4", AKSAK), // s.46-47: aksak 2. mertebesi
+  makeUsul("evfer", "Evfer", "Evfer", 9, "8", [
+    [1, "dum", 2], [3, "te", 1], [4, "ke", 1], [5, "dum", 2], [7, "tek", 1], [8, "tek", 2],
+  ]), // s.53: aksaktan farki son iki tek'in deger degisimi
+  makeUsul("oynak", "Oynak", "Oynak", 9, "8", [
+    [1, "dum", 1], [2, "tek", 1], [3, "tek", 1], [4, "dum", 2], [6, "tek", 2], [8, "tek", 2],
+  ]), // s.63
+  makeUsul("aksaksemai", "Aksaksemâî", "Aksak Semai", 10, "8", AKSAK_SEMAI), // s.67
+  makeUsul("curcuna", "Curcuna", "Curcuna", 10, "16", AKSAK_SEMAI), // s.66: 10/16 mertebesine curcuna denir
+  makeUsul("lenkfahte", "Lenk Fahte", "Lenk Fahte", 10, "4", [
+    [1, "dum", 2], [3, "tek", 3], [6, "dum", 1], [7, "tek", 2], [9, "te", 1], [10, "ke", 1],
+  ]), // s.76 (daima 2. mertebesi 10/4 kullanilir)
+  makeUsul("frenkcin", "Frenkçin", "Frenkcin", 12, "4", [
+    [1, "dum", 1], [2, "dum", 2], [4, "dum", 1], [5, "dum", 2],
+    [7, "tek", 1], [8, "ka", 1], [9, "tek", 1], [10, "ka", 1], [11, "tek", 1], [12, "ka", 1],
+  ]), // s.85
+  makeUsul("nimcember", "Nim Çember", "Nim Cember", 12, "8", [
+    [1, "dum", 2], [3, "te", 1], [4, "ke", 1], [5, "dum", 2],
+    [7, "ta", 2], [9, "hek", 2], [11, "te", 1], [12, "ke", 1],
+  ]), // s.90
+  makeUsul("devrirevan", "Devrirevan", "Devr-i Revan", 14, "8", [
+    [1, "dum", 3], [4, "dum", 2], [6, "tek", 2], [8, "dum", 3], [11, "tek", 2], [13, "tek", 2],
+  ]), // s.101
+  makeUsul("raksan", "Raksan", "Raksan", 15, "8", [
+    [1, "dum", 1], [2, "tek", 1], [3, "tek", 1], [4, "dum", 2], [6, "te", 1], [7, "ka", 2],
+    [9, "dum", 2], [11, "tek", 2], [13, "te", 1], [14, "ka", 2],
+  ]), // s.103
+  // --- Buyuk usuller ---
+  makeUsul("nimberafsan", "Nim Berafsan", "Nim Berefsan", 16, "4", [
+    [1, "dum", 2], [3, "tek", 1], [4, "dum", 2], [6, "tek", 1], [7, "dum", 2],
+    [9, "dum", 1], [10, "tek", 1], [11, "dum", 1], [12, "dum", 1], [13, "tek", 2],
+    [15, "tek", 1], [16, "ka", 1],
+  ]), // s.121 (2. sekil — klasik eserlerde kullanilan)
+  makeUsul("nimhafif", "Nim Hafif", "Nim Hafif", 16, "4", [
+    [1, "dum", 1], [2, "tek", 1], [3, "tek", 2], [5, "dum", 1], [6, "tek", 1], [7, "tek", 2],
+    [9, "dum", 1], [10, "tek", 1], [11, "dum", 1], [12, "dum", 1],
+    [13, "ta", 1], [14, "hek", 1], [15, "te", 0.5], [15.5, "ke", 0.5], [16, "te", 0.5], [16.5, "ke", 0.5],
+  ]), // s.227: Darb-i Fetih'in son on alti zamani Nim Hafif dizilisidir
+  makeUsul("darbiturki", "Darb-ı Türkı", "Darb-i Turki", 18, "4", [
+    [1, "dum", 2], [3, "dum", 2], [5, "tek", 2], [7, "dum", 4],
+    [11, "tek", 4], [15, "tek", 1], [16, "ka", 1], [17, "tek", 1], [18, "ka", 1],
+  ]), // s.131 (1. sekil; kitap: ON SEKIZ zamanli — onceki 20/4 kaydi yanlisti)
+  makeUsul("fahte", "Fahte", "Fahte", 20, "4", FAHTE), // s.139
+  makeUsul("cember", "Çember", "Cember", 24, "4", CEMBER), // s.157
+  makeUsul("devrikebir", "Devr-i Kebir", "Devr-i Kebir", 28, "4", DEVRI_KEBIR), // s.181
+  makeUsul("hafif", "Hafif", "Hafif", 32, "4", [
+    [1, "dum", 1], [2, "tek", 1], [3, "tek", 2], [5, "dum", 1], [6, "tek", 1], [7, "tek", 2],
+    [9, "dum", 2], [11, "tek", 1], [12, "ka", 1], [13, "dum", 1], [14, "tek", 1], [15, "tek", 2],
+    [17, "dum", 2], [19, "tek", 1], [20, "ka", 1], [21, "dum", 1], [22, "dum", 1],
+    [23, "tek", 1], [24, "te", 0.5], [24.5, "ke", 0.5],
+    [25, "dum", 1], [26, "tek", 1], [27, "te", 0.5], [27.5, "ke", 0.5],
+    [28, "dum", 1], [29, "ta", 1], [30, "hek", 1],
+    [31, "te", 0.5], [31.5, "ke", 0.5], [32, "te", 0.5], [32.5, "ke", 0.5],
+  ]), // s.199
+  makeUsul("berafsan", "Berafsan", "Berefsan", 32, "4", BERAFSAN), // s.208
+  makeUsul("darbifeth", "Darb-ı Feth", "Darb-i Fetih", 88, "4", [
+    [1, "dum", 2], [3, "tek", 1], [4, "tek", 1], [5, "dum", 2], [7, "tek", 1], [8, "tek", 1],
+    [9, "tek", 1], [10, "ka", 1], [11, "dum", 2], [13, "tek", 1], [14, "tek", 1], [15, "dum", 2],
+    [17, "tek", 2], [19, "dum", 2], [21, "tek", 2], [23, "dum", 2],
+    [25, "tek", 1], [26, "ka", 1], [27, "dum", 1], [28, "te", 0.5], [28.5, "ke", 0.5], [29, "tek", 2], [31, "tek", 2],
+    [33, "dum", 2], [35, "tek", 1], [36, "ka", 1], [37, "tek", 1], [38, "ka", 1], [39, "dum", 2],
+    [41, "tek", 1], [42, "ka", 1], [43, "dum", 1], [44, "te", 0.5], [44.5, "ke", 0.5], [45, "tek", 2], [47, "dum", 2],
+    [49, "dum", 2], [51, "dum", 2], [53, "tek", 1], [54, "ka", 1], [55, "tek", 1], [56, "ka", 1],
+    [57, "dum", 2], [59, "tek", 1], [60, "ka", 1], [61, "dum", 1], [62, "dum", 1],
+    [63, "tek", 1], [64, "te", 0.5], [64.5, "ke", 0.5],
+    [65, "dum", 1], [66, "tek", 1], [67, "te", 0.5], [67.5, "ke", 0.5],
+    [68, "dum", 1], [69, "ta", 1], [70, "hek", 1],
+    [71, "te", 0.5], [71.5, "ke", 0.5], [72, "te", 0.5], [72.5, "ke", 0.5],
+    [73, "dum", 1], [74, "tek", 1], [75, "tek", 2], [77, "dum", 1], [78, "tek", 1], [79, "tek", 2],
+    [81, "dum", 1], [82, "tek", 1], [83, "dum", 1], [84, "dum", 1],
+    [85, "ta", 1], [86, "hek", 1],
+    [87, "te", 0.5], [87.5, "ke", 0.5], [88, "te", 0.5], [88.5, "ke", 0.5],
+  ]), // s.228 (1. sekil; son 16 zaman = Nim Hafif dizilisi)
+  makeUsul("zincir", "Zincir", "Zincir", 120, "4", [
+    ...CIFTE_DUYEK,
+    ...shift(FAHTE, 16),
+    ...shift(CEMBER, 36),
+    ...shift(DEVRI_KEBIR, 60),
+    ...shift(BERAFSAN, 88),
+  ]), // s.234: bes usulun zinciri (16+20+24+28+32 = 120; onceki 88/4 kaydi yanlisti)
 ];
 
 export function getUsulById(id: string): Usul | undefined {
-  return USUL_DATA.find((u) => u.id === id);
+  return USUL_DATA.find((usul) => usul.id === id);
 }
 
 export function getUsulBeatDuration(usul: Usul, bpm: number): number {

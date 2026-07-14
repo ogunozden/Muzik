@@ -396,9 +396,13 @@ Surec icinde tespit edilenler listeye eklendi ve tamamlananlar isaretlendi:
 ### Ritim Motoru Gelistirme Yol Haritasi (2026-07-14 arastirmasi)
 
 Motorun bir sonraki seviyeye tasinmasi icin (oncelik sirasiyla):
-- [ ] F12.1 Latency kalibrasyonu: bazi sistemler outputLatency'yi yanlis
-      bildirir; kullaniciya el ile +/- ofset kaydirici (gorsel/isitsel
-      calibrate) + localStorage'da saklama
+- [x] F12.1 Latency kalibrasyonu (MOTOR REFAKTORU — kullanici: "bu kurgudan
+      daha iyi kurgu var mi? refaktor gerektiriyor mu?"). Arastirma: her ciddi
+      ritim uygulamasi manuel kalibrasyon acar cunku otomatik senkron cihaz-
+      bagimli (Bluetooth/hoparlor/OS) ve fiziksel olarak tam tutamaz.
+      Uygulandi: /rhythm'e "ses-gorsel ofset" kaydiricisi (-300..+300ms,
+      kalici localStorage; imlec sesin onundeyse artir); rAF tick offseti
+      duyulan konuma uygular. Kalicilik testi + vitest localStorage polyfill.
 - [ ] F12.2 Canli tempo/usul degisimi: BPM veya usul degisince oynatma
       duruyor; startRhythmLoop faz koruyarak yeniden planlanabilir
       (duraksamasiz gecis)
@@ -406,9 +410,13 @@ Motorun bir sonraki seviyeye tasinmasi icin (oncelik sirasiyla):
       1-2 tur bos vurus secenegi
 - [ ] F12.4 Vurus dinamigi: darp turune gore hafif/kuvvetli oynatma
       (dum>tek>ke) zaten var; velvele hecelerine (te-ke) daha kisik gain
-- [ ] F12.5 Buyuk usullerde (Zincir 120) SVG imlec performansi:
-      progressBeat'i React state yerine imperative ref/transform ile
-      surerek 60fps'te re-render maliyetini dusur
+- [x] F12.5 IMPERATIF IMLEC (motor refaktoru): imlec artik React state ile
+      degil, `UsulNotation.setProgress` ile DOGRUDAN DOM'a yazilir (forwardRef
+      + useImperativeHandle; UsulPanel de ref'i iletir). SVG her karede
+      re-render EDILMEZ, yalniz cizginin x'i degisir; vurgu/tur sayaci yalniz
+      DEGISINCE setState. Buyuk usullerde (Zincir 120) 60fps re-render takilmasi
+      giderildi. Canli dogrulama: cizgi opacity 0->0.75 + x DOM mutasyonu, DÜM
+      merkezinde delta 0. Playhead hizalama testi mevcut (usul-notation-layout).
 - [ ] F12.6 AudioWorklet'e gecis (ornek-hassas planlama) — mevcut
       lookahead yeterli; yalniz cok dusuk-latency hedefi olursa
 - [ ] F11.7 Velvele 2. asama: sekli yogun/cok satirli oldugu icin bu turda

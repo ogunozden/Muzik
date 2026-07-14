@@ -6,12 +6,12 @@
 
 "use client";
 
-import {memo} from "react";
+import {forwardRef, memo} from "react";
 import {useTranslation} from "react-i18next";
 import {Button} from "@/shared/ui/atoms/Button";
 import {LabeledSelect} from "@/shared/ui/molecules/LabeledSelect";
 import {UsulSymbol as UsulSymbolType} from "@/types";
-import {UsulNotation} from "@/shared/ui/organisms/UsulNotation";
+import {UsulNotation, type UsulNotationHandle} from "@/shared/ui/organisms/UsulNotation";
 
 interface UsulPanelProps {
   usulSelectAriaLabel: string;
@@ -26,27 +26,27 @@ interface UsulPanelProps {
   unit?: string;
   isPlaying?: boolean;
   currentBeat?: number;
-  /** Dongu icindeki kesirli vurus (0..beats); oynatma cizgisi bunu izler. */
-  progressBeat?: number;
   className?: string;
 }
 
-function UsulPanelComponent({
-  usulSelectAriaLabel,
-  symbolGridAriaLabel,
-  playButtonAriaLabel,
-  usulItems,
-  selectedUsul,
-  onUsulChange,
-  symbols,
-  onPlay,
-  beats = 4,
-  unit = "4",
-  isPlaying = false,
-  currentBeat = -1,
-  progressBeat = -1,
-  className = "",
-}: UsulPanelProps) {
+const UsulPanelComponent = forwardRef<UsulNotationHandle, UsulPanelProps>(function UsulPanelComponent(
+  {
+    usulSelectAriaLabel,
+    symbolGridAriaLabel,
+    playButtonAriaLabel,
+    usulItems,
+    selectedUsul,
+    onUsulChange,
+    symbols,
+    onPlay,
+    beats = 4,
+    unit = "4",
+    isPlaying = false,
+    currentBeat = -1,
+    className = "",
+  },
+  notationRef,
+) {
   const {t} = useTranslation();
 
   return (
@@ -105,12 +105,12 @@ function UsulPanelComponent({
           </div>
 
           <UsulNotation
+            ref={notationRef}
             symbols={symbols}
             unit={unit}
             beats={beats}
             isPlaying={isPlaying}
             currentBeat={currentBeat}
-            progressBeat={progressBeat}
             size="md"
           />
         </section>
@@ -139,6 +139,6 @@ function UsulPanelComponent({
       </Button>
     </div>
   );
-}
+});
 
 export const UsulPanel = memo(UsulPanelComponent);

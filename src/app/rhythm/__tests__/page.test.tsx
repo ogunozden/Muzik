@@ -31,12 +31,23 @@ describe("UsulPage", () => {
   beforeEach(() => {
     vi.clearAllMocks();
     Element.prototype.scrollTo = vi.fn();
+    window.localStorage.clear();
     useEditorStore.setState({
       selectedUsulId: "",
       selectedUsulObj: null,
       selectedPercussionInstrument: "kudum",
       bpm: 120,
     });
+  });
+
+  it("persists the audio/visual calibration offset to localStorage", async () => {
+    render(<UsulPage />);
+    const slider = await screen.findByRole("slider", {name: "Ses-görsel ofset (ms)"});
+
+    fireEvent.change(slider, {target: {value: "60"}});
+
+    expect(window.localStorage.getItem("muzik.rhythm.syncOffsetMs")).toBe("60");
+    expect(screen.getByText("+60 ms")).toBeDefined();
   });
 
   it("starts the seamless audio-clock loop with unit-aware arguments", async () => {

@@ -3,14 +3,16 @@
  *
  * Yerlesim VURUS POZISYONUNA orantilidir (dizin sirasina degil): Sofyan'da
  * Düm 2 vurus kaplar ve Tek 3. vurusta gorunur; esit-aralik varsayimi
- * imleci kaydiriyordu (2026-07-14 yeniden tasarimi). Oynatma imleci
- * `progressBeat` (kesirli vurus, 0..beats) ile surekli akar; aktif darp
- * `currentBeat` (sembol dizini) ile vurgulanir.
+ * imleci kaydiriyordu (2026-07-14 yeniden tasarimi).
+ *
+ * Oynatma imleci IMPERATIF surulur: ebeveyn ref uzerinden `setProgress`
+ * cagirir, cizginin x'i DOGRUDAN DOM'a yazilir (SVG re-render yok). Aktif
+ * darp `currentBeat` prop'uyla vurgulanir (yalniz degisince guncellenir).
  */
 
 "use client";
 
-import React, {useEffect, useRef} from "react";
+import React, {forwardRef, useImperativeHandle, useRef} from "react";
 import type {UsulSymbol} from "@/types";
 
 /**
@@ -37,12 +39,21 @@ interface UsulNotationProps {
   unit: string;
   beats: number;
   isPlaying?: boolean;
-  /** Aktif sembolun dizini (vurgu/etiket için). */
+  /** Aktif sembolun dizini (vurgu/etiket için); dusuk frekansli (yalniz degisince). */
   currentBeat?: number;
-  /** Dongu icindeki kesirli vurus konumu (0..beats); oynatma cizgisi bunu izler. */
-  progressBeat?: number;
   size?: "sm" | "md" | "lg";
   className?: string;
+}
+
+/**
+ * Oynatma cizgisi IMPERATIF surulur (araastirma: yuksek-frekansli animasyonu
+ * React state ile degil, ref ile DOM mutasyonuyla surmek). Ebeveyn her
+ * rAF karesinde `setProgress` cagirir; boylece SVG yeniden CIZILMEZ, yalniz
+ * cizginin x'i degisir — takilma (jank) ve kare gecikmesi ortadan kalkar.
+ */
+export interface UsulNotationHandle {
+  setProgress: (progressBeat: number) => void;
+  clearProgress: () => void;
 }
 
 const COLORS = {
@@ -70,17 +81,12 @@ const SYMBOL_STYLES: Record<string, {color: string; label: string; position: num
   hek: {color: COLORS.label, label: "HEK", position: 0},
 };
 
-export function UsulNotation({
-  symbols,
-  unit,
-  beats,
-  isPlaying = false,
-  currentBeat = -1,
-  progressBeat = -1,
-  size = "md",
-  className = "",
-}: UsulNotationProps) {
+export const UsulNotation = forwardRef<UsulNotationHandle, UsulNotationProps>(function UsulNotation(
+  {symbols, unit, beats, isPlaying = false, currentBeat = -1, size = "md", className = ""},
+  ref,
+) {
   const scrollRef = useRef<HTMLDivElement>(null);
+  const playheadRef = useRef<SVGLineElement>(null);
 
   const configs = {
     sm: {lineSpacing: 8, minPerBeat: 34, maxPerBeat: 56},
@@ -105,17 +111,34 @@ export function UsulNotation({
   const totalHeight = beatNumberY + config.lineSpacing * 1.2;
 
   const beatX = (beat: number) => usulBeatCenterX(gridStart, perBeat, beat);
-  const playheadX = (progress: number) => usulPlayheadX(gridStart, perBeat, beats, progress);
   const beatNumberStep = beats > 32 ? 4 : beats > 16 ? 2 : 1;
+  const staffTopEdge = staffTop - config.lineSpacing * 1.1;
+  const staffBottomEdge = staffTop + staffHeight + config.lineSpacing * 1.1;
 
-  // Oynatma cizgisini gorunurde tut (genis usullerde yatay takip).
-  useEffect(() => {
-    const scroller = scrollRef.current;
-    if (!isPlaying || progressBeat < 0 || !scroller) return;
-    const x = usulPlayheadX(gridStart, perBeat, beats, progressBeat);
-    const target = Math.max(0, x - scroller.clientWidth / 2);
-    scroller.scrollTo({left: target, behavior: "auto"});
-  }, [gridStart, isPlaying, perBeat, progressBeat, beats]);
+  // Imperatif oynatma cizgisi: ebeveyn rAF'inden dogrudan DOM'a yazilir
+  // (setState/re-render yok). Cizgi + tur takibi burada. gridStart/perBeat/
+  // beats yalniz usul degisince degistiginden handle o zaman yeniden kurulur.
+  useImperativeHandle(
+    ref,
+    () => ({
+      setProgress: (progressBeat: number) => {
+        const line = playheadRef.current;
+        if (!line) return;
+        const x = usulPlayheadX(gridStart, perBeat, beats, progressBeat);
+        line.setAttribute("x1", String(x));
+        line.setAttribute("x2", String(x));
+        line.setAttribute("opacity", "0.75");
+        const scroller = scrollRef.current;
+        if (scroller && scroller.scrollWidth > scroller.clientWidth) {
+          scroller.scrollLeft = Math.max(0, x - scroller.clientWidth / 2);
+        }
+      },
+      clearProgress: () => {
+        playheadRef.current?.setAttribute("opacity", "0");
+      },
+    }),
+    [gridStart, perBeat, beats],
+  );
 
   return (
     <div className={className}>
@@ -270,18 +293,18 @@ export function UsulNotation({
                 </text>
               ))}
 
-            {/* Oynatma cizgisi: duyulan darbin nota merkezine hizali (playheadX). */}
-            {isPlaying && progressBeat >= 0 && (
-              <line
-                x1={playheadX(progressBeat)}
-                y1={staffTop - config.lineSpacing * 1.1}
-                x2={playheadX(progressBeat)}
-                y2={staffTop + staffHeight + config.lineSpacing * 1.1}
-                stroke={COLORS.playhead}
-                strokeWidth="2"
-                opacity="0.75"
-              />
-            )}
+            {/* Oynatma cizgisi: her zaman DOM'da, imperatif surulur (setProgress);
+                baslangicta gizli (opacity 0), x usul degisince baslangica alinir. */}
+            <line
+              ref={playheadRef}
+              x1={gridStart}
+              y1={staffTopEdge}
+              x2={gridStart}
+              y2={staffBottomEdge}
+              stroke={COLORS.playhead}
+              strokeWidth="2"
+              opacity="0"
+            />
           </svg>
         </div>
       </div>
@@ -303,4 +326,4 @@ export function UsulNotation({
       </div>
     </div>
   );
-}
+});

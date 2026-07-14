@@ -10,9 +10,13 @@
  * - Ses hazirlanmadan (init + sample preload) gorsel sayac baslamaz.
  * - Dongu: startRhythmLoop tum vuruslari WebAudio saatinde ileriye-bakisli
  *   planlar (tur basi setTimeout dikisi yok).
- * - Imlec requestAnimationFrame ile ekran tazelemesine hizali; her karede
- *   "DUYULAN" saati (getOutputTimestamp) okur -> ses-gorsel senkron (imlec
- *   artik outputLatency kadar onde gitmiyor; bkz. heardContextTime).
+ * - Imlec requestAnimationFrame ile okunur; "DUYULAN" saat (getOutputTimestamp)
+ *   -> ses-gorsel senkron (bkz. heardContextTime).
+ * - Imlec IMPERATIF surulur: her karede notationRef.setProgress ile DOGRUDAN
+ *   DOM'a yazilir (SVG re-render yok); vurgu/sayaci yalniz DEGISINCE setState.
+ *   (arastirma: yuksek-frekansli animasyonu ref ile sur, state ile degil.)
+ * - Kalibrasyon: outputLatency her cihazda dogru bildirilmez; kullanici
+ *   "ses-gorsel ofset" kaydiricisiyla kendi sistemini ayarlar (kalici).
  */
 
 "use client";
@@ -21,9 +25,10 @@ import {useCallback, useEffect, useRef, useState} from "react";
 import {useTranslation} from "react-i18next";
 import {LabeledSelect, LabeledSlider, PageHeader, PageShell, PageSurface, UsulPanel} from "@/shared/ui";
 import {UnifiedLayout} from "@/shared/ui/layout/UnifiedLayout";
-import {USUL_DATA} from "@/engines/usul/data";
+import {USUL_DATA, getUsulBeatDuration} from "@/engines/usul/data";
 import type {InstrumentType} from "@/engines/ses/engine";
 import {startRhythmLoop, stopAll, type RhythmLoopController} from "@/engines/ses/engine";
+import type {UsulNotationHandle} from "@/shared/ui/organisms/UsulNotation";
 import {useEditorStore} from "@/store/editorStore";
 import {ENSTRUMAN_LIST, PERCUSSION_INSTRUMENTS} from "@/lib/app-constants";
 
@@ -36,6 +41,31 @@ const SYMBOL_LABELS: Record<string, string> = {
   ta: "Ta",
   hek: "Hek",
 };
+
+// Ses-gorsel senkron ofseti: outputLatency her sistemde dogru bildirilmez
+// (Bluetooth/hoparlor/OS'e gore degisir), otomatik olarak tam tutmasi fiziksel
+// olarak imkansizdir — her ciddi ritim uygulamasi manuel kalibrasyon acar.
+// Pozitif = "ses gorselden gec geliyor" -> imleci geri kaydir (imlec sesin
+// onundeyse artir). localStorage'da kalici.
+const SYNC_OFFSET_KEY = "muzik.rhythm.syncOffsetMs";
+const SYNC_OFFSET_MAX_MS = 300;
+
+function readStoredSyncOffset(): number {
+  try {
+    const stored = Number(window.localStorage?.getItem(SYNC_OFFSET_KEY));
+    return Number.isFinite(stored) ? stored : 0;
+  } catch {
+    return 0;
+  }
+}
+
+function persistSyncOffset(value: number): void {
+  try {
+    window.localStorage?.setItem(SYNC_OFFSET_KEY, String(value));
+  } catch {
+    // localStorage kullanilamiyor (gizli mod / kisitli ortam) — sessizce gec.
+  }
+}
 
 export default function UsulPage() {
   const {t, i18n} = useTranslation();
@@ -51,12 +81,30 @@ export default function UsulPage() {
   const [isLoopEnabled, setIsLoopEnabled] = useState(true);
   const [isVelveleEnabled, setIsVelveleEnabled] = useState(false);
   const [currentSymbolIndex, setCurrentSymbolIndex] = useState(-1);
-  const [progressBeat, setProgressBeat] = useState(-1);
   const [cycleCount, setCycleCount] = useState(0);
+  const [syncOffsetMs, setSyncOffsetMs] = useState(0);
   const isPlayingRef = useRef(false);
   const isLoopRef = useRef(true);
   const cursorRafRef = useRef<number | null>(null);
   const loopControllerRef = useRef<RhythmLoopController | null>(null);
+  const notationRef = useRef<UsulNotationHandle>(null);
+  const syncOffsetRef = useRef(0);
+  // Yalniz DEGISINCE setState (her karede degil): imperatif imlecin yaninda
+  // vurgu/sayaci ucuz tutar.
+  const activeIndexRef = useRef(-1);
+  const cycleCountRef = useRef(0);
+
+  // Kalici kalibrasyon ofsetini mount'ta yukle. SSR/hidrasyon uyumu icin
+  // ilk render 0'dir, kalici deger client'ta effect'te alinir (bu, kalici
+  // durum yukleme icin dogru desendir; lint kurali burada bilincli kapali).
+  useEffect(() => {
+    const stored = readStoredSyncOffset();
+    if (stored !== 0) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setSyncOffsetMs(stored);
+      syncOffsetRef.current = stored;
+    }
+  }, []);
 
   const usulItems = USUL_DATA.map((usul) => ({
     key: usul.id,
@@ -82,9 +130,11 @@ export default function UsulPage() {
     loopControllerRef.current?.stop();
     loopControllerRef.current = null;
     stopAll();
+    notationRef.current?.clearProgress();
+    activeIndexRef.current = -1;
+    cycleCountRef.current = 0;
     setIsRhythmPlaying(false);
     setCurrentSymbolIndex(-1);
-    setProgressBeat(-1);
     setCycleCount(0);
   }, []);
 
@@ -110,30 +160,44 @@ export default function UsulPage() {
 
     loopControllerRef.current = controller;
     isPlayingRef.current = true;
+    activeIndexRef.current = 0;
+    cycleCountRef.current = 1;
     setIsRhythmPlaying(true);
-    setProgressBeat(0);
     setCurrentSymbolIndex(0);
     setCycleCount(1);
+    notationRef.current?.setProgress(0);
 
-    // Imlec requestAnimationFrame ile ekran tazelemesine hizali (akici) ve her
-    // karede "duyulan" saati (getPositionBeats -> getOutputTimestamp) taze okur;
-    // sekme gizlenip donerse otomatik yeniden senkron olur (drift birikmez).
+    const beatSeconds = getUsulBeatDuration(usul, bpm);
+
+    // Imlec requestAnimationFrame ile ekran tazelemesine hizali; her karede
+    // "duyulan" saati (getPositionBeats -> getOutputTimestamp) taze okur.
+    // Cizgi IMPERATIF (notationRef.setProgress) surulur — SVG re-render yok;
+    // vurgu/sayaci yalniz DEGISINCE setState edilir. Kalibrasyon ofseti
+    // (syncOffsetRef) "duyulan" konumu kaydirir.
     const tick = () => {
       if (!isPlayingRef.current) return;
-      const positionBeats = controller.getPositionBeats();
+      const offsetBeats = beatSeconds > 0 ? syncOffsetRef.current / 1000 / beatSeconds : 0;
+      const positionBeats = controller.getPositionBeats() - offsetBeats;
       if (!isLoopRef.current && positionBeats >= usul.beats) {
         stopRhythm();
         return;
       }
-      const beatInCycle = positionBeats % usul.beats;
-      setProgressBeat(beatInCycle);
-      setCycleCount(controller.getCycleCount());
-      // Aktif darp = pozisyonu gecilmis SON sembol (beat kolonuna gore).
+      const beatInCycle = ((positionBeats % usul.beats) + usul.beats) % usul.beats;
+      notationRef.current?.setProgress(beatInCycle);
+
       let active = 0;
       for (let index = 0; index < pattern.length; index += 1) {
         if (pattern[index].beat <= beatInCycle + 1 + 1e-6) active = index;
       }
-      setCurrentSymbolIndex(active);
+      if (active !== activeIndexRef.current) {
+        activeIndexRef.current = active;
+        setCurrentSymbolIndex(active);
+      }
+      const cycle = controller.getCycleCount();
+      if (cycle !== cycleCountRef.current) {
+        cycleCountRef.current = cycle;
+        setCycleCount(cycle);
+      }
       cursorRafRef.current = requestAnimationFrame(tick);
     };
     cursorRafRef.current = requestAnimationFrame(tick);
@@ -155,6 +219,7 @@ export default function UsulPage() {
         />
 
         <UsulPanel
+          ref={notationRef}
           usulSelectAriaLabel={t("usul.selectUsul")}
           symbolGridAriaLabel={t("usul.symbolGrid")}
           playButtonAriaLabel={isRhythmPlaying ? t("common.stop") : t("usul.playRhythm")}
@@ -170,7 +235,6 @@ export default function UsulPage() {
           unit={selectedUsulObj?.unit}
           isPlaying={isRhythmPlaying}
           currentBeat={currentSymbolIndex}
-          progressBeat={progressBeat}
           className="mb-6"
         />
 
@@ -226,6 +290,40 @@ export default function UsulPage() {
               </label>
             )}
           </div>
+        </PageSurface>
+
+        {/* Ses-gorsel kalibrasyonu: sistem gecikmesi cihazdan cihaza degistigi
+            icin (Bluetooth/hoparlor) otomatik senkron tam tutmayabilir; imlec
+            sesin onundeyse artir, gerideyse azalt. Deger kalicidir. */}
+        <PageSurface className="mb-6 p-5">
+          <div className="flex items-center justify-between gap-3">
+            <label htmlFor="sync-offset" className="text-sm text-[var(--color-text-primary)]">
+              Ses-görsel ofset
+              <span className="ml-2 text-xs text-[var(--color-text-secondary)]">
+                imleç sesin önündeyse artır
+              </span>
+            </label>
+            <span className="tabular-nums text-sm font-semibold text-[var(--color-text-primary)]">
+              {syncOffsetMs > 0 ? "+" : ""}
+              {syncOffsetMs} ms
+            </span>
+          </div>
+          <input
+            id="sync-offset"
+            type="range"
+            aria-label="Ses-görsel ofset (ms)"
+            min={-SYNC_OFFSET_MAX_MS}
+            max={SYNC_OFFSET_MAX_MS}
+            step={5}
+            value={syncOffsetMs}
+            onChange={(event) => {
+              const next = Number(event.target.value);
+              setSyncOffsetMs(next);
+              syncOffsetRef.current = next;
+              persistSyncOffset(next);
+            }}
+            className="mt-2 w-full accent-[var(--color-primary-600)]"
+          />
         </PageSurface>
 
         {selectedUsulObj && (

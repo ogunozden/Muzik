@@ -14,6 +14,24 @@ process.env.MUZIK_SYMBTR_ROOTS = path.resolve(
   "src/data/score-engine/__tests__/fixtures/symbtr",
 );
 
+// jsdom/Node test ortaminda localStorage her zaman saglanmaz; bellek-ici
+// minimal bir polyfill kalibrasyon (sync-offset) kalicilik testlerini
+// mumkun kilar. Uretim kodu zaten `?.`+try/catch ile korumalidir.
+if (typeof globalThis.localStorage === "undefined") {
+  const store = new Map<string, string>();
+  const memoryStorage: Storage = {
+    get length() {
+      return store.size;
+    },
+    clear: () => store.clear(),
+    getItem: (key) => (store.has(key) ? store.get(key)! : null),
+    key: (index) => Array.from(store.keys())[index] ?? null,
+    removeItem: (key) => void store.delete(key),
+    setItem: (key, value) => void store.set(key, String(value)),
+  };
+  Object.defineProperty(globalThis, "localStorage", {value: memoryStorage, configurable: true});
+}
+
 /**
  * Test i18n init'i (F5.4): `useTranslation` gercek Turkce degerleri dondurur
  * (varsayilan `tr`). Boylece bilesenler i18n'e baglanirken Turkce-metin test

@@ -371,6 +371,14 @@ Surec icinde tespit edilenler listeye eklendi ve tamamlananlar isaretlendi:
       (nimsofyan, semai, sofyan, turkaksagi, zafer, YS+sengin+agir, devirhindi,
       devirituran, duyek+agirduyek, musemmen, aksak+cifte+agir, evfer);
       velvele dosum degismezleri + Aksak ornegi + toggle davranisi testte
+- [x] F11.8 Dikissiz dongu planlayicisi: onceki dongu her turu ayri
+      setTimeout + playRhythm ile kuruyordu; timer titremesi tur baslarinda
+      duyulur duraksama yaratiyordu (kullanici: "duzgun calismiyor").
+      startRhythmLoop: tum vuruslar TEK mutlak WebAudio-saat ekseninde
+      ileriye-bakisli planlanir (600ms ufuk, 150ms pompa); gorsel imlec ve
+      tur sayaci getPositionBeats/getCycleCount ile AYNI saatten okunur.
+      Canli olcum: currentTime=elapsed birebir, tur hizi 1/dongu; 3 sayfa
+      testi yeni sozlesmeye tasindi
 - [ ] F11.7 Velvele 2. asama: sekli yogun/cok satirli oldugu icin bu turda
       DAHIL EDILMEYENLER (fabrikasyon yapilmadi): darb(s.29), oynak(s.63),
       aksaksemai+curcuna(s.67), lenkfahte(s.76), frenkcin(s.85),

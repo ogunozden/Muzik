@@ -8,8 +8,8 @@
  * - Imlec sembol DIZINI degil vurus POZISYONU uzerinden ilerler (Sofyan'da
  *   Düm 2 vurus kaplar; esit-aralik varsayimi imleci kaydiriyordu).
  * - Ses hazirlanmadan (init + sample preload) gorsel sayac baslamaz.
- * - Dongu modu: kalip, durdurulana kadar drift'siz tekrarlanir (her turun
- *   baslangici mutlak baslangic zamanindan hesaplanir).
+ * - Dongu: startRhythmLoop tum vuruslari WebAudio saatinde ileriye-bakisli
+ *   planlar (tur basi setTimeout dikisi yok); imlec ayni saatten okunur.
  */
 
 "use client";
@@ -18,14 +18,13 @@ import {useCallback, useEffect, useRef, useState} from "react";
 import {useTranslation} from "react-i18next";
 import {LabeledSelect, LabeledSlider, PageHeader, PageShell, PageSurface, UsulPanel} from "@/shared/ui";
 import {UnifiedLayout} from "@/shared/ui/layout/UnifiedLayout";
-import {USUL_DATA, getUsulBeatDuration} from "@/engines/usul/data";
+import {USUL_DATA} from "@/engines/usul/data";
 import type {InstrumentType} from "@/engines/ses/engine";
-import {initAudio, playRhythm, preloadRhythm, stopAll} from "@/engines/ses/engine";
+import {startRhythmLoop, stopAll, type RhythmLoopController} from "@/engines/ses/engine";
 import {useEditorStore} from "@/store/editorStore";
 import {ENSTRUMAN_LIST, PERCUSSION_INSTRUMENTS} from "@/lib/app-constants";
 
 const CURSOR_TICK_MS = 40;
-const CYCLE_TAIL_MS = 150;
 const SYMBOL_LABELS: Record<string, string> = {
   dum: "Düm",
   tek: "Tek",
@@ -55,7 +54,7 @@ export default function UsulPage() {
   const isPlayingRef = useRef(false);
   const isLoopRef = useRef(true);
   const cursorTimerRef = useRef<number | null>(null);
-  const audioTimerRef = useRef<number | null>(null);
+  const loopControllerRef = useRef<RhythmLoopController | null>(null);
 
   const usulItems = USUL_DATA.map((usul) => ({
     key: usul.id,
@@ -77,9 +76,9 @@ export default function UsulPage() {
   const stopRhythm = useCallback(() => {
     isPlayingRef.current = false;
     if (cursorTimerRef.current) window.clearInterval(cursorTimerRef.current);
-    if (audioTimerRef.current) window.clearTimeout(audioTimerRef.current);
     cursorTimerRef.current = null;
-    audioTimerRef.current = null;
+    loopControllerRef.current?.stop();
+    loopControllerRef.current = null;
     stopAll();
     setIsRhythmPlaying(false);
     setCurrentSymbolIndex(-1);
@@ -92,49 +91,37 @@ export default function UsulPage() {
     if (!usul || isPlayingRef.current) return;
     const pattern = isVelveleEnabled && usul.velvele?.length ? usul.velvele : usul.symbols;
 
-    // Ses tamamen hazir olmadan gorsel sayac baslamaz; aksi halde ilk turda
-    // imlec, sample indirme suresi kadar one geciyordu.
-    const audioReady = await initAudio();
-    if (!audioReady) return;
-    await preloadRhythm(pattern, selectedPercussionInstrument);
-    if (isPlayingRef.current) return;
+    // Dikissiz dongu: tum vuruslar WebAudio saatinde ileriye-bakisli
+    // planlanir; gorsel imlec de ayni saatten okunur (drift/dikis yok).
+    const controller = await startRhythmLoop(
+      usul.beats,
+      pattern,
+      bpm,
+      selectedPercussionInstrument,
+      usul.unit,
+      isLoopRef.current,
+    );
+    if (!controller || isPlayingRef.current) {
+      controller?.stop();
+      return;
+    }
 
-    const beatDuration = getUsulBeatDuration(usul, bpm);
-    const cycleMs = usul.beats * beatDuration * 1000;
-    const startedAt = performance.now();
-
+    loopControllerRef.current = controller;
     isPlayingRef.current = true;
     setIsRhythmPlaying(true);
     setProgressBeat(0);
     setCurrentSymbolIndex(0);
     setCycleCount(1);
 
-    const scheduleCycle = (cycleIndex: number) => {
-      if (!isPlayingRef.current) return;
-      void playRhythm(usul.beats, pattern, bpm, selectedPercussionInstrument, usul.unit).catch(stopRhythm);
-      if (!isLoopRef.current) {
-        audioTimerRef.current = window.setTimeout(stopRhythm, cycleMs + CYCLE_TAIL_MS);
-        return;
-      }
-      // Drift birikmesin: bir sonraki turun ani mutlak baslangictan hesaplanir.
-      const nextAt = startedAt + (cycleIndex + 1) * cycleMs;
-      audioTimerRef.current = window.setTimeout(
-        () => scheduleCycle(cycleIndex + 1),
-        Math.max(0, nextAt - performance.now()),
-      );
-    };
-    scheduleCycle(0);
-
     cursorTimerRef.current = window.setInterval(() => {
-      const elapsedMs = performance.now() - startedAt;
-      if (!isLoopRef.current && elapsedMs >= cycleMs + CYCLE_TAIL_MS) {
+      const positionBeats = controller.getPositionBeats();
+      if (!isLoopRef.current && positionBeats >= usul.beats) {
         stopRhythm();
         return;
       }
-      const elapsedBeats = elapsedMs / 1000 / beatDuration;
-      const beatInCycle = elapsedBeats % usul.beats;
+      const beatInCycle = positionBeats % usul.beats;
       setProgressBeat(beatInCycle);
-      setCycleCount(Math.floor(elapsedBeats / usul.beats) + 1);
+      setCycleCount(controller.getCycleCount());
       // Aktif darp = pozisyonu gecilmis SON sembol (beat kolonuna gore).
       let active = 0;
       for (let index = 0; index < pattern.length; index += 1) {

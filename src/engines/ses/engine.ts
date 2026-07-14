@@ -9,10 +9,12 @@ import {
   preloadInstrumentSamples,
   preloadPercussionSamples,
   preloadPercussionSymbolSamples,
+  startRhythmLoop as startRhythmLoopBase,
   clearSampleCache as clearSampleCacheBase,
   initAudio as initAudioBase,
   stopAll as stopAllBase,
   getAudioContext,
+  type RhythmLoopController,
 } from "./instruments";
 import {isPercussionSymbol} from "./profiles";
 import type {InstrumentType, PercussionSymbol} from "./instruments";
@@ -93,6 +95,29 @@ export async function playRhythm(
     })
   );
   await playRhythmWithPercussion(beats, percussionSymbols, bpm, percussionInstrument, unit);
+}
+
+export type {RhythmLoopController};
+
+/**
+ * Dikissiz ritim dongusu: heceler sample ailesine indirgenir, planlama
+ * WebAudio saatinde ileriye-bakisli yapilir (tur basi duraksama yok).
+ */
+export async function startRhythmLoop(
+  beats: number,
+  symbols: RhythmSymbolInput[],
+  bpm: number,
+  percussionInstrument: InstrumentType | undefined,
+  unit: string,
+  loop: boolean,
+): Promise<RhythmLoopController | null> {
+  const normalized = symbols.map((s) => ({
+    beat: s.beat,
+    symbol: PERCUSSION_SYMBOL_ALIASES[s.symbol] ?? s.symbol,
+    isAccent: s.isAccent,
+    timeValue: s.timeValue,
+  }));
+  return startRhythmLoopBase(beats, normalized, bpm, percussionInstrument, unit, loop);
 }
 
 /**

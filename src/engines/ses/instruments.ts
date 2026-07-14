@@ -381,6 +381,85 @@ export function playPercussionSymbolScheduled(
   return true;
 }
 
+export interface RhythmLoopController {
+  /** Ses saatine gore dongudeki kesirli vurus konumu (0..beats). */
+  getPositionBeats: () => number;
+  /** Kacinci turda oldugumuz (1-tabanli). */
+  getCycleCount: () => number;
+  stop: () => void;
+}
+
+/**
+ * Dikissiz ritim dongusu (2026-07-14): tum turlar TEK mutlak ses-saati
+ * ekseninden ileriye-bakisli planlanir. Onceki surum her turu ayri
+ * setTimeout ile playRhythm cagirarak kuruyordu; timer titremesi tur
+ * baslarinda duyulur duraksamalar yaratiyordu ("duzgun calismiyor").
+ * Gorsel imlec de getPositionBeats ile AYNI saate kilitlenir.
+ */
+export async function startRhythmLoop(
+  beats: number,
+  symbols: RhythmSymbolInput[],
+  bpm: number,
+  percussionInstrument: InstrumentType | undefined,
+  unit: string,
+  loop: boolean,
+): Promise<RhythmLoopController | null> {
+  const ok = await initAudio();
+  const context = getOrCreateAudioContext();
+  if (!ok || !context) return null;
+
+  const schedule = buildRhythmSchedule(beats, symbols, bpm, unit);
+  await preloadPercussionSymbolSamples(
+    symbols.map((symbol) => symbol.symbol).filter(isPercussionSymbol),
+    percussionInstrument,
+  );
+  if (schedule.length === 0) return null;
+
+  const beatUnit = Number.parseInt(unit, 10) || 4;
+  const beatSeconds = (60 / bpm) * (4 / beatUnit);
+  const cycleSeconds = beats * beatSeconds;
+  const LOOKAHEAD_SECONDS = 0.6;
+  const PUMP_INTERVAL_MS = 150;
+
+  const startAtCtx = context.currentTime + 0.08;
+  let cycleIndex = 0;
+  let hitIndex = 0;
+  let stopped = false;
+
+  const scheduleDueHits = () => {
+    if (stopped) return;
+    const horizon = context.currentTime + LOOKAHEAD_SECONDS;
+    for (;;) {
+      if (hitIndex >= schedule.length) {
+        if (!loop) break;
+        hitIndex = 0;
+        cycleIndex += 1;
+      }
+      const hit = schedule[hitIndex];
+      const at = startAtCtx + cycleIndex * cycleSeconds + hit.startOffset;
+      if (at > horizon) break;
+      if (!scheduleSampledPercussionHit(context, hit.symbol, hit.isAccent, at, hit.beatDuration, percussionInstrument)) {
+        if (SYNTHETIC_FALLBACK_ENABLED) {
+          schedulePercussionHit(context, hit.symbol, hit.isAccent, at, hit.beatDuration, percussionInstrument);
+        }
+      }
+      hitIndex += 1;
+    }
+  };
+
+  scheduleDueHits();
+  const pump = window.setInterval(scheduleDueHits, PUMP_INTERVAL_MS);
+
+  return {
+    getPositionBeats: () => Math.max(0, (context.currentTime - startAtCtx) / beatSeconds),
+    getCycleCount: () => Math.max(1, Math.floor((context.currentTime - startAtCtx) / cycleSeconds) + 1),
+    stop: () => {
+      stopped = true;
+      window.clearInterval(pump);
+    },
+  };
+}
+
 // Re-exports
 export { getAudioContext, stopAll, clearSampleCache, INSTRUMENT_PROFILES };
 export type { InstrumentType, PercussionSymbol, InstrumentProfile };

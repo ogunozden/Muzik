@@ -66,10 +66,13 @@ const USER_SYMBTR_PIECE: PieceDefinition = {
 
 // v3 (Zenodo 15470412; `npm run fetch:symbtr-v3`) v2'de olmayan tied/slur/
 // repeat/ending ogelerini tasidigi icin oncelikli koktur; v2 fallback kalir.
-const LOCAL_SYMBTR_ROOTS = [
-  path.join(process.cwd(), "symb", "SymbTr-3.0"),
-  path.join(process.cwd(), "symb", "SymbTr-2.0.0"),
-];
+// `MUZIK_SYMBTR_ROOTS` (path.delimiter ile ayrilmis) varsayilani ezer:
+// testler bunu committed fixture'a sabitler ki sonuc ortamdan bagimsiz olsun
+// (gercek `symb/` gitignore'dadir, CI runner'da yoktur); Docker gibi
+// ortamlarda da korpusun bind edildigi yol buradan verilebilir.
+const LOCAL_SYMBTR_ROOTS = process.env.MUZIK_SYMBTR_ROOTS
+  ? process.env.MUZIK_SYMBTR_ROOTS.split(path.delimiter).filter(Boolean)
+  : [path.join(process.cwd(), "symb", "SymbTr-3.0"), path.join(process.cwd(), "symb", "SymbTr-2.0.0")];
 
 function getCatalogIdCandidates(catalogId: string | undefined): string[] {
   if (!catalogId) return [];

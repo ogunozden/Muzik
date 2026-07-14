@@ -812,7 +812,9 @@ describe("ReferencesCurationPage", () => {
         }),
       }),
     );
-  }, 15000);
+    // 30s: coverage enstrumantasyonu altinda GitHub runner'da bu akis ~15s'i
+    // asabiliyor (yerelde ~10s); 15000 sabiti 2026-07-14 CI fail'inin nedeniydi.
+  }, 30000);
 
   it("renders the server-provided read-only batch snapshot before an ops token is entered", async () => {
     const fetchMock = mockFetch();
@@ -827,7 +829,9 @@ describe("ReferencesCurationPage", () => {
 
     await screen.findByRole("heading", {name: "Kaynak kürasyonu"});
 
-    expect(screen.getByText(/Read-only batch snapshot/)).toBeDefined();
+    // findBy*: mesaj banner'i yavas CI'da heading'den bir tick sonra gelebilir;
+    // senkron getByText coverage altinda yarisi kaybediyordu (2026-07-14 CI).
+    expect(await screen.findByText(/Read-only batch snapshot/)).toBeDefined();
     expect(screen.getAllByText("2.978").length).toBeGreaterThan(0);
     expect(screen.getByText(/14\.890 queue/)).toBeDefined();
     expect(screen.getAllByText(catalogId).length).toBeGreaterThan(0);

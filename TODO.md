@@ -458,6 +458,10 @@ teknoloji ne". Arastirma sonucu (SymbTr Koma53 sutunu + tomato/makam_information
       Frequencies (mevcut targetFrequency sample+synth yolu). editorStore.play-
       MakamScale koma dizisi varsa GERCEK mikrotonal perdede calar, yoksa 12-TET
       diziye duser. 9 test (turetim dogrulugu + 53-EDO matematigi + Hz uretimi).
+      Studio'ya "Gamı Çal" dinleme dugmesi (playMakamScale tetikleyicisi yoktu).
+      CANLI DOGRULAMA: hicaz secilip calindiginda sample'lar otantik koma
+      frekanslarina kaydiriliyor (koma5 313.6Hz -> D#'ten ×1.008 = Nim Hicaz
+      113c; ilk 6 derece beklenen oranlarla birebir), 0 konsol hatasi.
 - [ ] F13.3 Notasyon: VexFlow koma arizalari (+ =1 koma, bs =5 koma, bss =8
       koma; Bakiye 4 koma ≈ ceyrek-ton). SymbTr NotaAE/Nota53 adlari zaten koma
       arizasini tasir; skor motorunda koma dizisi -> arıza glyph eslemesi.

@@ -77,6 +77,7 @@ function NotaEditorPage() {
     setSelectedMakam,
     setSelectedUsul,
     setSelectedInstrument,
+    playMakamScale,
     setIsRecording,
     setIsPlaying,
     setPlaybackPosition,
@@ -341,6 +342,17 @@ function NotaEditorPage() {
                         onSelectionChange={(keys) => setSelectedMakam(Array.from(keys)[0] as string)}
                         placeholder={t("makam.selectMakam")}
                       />
+                      {/* Otantik 53-EDO koma perdesinde dinle (korpus-turevli;
+                          12-TET degil — hicaz'in 113c ikilisi duyulur). */}
+                      <Button
+                        ariaLabel={t("makam.playScale")}
+                        variant="secondary"
+                        size="sm"
+                        isDisabled={!selectedMakamId || isPlaying}
+                        onPress={() => void playMakamScale()}
+                      >
+                        {isPlaying ? t("common.playing") : t("makam.playScale")}
+                      </Button>
                     </label>
 
                     <label className="grid gap-2">

@@ -1,0 +1,1282 @@
+{
+  "source": "SymbTr v3.0 (Zenodo 15470412, CC-BY 4.0), MusicXML <key> bloklari",
+  "generatedFrom": "symb/SymbTr-3.0/MusicXML",
+  "minPieces": 3,
+  "makams": {
+    "acem": {
+      "display": "acem",
+      "total": 7,
+      "consensus": 1,
+      "keySignature": [
+        {
+          "step": "B",
+          "alter": "-0.5",
+          "accidental": "quarter-flat"
+        }
+      ]
+    },
+    "acemasiran": {
+      "display": "acemasiran",
+      "total": 70,
+      "consensus": 1,
+      "keySignature": [
+        {
+          "step": "B",
+          "alter": "-1",
+          "accidental": "flat"
+        }
+      ]
+    },
+    "acemkurdi": {
+      "display": "acemkurdi",
+      "total": 46,
+      "consensus": 1,
+      "keySignature": [
+        {
+          "step": "B",
+          "alter": "-1",
+          "accidental": "flat"
+        }
+      ]
+    },
+    "arazbar": {
+      "display": "arazbar",
+      "total": 5,
+      "consensus": 1,
+      "keySignature": [
+        {
+          "step": "B",
+          "alter": "-0.5",
+          "accidental": "quarter-flat"
+        },
+        {
+          "step": "E",
+          "alter": "-0.5",
+          "accidental": "quarter-flat"
+        }
+      ]
+    },
+    "arazbarbuselik": {
+      "display": "arazbarbuselik",
+      "total": 3,
+      "consensus": 1,
+      "keySignature": [
+        {
+          "step": "B",
+          "alter": "-0.5",
+          "accidental": "quarter-flat"
+        },
+        {
+          "step": "E",
+          "alter": "-0.5",
+          "accidental": "quarter-flat"
+        }
+      ]
+    },
+    "besteisfahan": {
+      "display": "besteisfahan",
+      "total": 3,
+      "consensus": 1,
+      "keySignature": [
+        {
+          "step": "B",
+          "alter": "-0.5",
+          "accidental": "quarter-flat"
+        }
+      ]
+    },
+    "bestenigar": {
+      "display": "bestenigar",
+      "total": 14,
+      "consensus": 1,
+      "keySignature": [
+        {
+          "step": "B",
+          "alter": "-0.5",
+          "accidental": "quarter-flat"
+        },
+        {
+          "step": "D",
+          "alter": "-0.5",
+          "accidental": "slash-flat"
+        }
+      ]
+    },
+    "beyati": {
+      "display": "beyati",
+      "total": 78,
+      "consensus": 1,
+      "keySignature": [
+        {
+          "step": "B",
+          "alter": "-0.5",
+          "accidental": "quarter-flat"
+        }
+      ]
+    },
+    "beyatiaraban": {
+      "display": "beyatiaraban",
+      "total": 12,
+      "consensus": 1,
+      "keySignature": [
+        {
+          "step": "B",
+          "alter": "-0.5",
+          "accidental": "quarter-flat"
+        },
+        {
+          "step": "E",
+          "alter": "-1",
+          "accidental": "slash-flat"
+        },
+        {
+          "step": "F",
+          "alter": "1",
+          "accidental": "sharp"
+        }
+      ]
+    },
+    "dilkeshaveran": {
+      "display": "dilkeshaveran",
+      "total": 9,
+      "consensus": 1,
+      "keySignature": [
+        {
+          "step": "B",
+          "alter": "-0.5",
+          "accidental": "quarter-flat"
+        },
+        {
+          "step": "F",
+          "alter": "0.5",
+          "accidental": "sharp"
+        }
+      ]
+    },
+    "dugah": {
+      "display": "dugah",
+      "total": 7,
+      "consensus": 1,
+      "keySignature": [
+        {
+          "step": "B",
+          "alter": "-0.5",
+          "accidental": "quarter-flat"
+        },
+        {
+          "step": "D",
+          "alter": "-0.5",
+          "accidental": "slash-flat"
+        }
+      ]
+    },
+    "evcara": {
+      "display": "evcara",
+      "total": 10,
+      "consensus": 1,
+      "keySignature": [
+        {
+          "step": "B",
+          "alter": "-0.5",
+          "accidental": "quarter-flat"
+        },
+        {
+          "step": "F",
+          "alter": "1",
+          "accidental": "sharp"
+        },
+        {
+          "step": "C",
+          "alter": "1",
+          "accidental": "sharp"
+        },
+        {
+          "step": "A",
+          "alter": "1",
+          "accidental": "sharp"
+        },
+        {
+          "step": "E",
+          "alter": "1",
+          "accidental": "sharp"
+        }
+      ]
+    },
+    "evic": {
+      "display": "evic",
+      "total": 37,
+      "consensus": 1,
+      "keySignature": [
+        {
+          "step": "B",
+          "alter": "-0.5",
+          "accidental": "quarter-flat"
+        },
+        {
+          "step": "F",
+          "alter": "1",
+          "accidental": "sharp"
+        },
+        {
+          "step": "C",
+          "alter": "1",
+          "accidental": "sharp"
+        }
+      ]
+    },
+    "ferahfeza": {
+      "display": "ferahfeza",
+      "total": 18,
+      "consensus": 1,
+      "keySignature": [
+        {
+          "step": "B",
+          "alter": "-1",
+          "accidental": "flat"
+        }
+      ]
+    },
+    "ferahnak": {
+      "display": "ferahnak",
+      "total": 16,
+      "consensus": 0.94,
+      "keySignature": [
+        {
+          "step": "F",
+          "alter": "1",
+          "accidental": "sharp"
+        },
+        {
+          "step": "C",
+          "alter": "1",
+          "accidental": "sharp"
+        }
+      ]
+    },
+    "ferahnuma": {
+      "display": "ferahnuma",
+      "total": 4,
+      "consensus": 1,
+      "keySignature": [
+        {
+          "step": "B",
+          "alter": "-1",
+          "accidental": "flat"
+        },
+        {
+          "step": "E",
+          "alter": "-1",
+          "accidental": "flat"
+        }
+      ]
+    },
+    "gerdaniye": {
+      "display": "gerdaniye",
+      "total": 32,
+      "consensus": 1,
+      "keySignature": [
+        {
+          "step": "B",
+          "alter": "-0.5",
+          "accidental": "quarter-flat"
+        },
+        {
+          "step": "F",
+          "alter": "0.5",
+          "accidental": "sharp"
+        }
+      ]
+    },
+    "gulizar": {
+      "display": "gulizar",
+      "total": 9,
+      "consensus": 1,
+      "keySignature": [
+        {
+          "step": "B",
+          "alter": "-0.5",
+          "accidental": "quarter-flat"
+        },
+        {
+          "step": "F",
+          "alter": "0.5",
+          "accidental": "sharp"
+        }
+      ]
+    },
+    "hicaz": {
+      "display": "hicaz",
+      "total": 182,
+      "consensus": 0.99,
+      "keySignature": [
+        {
+          "step": "B",
+          "alter": "-1",
+          "accidental": "slash-flat"
+        },
+        {
+          "step": "F",
+          "alter": "1",
+          "accidental": "sharp"
+        },
+        {
+          "step": "C",
+          "alter": "1",
+          "accidental": "sharp"
+        }
+      ]
+    },
+    "hicazasiran": {
+      "display": "hicazasiran",
+      "total": 3,
+      "consensus": 1,
+      "keySignature": [
+        {
+          "step": "B",
+          "alter": "-1",
+          "accidental": "slash-flat"
+        },
+        {
+          "step": "F",
+          "alter": "1",
+          "accidental": "sharp"
+        },
+        {
+          "step": "C",
+          "alter": "1",
+          "accidental": "sharp"
+        }
+      ]
+    },
+    "hicazhumayun": {
+      "display": "hicaz_humayun",
+      "total": 47,
+      "consensus": 1,
+      "keySignature": [
+        {
+          "step": "B",
+          "alter": "-1",
+          "accidental": "slash-flat"
+        },
+        {
+          "step": "C",
+          "alter": "1",
+          "accidental": "sharp"
+        }
+      ]
+    },
+    "hicazkar": {
+      "display": "hicazkar",
+      "total": 88,
+      "consensus": 1,
+      "keySignature": [
+        {
+          "step": "B",
+          "alter": "-0.5",
+          "accidental": "quarter-flat"
+        },
+        {
+          "step": "E",
+          "alter": "-1",
+          "accidental": "slash-flat"
+        },
+        {
+          "step": "A",
+          "alter": "-1",
+          "accidental": "slash-flat"
+        },
+        {
+          "step": "F",
+          "alter": "1",
+          "accidental": "sharp"
+        }
+      ]
+    },
+    "hicazuzzal": {
+      "display": "hicaz_uzzal",
+      "total": 76,
+      "consensus": 1,
+      "keySignature": [
+        {
+          "step": "B",
+          "alter": "-1",
+          "accidental": "slash-flat"
+        },
+        {
+          "step": "F",
+          "alter": "1",
+          "accidental": "sharp"
+        },
+        {
+          "step": "C",
+          "alter": "1",
+          "accidental": "sharp"
+        }
+      ]
+    },
+    "hicazzirgule": {
+      "display": "hicaz_zirgule",
+      "total": 27,
+      "consensus": 1,
+      "keySignature": [
+        {
+          "step": "B",
+          "alter": "-1",
+          "accidental": "slash-flat"
+        },
+        {
+          "step": "F",
+          "alter": "0.5",
+          "accidental": "quarter-sharp"
+        },
+        {
+          "step": "C",
+          "alter": "1",
+          "accidental": "sharp"
+        },
+        {
+          "step": "G",
+          "alter": "1",
+          "accidental": "sharp"
+        }
+      ]
+    },
+    "hisar": {
+      "display": "hisar",
+      "total": 5,
+      "consensus": 1,
+      "keySignature": [
+        {
+          "step": "B",
+          "alter": "-0.5",
+          "accidental": "quarter-flat"
+        }
+      ]
+    },
+    "hisarbuselik": {
+      "display": "hisarbuselik",
+      "total": 25,
+      "consensus": 1,
+      "keySignature": [
+        {
+          "step": "F",
+          "alter": "0.5",
+          "accidental": "quarter-sharp"
+        },
+        {
+          "step": "G",
+          "alter": "1",
+          "accidental": "sharp"
+        },
+        {
+          "step": "D",
+          "alter": "1",
+          "accidental": "sharp"
+        }
+      ]
+    },
+    "huseyni": {
+      "display": "huseyni",
+      "total": 117,
+      "consensus": 1,
+      "keySignature": [
+        {
+          "step": "B",
+          "alter": "-0.5",
+          "accidental": "quarter-flat"
+        },
+        {
+          "step": "F",
+          "alter": "0.5",
+          "accidental": "sharp"
+        }
+      ]
+    },
+    "huseyniasiran": {
+      "display": "huseyniasiran",
+      "total": 5,
+      "consensus": 1,
+      "keySignature": [
+        {
+          "step": "B",
+          "alter": "-0.5",
+          "accidental": "quarter-flat"
+        },
+        {
+          "step": "F",
+          "alter": "1",
+          "accidental": "sharp"
+        }
+      ]
+    },
+    "huzzam": {
+      "display": "huzzam",
+      "total": 152,
+      "consensus": 1,
+      "keySignature": [
+        {
+          "step": "B",
+          "alter": "-0.5",
+          "accidental": "quarter-flat"
+        },
+        {
+          "step": "E",
+          "alter": "-0.5",
+          "accidental": "slash-flat"
+        },
+        {
+          "step": "F",
+          "alter": "0.5",
+          "accidental": "sharp"
+        }
+      ]
+    },
+    "irak": {
+      "display": "irak",
+      "total": 6,
+      "consensus": 1,
+      "keySignature": [
+        {
+          "step": "B",
+          "alter": "-0.5",
+          "accidental": "quarter-flat"
+        },
+        {
+          "step": "F",
+          "alter": "0.5",
+          "accidental": "sharp"
+        }
+      ]
+    },
+    "isfahan": {
+      "display": "isfahan",
+      "total": 26,
+      "consensus": 1,
+      "keySignature": [
+        {
+          "step": "B",
+          "alter": "-0.5",
+          "accidental": "quarter-flat"
+        }
+      ]
+    },
+    "karcigar": {
+      "display": "karcigar",
+      "total": 71,
+      "consensus": 1,
+      "keySignature": [
+        {
+          "step": "B",
+          "alter": "-0.5",
+          "accidental": "quarter-flat"
+        },
+        {
+          "step": "E",
+          "alter": "-0.5",
+          "accidental": "slash-flat"
+        },
+        {
+          "step": "F",
+          "alter": "0.5",
+          "accidental": "sharp"
+        }
+      ]
+    },
+    "kurdi": {
+      "display": "kurdi",
+      "total": 20,
+      "consensus": 1,
+      "keySignature": [
+        {
+          "step": "B",
+          "alter": "-1",
+          "accidental": "flat"
+        }
+      ]
+    },
+    "kurdilihicazkar": {
+      "display": "kurdilihicazkar",
+      "total": 141,
+      "consensus": 1,
+      "keySignature": [
+        {
+          "step": "B",
+          "alter": "-1",
+          "accidental": "flat"
+        },
+        {
+          "step": "E",
+          "alter": "-1",
+          "accidental": "flat"
+        },
+        {
+          "step": "A",
+          "alter": "-1",
+          "accidental": "flat"
+        }
+      ]
+    },
+    "mahur": {
+      "display": "mahur",
+      "total": 103,
+      "consensus": 1,
+      "keySignature": [
+        {
+          "step": "F",
+          "alter": "1",
+          "accidental": "slash-quarter-sharp"
+        }
+      ]
+    },
+    "muhayyer": {
+      "display": "muhayyer",
+      "total": 78,
+      "consensus": 1,
+      "keySignature": [
+        {
+          "step": "B",
+          "alter": "-0.5",
+          "accidental": "quarter-flat"
+        },
+        {
+          "step": "F",
+          "alter": "0.5",
+          "accidental": "sharp"
+        }
+      ]
+    },
+    "muhayyerkurdi": {
+      "display": "muhayyerkurdi",
+      "total": 49,
+      "consensus": 1,
+      "keySignature": [
+        {
+          "step": "B",
+          "alter": "-1",
+          "accidental": "flat"
+        }
+      ]
+    },
+    "muhayyersunbule": {
+      "display": "muhayyersunbule",
+      "total": 4,
+      "consensus": 1,
+      "keySignature": [
+        {
+          "step": "B",
+          "alter": "-0.5",
+          "accidental": "quarter-flat"
+        },
+        {
+          "step": "D",
+          "alter": "-1",
+          "accidental": "slash-flat"
+        }
+      ]
+    },
+    "mustear": {
+      "display": "mustear",
+      "total": 9,
+      "consensus": 1,
+      "keySignature": [
+        {
+          "step": "B",
+          "alter": "-0.5",
+          "accidental": "quarter-flat"
+        },
+        {
+          "step": "E",
+          "alter": "-0.5",
+          "accidental": "quarter-flat"
+        },
+        {
+          "step": "F",
+          "alter": "1",
+          "accidental": "sharp"
+        }
+      ]
+    },
+    "neva": {
+      "display": "neva",
+      "total": 24,
+      "consensus": 1,
+      "keySignature": [
+        {
+          "step": "B",
+          "alter": "-0.5",
+          "accidental": "quarter-flat"
+        },
+        {
+          "step": "F",
+          "alter": "1",
+          "accidental": "sharp"
+        }
+      ]
+    },
+    "neveser": {
+      "display": "neveser",
+      "total": 41,
+      "consensus": 1,
+      "keySignature": [
+        {
+          "step": "B",
+          "alter": "-1",
+          "accidental": "slash-flat"
+        },
+        {
+          "step": "E",
+          "alter": "-1",
+          "accidental": "slash-flat"
+        },
+        {
+          "step": "F",
+          "alter": "1",
+          "accidental": "sharp"
+        },
+        {
+          "step": "C",
+          "alter": "1",
+          "accidental": "sharp"
+        }
+      ]
+    },
+    "nihavent": {
+      "display": "nihavent",
+      "total": 192,
+      "consensus": 1,
+      "keySignature": [
+        {
+          "step": "B",
+          "alter": "-1",
+          "accidental": "flat"
+        },
+        {
+          "step": "E",
+          "alter": "-1",
+          "accidental": "flat"
+        }
+      ]
+    },
+    "nikriz": {
+      "display": "nikriz",
+      "total": 37,
+      "consensus": 1,
+      "keySignature": [
+        {
+          "step": "B",
+          "alter": "-1",
+          "accidental": "slash-flat"
+        },
+        {
+          "step": "F",
+          "alter": "0.5",
+          "accidental": "sharp"
+        },
+        {
+          "step": "C",
+          "alter": "1",
+          "accidental": "sharp"
+        }
+      ]
+    },
+    "nisabur": {
+      "display": "nisabur",
+      "total": 5,
+      "consensus": 1,
+      "keySignature": [
+        {
+          "step": "C",
+          "alter": "1",
+          "accidental": "sharp"
+        }
+      ]
+    },
+    "nisaburek": {
+      "display": "nisaburek",
+      "total": 32,
+      "consensus": 1,
+      "keySignature": [
+        {
+          "step": "F",
+          "alter": "1",
+          "accidental": "slash-quarter-sharp"
+        },
+        {
+          "step": "C",
+          "alter": "0.5",
+          "accidental": "sharp"
+        },
+        {
+          "step": "G",
+          "alter": "0.5",
+          "accidental": "sharp"
+        }
+      ]
+    },
+    "nuhuft": {
+      "display": "nuhuft",
+      "total": 4,
+      "consensus": 1,
+      "keySignature": [
+        {
+          "step": "B",
+          "alter": "-0.5",
+          "accidental": "quarter-flat"
+        },
+        {
+          "step": "F",
+          "alter": "1",
+          "accidental": "sharp"
+        }
+      ]
+    },
+    "pencgah": {
+      "display": "pencgah",
+      "total": 4,
+      "consensus": 1,
+      "keySignature": [
+        {
+          "step": "B",
+          "alter": "-0.5",
+          "accidental": "quarter-flat"
+        },
+        {
+          "step": "F",
+          "alter": "1",
+          "accidental": "sharp"
+        }
+      ]
+    },
+    "pesendide": {
+      "display": "pesendide",
+      "total": 5,
+      "consensus": 1,
+      "keySignature": [
+        {
+          "step": "B",
+          "alter": "-0.5",
+          "accidental": "quarter-flat"
+        },
+        {
+          "step": "F",
+          "alter": "1",
+          "accidental": "sharp"
+        }
+      ]
+    },
+    "rast": {
+      "display": "rast",
+      "total": 154,
+      "consensus": 1,
+      "keySignature": [
+        {
+          "step": "B",
+          "alter": "-0.5",
+          "accidental": "quarter-flat"
+        },
+        {
+          "step": "F",
+          "alter": "1",
+          "accidental": "sharp"
+        }
+      ]
+    },
+    "rehavi": {
+      "display": "rehavi",
+      "total": 6,
+      "consensus": 1,
+      "keySignature": [
+        {
+          "step": "B",
+          "alter": "-0.5",
+          "accidental": "quarter-flat"
+        },
+        {
+          "step": "F",
+          "alter": "1",
+          "accidental": "sharp"
+        }
+      ]
+    },
+    "rengidil": {
+      "display": "rengidil",
+      "total": 12,
+      "consensus": 1,
+      "keySignature": [
+        {
+          "step": "B",
+          "alter": "-0.5",
+          "accidental": "quarter-flat"
+        },
+        {
+          "step": "E",
+          "alter": "-0.5",
+          "accidental": "quarter-flat"
+        },
+        {
+          "step": "A",
+          "alter": "-1",
+          "accidental": "slash-flat"
+        },
+        {
+          "step": "D",
+          "alter": "-1",
+          "accidental": "slash-flat"
+        }
+      ]
+    },
+    "ruhnevaz": {
+      "display": "ruhnevaz",
+      "total": 22,
+      "consensus": 1,
+      "keySignature": [
+        {
+          "step": "F",
+          "alter": "1",
+          "accidental": "slash-quarter-sharp"
+        }
+      ]
+    },
+    "saba": {
+      "display": "saba",
+      "total": 74,
+      "consensus": 1,
+      "keySignature": [
+        {
+          "step": "B",
+          "alter": "-0.5",
+          "accidental": "quarter-flat"
+        },
+        {
+          "step": "D",
+          "alter": "-0.5",
+          "accidental": "slash-flat"
+        }
+      ]
+    },
+    "sabazemzeme": {
+      "display": "saba-zemzeme",
+      "total": 3,
+      "consensus": 1,
+      "keySignature": [
+        {
+          "step": "B",
+          "alter": "-0.5",
+          "accidental": "quarter-flat"
+        },
+        {
+          "step": "D",
+          "alter": "-1",
+          "accidental": "slash-flat"
+        }
+      ]
+    },
+    "sazkar": {
+      "display": "sazkar",
+      "total": 4,
+      "consensus": 1,
+      "keySignature": [
+        {
+          "step": "B",
+          "alter": "-0.5",
+          "accidental": "quarter-flat"
+        },
+        {
+          "step": "F",
+          "alter": "1",
+          "accidental": "sharp"
+        }
+      ]
+    },
+    "sedaraban": {
+      "display": "sedaraban",
+      "total": 15,
+      "consensus": 1,
+      "keySignature": [
+        {
+          "step": "B",
+          "alter": "-1",
+          "accidental": "slash-flat"
+        },
+        {
+          "step": "E",
+          "alter": "-1",
+          "accidental": "slash-flat"
+        },
+        {
+          "step": "F",
+          "alter": "1",
+          "accidental": "sharp"
+        },
+        {
+          "step": "C",
+          "alter": "1",
+          "accidental": "sharp"
+        }
+      ]
+    },
+    "segah": {
+      "display": "segah",
+      "total": 109,
+      "consensus": 1,
+      "keySignature": [
+        {
+          "step": "B",
+          "alter": "-0.5",
+          "accidental": "quarter-flat"
+        },
+        {
+          "step": "E",
+          "alter": "-0.5",
+          "accidental": "quarter-flat"
+        },
+        {
+          "step": "F",
+          "alter": "1",
+          "accidental": "sharp"
+        }
+      ]
+    },
+    "segahmaye": {
+      "display": "segah-maye",
+      "total": 4,
+      "consensus": 1,
+      "keySignature": [
+        {
+          "step": "B",
+          "alter": "-0.5",
+          "accidental": "quarter-flat"
+        },
+        {
+          "step": "E",
+          "alter": "-0.5",
+          "accidental": "quarter-flat"
+        },
+        {
+          "step": "F",
+          "alter": "1",
+          "accidental": "sharp"
+        }
+      ]
+    },
+    "sehnaz": {
+      "display": "sehnaz",
+      "total": 32,
+      "consensus": 1,
+      "keySignature": [
+        {
+          "step": "B",
+          "alter": "-1",
+          "accidental": "slash-flat"
+        },
+        {
+          "step": "F",
+          "alter": "0.5",
+          "accidental": "quarter-sharp"
+        },
+        {
+          "step": "C",
+          "alter": "1",
+          "accidental": "sharp"
+        },
+        {
+          "step": "G",
+          "alter": "1",
+          "accidental": "sharp"
+        }
+      ]
+    },
+    "sevkefza": {
+      "display": "sevkefza",
+      "total": 12,
+      "consensus": 1,
+      "keySignature": [
+        {
+          "step": "B",
+          "alter": "-1",
+          "accidental": "flat"
+        },
+        {
+          "step": "D",
+          "alter": "-1",
+          "accidental": "slash-flat"
+        }
+      ]
+    },
+    "sultaniyegah": {
+      "display": "sultaniyegah",
+      "total": 29,
+      "consensus": 1,
+      "keySignature": [
+        {
+          "step": "B",
+          "alter": "-1",
+          "accidental": "flat"
+        },
+        {
+          "step": "C",
+          "alter": "1",
+          "accidental": "sharp"
+        }
+      ]
+    },
+    "suzidil": {
+      "display": "suzidil",
+      "total": 37,
+      "consensus": 1,
+      "keySignature": [
+        {
+          "step": "F",
+          "alter": "0.5",
+          "accidental": "quarter-sharp"
+        },
+        {
+          "step": "G",
+          "alter": "1",
+          "accidental": "sharp"
+        },
+        {
+          "step": "D",
+          "alter": "1",
+          "accidental": "sharp"
+        }
+      ]
+    },
+    "suzidilara": {
+      "display": "suzidilara",
+      "total": 9,
+      "consensus": 1,
+      "keySignature": [
+        {
+          "step": "F",
+          "alter": "1",
+          "accidental": "slash-quarter-sharp"
+        }
+      ]
+    },
+    "suzinak": {
+      "display": "suzinak",
+      "total": 46,
+      "consensus": 0.8,
+      "keySignature": [
+        {
+          "step": "B",
+          "alter": "-0.5",
+          "accidental": "quarter-flat"
+        },
+        {
+          "step": "E",
+          "alter": "-1",
+          "accidental": "slash-flat"
+        },
+        {
+          "step": "F",
+          "alter": "1",
+          "accidental": "sharp"
+        }
+      ]
+    },
+    "suzinakzirgule": {
+      "display": "suzinak-zirgule",
+      "total": 24,
+      "consensus": 1,
+      "keySignature": [
+        {
+          "step": "B",
+          "alter": "-0.5",
+          "accidental": "quarter-flat"
+        },
+        {
+          "step": "E",
+          "alter": "-1",
+          "accidental": "slash-flat"
+        },
+        {
+          "step": "A",
+          "alter": "-1",
+          "accidental": "slash-flat"
+        },
+        {
+          "step": "F",
+          "alter": "1",
+          "accidental": "sharp"
+        }
+      ]
+    },
+    "tahir": {
+      "display": "tahir",
+      "total": 35,
+      "consensus": 1,
+      "keySignature": [
+        {
+          "step": "B",
+          "alter": "-0.5",
+          "accidental": "quarter-flat"
+        },
+        {
+          "step": "F",
+          "alter": "0.5",
+          "accidental": "sharp"
+        }
+      ]
+    },
+    "tahirbuselik": {
+      "display": "tahirbuselik",
+      "total": 3,
+      "consensus": 1,
+      "keySignature": [
+        {
+          "step": "B",
+          "alter": "-0.5",
+          "accidental": "quarter-flat"
+        },
+        {
+          "step": "F",
+          "alter": "1",
+          "accidental": "sharp"
+        }
+      ]
+    },
+    "ussak": {
+      "display": "ussak",
+      "total": 160,
+      "consensus": 1,
+      "keySignature": [
+        {
+          "step": "B",
+          "alter": "-0.5",
+          "accidental": "quarter-flat"
+        }
+      ]
+    },
+    "yegah": {
+      "display": "yegah",
+      "total": 30,
+      "consensus": 1,
+      "keySignature": [
+        {
+          "step": "B",
+          "alter": "-0.5",
+          "accidental": "quarter-flat"
+        },
+        {
+          "step": "F",
+          "alter": "1",
+          "accidental": "sharp"
+        }
+      ]
+    },
+    "zavil": {
+      "display": "zavil",
+      "total": 9,
+      "consensus": 1,
+      "keySignature": [
+        {
+          "step": "F",
+          "alter": "1",
+          "accidental": "slash-quarter-sharp"
+        }
+      ]
+    }
+  }
+}

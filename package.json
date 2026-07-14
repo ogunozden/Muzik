@@ -63,7 +63,8 @@
     "test:run": "vitest run",
     "test:coverage": "vitest run --coverage",
     "fetch:symbtr-v3": "node scripts/fetch-symbtr-v3.mjs",
-    "derive:usul-meters": "node scripts/derive-usul-corpus-meters.mjs"
+    "derive:usul-meters": "node scripts/derive-usul-corpus-meters.mjs",
+    "derive:makam-corpus": "node scripts/derive-makam-corpus.mjs"
   },
   "dependencies": {
     "@google/genai": "^2.8.0",

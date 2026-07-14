@@ -1,7 +1,66 @@
-import {Makam} from "@/types";
+import {Makam, MakamKeyAccidental} from "@/types";
 import {NOTE_NAMES} from "@/lib/app-constants";
+import makamCorpus from "./__generated__/makam-corpus.json";
 
-export const MAKAM_DATA: Makam[] = [
+/**
+ * Makamin OTANTIK koma arizasi elle yazilmaz; SymbTr korpusundan turetilmis
+ * `makam-corpus.json`den (npm run derive:makam-corpus) makam adiyla eslenerek
+ * baglanir. Editoryal alanlar (aciklama, dominant) yazili kalir; ariza otonom.
+ */
+type MakamCorpusEntry = {display: string; total: number; consensus: number; keySignature: MakamKeyAccidental[]};
+const CORPUS_MAKAMS = makamCorpus.makams as Record<string, MakamCorpusEntry>;
+
+function normalizeMakamName(name: string): string {
+  return name
+    .toLocaleLowerCase("tr")
+    .replace(/[çğıöşü]/g, (m) => ({ç: "c", ğ: "g", ı: "i", ö: "o", ş: "s", ü: "u"})[m] ?? m)
+    .replace(/[âîû]/g, (m) => ({â: "a", î: "i", û: "u"})[m] ?? m)
+    .replace(/[ýðþ]/g, (m) => ({ý: "i", ð: "g", þ: "s"})[m] ?? m)
+    .replace(/[^a-z0-9]/g, "");
+}
+
+// Levenshtein mesafesi <= 1 mi? (yazim varyantlari icin: Nihavend/Nihavent,
+// Bayati/Beyati gibi tek-harf farklari). Elle eslesme sozlugu yerine otonom.
+function withinOneEdit(a: string, b: string): boolean {
+  if (a === b) return true;
+  const [short, long] = a.length <= b.length ? [a, b] : [b, a];
+  if (long.length - short.length > 1) return false;
+  let i = 0;
+  let j = 0;
+  let edits = 0;
+  while (i < short.length && j < long.length) {
+    if (short[i] === long[j]) {
+      i += 1;
+      j += 1;
+      continue;
+    }
+    if (++edits > 1) return false;
+    if (short.length === long.length) {
+      i += 1;
+      j += 1; // ikame
+    } else {
+      j += 1; // silme/ekleme
+    }
+  }
+  return edits + (long.length - j) + (short.length - i) <= 1;
+}
+
+function findCorpusEntry(makam: Makam): MakamCorpusEntry | undefined {
+  const norm = normalizeMakamName(makam.nameTr);
+  const exact = CORPUS_MAKAMS[norm] ?? CORPUS_MAKAMS[normalizeMakamName(makam.id)];
+  if (exact) return exact;
+  // Tek-harf yazim varyanti: yalniz BENZERSIZ aday varsa kabul (guvenli).
+  const near = Object.keys(CORPUS_MAKAMS).filter((key) => withinOneEdit(key, norm));
+  return near.length === 1 ? CORPUS_MAKAMS[near[0]] : undefined;
+}
+
+function attachCorpusKeySignature(makam: Makam): Makam {
+  const entry = findCorpusEntry(makam);
+  if (!entry) return makam;
+  return {...makam, keySignature: entry.keySignature, keySignatureConsensus: entry.consensus};
+}
+
+const MAKAM_BASE: Makam[] = [
   {
     id: "rast",
     name: "Rast",
@@ -487,6 +546,9 @@ export const MAKAM_DATA: Makam[] = [
     description: "Acı ve hüzünlü bir makam. Hicaz ailesiyle bağlantılıdır.",
   },
 ];
+
+// Otantik ariza korpustan baglanir (otonom); editoryal metin yazili kalir.
+export const MAKAM_DATA: Makam[] = MAKAM_BASE.map(attachCorpusKeySignature);
 
 export function getMakamById(id: string): Makam | undefined {
   return MAKAM_DATA.find((m) => m.id === id);

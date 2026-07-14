@@ -1,3 +1,10 @@
+/** Makamin bir perde arizasi (SymbTr MusicXML <key-accidental>'dan turetilir). */
+export interface MakamKeyAccidental {
+  step: string;
+  alter: string;
+  accidental: string;
+}
+
 export interface Makam {
   id: string;
   name: string;
@@ -8,6 +15,13 @@ export interface Makam {
   dominant: string;
   characteristic: string;
   description: string;
+  /**
+   * Otantik koma arizasi — SymbTr korpusundan OTONOM turetilir (elle degil).
+   * Korpusta bulunan makamlarda dolu; kapsam disi makamlarda undefined.
+   */
+  keySignature?: MakamKeyAccidental[];
+  /** Arizanin korpustaki tutarliligi (0..1); tanilama/dogrulama icin. */
+  keySignatureConsensus?: number;
 }
 
 export interface Usul {

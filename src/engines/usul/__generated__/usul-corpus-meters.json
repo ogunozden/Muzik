@@ -1,0 +1,756 @@
+{
+  "source": "SymbTr v3.0 (Zenodo 15470412, CC-BY 4.0), mu2 kod-51 pay/payda",
+  "generatedFrom": "symb/SymbTr-3.0/mu2",
+  "usuls": {
+    "144": {
+      "display": "14/4",
+      "total": 1,
+      "meters": {
+        "14/4": 1
+      }
+    },
+    "223": {
+      "display": "2+2+3",
+      "total": 1,
+      "meters": {
+        "7/16": 1
+      }
+    },
+    "3334": {
+      "display": "3+3+3+4",
+      "total": 1,
+      "meters": {
+        "13/4": 1
+      }
+    },
+    "333333": {
+      "display": "3+3+3+3+3+3",
+      "total": 1,
+      "meters": {
+        "18/8": 1
+      }
+    },
+    "agiraksak": {
+      "display": "Aðýraksak",
+      "total": 131,
+      "meters": {
+        "9/4": 129,
+        "4/4": 2
+      }
+    },
+    "agiraksaksemai": {
+      "display": "Aðýr Aksaksemâî",
+      "total": 18,
+      "meters": {
+        "10/4": 17,
+        "4/4": 1
+      }
+    },
+    "agircenber": {
+      "display": "Aðýrçenber",
+      "total": 7,
+      "meters": {
+        "4/2": 4,
+        "12/4": 1,
+        "2/2": 1,
+        "4/1": 1
+      }
+    },
+    "agirduyek": {
+      "display": "Aðýrdüyek",
+      "total": 20,
+      "meters": {
+        "8/4": 20
+      }
+    },
+    "agirevfer": {
+      "display": "Aðýrevfer",
+      "total": 13,
+      "meters": {
+        "9/4": 13
+      }
+    },
+    "agirsenginsemai": {
+      "display": "Aðýrsenginsemâî",
+      "total": 5,
+      "meters": {
+        "6/2": 5
+      }
+    },
+    "aksak": {
+      "display": "Aksak",
+      "total": 439,
+      "meters": {
+        "9/8": 422,
+        "9/4": 17
+      }
+    },
+    "aksaksemai": {
+      "display": "Aksaksemâî",
+      "total": 175,
+      "meters": {
+        "10/8": 173,
+        "4/4": 1,
+        "9/8": 1
+      }
+    },
+    "aksaksemaievferi": {
+      "display": "Aksaksemâî Evferi",
+      "total": 2,
+      "meters": {
+        "10/8": 2
+      }
+    },
+    "aksaksemaiii": {
+      "display": "Aksaksemâî II",
+      "total": 2,
+      "meters": {
+        "10/8": 2
+      }
+    },
+    "aydin": {
+      "display": "Aydýn",
+      "total": 10,
+      "meters": {
+        "9/8": 10
+      }
+    },
+    "ayindevrirevani": {
+      "display": "Ayîn Devr-i Revâný",
+      "total": 1,
+      "meters": {
+        "14/8": 1
+      }
+    },
+    "azeriyuruksemai": {
+      "display": "Âzerî Yürüksemâî",
+      "total": 6,
+      "meters": {
+        "6/8": 6
+      }
+    },
+    "bektasidevrirevani": {
+      "display": "Bektâþî Devr-i Revâný",
+      "total": 2,
+      "meters": {
+        "13/8": 2
+      }
+    },
+    "bektasiraksani": {
+      "display": "Bektâþî Raksâný",
+      "total": 1,
+      "meters": {
+        "15/8": 1
+      }
+    },
+    "bektasiraksi": {
+      "display": "Bektâþî Raksý",
+      "total": 1,
+      "meters": {
+        "8/8": 1
+      }
+    },
+    "bektasiraksievferi": {
+      "display": "Bektâþî Raksý Evferi",
+      "total": 1,
+      "meters": {
+        "16/8": 1
+      }
+    },
+    "berefsan": {
+      "display": "Berefþan",
+      "total": 7,
+      "meters": {
+        "4/4": 3,
+        "8/8": 3,
+        "9/8": 1
+      }
+    },
+    "bestedevrirevani": {
+      "display": "Beste Devr-i Revâný",
+      "total": 1,
+      "meters": {
+        "4/4": 1
+      }
+    },
+    "bulgardarbi": {
+      "display": "Bulgar Darbý",
+      "total": 1,
+      "meters": {
+        "8/8": 1
+      }
+    },
+    "cenber": {
+      "display": "Çenber",
+      "total": 12,
+      "meters": {
+        "4/4": 11,
+        "4/2": 1
+      }
+    },
+    "cengiharbi": {
+      "display": "Çeng-i Harbî",
+      "total": 1,
+      "meters": {
+        "10/8": 1
+      }
+    },
+    "cevher": {
+      "display": "Cevher",
+      "total": 1,
+      "meters": {
+        "10/8": 1
+      }
+    },
+    "cifteduyek": {
+      "display": "Çiftedüyek",
+      "total": 6,
+      "meters": {
+        "4/4": 6
+      }
+    },
+    "ciftesofyan": {
+      "display": "Çiftesofyan",
+      "total": 16,
+      "meters": {
+        "9/8": 15,
+        "9/16": 1
+      }
+    },
+    "curcuna": {
+      "display": "Curcuna",
+      "total": 172,
+      "meters": {
+        "10/8": 171,
+        "4/4": 1
+      }
+    },
+    "darb": {
+      "display": "Darb",
+      "total": 5,
+      "meters": {
+        "6/4": 5
+      }
+    },
+    "darbeyn": {
+      "display": "Darbeyn",
+      "total": 2,
+      "meters": {
+        "4/4": 1,
+        "60/4": 1
+      }
+    },
+    "darbifetih": {
+      "display": "Darb-ý Fetih",
+      "total": 5,
+      "meters": {
+        "4/4": 5
+      }
+    },
+    "darbiturki": {
+      "display": "Darb-ý Türkî",
+      "total": 1,
+      "meters": {
+        "18/4": 1
+      }
+    },
+    "devriaryan": {
+      "display": "Devr-i Aryân",
+      "total": 1,
+      "meters": {
+        "7/8": 1
+      }
+    },
+    "devrihindi": {
+      "display": "Devr-i Hindî (7/8)",
+      "total": 84,
+      "meters": {
+        "7/4": 43,
+        "7/8": 41
+      }
+    },
+    "devrihindiii": {
+      "display": "Devr-i Hindî II",
+      "total": 3,
+      "meters": {
+        "7/8": 3
+      }
+    },
+    "devrikebir": {
+      "display": "Devr-i Kebîr (28/8)",
+      "total": 46,
+      "meters": {
+        "4/4": 42,
+        "14/8": 1,
+        "28/4": 1,
+        "7/2": 1,
+        "7/4": 1
+      }
+    },
+    "devrirevan": {
+      "display": "Devr-i Revân",
+      "total": 5,
+      "meters": {
+        "14/8": 4,
+        "7/8": 1
+      }
+    },
+    "devrirevanihindi": {
+      "display": "Devr-i Revân-ý Hindî",
+      "total": 25,
+      "meters": {
+        "14/8": 25
+      }
+    },
+    "devrisureyya": {
+      "display": "Devr-i Süreyyâ",
+      "total": 1,
+      "meters": {
+        "10/8": 1
+      }
+    },
+    "devrisureyyasofyani": {
+      "display": "Devr-i Süreyyâ Sofyaný",
+      "total": 1,
+      "meters": {
+        "10/16": 1
+      }
+    },
+    "devrituran": {
+      "display": "Devr-i Turan",
+      "total": 16,
+      "meters": {
+        "7/8": 16
+      }
+    },
+    "devrituranii": {
+      "display": "Devr-i Turan II",
+      "total": 1,
+      "meters": {
+        "7/16": 1
+      }
+    },
+    "dolap": {
+      "display": "Dolap",
+      "total": 2,
+      "meters": {
+        "12/8": 2
+      }
+    },
+    "durakevferi": {
+      "display": "Durak Evferi",
+      "total": 7,
+      "meters": {
+        "7/4": 3,
+        "21/4": 2,
+        "4/4": 2
+      }
+    },
+    "duyek": {
+      "display": "Düyek",
+      "total": 444,
+      "meters": {
+        "8/8": 409,
+        "8/4": 32,
+        "4/4": 2,
+        "4/2": 1
+      }
+    },
+    "evfer": {
+      "display": "Evfer",
+      "total": 24,
+      "meters": {
+        "9/8": 24
+      }
+    },
+    "evsat": {
+      "display": "Evsât (26/4)",
+      "total": 5,
+      "meters": {
+        "13/8": 3,
+        "13/4": 2
+      }
+    },
+    "fahte": {
+      "display": "Fahte",
+      "total": 9,
+      "meters": {
+        "4/4": 8,
+        "20/4": 1
+      }
+    },
+    "fer": {
+      "display": "Fer",
+      "total": 1,
+      "meters": {
+        "4/4": 1
+      }
+    },
+    "ferimuhammes": {
+      "display": "Fer'i Muhammes (16/8)",
+      "total": 2,
+      "meters": {
+        "16/8": 1,
+        "4/2": 1
+      }
+    },
+    "firengifer": {
+      "display": "Fireng-i Fer",
+      "total": 2,
+      "meters": {
+        "4/4": 2
+      }
+    },
+    "frenkcin": {
+      "display": "Frenkçîn (12/4)",
+      "total": 2,
+      "meters": {
+        "12/4": 2
+      }
+    },
+    "gulsen": {
+      "display": "Gülþen",
+      "total": 1,
+      "meters": {
+        "6/8": 1
+      }
+    },
+    "hafif": {
+      "display": "Hafîf",
+      "total": 27,
+      "meters": {
+        "4/4": 17,
+        "4/2": 4,
+        "8/8": 3,
+        "2/2": 1,
+        "32/2": 1,
+        "32/4": 1
+      }
+    },
+    "havi": {
+      "display": "Hâvî",
+      "total": 4,
+      "meters": {
+        "4/4": 4
+      }
+    },
+    "ikibir": {
+      "display": "Ýki-Bir",
+      "total": 4,
+      "meters": {
+        "12/8": 4
+      }
+    },
+    "ikizaksak": {
+      "display": "Ýkiz Aksak",
+      "total": 4,
+      "meters": {
+        "12/8": 4
+      }
+    },
+    "iraksak": {
+      "display": "Iraksak",
+      "total": 2,
+      "meters": {
+        "9/8": 2
+      }
+    },
+    "katikofti": {
+      "display": "Katikofti",
+      "total": 2,
+      "meters": {
+        "8/8": 2
+      }
+    },
+    "kcurcuna": {
+      "display": "K. Curcuna",
+      "total": 61,
+      "meters": {
+        "10/8": 53,
+        "10/16": 7,
+        "9/8": 1
+      }
+    },
+    "lenkfahte": {
+      "display": "Lenk Fahte",
+      "total": 4,
+      "meters": {
+        "10/4": 4
+      }
+    },
+    "mevlevievferi": {
+      "display": "Mevlevî Evferi",
+      "total": 2,
+      "meters": {
+        "9/4": 2
+      }
+    },
+    "muasser": {
+      "display": "Muaþþer",
+      "total": 1,
+      "meters": {
+        "10/4": 1
+      }
+    },
+    "muhammes": {
+      "display": "Muhammes",
+      "total": 25,
+      "meters": {
+        "4/4": 25
+      }
+    },
+    "murekkepnimsofyan": {
+      "display": "Mürekkep Nîmsofyan",
+      "total": 1,
+      "meters": {
+        "12/16": 1
+      }
+    },
+    "murekkepsofyan": {
+      "display": "Mürekkep Sofyan",
+      "total": 2,
+      "meters": {
+        "12/8": 2
+      }
+    },
+    "musemmen": {
+      "display": "Müsemmen",
+      "total": 47,
+      "meters": {
+        "8/8": 45,
+        "8/4": 1,
+        "9/4": 1
+      }
+    },
+    "musemmenii": {
+      "display": "Müsemmen II",
+      "total": 8,
+      "meters": {
+        "8/8": 5,
+        "8/16": 3
+      }
+    },
+    "nazliduyek": {
+      "display": "Nazlý Düyek",
+      "total": 1,
+      "meters": {
+        "12/8": 1
+      }
+    },
+    "nimberefsan": {
+      "display": "Nîmberefþan (16/8)",
+      "total": 1,
+      "meters": {
+        "8/8": 1
+      }
+    },
+    "nimcember": {
+      "display": "Nîmçember",
+      "total": 2,
+      "meters": {
+        "12/8": 2
+      }
+    },
+    "nimdevir": {
+      "display": "Nîmdevir",
+      "total": 4,
+      "meters": {
+        "18/4": 1,
+        "6/4": 1,
+        "8/8": 1,
+        "9/4": 1
+      }
+    },
+    "nimevsat": {
+      "display": "Nîmevsat",
+      "total": 3,
+      "meters": {
+        "13/8": 2,
+        "13/4": 1
+      }
+    },
+    "nimhafif": {
+      "display": "Nîmhafîf",
+      "total": 2,
+      "meters": {
+        "16/4": 1,
+        "4/4": 1
+      }
+    },
+    "nimsakil": {
+      "display": "Nîmsakîl",
+      "total": 1,
+      "meters": {
+        "4/4": 1
+      }
+    },
+    "nimsofyan": {
+      "display": "Nîmsofyan",
+      "total": 134,
+      "meters": {
+        "2/4": 133,
+        "4/8": 1
+      }
+    },
+    "oynak": {
+      "display": "Oynak",
+      "total": 14,
+      "meters": {
+        "9/8": 11,
+        "9/4": 3
+      }
+    },
+    "raksaksagi": {
+      "display": "Raksaksaðý",
+      "total": 19,
+      "meters": {
+        "9/8": 19
+      }
+    },
+    "raksaksagiii": {
+      "display": "Raksaksaðý II",
+      "total": 1,
+      "meters": {
+        "9/16": 1
+      }
+    },
+    "raksan": {
+      "display": "Raksân",
+      "total": 3,
+      "meters": {
+        "15/8": 2,
+        "4/4": 1
+      }
+    },
+    "remel": {
+      "display": "Remel",
+      "total": 3,
+      "meters": {
+        "28/2": 1,
+        "4/2": 1,
+        "4/4": 1
+      }
+    },
+    "sakil": {
+      "display": "Sakîl",
+      "total": 2,
+      "meters": {
+        "4/4": 2
+      }
+    },
+    "sarkidevrirevani": {
+      "display": "Þarký Devr-i Revâný",
+      "total": 6,
+      "meters": {
+        "13/4": 6
+      }
+    },
+    "semai": {
+      "display": "Semâî",
+      "total": 139,
+      "meters": {
+        "3/4": 135,
+        "3/8": 4
+      }
+    },
+    "senginsemai": {
+      "display": "Senginsemâî",
+      "total": 88,
+      "meters": {
+        "6/4": 87,
+        "4/4": 1
+      }
+    },
+    "serbest": {
+      "display": "[Serbest]",
+      "total": 18,
+      "meters": {
+        "4/4": 14,
+        "1/1": 3,
+        "1/4": 1
+      }
+    },
+    "sofyan": {
+      "display": "Sofyan",
+      "total": 366,
+      "meters": {
+        "4/4": 360,
+        "4/8": 6
+      }
+    },
+    "sturkaksagi": {
+      "display": "S. Türkaksaðý",
+      "total": 1,
+      "meters": {
+        "5/4": 1
+      }
+    },
+    "tekvurus": {
+      "display": "Tek Vuruþ",
+      "total": 3,
+      "meters": {
+        "11/8": 3
+      }
+    },
+    "turkaksagi": {
+      "display": "Türkaksaðý",
+      "total": 87,
+      "meters": {
+        "5/8": 83,
+        "5/4": 4
+      }
+    },
+    "turkdarbi": {
+      "display": "Türkdarbý",
+      "total": 1,
+      "meters": {
+        "14/4": 1
+      }
+    },
+    "turkmen": {
+      "display": "Türkmen",
+      "total": 1,
+      "meters": {
+        "18/8": 1
+      }
+    },
+    "yuruksemai": {
+      "display": "Yürüksemâî",
+      "total": 81,
+      "meters": {
+        "6/4": 65,
+        "6/8": 16
+      }
+    },
+    "yuruksemaiii": {
+      "display": "Yürüksemâî II",
+      "total": 63,
+      "meters": {
+        "6/8": 51,
+        "6/4": 12
+      }
+    },
+    "yuruksofyan": {
+      "display": "Yürüksofyan",
+      "total": 1,
+      "meters": {
+        "2/4": 1
+      }
+    },
+    "zafer": {
+      "display": "Zafer",
+      "total": 1,
+      "meters": {
+        "5/8": 1
+      }
+    },
+    "zencir": {
+      "display": "Zencîr",
+      "total": 10,
+      "meters": {
+        "4/4": 9,
+        "16/4": 1
+      }
+    }
+  }
+}

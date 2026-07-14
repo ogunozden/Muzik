@@ -88,11 +88,35 @@
 - `npm run test:run`: 85 files / 535 tests passed.
 - `npm run build`: passed.
 
-final result: blocked (source-availability only)
+## SymbTr v3 Tour (2026-07-14, second live validation on 4015)
 
-The remaining two glyph classes cannot be closed from this codebase alone: the
-local 2200-file symbolic corpus carries no repeat/ending/slur/tie metadata, and
-drawing them from page images would be fabricated notation. The gate flips to
-`passed` when a sourced import (new corpus data or validated manual anchors)
-lands for those two classes; every renderer-side and policy-side requirement in
-this document is now met and live-verified.
+- Sourced corpus data landed: SymbTr v3.0 (Zenodo record 15470412, CC-BY 4.0)
+  fetched via `npm run fetch:symbtr-v3` into `symb/SymbTr-3.0/{MusicXML,mu2,txt}`
+  (3x3000 files, md5-verified, idempotent).
+- `slur-tie-triplet` CLOSED with source proof: the focused piece carries
+  `<tied>` start/stop on notes 137-138 (C5) in v3 MusicXML plus two mu2 caret
+  markers — two independent formats corroborating; TXT ordinals 136/137 are
+  C5-C5, so the ordinal->event pitch validation passes. Chain:
+  `extractMusicXmlTieFeatures` -> `computeSourceProvenTies` (mismatch = not
+  drawn) -> VexFlow `StaveTie` + `feature:tie:` vex-map line +
+  `tie-token:source-proven` manifest token. Live strict run:
+  `hasSlurTieOrTriplet:true`, requirement `covered`, blockers empty.
+- `npm run audit:score-engine-symbolic-corpus` now scans the v3 root by
+  default: slur/tie/tuplet catalog tags 186k+, focused piece `source-available`.
+- `npm run audit:score-engine-engraving`: passed after the tie arc (no
+  collision regression).
+- `npm run audit:score-engine-focused-crops`: passed; strict variant fails
+  ONLY `repeat-volta-endings`.
+- Full gates: 549 tests / 86 files, typecheck, lint, build, architecture and
+  bundle-size guardrails all green.
+
+final result: blocked (source-availability only — single class)
+
+The one remaining glyph class, `repeat-volta-endings`, cannot be closed from
+any available symbolic source: v3 carries 9932 repeat + 11059 ending tags
+across the catalog but ZERO for this piece (and the mu2 code-14 rows decode as
+per-measure beat-grouping patterns, not repeats). The printed segno on page 3
+stays visual-evidence-only; drawing it would be fabricated notation. The gate
+flips to `passed` when sourced repeat/segno data for this piece or a
+validator-passed manual anchor lands — the v3 fetch/import/validation chain
+built in this tour will pick it up automatically.

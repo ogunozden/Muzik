@@ -93,3 +93,61 @@ describe("extractMu2SourceFeatures", () => {
     expect(features.filter((feature) => feature.value === "^")).toHaveLength(1);
   });
 });
+
+/**
+ * F8.7 tie kanali (SymbTr v3): <tied> start/stop ciftleri nota-ordinal'iyle
+ * source-proven feature olur; eslesmeyen stop dusurulur (uydurma yok);
+ * repeat/ending/segno/slur sayimlari unsupported kanit olarak tasinir.
+ */
+describe("extractMusicXmlSourceFeatures tie channel (F8.7 / SymbTr v3)", () => {
+  const note = (body: string) => `<note>${body}</note>`;
+  const pitch = (step: string, octave: number) =>
+    `<pitch><step>${step}</step><octave>${octave}</octave></pitch>`;
+
+  it("extracts a start/stop tied pair as a source-proven tie with note ordinals", () => {
+    const raw = [
+      note(pitch("B", 4)),
+      note(`${pitch("C", 5)}<notations><tied type="start"/></notations>`),
+      note(`${pitch("C", 5)}<notations><tied type="stop"/></notations>`),
+    ].join("");
+
+    const ties = extractMusicXmlSourceFeatures(raw, "sample.xml").filter((feature) => feature.kind === "tie");
+
+    expect(ties).toHaveLength(1);
+    expect(ties[0]).toMatchObject({
+      status: "source-proven",
+      source: "symbtr-musicxml",
+      value: "1:2:C5",
+    });
+    expect(ties[0].evidence).toContain("notes 2-3");
+  });
+
+  it("drops an unmatched tied stop instead of fabricating a pair", () => {
+    const raw = note(`${pitch("D", 5)}<notations><tied type="stop"/></notations>`);
+
+    const ties = extractMusicXmlSourceFeatures(raw, "sample.xml").filter((feature) => feature.kind === "tie");
+
+    expect(ties).toHaveLength(0);
+  });
+
+  it("keeps repeat/ending/segno/slur counts as unsupported evidence features", () => {
+    const raw = [
+      '<repeat direction="forward"/>',
+      '<ending number="1" type="start"/>',
+      "<segno/>",
+      '<slur type="start"/>',
+    ].join("");
+
+    const markers = extractMusicXmlSourceFeatures(raw, "sample.xml").filter(
+      (feature) => feature.kind === "unsupported-symbol",
+    );
+
+    expect(markers.map((feature) => feature.id).sort()).toEqual([
+      "musicxml-ending",
+      "musicxml-repeat",
+      "musicxml-segno",
+      "musicxml-slur",
+    ]);
+    for (const marker of markers) expect(marker.status).toBe("unsupported");
+  });
+});

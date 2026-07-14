@@ -1,5 +1,5 @@
 import type {CanonicalScoreDocument} from "@/data/score-engine/canonical-score";
-import {computePolicyDerivedNaturals} from "@/data/score-engine/notation";
+import {computePolicyDerivedNaturals, computeSourceProvenTies} from "@/data/score-engine/notation";
 import type {CanonicalScoreQualityReport} from "@/data/score-engine/quality";
 import type {InstrumentType} from "@/engines/ses/engine";
 import {ENSTRUMAN_LIST} from "@/lib/app-constants";
@@ -167,6 +167,7 @@ export function dispatchGlyphClasses(document: CanonicalScoreDocument): GlyphCla
     (feature) => feature.kind === "unsupported-symbol" && feature.label.startsWith("tuplet"),
   );
   const policyNaturalCount = computePolicyDerivedNaturals(document.events).size;
+  const sourceTies = computeSourceProvenTies(document);
   const hasSourceNatural = document.events.some(
     (event) => event.pitch.source.includes("n") || event.pitch.source.includes("♮"),
   );
@@ -221,13 +222,19 @@ export function dispatchGlyphClasses(document: CanonicalScoreDocument): GlyphCla
       id: "repeat-volta-endings",
       status: "visual-evidence-only",
       rendered: false,
-      evidence: "local symbolic corpus has zero repeat/ending metadata",
+      evidence:
+        "SymbTr v3 symbolic sources carry zero repeat/ending/segno for this piece; printed segno remains visual-evidence-only",
     },
     {
       id: "slur-tie",
-      status: "visual-evidence-only",
-      rendered: false,
-      evidence: "local symbolic corpus has zero slur/tie metadata",
+      status: sourceTies.length > 0 ? "source-proven" : "visual-evidence-only",
+      rendered: sourceTies.length > 0,
+      evidence:
+        sourceTies.length > 0
+          ? `${sourceTies.length} source-proven tie (SymbTr v3 MusicXML <tied> + mu2 caret): ${sourceTies
+              .map((tie) => `${tie.fromEventId}->${tie.toEventId}`)
+              .join(", ")}`
+          : "no validated tie source feature",
     },
   ];
 }
@@ -246,6 +253,11 @@ export function buildGlyphClassMapText(document: CanonicalScoreDocument): string
 
   if (document.events.some((event) => event.tie)) glyphTokens.push("tie-token");
   if (document.events.some((event) => event.slur)) glyphTokens.push("slur-token");
+  // Kaynak-kanitli tie'lar (F8.7; SymbTr v3 <tied> kanali): dogrulanmis her
+  // cift manifestte ayri token'la raporlanir; strict audit bu token'i sayar.
+  for (const tie of computeSourceProvenTies(document)) {
+    glyphTokens.push(`tie-token:source-proven:${tie.fromEventId}->${tie.toEventId}`);
+  }
   if (document.events.some((event) => event.pitch.source.includes("n") || event.pitch.source.includes("♮"))) {
     glyphTokens.push("natural-accidental-token");
   }

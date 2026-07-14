@@ -1,5 +1,5 @@
 import {parsePitch} from "@/core/domain/note-naming";
-import type {CanonicalScoreEvent} from "./canonical-score";
+import type {CanonicalScoreDocument, CanonicalScoreEvent} from "./canonical-score";
 
 export interface CanonicalVexPitch {
   accidental: "#" | "b" | null;
@@ -120,4 +120,38 @@ export function computePolicyDerivedNaturals(events: readonly CanonicalScoreEven
   }
 
   return naturals;
+}
+
+export interface SourceProvenTie {
+  fromEventId: string;
+  toEventId: string;
+  pitchKey: string;
+}
+
+/**
+ * Kaynak-kanitli tie ciftleri (F8.7; SymbTr v3 `<tied>` kanali).
+ *
+ * Importer tie feature'i MusicXML nota-ordinal'iyla verir (`from:to:step+oktav`).
+ * Ordinal -> canonical event eslemesi YALNIZ dogrulama gecerse kabul edilir:
+ * her iki ordinal event listesinde olmali, event rest olmamali ve event'in
+ * kaynak perdesi feature'daki step+oktav ile baslamali. Eslesmeyen tie
+ * CIZILMEZ (sembol uydurulmaz) ama feature kanit olarak dokumanda kalir.
+ */
+export function computeSourceProvenTies(document: CanonicalScoreDocument): SourceProvenTie[] {
+  const ties: SourceProvenTie[] = [];
+  for (const feature of document.sourceFeatures) {
+    if (feature.kind !== "tie" || feature.status !== "source-proven") continue;
+    const [fromPart, toPart, pitchKey] = feature.value.split(":");
+    const fromOrdinal = Number.parseInt(fromPart ?? "", 10);
+    const toOrdinal = Number.parseInt(toPart ?? "", 10);
+    if (!Number.isInteger(fromOrdinal) || !Number.isInteger(toOrdinal) || fromOrdinal >= toOrdinal) continue;
+    const fromEvent = document.events[fromOrdinal];
+    const toEvent = document.events[toOrdinal];
+    if (!fromEvent || !toEvent || fromEvent.isRest || toEvent.isRest) continue;
+    if (!pitchKey || !fromEvent.pitch.source.startsWith(pitchKey) || !toEvent.pitch.source.startsWith(pitchKey)) {
+      continue;
+    }
+    ties.push({fromEventId: fromEvent.id, toEventId: toEvent.id, pitchKey});
+  }
+  return ties;
 }

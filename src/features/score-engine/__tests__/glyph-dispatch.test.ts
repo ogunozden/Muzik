@@ -25,6 +25,31 @@ describe("dispatchGlyphClasses", () => {
     expect(slur).toMatchObject({status: "visual-evidence-only", rendered: false});
   });
 
+  it("renders slur-tie as source-proven when a validated tie feature exists (F8.7 / SymbTr v3)", () => {
+    // Demo dokumanin 2. ve 5. event'i ayni perdedir (A5) — dogrulama gecer.
+    const withTie = {
+      ...SCORE_ENGINE_DEMO_DOCUMENT,
+      sourceFeatures: [
+        {
+          id: "musicxml-tie:1-4",
+          kind: "tie" as const,
+          status: "source-proven" as const,
+          source: "symbtr-musicxml" as const,
+          label: "tie A5",
+          value: "1:4:A5",
+          evidence: "test",
+        },
+      ],
+    };
+
+    const tieDispatch = dispatchGlyphClasses(withTie);
+    const slur = tieDispatch.find((entry) => entry.id === "slur-tie");
+
+    expect(slur).toMatchObject({status: "source-proven", rendered: true});
+    expect(slur?.evidence).toContain("source-proven tie");
+    expect(buildGlyphClassMapText(withTie)).toContain("tie-token:source-proven:");
+  });
+
   it("covers every class exactly once with a stable id set", () => {
     const ids = dispatch.map((entry) => entry.id);
     expect(new Set(ids).size).toBe(ids.length);

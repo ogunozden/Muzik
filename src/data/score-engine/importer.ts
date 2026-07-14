@@ -64,7 +64,12 @@ const USER_SYMBTR_PIECE: PieceDefinition = {
   usulHits: [],
 };
 
-const LOCAL_SYMBTR_ROOT = path.join(process.cwd(), "symb", "SymbTr-2.0.0");
+// v3 (Zenodo 15470412; `npm run fetch:symbtr-v3`) v2'de olmayan tied/slur/
+// repeat/ending ogelerini tasidigi icin oncelikli koktur; v2 fallback kalir.
+const LOCAL_SYMBTR_ROOTS = [
+  path.join(process.cwd(), "symb", "SymbTr-3.0"),
+  path.join(process.cwd(), "symb", "SymbTr-2.0.0"),
+];
 
 function getCatalogIdCandidates(catalogId: string | undefined): string[] {
   if (!catalogId) return [];
@@ -79,13 +84,15 @@ function readFirstExistingLocalSymbtrFile(
   folder: string,
   extension: string,
 ): {path: string; raw: string} | null {
-  for (const candidate of getCatalogIdCandidates(catalogId)) {
-    const filePath = path.join(LOCAL_SYMBTR_ROOT, folder, `${candidate}.${extension}`);
-    if (!fs.existsSync(filePath)) continue;
-    return {
-      path: filePath,
-      raw: fs.readFileSync(filePath, "utf8"),
-    };
+  for (const root of LOCAL_SYMBTR_ROOTS) {
+    for (const candidate of getCatalogIdCandidates(catalogId)) {
+      const filePath = path.join(root, folder, `${candidate}.${extension}`);
+      if (!fs.existsSync(filePath)) continue;
+      return {
+        path: filePath,
+        raw: fs.readFileSync(filePath, "utf8"),
+      };
+    }
   }
   return null;
 }
@@ -120,8 +127,10 @@ function extractTextSourceFeatures(raw: string): CanonicalSourceFeature[] {
 
 export function extractMusicXmlSourceFeatures(raw: string, evidencePath: string): CanonicalSourceFeature[] {
   const features: CanonicalSourceFeature[] = [];
+  // v3 MusicXML key-step ile key-accidental arasina <key-alter> koyar;
+  // opsiyonel yakalanir ki v2 ve v3 ayni extractor'dan gecsin.
   const keyMatches = raw.matchAll(
-    /<key-step>\s*([^<\s]+)\s*<\/key-step>\s*<key-accidental>\s*([^<\s]+)\s*<\/key-accidental>/g,
+    /<key-step>\s*([^<\s]+)\s*<\/key-step>\s*(?:<key-alter>[^<]*<\/key-alter>\s*)?<key-accidental>\s*([^<\s]+)\s*<\/key-accidental>/g,
   );
   for (const match of keyMatches) {
     const step = match[1];
@@ -161,6 +170,67 @@ export function extractMusicXmlSourceFeatures(raw: string, evidencePath: string)
     });
   }
 
+  // Tie (F8.7 / SymbTr v3): <tied type="start|stop"> nota-ordinal'iyle
+  // cikarilir. Ordinal, dosyadaki <note> sirasidir ve canonical event
+  // sirasiyla birebir ortusmesi beklenir; dogrulama render tarafinda
+  // `computeSourceProvenTies` icinde pitch eslesmesiyle yapilir — eslesmeyen
+  // tie cizilmez (sembol uydurulmaz), feature kanit olarak kalir.
+  features.push(...extractMusicXmlTieFeatures(raw, evidencePath));
+
+  // Repeat/volta/segno ayni kanaldan sayilir ama renderer bu siniflari
+  // cizmedigi icin `unsupported` durumla tasinir (E1 sozlesmesi: kaynak
+  // kaniti kaybolmaz, sembol uydurulmaz).
+  const navigationCounts: Array<[label: string, count: number]> = [
+    ["repeat", (raw.match(/<repeat\s/g) ?? []).length],
+    ["ending", (raw.match(/<ending\s/g) ?? []).length],
+    ["segno", (raw.match(/<segno\s*\/>/g) ?? []).length],
+    ["slur", (raw.match(/<slur\s/g) ?? []).length],
+  ];
+  for (const [label, count] of navigationCounts) {
+    if (count === 0) continue;
+    features.push({
+      id: `musicxml-${label}`,
+      kind: "unsupported-symbol",
+      label: `${label} marker`,
+      source: "symbtr-musicxml",
+      status: "unsupported",
+      value: String(count),
+      evidence: `MusicXML <${label}> x${count} ${path.basename(evidencePath)}`,
+    });
+  }
+
+  return features;
+}
+
+function extractMusicXmlTieFeatures(raw: string, evidencePath: string): CanonicalSourceFeature[] {
+  const features: CanonicalSourceFeature[] = [];
+  const noteChunks = raw.split(/<note[\s>]/).slice(1);
+  const openTiesByPitch = new Map<string, number>();
+  for (const [ordinal, chunk] of noteChunks.entries()) {
+    const tiedTypes = Array.from(chunk.matchAll(/<tied\s+type="(start|stop)"/g), (match) => match[1]);
+    if (tiedTypes.length === 0) continue;
+    const step = chunk.match(/<step>\s*([A-G])\s*<\/step>/)?.[1] ?? "";
+    const octave = chunk.match(/<octave>\s*(\d+)\s*<\/octave>/)?.[1] ?? "";
+    const pitchKey = `${step}${octave}`;
+    for (const tiedType of tiedTypes) {
+      if (tiedType === "start") {
+        openTiesByPitch.set(pitchKey, ordinal);
+        continue;
+      }
+      const startOrdinal = openTiesByPitch.get(pitchKey);
+      if (startOrdinal === undefined) continue;
+      openTiesByPitch.delete(pitchKey);
+      features.push({
+        id: `musicxml-tie:${startOrdinal}-${ordinal}`,
+        kind: "tie",
+        label: `tie ${pitchKey}`,
+        source: "symbtr-musicxml",
+        status: "source-proven",
+        value: `${startOrdinal}:${ordinal}:${pitchKey}`,
+        evidence: `MusicXML <tied> start/stop ${path.basename(evidencePath)} notes ${startOrdinal + 1}-${ordinal + 1}`,
+      });
+    }
+  }
   return features;
 }
 

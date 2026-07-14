@@ -268,16 +268,24 @@ Bu faz urun hattidir; FAZ 1-7 altyapi hattiyla paralel yurutulebilir.
       collision oncelik sirasi, degisim kurali; hepsi kod kanitina bagli
 - [~] F8.7 V1.9.4 strict glyph gate: `natural-accidental` SINIFI KAPANDI
       (canli strict kosum: `hasNaturalAccidental:true`, blocker 3->2).
-      ALTERNATIF KAYNAK STRATEJISI TUKETILDI (2026-07-14): (1) mu2 kolon-8
-      `^` caret isaretleri (korpusta 776; slur/bag adayi) importer'a kaynakli
-      `unsupported-symbol` feature olarak eklendi (`extractMu2SourceFeatures`
-      + 2 test) — careti OLAN eserlerde slur/tie artik canonical modele girer;
-      (2) MusicXML tuplet zaten feature olarak geliyor (F10.5); (3) Hicazkar
-      OZELINDE tum sembolik kaynaklar tarandi: repeat/ending/slur/tie/tuplet/
-      caret = 0 (korpus audit'i eser-bazinda dogruladi). Focused gate Hicazkar
-      bazli oldugundan kalan 2 sinifin fail'i kaynak-yoklugudur; gorselden
-      cizmek notasyon fabrikasyonu olur. Kapanis yolu: kaynakli yeni korpus
-      verisi VEYA validator'dan gecmis manuel anchor importu
+      `slur-tie-triplet` SINIFI KAPANDI (2026-07-14, SymbTr v3 turu): cikis
+      kriteri "kaynakli yeni korpus verisi" SAGLANDI — SymbTr v3.0 (Zenodo
+      15470412, CC-BY 4.0; `npm run fetch:symbtr-v3`, 3x3000 dosya) Hicazkar'da
+      `<tied>` x2 (nota 137-138, C5) + mu2 caret x2 tasir; iki bagimsiz format
+      birbirini dogruluyor, TXT nota sirasi ayni ordinallerde C5-C5. Zincir:
+      fetch script -> importer v3-oncelikli kok + `<tied>` ordinal cikarimi
+      (`extractMusicXmlTieFeatures`) -> `computeSourceProvenTies` pitch
+      dogrulamasi (eslesmeyen tie CIZILMEZ) -> ScoreSurface VexFlow StaveTie +
+      `:tie:` vex-map satiri + `tie-token:source-proven` manifest -> canli
+      strict kosum: `hasSlurTieOrTriplet:true`, sinif `covered`, blocker 2->1;
+      engraving/collision audit'i regresyonsuz. 8 yeni birim testi.
+      KALAN TEK SINIF `repeat-volta-endings`: v3 dahil eserin TUM sembolik
+      kaynaklarinda 0 repeat/ending/segno (v3 korpus GENELINDE 9932 repeat +
+      11059 ending VAR, yalniz bu eserde yok; mu2 kod-14 satirlari da tekrar
+      degil, olcu vurus-deseni cikti). Baskidaki segno visual-evidence-only;
+      gorselden cizmek fabrikasyon olur. Kapanis yolu: bu eser icin
+      repeat/segno tasiyan kaynakli veri VEYA validator'dan gecmis manuel
+      anchor importu
 - [x] F8.8 V1.9.5 design-qa dokumani 2026-07-14 canli kanitlarla guncellendi:
       `docs/design-qa/design-qa.md` "Latest Validation" bolumu (natural sinifi
       kapali, kalan 2 sinif kaynak-yoklugu); final result "blocked
@@ -289,8 +297,9 @@ Bu faz urun hattidir; FAZ 1-7 altyapi hattiyla paralel yurutulebilir.
       listelendi, hepsi `validation.ok:true`, workbench'te secilebilir.
       NOT: follow-PIECE_LIBRARY'ye gorselsiz eser eklemek ayri urun karari
       (follow gorsel-takip yuzeyidir; gorseli olmayan eser orada anlamsiz)
-- [~] F8.10 Strict kosum 2026-07-14: `strictGlyphCoverage:true` uretildi;
-      kalan fail yalniz kaynak-yoklugu siniflari (bilincli; bkz. F8.7)
+- [~] F8.10 Strict kosum 2026-07-14 (v3 turu sonrasi): kalan fail YALNIZ
+      `repeat-volta-endings` (kaynak-yoklugu, bilincli; bkz. F8.7);
+      `slur-tie-triplet` canli kosumla `covered`
 
 ### FAZ 9 - Dagitim (M3.4; opsiyonel, en son) — TAMAM 2026-07-14
 
@@ -332,10 +341,12 @@ Surec icinde tespit edilenler listeye eklendi ve tamamlananlar isaretlendi:
 Kod tarafinda yapilabilecek her sey bitti; kapanis DIS girdiye bagli. Cikis
 kriteri saglanmadan kapali sayilmaz, saglandiginda is yeniden aktiflesir:
 
-- F8.7 `repeat-volta-endings` + `slur-tie-triplet`: Hicazkar'in tum sembolik
-  kaynaklarinda 0 instance (eser-bazinda dogrulandi); mu2 caret dahil
-  alternatif kanallar importer'da. CIKIS KRITERI: kaynakli yeni korpus verisi
-  VEYA validator'dan gecmis manuel anchor importu -> ilgili glyph render +
+- F8.7 `repeat-volta-endings` (2026-07-14'te daraltildi; `slur-tie-triplet`
+  SymbTr v3 kaynakli verisiyle KAPANDI): eserin v3 dahil tum sembolik
+  kaynaklarinda 0 repeat/ending/segno; baskidaki segno yalniz gorsel kanit.
+  v3 fetch + importer + dogrulama zinciri hazir; veri geldigi an ayni boru
+  hatti devralir. CIKIS KRITERI: bu eser icin repeat/segno tasiyan kaynakli
+  veri VEYA validator'dan gecmis manuel anchor importu -> glyph render +
   strict gate pass.
 (M8.2 kaydi kapatildi: dashboard 721 ve tum route ailesi <=800 — 2026-07-14.)
 

@@ -1,12 +1,13 @@
 import {describe, expect, it} from "vitest";
 import {
   computePolicyDerivedNaturals,
+  computeSourceProvenTies,
   mapCanonicalEventToVex,
   mapCanonicalPitchToVex,
   mapDurationBeatsToVex,
 } from "../notation";
 import {SCORE_ENGINE_DEMO_DOCUMENT} from "../demo-score";
-import type {CanonicalScoreEvent} from "../canonical-score";
+import type {CanonicalScoreDocument, CanonicalScoreEvent} from "../canonical-score";
 
 function getDemoEvent(sourceEventIndex: number) {
   const event = SCORE_ENGINE_DEMO_DOCUMENT.events.find((item) => item.sourceEventIndex === sourceEventIndex);
@@ -106,5 +107,66 @@ describe("computePolicyDerivedNaturals (ENGRAVING_POLICY bolum 3)", () => {
     ];
 
     expect(computePolicyDerivedNaturals(events)).toEqual(new Set(["e2"]));
+  });
+});
+
+/**
+ * F8.7 tie dogrulamasi (SymbTr v3 kanali): ordinal->event eslemesi yalniz
+ * pitch step+oktav kaniti tutarsa kabul edilir; tutmayan tie CIZILMEZ.
+ */
+describe("computeSourceProvenTies (F8.7 / SymbTr v3)", () => {
+  function makeTieDocument(tieValue: string, events: CanonicalScoreEvent[]): CanonicalScoreDocument {
+    return {
+      ...SCORE_ENGINE_DEMO_DOCUMENT,
+      events,
+      sourceFeatures: [
+        {
+          id: "musicxml-tie:test",
+          kind: "tie" as const,
+          status: "source-proven" as const,
+          source: "symbtr-musicxml" as const,
+          label: "tie test",
+          value: tieValue,
+          evidence: "test",
+        },
+      ],
+    };
+  }
+
+  const tieEvents = [
+    makePolicyEvent({id: "e0", measureId: "m1", sourcePitch: "B4b1"}),
+    makePolicyEvent({id: "e1", measureId: "m1", sourcePitch: "C5"}),
+    makePolicyEvent({id: "e2", measureId: "m1", sourcePitch: "C5"}),
+  ];
+
+  it("accepts a tie whose ordinals and pitch match the canonical events", () => {
+    const document = makeTieDocument("1:2:C5", tieEvents);
+
+    expect(computeSourceProvenTies(document)).toEqual([{fromEventId: "e1", toEventId: "e2", pitchKey: "C5"}]);
+  });
+
+  it("rejects a tie whose pitch does not match the events at those ordinals", () => {
+    const document = makeTieDocument("0:1:C5", tieEvents);
+
+    expect(computeSourceProvenTies(document)).toEqual([]);
+  });
+
+  it("rejects out-of-range, reversed and rest-touching ties", () => {
+    const withRest = [
+      tieEvents[0],
+      makePolicyEvent({id: "r1", measureId: "m1", sourcePitch: "C5", isRest: true}),
+      tieEvents[2],
+    ];
+
+    expect(computeSourceProvenTies(makeTieDocument("2:9:C5", tieEvents))).toEqual([]);
+    expect(computeSourceProvenTies(makeTieDocument("2:1:C5", tieEvents))).toEqual([]);
+    expect(computeSourceProvenTies(makeTieDocument("1:2:C5", withRest))).toEqual([]);
+  });
+
+  it("ignores tie features that are not source-proven", () => {
+    const document = makeTieDocument("1:2:C5", tieEvents);
+    document.sourceFeatures = [{...document.sourceFeatures[0], status: "visual-evidence-only" as const}];
+
+    expect(computeSourceProvenTies(document)).toEqual([]);
   });
 });

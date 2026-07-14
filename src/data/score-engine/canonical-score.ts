@@ -37,6 +37,7 @@ export type CanonicalSourceFeatureKind =
   | "usul"
   | "metadata-row"
   | "section-marker"
+  | "tie"
   | "unsupported-symbol";
 
 export type CanonicalSourceFeatureStatus =

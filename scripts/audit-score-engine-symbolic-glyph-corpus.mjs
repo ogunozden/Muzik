@@ -5,7 +5,13 @@ import {fileURLToPath} from "node:url";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const PROJECT_ROOT = path.resolve(__dirname, "..");
-const DEFAULT_SYMBTR_ROOT = path.join(PROJECT_ROOT, "symb", "SymbTr-2.0.0");
+// v3 (Zenodo 15470412; npm run fetch:symbtr-v3) tied/slur/repeat/ending tasir;
+// mevcutsa varsayilan odur, yoksa v2 fallback.
+const SYMBTR_ROOT_CANDIDATES = [
+  path.join(PROJECT_ROOT, "symb", "SymbTr-3.0"),
+  path.join(PROJECT_ROOT, "symb", "SymbTr-2.0.0"),
+];
+const DEFAULT_SYMBTR_ROOT = SYMBTR_ROOT_CANDIDATES.find((root) => existsSync(root)) ?? SYMBTR_ROOT_CANDIDATES[1];
 const DEFAULT_SUMMARY_OUTPUT = path.join(
   PROJECT_ROOT,
   "output",
@@ -13,7 +19,10 @@ const DEFAULT_SUMMARY_OUTPUT = path.join(
   "symbolic-glyph-corpus-summary.json",
 );
 
-const HICAZKAR_BASENAME = "hicazkar--pesrev--devrikebir----osman_bey";
+const HICAZKAR_BASENAMES = new Set([
+  "hicazkar--pesrev--devrikebir----osman_bey",
+  "hicazkar--pesrev--devrikebir----tanburi_buyuk_osman_bey",
+]);
 const MAX_EXAMPLES_PER_FEATURE = 8;
 
 function parseCliOptions(argv) {
@@ -111,7 +120,7 @@ function scanTxtFiles(files) {
 
   for (const file of files) {
     const basename = path.basename(file, ".txt");
-    const isHicazkar = basename === HICAZKAR_BASENAME;
+    const isHicazkar = HICAZKAR_BASENAMES.has(basename);
     if (isHicazkar) hicazkar.exists = true;
     const rows = decodeText(readFileSync(file)).split(/\r?\n/).slice(1);
     for (const [rowIndex, line] of rows.entries()) {
@@ -265,7 +274,7 @@ function scanXmlFiles(files) {
 
   for (const file of files) {
     const basename = path.basename(file, ".xml");
-    const isHicazkar = basename === HICAZKAR_BASENAME;
+    const isHicazkar = HICAZKAR_BASENAMES.has(basename);
     if (isHicazkar) hicazkar.exists = true;
     const text = decodeText(readFileSync(file));
     const count = (pattern) => (text.match(pattern) ?? []).length;
@@ -372,7 +381,7 @@ function scanMu2Files(files) {
 
   for (const file of files) {
     const basename = path.basename(file, ".mu2");
-    const isHicazkar = basename === HICAZKAR_BASENAME;
+    const isHicazkar = HICAZKAR_BASENAMES.has(basename);
     if (isHicazkar) hicazkar.exists = true;
     const rows = decodeText(readFileSync(file)).split(/\r?\n/).slice(1);
     for (const [rowIndex, line] of rows.entries()) {

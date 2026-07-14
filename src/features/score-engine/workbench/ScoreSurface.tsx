@@ -1,7 +1,7 @@
 "use client";
 
 import {useEffect, useMemo, useRef, useState} from "react";
-import {computePolicyDerivedNaturals, mapCanonicalEventToVex} from "@/data/score-engine/notation";
+import {computePolicyDerivedNaturals, computeSourceProvenTies, mapCanonicalEventToVex} from "@/data/score-engine/notation";
 import type {CanonicalScoreDocument, CanonicalScoreEvent} from "@/data/score-engine/canonical-score";
 import {tokens} from "@/shared/tokens";
 import {findRenderSystemForEvent} from "../score-layout";
@@ -81,17 +81,21 @@ export function ScoreSurface({
     () => new Map(mappedEvents.map((mappedEvent) => [mappedEvent.event.id, mappedEvent])),
     [mappedEvents],
   );
+  const sourceTies = useMemo(() => computeSourceProvenTies(document), [document]);
   const notationMapText = useMemo(
     () =>
-      mappedEvents
-        .map(
+      [
+        ...mappedEvents.map(
           (mappedEvent) =>
             `${mappedEvent.event.id}:${mappedEvent.pitch.key}:${mappedEvent.duration.duration}:${
               mappedEvent.duration.dotted ? "dotted" : "plain"
             }:${mappedEvent.pitch.komaAccidental ?? "none"}`,
-        )
-        .join("\n"),
-    [mappedEvents],
+        ),
+        // Kaynak-kanitli tie satirlari (F8.7): audit `:tie:` token'ini bu
+        // haritadan dogrular; yalniz dogrulanmis (cizilen) ciftler yazilir.
+        ...sourceTies.map((tie) => `feature:tie:${tie.fromEventId}:${tie.toEventId}:source-proven`),
+      ].join("\n"),
+    [mappedEvents, sourceTies],
   );
   const glyphClassMapText = useMemo(() => buildGlyphClassMapText(document), [document]);
   const policyNaturals = useMemo(() => computePolicyDerivedNaturals(document.events), [document]);
@@ -147,7 +151,8 @@ export function ScoreSurface({
 
     void (async () => {
       try {
-        const {Accidental, Annotation, Beam, Dot, Formatter, Renderer, Stave, StaveNote, Voice} = await import("vexflow");
+        const {Accidental, Annotation, Beam, Dot, Formatter, Renderer, Stave, StaveNote, StaveTie, Voice} =
+          await import("vexflow");
         if (cancelled) return;
 
         const renderer = new Renderer(container, Renderer.Backends.SVG);
@@ -158,6 +163,7 @@ export function ScoreSurface({
         const renderedPositions: NoteRenderPosition[] = [];
         const scoreMeter = parseMeter(document.meter);
         const eventsById = new Map(document.events.map((event) => [event.id, event]));
+        const vfNotesByEventId = new Map<string, {note: InstanceType<typeof StaveNote>; systemId: string}>();
 
         for (const systemLayout of systemLayouts) {
           const staveTop = systemLayout.y + STAVE_TOP_IN_SYSTEM;
@@ -244,6 +250,7 @@ export function ScoreSurface({
 
           systemEvents.forEach((event, index) => {
             const vfNote = staveNotes[index];
+            vfNotesByEventId.set(event.id, {note: vfNote, systemId: systemLayout.id});
             const ys = vfNote.getYs();
             renderedPositions.push({
               id: event.id,
@@ -254,6 +261,22 @@ export function ScoreSurface({
               y: ys[0] ?? staveTop + 40,
             });
           });
+        }
+
+        // Kaynak-kanitli tie'lar (F8.7; SymbTr v3 <tied> + mu2 caret):
+        // yalniz `computeSourceProvenTies` dogrulamasindan gecen ciftler
+        // cizilir. Sistem siniri asan tie iki yarim yay olarak cizilir
+        // (VexFlow kismi StaveTie sozlesmesi).
+        for (const tie of sourceTies) {
+          const fromEntry = vfNotesByEventId.get(tie.fromEventId);
+          const toEntry = vfNotesByEventId.get(tie.toEventId);
+          if (!fromEntry || !toEntry) continue;
+          if (fromEntry.systemId === toEntry.systemId) {
+            new StaveTie({firstNote: fromEntry.note, lastNote: toEntry.note}).setContext(context).draw();
+            continue;
+          }
+          new StaveTie({firstNote: fromEntry.note}).setContext(context).draw();
+          new StaveTie({lastNote: toEntry.note}).setContext(context).draw();
         }
 
         const svg = container.querySelector("svg");
@@ -271,7 +294,7 @@ export function ScoreSurface({
       cancelled = true;
       container.innerHTML = "";
     };
-  }, [document, mappedEventsById, policyNaturals, surfaceHeight, surfaceWidth, systemLayouts, visibleLayers.accidentals]);
+  }, [document, mappedEventsById, policyNaturals, sourceTies, surfaceHeight, surfaceWidth, systemLayouts, visibleLayers.accidentals]);
 
   return (
     <div className="overflow-x-auto rounded-md border border-[var(--color-border-default)] bg-white shadow-sm">

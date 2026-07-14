@@ -403,11 +403,19 @@ Motorun bir sonraki seviyeye tasinmasi icin (oncelik sirasiyla):
       Uygulandi: /rhythm'e "ses-gorsel ofset" kaydiricisi (-300..+300ms,
       kalici localStorage; imlec sesin onundeyse artir); rAF tick offseti
       duyulan konuma uygular. Kalicilik testi + vitest localStorage polyfill.
-- [ ] F12.2 Canli tempo/usul degisimi: BPM veya usul degisince oynatma
-      duruyor; startRhythmLoop faz koruyarak yeniden planlanabilir
-      (duraksamasiz gecis)
-- [ ] F12.3 Sayilma (count-in) + gorsel metronom flash; hazirlik icin
-      1-2 tur bos vurus secenegi
+- [x] F12.2 Canli tempo degisimi: BPM kaydiricisi calarken artik DURDURMUYOR;
+      `RhythmLoopController.retune(nextBpm)` schedule'i ve zaman eksenini yeni
+      tempoya tasir. Cekirdek `seamlessRetuneStart` (saf, 3 test): sonraki
+      HENUZ PLANLANMAMIS vurusu ayni duvar-saati aninda tutar (dikissiz seam),
+      sonrasi yeni araliga gecer — cift/atlanmis vurus yok. Sayfa: slider
+      onChange calarken retune eder, rAF imleci playbackBeatSecondsRef'ten
+      dogru ofsetle surer. (Usul DEGISIMI farkli desen oldugu icin bilincli
+      olarak restart kalir; tempo degisimi ortak durum.)
+- [ ] F12.3 Sayilma (count-in): ERTELENDI (bilincli). Bati "1-2-3-4" count-in
+      idyomu usulun ALT-BOLUM (subdivision) yapisina temiz oturmaz — usulde
+      vurus = alt-bolum; tek-tur bos count-in kimi usulde (Zincir 120) cok
+      uzun, kisa sabit sayimsa muzikal olarak yanlis. Zorlama kotu tasarim
+      olur (kullanici zaten "tasarim duzgun degil" demisti) — eklenmedi.
 - [x] F12.4 Vurus dinamigi: darp gain'i (dum>tek>ke) + velvele susleme
       vuruslarina (kisa deger, te-ke) ORNAMENT_GAIN_SCALE 0.68 -> ana darplar
       one cikar; gainScale schedule->hit boyunca tasinir; 2 test

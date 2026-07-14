@@ -395,7 +395,31 @@ export interface RhythmLoopController {
   getCycleCount: () => number;
   /** Uygulanan cikis gecikmesi (saniye); tanilamada ve kalibrasyonda kullanilir. */
   getOutputLatencySeconds: () => number;
+  /**
+   * Canli tempo degisimi (F12.2): oynatmayi DURDURMADAN yeni BPM'e gecer.
+   * Sonraki HENUZ PLANLANMAMIS vurus ayni duvar-saati aninda tutulur, ondan
+   * sonrasi yeni tempoya olceklenir — dikissiz gecis (bkz. seamlessRetuneStart).
+   */
+  retune: (nextBpm: number) => void;
   stop: () => void;
+}
+
+/**
+ * Dikissiz tempo gecisinin cekirdegi (saf, test edilebilir): sonraki vurusu
+ * bulundugu duvar-saati aninda (`nextHitTime`) SABIT tutup ondan sonrasini yeni
+ * tempoya tasiyacak yeni zaman-ekseni orijinini (`startAtCtx`) dondurur.
+ *
+ * Boylece son planlanan vurus ile sonraki vurus arasinda bosluk/ust uste binme
+ * olmaz; yalnizca o vurustan itibaren araliklar yeni `beatSeconds`'e gecer.
+ */
+export function seamlessRetuneStart(
+  nextHitTime: number,
+  cycleIndex: number,
+  beats: number,
+  nextHitBeatOffset: number,
+  newBeatSeconds: number,
+): number {
+  return nextHitTime - (cycleIndex * beats + nextHitBeatOffset) * newBeatSeconds;
 }
 
 /** getOutputTimestamp'in test edilebilir minimal yuzeyi. */
@@ -448,7 +472,9 @@ export async function startRhythmLoop(
   const context = getOrCreateAudioContext();
   if (!ok || !context) return null;
 
-  const schedule = buildRhythmSchedule(beats, symbols, bpm, unit);
+  // Canli tempo degisimi (F12.2) icin bu degerler `let`: retune schedule'i ve
+  // zaman eksenini yeni BPM'e gore yeniden hesaplar.
+  let schedule = buildRhythmSchedule(beats, symbols, bpm, unit);
   await preloadPercussionSymbolSamples(
     symbols.map((symbol) => symbol.symbol).filter(isPercussionSymbol),
     percussionInstrument,
@@ -456,12 +482,12 @@ export async function startRhythmLoop(
   if (schedule.length === 0) return null;
 
   const beatUnit = Number.parseInt(unit, 10) || 4;
-  const beatSeconds = (60 / bpm) * (4 / beatUnit);
-  const cycleSeconds = beats * beatSeconds;
+  let beatSeconds = (60 / bpm) * (4 / beatUnit);
+  let cycleSeconds = beats * beatSeconds;
   const LOOKAHEAD_SECONDS = 0.6;
   const PUMP_INTERVAL_MS = 150;
 
-  const startAtCtx = context.currentTime + 0.08;
+  let startAtCtx = context.currentTime + 0.08;
   let cycleIndex = 0;
   let hitIndex = 0;
   let stopped = false;
@@ -494,6 +520,25 @@ export async function startRhythmLoop(
     getPositionBeats: () => Math.max(0, (heardContextTime(context) - startAtCtx) / beatSeconds),
     getCycleCount: () => Math.max(1, Math.floor((heardContextTime(context) - startAtCtx) / cycleSeconds) + 1),
     getOutputLatencySeconds: () => context.outputLatency || context.baseLatency || 0,
+    retune: (nextBpm) => {
+      if (stopped || nextBpm <= 0) return;
+      const nextBeatSeconds = (60 / nextBpm) * (4 / beatUnit);
+      if (nextBeatSeconds === beatSeconds) return;
+
+      // Planlanacak SONRAKI vurusun (henuz baslamamis) mevcut duvar-saati ani
+      // ve vurus-ofseti; bunu sabit tutup ondan sonrasini yeni tempoya tasiriz.
+      const nextCycle = hitIndex >= schedule.length ? cycleIndex + 1 : cycleIndex;
+      const nextIdx = hitIndex >= schedule.length ? 0 : hitIndex;
+      const nextHitTime = startAtCtx + nextCycle * cycleSeconds + schedule[nextIdx].startOffset;
+      const nextHitBeatOffset = schedule[nextIdx].startOffset / beatSeconds;
+
+      beatSeconds = nextBeatSeconds;
+      cycleSeconds = beats * beatSeconds;
+      schedule = buildRhythmSchedule(beats, symbols, nextBpm, unit);
+      startAtCtx = seamlessRetuneStart(nextHitTime, nextCycle, beats, nextHitBeatOffset, beatSeconds);
+      // cycleIndex/hitIndex ayni muzikal konumu gosterir (semboller degismedi,
+      // schedule uzunlugu ve sirasi ayni); sonraki pump yeni tempoda planlar.
+    },
     stop: () => {
       stopped = true;
       window.clearInterval(pump);

@@ -89,6 +89,9 @@ export default function UsulPage() {
   const loopControllerRef = useRef<RhythmLoopController | null>(null);
   const notationRef = useRef<UsulNotationHandle>(null);
   const syncOffsetRef = useRef(0);
+  // Oynatilan vurus suresi (saniye): canli tempo degisiminde (F12.2) rAF imleci
+  // dogru ofset hesaplasin diye ref'te tutulur; retune ile guncellenir.
+  const playbackBeatSecondsRef = useRef(0);
   // Yalniz DEGISINCE setState (her karede degil): imperatif imlecin yaninda
   // vurgu/sayaci ucuz tutar.
   const activeIndexRef = useRef(-1);
@@ -167,7 +170,7 @@ export default function UsulPage() {
     setCycleCount(1);
     notationRef.current?.setProgress(0);
 
-    const beatSeconds = getUsulBeatDuration(usul, bpm);
+    playbackBeatSecondsRef.current = getUsulBeatDuration(usul, bpm);
 
     // Imlec requestAnimationFrame ile ekran tazelemesine hizali; her karede
     // "duyulan" saati (getPositionBeats -> getOutputTimestamp) taze okur.
@@ -176,6 +179,7 @@ export default function UsulPage() {
     // (syncOffsetRef) "duyulan" konumu kaydirir.
     const tick = () => {
       if (!isPlayingRef.current) return;
+      const beatSeconds = playbackBeatSecondsRef.current;
       const offsetBeats = beatSeconds > 0 ? syncOffsetRef.current / 1000 / beatSeconds : 0;
       const positionBeats = controller.getPositionBeats() - offsetBeats;
       if (!isLoopRef.current && positionBeats >= usul.beats) {
@@ -256,8 +260,14 @@ export default function UsulPage() {
             ariaLabel={t("usul.bpm")}
             value={bpm}
             onChange={(v) => {
-              stopRhythm();
-              setBpm(Number(v));
+              const next = Number(v);
+              setBpm(next);
+              // Canli tempo degisimi (F12.2): calarken durdurma — dikissiz gec.
+              // Usul pratiginde tempoyu HISSEDEREK ayarlamak dogal akistir.
+              if (isPlayingRef.current && loopControllerRef.current && selectedUsulObj) {
+                loopControllerRef.current.retune(next);
+                playbackBeatSecondsRef.current = getUsulBeatDuration(selectedUsulObj, next);
+              }
             }}
             minValue={40}
             maxValue={200}

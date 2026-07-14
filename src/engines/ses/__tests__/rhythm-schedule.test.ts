@@ -1,5 +1,5 @@
 import {describe, expect, it} from "vitest";
-import {buildRhythmSchedule, heardContextTime} from "../instruments";
+import {buildRhythmSchedule, heardContextTime, seamlessRetuneStart} from "../instruments";
 
 /**
  * Gorsel senkron cekirdegi: imlec, sesin PLANLANDIGI `currentTime`'i degil,
@@ -117,5 +117,46 @@ describe("buildRhythmSchedule", () => {
       60,
     );
     expect(schedule.map((hit) => hit.gainScale)).toEqual([1, 0.68, 0.68]);
+  });
+});
+
+/**
+ * Canli tempo degisimi cekirdegi (F12.2): retune, DURDURMADAN yeni tempoya
+ * gecerken sonraki planlanmamis vurusu ayni duvar-saati aninda tutmali (seam
+ * dikissiz), sonrasi yeni araliga gecmeli. Regresyon: seam kayarsa duraksama
+ * veya cift/atlanmis vurus olusur.
+ */
+describe("seamlessRetuneStart (canli tempo gecisi)", () => {
+  const NEXT_HIT_TIME = 10;
+  const CYCLE_INDEX = 2;
+  const BEATS = 4;
+  const NEXT_HIT_BEAT_OFFSET = 1;
+
+  it("pins the next unscheduled hit to its exact wall-clock time under the new tempo", () => {
+    const newBeatSeconds = 0.5;
+    const startAtCtx = seamlessRetuneStart(NEXT_HIT_TIME, CYCLE_INDEX, BEATS, NEXT_HIT_BEAT_OFFSET, newBeatSeconds);
+    // Yeni tempoda ayni vurusu yeniden hesapla: tam olarak NEXT_HIT_TIME olmali.
+    const recomputed =
+      startAtCtx + CYCLE_INDEX * BEATS * newBeatSeconds + NEXT_HIT_BEAT_OFFSET * newBeatSeconds;
+    expect(recomputed).toBeCloseTo(NEXT_HIT_TIME, 10);
+  });
+
+  it("spaces hits after the seam by the NEW beat duration, not the old one", () => {
+    const newBeatSeconds = 0.5;
+    const startAtCtx = seamlessRetuneStart(NEXT_HIT_TIME, CYCLE_INDEX, BEATS, NEXT_HIT_BEAT_OFFSET, newBeatSeconds);
+    const nextHit = startAtCtx + CYCLE_INDEX * BEATS * newBeatSeconds + NEXT_HIT_BEAT_OFFSET * newBeatSeconds;
+    const hitOneBeatLater =
+      startAtCtx + CYCLE_INDEX * BEATS * newBeatSeconds + (NEXT_HIT_BEAT_OFFSET + 1) * newBeatSeconds;
+    expect(hitOneBeatLater - nextHit).toBeCloseTo(newBeatSeconds, 10);
+  });
+
+  it("is a no-op origin shift when the tempo does not actually change", () => {
+    const beatSeconds = 0.5;
+    // Ayni tempoda: eski orijin nextHitTime'i uretiyorsa, yeni orijin de ayni
+    // olmali (gecis fark yaratmamali).
+    const startAtCtx = seamlessRetuneStart(NEXT_HIT_TIME, CYCLE_INDEX, BEATS, NEXT_HIT_BEAT_OFFSET, beatSeconds);
+    const recomputed =
+      startAtCtx + (CYCLE_INDEX * BEATS + NEXT_HIT_BEAT_OFFSET) * beatSeconds;
+    expect(recomputed).toBeCloseTo(NEXT_HIT_TIME, 10);
   });
 });

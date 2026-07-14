@@ -152,6 +152,24 @@ describe("usul/data", () => {
     });
   });
 
+  describe("korpus-turevli karakteristik tempo (defaultBpm)", () => {
+    it("assigns each covered usul a corpus-median default tempo in slider range", () => {
+      const withTempo = USUL_DATA.filter((usul) => usul.defaultBpm);
+      expect(withTempo.length).toBeGreaterThanOrEqual(15);
+      for (const usul of withTempo) {
+        expect(usul.defaultBpm).toBeGreaterThanOrEqual(40);
+        expect(usul.defaultBpm).toBeLessThanOrEqual(200);
+      }
+    });
+
+    it("distinguishes curcuna from aksak semai by tempo (same darp, faster)", () => {
+      // Ayni desen; korpus curcuna'yi belirgin daha hizli calar (180 vs 120).
+      const curcuna = getUsulById("curcuna")?.defaultBpm ?? 0;
+      const aksaksemai = getUsulById("aksaksemai")?.defaultBpm ?? 0;
+      expect(curcuna).toBeGreaterThan(aksaksemai);
+    });
+  });
+
   describe("getUsulBeatDuration", () => {
     it("scales beat duration by the mertebe unit", () => {
       expect(getUsulBeatDuration(getUsulById("yuruksemai")!, 120)).toBeCloseTo(0.25); // 6/8

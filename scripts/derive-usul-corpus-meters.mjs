@@ -47,8 +47,14 @@ function resolveCorpusRoot() {
   return root;
 }
 
+function median(values) {
+  if (values.length === 0) return null;
+  const sorted = [...values].sort((a, b) => a - b);
+  return sorted[Math.floor(sorted.length / 2)];
+}
+
 export function deriveCorpusMeters(root) {
-  const histogram = new Map(); // normalizedName -> {display, total, meters: {"10/8": n}}
+  const histogram = new Map(); // normalizedName -> {display, total, meters, tempi[]}
   for (const file of readdirSync(root)) {
     if (!file.endsWith(".mu2")) continue;
     let raw;
@@ -57,7 +63,8 @@ export function deriveCorpusMeters(root) {
     } catch {
       continue;
     }
-    const meterRow = raw.split(/\r?\n/).find((line) => line.startsWith("51\t"));
+    const lines = raw.split(/\r?\n/);
+    const meterRow = lines.find((line) => line.startsWith("51\t"));
     if (!meterRow) continue;
     const columns = meterRow.split("\t");
     const usulName = (columns[7] || "").trim();
@@ -66,18 +73,21 @@ export function deriveCorpusMeters(root) {
     if (!usulName || !/^\d+$/.test(pay) || !/^\d+$/.test(payda)) continue;
     const key = normalizeUsulName(usulName);
     if (!key) continue;
-    const meter = `${pay}/${payda}`;
-    if (!histogram.has(key)) histogram.set(key, {display: usulName, total: 0, meters: {}});
+    if (!histogram.has(key)) histogram.set(key, {display: usulName, total: 0, meters: {}, tempi: []});
     const entry = histogram.get(key);
     entry.total += 1;
-    entry.meters[meter] = (entry.meters[meter] || 0) + 1;
+    entry.meters[`${pay}/${payda}`] = (entry.meters[`${pay}/${payda}`] || 0) + 1;
+    // kod-52 tempo (MM); usulun karakteristik hizini verir (curcuna hizli,
+    // aksaksemai yavas — ayni desen, farkli tempo).
+    const tempoRow = lines.find((line) => line.startsWith("52\t"));
+    const tempo = tempoRow ? Number((tempoRow.split("\t")[4] || "").trim()) : NaN;
+    if (Number.isFinite(tempo) && tempo > 0) entry.tempi.push(tempo);
   }
-  // Deterministik sirala (isim -> alfabetik; mertebeler sayiya gore azalan).
   const sorted = {};
   for (const key of Array.from(histogram.keys()).sort()) {
     const entry = histogram.get(key);
     const meters = Object.fromEntries(Object.entries(entry.meters).sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0])));
-    sorted[key] = {display: entry.display, total: entry.total, meters};
+    sorted[key] = {display: entry.display, total: entry.total, meters, tempoMedian: median(entry.tempi)};
   }
   return sorted;
 }

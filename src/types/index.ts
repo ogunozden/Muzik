@@ -35,6 +35,12 @@ export interface Usul {
   stressPattern: number[];
   /** Kitaptaki VELVELESI dizilisi (susleme vuruslari); kaynakta yoksa tanimsiz. */
   velvele?: UsulSymbol[];
+  /**
+   * Karakteristik tempo (BPM) — SymbTr korpusundaki kod-52 medyanindan OTONOM
+   * turetilir. Ayni desenli usulleri (curcuna 180 vs aksaksemai 120) ayirir.
+   * Korpusta yoksa undefined.
+   */
+  defaultBpm?: number;
 }
 
 export interface UsulSymbol {

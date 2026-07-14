@@ -228,6 +228,10 @@ export default function UsulPage() {
           onUsulChange={(key) => {
             stopRhythm();
             setSelectedUsul(key);
+            // Usulun korpus-turevli karakteristik temposuna gec (curcuna
+            // hizli, aksaksemai yavas — ayni desen, farkli tempo).
+            const nextBpm = USUL_DATA.find((usul) => usul.id === key)?.defaultBpm;
+            if (nextBpm) setBpm(nextBpm);
           }}
           symbols={symbols}
           onPlay={isRhythmPlaying ? stopRhythm : () => void playSelectedUsul()}

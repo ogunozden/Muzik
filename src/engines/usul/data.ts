@@ -1,4 +1,25 @@
 import {Usul, UsulSymbol} from "@/types";
+import corpusMeters from "./__generated__/usul-corpus-meters.json";
+
+// Karakteristik tempo korpustan (kod-52 medyani) OTONOM baglanir; usulun kendi
+// adindan eslenerek slider araligina (40..200, 10'luk adim) kirpilir/yuvarlanir.
+const CORPUS_USULS = corpusMeters.usuls as Record<string, {tempoMedian: number | null}>;
+
+function normalizeUsulNameForCorpus(name: string): string {
+  return name
+    .toLocaleLowerCase("tr")
+    .replace(/\(.*?\)/g, " ")
+    .replace(/[çğıöşü]/g, (m) => ({ç: "c", ğ: "g", ı: "i", ö: "o", ş: "s", ü: "u"})[m] ?? m)
+    .replace(/[âîû]/g, (m) => ({â: "a", î: "i", û: "u"})[m] ?? m)
+    .replace(/[ýðþ]/g, (m) => ({ý: "i", ð: "g", þ: "s"})[m] ?? m)
+    .replace(/[^a-z0-9]/g, "");
+}
+
+function corpusDefaultBpm(nameTr: string): number | undefined {
+  const tempo = CORPUS_USULS[normalizeUsulNameForCorpus(nameTr)]?.tempoMedian;
+  if (!tempo || !Number.isFinite(tempo)) return undefined;
+  return Math.min(200, Math.max(40, Math.round(tempo / 10) * 10));
+}
 
 /**
  * Usul ana-darb desenleri — KAYNAKLI VERI (2026-07-14 duzeltmesi).
@@ -65,6 +86,7 @@ function makeUsul(
   velvele?: readonly Stroke[],
 ): Usul {
   const symbols = toSymbols(strokes);
+  const defaultBpm = corpusDefaultBpm(name);
   return {
     id,
     name,
@@ -75,6 +97,7 @@ function makeUsul(
     symbols,
     stressPattern: toStressPattern(beats, symbols),
     ...(velvele ? {velvele: toSymbols(velvele)} : {}),
+    ...(defaultBpm ? {defaultBpm} : {}),
   };
 }
 

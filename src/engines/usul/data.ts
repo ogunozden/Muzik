@@ -162,6 +162,12 @@ const RAKSAN_VELVELE: Stroke[] = [
   [6, "dum", 1], [7, "te", 0.5], [7.5, "ke", 0.5], [8, "tek", 1], [9, "ka", 1], [10, "te", 0.5], [10.5, "ke", 0.5],
   [11, "dum", 1], [12, "te", 0.5], [12.5, "ke", 0.5], [13, "tek", 1], [14, "ka", 1], [15, "te", 0.5], [15.5, "ke", 0.5],
 ]; // Gonul s.104
+// Lenk Fahte velvelesi (6+4): DÜM DÜM TE KE TEK KÂ DÜ ME TEK KÂ TEK KÂ.
+// Darp-capali: DÜÜM->DÜM DÜM, TEEEK->TE KE TEK KÂ, DÜM->DÜ ME, kalan TEK KÂ.
+const LENK_FAHTE_VELVELE: Stroke[] = [
+  [1, "dum", 1], [2, "dum", 1], [3, "te", 0.5], [3.5, "ke", 0.5], [4, "tek", 1], [5, "ka", 1],
+  DU(6), ME(6.5), [7, "tek", 1], [8, "ka", 1], [9, "tek", 1], [10, "ka", 1],
+]; // Gonul s.102
 const FAHTE: Stroke[] = [
   [1, "dum", 2], [3, "dum", 1], [4, "dum", 1], [5, "tek", 2], [7, "tek", 2],
   [9, "tek", 2], [11, "dum", 2], [13, "ta", 2], [15, "hek", 2],
@@ -227,7 +233,7 @@ export const USUL_DATA: Usul[] = [
   makeUsul("curcuna", "Curcuna", "Curcuna", 10, "8", AKSAK_SEMAI, AKSAK_SEMAI_VELVELE), // s.66-67 + korpus 10/8
   makeUsul("lenkfahte", "Lenk Fahte", "Lenk Fahte", 10, "4", [
     [1, "dum", 2], [3, "tek", 3], [6, "dum", 1], [7, "tek", 2], [9, "te", 1], [10, "ke", 1],
-  ]), // s.76 (daima 2. mertebesi 10/4 kullanilir)
+  ], LENK_FAHTE_VELVELE), // s.76 (darp) + Gonul s.102 (velvele)
   makeUsul("frenkcin", "Frenkçin", "Frenkcin", 12, "4", [
     [1, "dum", 1], [2, "dum", 2], [4, "dum", 1], [5, "dum", 2],
     [7, "tek", 1], [8, "ka", 1], [9, "tek", 1], [10, "ka", 1], [11, "tek", 1], [12, "ka", 1],

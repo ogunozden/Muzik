@@ -1,5 +1,5 @@
 {
-  "source": "SymbTr v3.0 (Zenodo 15470412, CC-BY 4.0); ariza=MusicXML <key>, koma dizisi=txt Koma53 (53-EDO/AEU)",
+  "source": "SymbTr v3.0 (Zenodo 15470412, CC-BY 4.0); ariza=MusicXML <key>, koma dizisi=txt Koma53 (53-EDO/AEU); perde adlari=aeu-reference (tomato+Aydemir)",
   "generatedFrom": "symb/SymbTr-3.0/MusicXML",
   "minPieces": 3,
   "komaPerOctave": 53,
@@ -1292,42 +1292,50 @@
         {
           "koma": 0,
           "cents": 0,
-          "share": 0.035
+          "share": 0.035,
+          "perde": "dugah"
         },
         {
           "koma": 1,
           "cents": 23,
-          "share": 0.145
+          "share": 0.145,
+          "perde": "dugah"
         },
         {
           "koma": 10,
           "cents": 226,
-          "share": 0.163
+          "share": 0.163,
+          "perde": "buselik"
         },
         {
           "koma": 19,
           "cents": 430,
-          "share": 0.191
+          "share": 0.191,
+          "perde": "hicaz"
         },
         {
           "koma": 23,
           "cents": 521,
-          "share": 0.138
+          "share": 0.138,
+          "perde": "neva"
         },
         {
           "koma": 32,
           "cents": 725,
-          "share": 0.097
+          "share": 0.097,
+          "perde": "huseyni"
         },
         {
           "koma": 41,
           "cents": 928,
-          "share": 0.098
+          "share": 0.098,
+          "perde": "mahur"
         },
         {
           "koma": 48,
           "cents": 1087,
-          "share": 0.049
+          "share": 0.049,
+          "perde": "sehnaz"
         }
       ],
       "intervals12": [
@@ -1342,7 +1350,9 @@
       "guclu": {
         "koma": 19,
         "cents": 430
-      }
+      },
+      "kararPerde": "dugah",
+      "gucluPerde": "neva"
     },
     "acemasiran": {
       "display": "acemasiran",
@@ -1354,42 +1364,50 @@
         {
           "koma": 0,
           "cents": 0,
-          "share": 0.183
+          "share": 0.183,
+          "perde": "acemasiran"
         },
         {
           "koma": 9,
           "cents": 204,
-          "share": 0.139
+          "share": 0.139,
+          "perde": "rast"
         },
         {
           "koma": 18,
           "cents": 408,
-          "share": 0.133
+          "share": 0.133,
+          "perde": "dugah"
         },
         {
           "koma": 22,
           "cents": 498,
-          "share": 0.079
+          "share": 0.079,
+          "perde": "kurdi"
         },
         {
           "koma": 30,
           "cents": 679,
-          "share": 0.04
+          "share": 0.04,
+          "perde": "cargah"
         },
         {
           "koma": 31,
           "cents": 702,
-          "share": 0.132
+          "share": 0.132,
+          "perde": "cargah"
         },
         {
           "koma": 40,
           "cents": 906,
-          "share": 0.111
+          "share": 0.111,
+          "perde": "neva"
         },
         {
           "koma": 49,
           "cents": 1109,
-          "share": 0.12
+          "share": 0.12,
+          "perde": "huseyni"
         }
       ],
       "intervals12": [
@@ -1404,7 +1422,9 @@
       "guclu": {
         "koma": 18,
         "cents": 408
-      }
+      },
+      "kararPerde": "acemasiran",
+      "gucluPerde": "acem"
     },
     "acemkurdi": {
       "display": "acemkurdi",
@@ -1736,52 +1756,62 @@
         {
           "koma": 0,
           "cents": 0,
-          "share": 0.031
+          "share": 0.031,
+          "perde": "irak"
         },
         {
           "koma": 1,
           "cents": 23,
-          "share": 0.175
+          "share": 0.175,
+          "perde": "irak"
         },
         {
           "koma": 7,
           "cents": 158,
-          "share": 0.112
+          "share": 0.112,
+          "perde": "rast"
         },
         {
           "koma": 19,
           "cents": 430,
-          "share": 0.089
+          "share": 0.089,
+          "perde": "kurdi"
         },
         {
           "koma": 23,
           "cents": 521,
-          "share": 0.082
+          "share": 0.082,
+          "perde": "buselik"
         },
         {
           "koma": 26,
           "cents": 589,
-          "share": 0.041
+          "share": 0.041,
+          "perde": "cargah"
         },
         {
           "koma": 27,
           "cents": 611,
-          "share": 0.031
+          "share": 0.031,
+          "perde": "cargah"
         },
         {
           "koma": 32,
           "cents": 725,
-          "share": 0.117
+          "share": 0.117,
+          "perde": "hicaz"
         },
         {
           "koma": 41,
           "cents": 928,
-          "share": 0.128
+          "share": 0.128,
+          "perde": "hisar"
         },
         {
           "koma": 48,
           "cents": 1087,
-          "share": 0.137
+          "share": 0.137,
+          "perde": "acem"
         }
       ],
       "intervals12": [
@@ -1796,7 +1826,9 @@
       "guclu": {
         "koma": 32,
         "cents": 725
-      }
+      },
+      "kararPerde": "irak",
+      "gucluPerde": "cargah"
     },
     "beyati": {
       "display": "beyati",
@@ -1808,42 +1840,50 @@
         {
           "koma": 0,
           "cents": 0,
-          "share": 0.12
+          "share": 0.12,
+          "perde": "dugah"
         },
         {
           "koma": 7,
           "cents": 158,
-          "share": 0.118
+          "share": 0.118,
+          "perde": "segah"
         },
         {
           "koma": 12,
           "cents": 272,
-          "share": 0.036
+          "share": 0.036,
+          "perde": "cargah"
         },
         {
           "koma": 13,
           "cents": 294,
-          "share": 0.152
+          "share": 0.152,
+          "perde": "cargah"
         },
         {
           "koma": 22,
           "cents": 498,
-          "share": 0.202
+          "share": 0.202,
+          "perde": "neva"
         },
         {
           "koma": 31,
           "cents": 702,
-          "share": 0.133
+          "share": 0.133,
+          "perde": "huseyni"
         },
         {
           "koma": 35,
           "cents": 792,
-          "share": 0.078
+          "share": 0.078,
+          "perde": "acem"
         },
         {
           "koma": 44,
           "cents": 996,
-          "share": 0.095
+          "share": 0.095,
+          "perde": "gerdaniye"
         }
       ],
       "intervals12": [
@@ -1858,7 +1898,9 @@
       "guclu": {
         "koma": 22,
         "cents": 498
-      }
+      },
+      "kararPerde": "dugah",
+      "gucluPerde": "neva"
     },
     "beyatiaraban": {
       "display": "beyatiaraban",
@@ -1942,47 +1984,56 @@
         {
           "koma": 0,
           "cents": 0,
-          "share": 0.136
+          "share": 0.136,
+          "perde": "dugah"
         },
         {
           "koma": 9,
           "cents": 204,
-          "share": 0.134
+          "share": 0.134,
+          "perde": "buselik"
         },
         {
           "koma": 12,
           "cents": 272,
-          "share": 0.044
+          "share": 0.044,
+          "perde": "cargah"
         },
         {
           "koma": 13,
           "cents": 294,
-          "share": 0.169
+          "share": 0.169,
+          "perde": "cargah"
         },
         {
           "koma": 22,
           "cents": 498,
-          "share": 0.142
+          "share": 0.142,
+          "perde": "neva"
         },
         {
           "koma": 31,
           "cents": 702,
-          "share": 0.149
+          "share": 0.149,
+          "perde": "huseyni"
         },
         {
           "koma": 35,
           "cents": 792,
-          "share": 0.068
+          "share": 0.068,
+          "perde": "acem"
         },
         {
           "koma": 44,
           "cents": 996,
-          "share": 0.072
+          "share": 0.072,
+          "perde": "gerdaniye"
         },
         {
           "koma": 48,
           "cents": 1087,
-          "share": 0.033
+          "share": 0.033,
+          "perde": "sehnaz"
         }
       ],
       "intervals12": [
@@ -1997,7 +2048,9 @@
       "guclu": {
         "koma": 31,
         "cents": 702
-      }
+      },
+      "kararPerde": "dugah",
+      "gucluPerde": "huseyni"
     },
     "cargah": {
       "display": "cargah",
@@ -2009,52 +2062,62 @@
         {
           "koma": 0,
           "cents": 0,
-          "share": 0.213
+          "share": 0.213,
+          "perde": "cargah"
         },
         {
           "koma": 6,
           "cents": 136,
-          "share": 0.05
+          "share": 0.05,
+          "perde": "hicaz"
         },
         {
           "koma": 9,
           "cents": 204,
-          "share": 0.161
+          "share": 0.161,
+          "perde": "neva"
         },
         {
           "koma": 18,
           "cents": 408,
-          "share": 0.182
+          "share": 0.182,
+          "perde": "huseyni"
         },
         {
           "koma": 22,
           "cents": 498,
-          "share": 0.096
+          "share": 0.096,
+          "perde": "acem"
         },
         {
           "koma": 31,
           "cents": 702,
-          "share": 0.095
+          "share": 0.095,
+          "perde": "gerdaniye"
         },
         {
           "koma": 40,
           "cents": 906,
-          "share": 0.044
+          "share": 0.044,
+          "perde": "muhayyer"
         },
         {
           "koma": 48,
           "cents": 1087,
-          "share": 0.039
+          "share": 0.039,
+          "perde": "tiz segah"
         },
         {
           "koma": 49,
           "cents": 1109,
-          "share": 0.036
+          "share": 0.036,
+          "perde": "tiz buselik"
         },
         {
           "koma": 52,
           "cents": 1177,
-          "share": 0.05
+          "share": 0.05,
+          "perde": "tiz cargah"
         }
       ],
       "intervals12": [
@@ -2069,7 +2132,9 @@
       "guclu": {
         "koma": 18,
         "cents": 408
-      }
+      },
+      "kararPerde": "cargah",
+      "gucluPerde": "gerdaniye"
     },
     "dilkeshaveran": {
       "display": "dilkeshaveran",
@@ -2230,47 +2295,56 @@
         {
           "koma": 0,
           "cents": 0,
-          "share": 0.036
+          "share": 0.036,
+          "perde": "irak"
         },
         {
           "koma": 5,
           "cents": 113,
-          "share": 0.116
+          "share": 0.116,
+          "perde": "rast"
         },
         {
           "koma": 10,
           "cents": 226,
-          "share": 0.108
+          "share": 0.108,
+          "perde": "zirgule"
         },
         {
           "koma": 23,
           "cents": 521,
-          "share": 0.11
+          "share": 0.11,
+          "perde": "buselik"
         },
         {
           "koma": 27,
           "cents": 611,
-          "share": 0.196
+          "share": 0.196,
+          "perde": "cargah"
         },
         {
           "koma": 32,
           "cents": 725,
-          "share": 0.113
+          "share": 0.113,
+          "perde": "hicaz"
         },
         {
           "koma": 41,
           "cents": 928,
-          "share": 0.055
+          "share": 0.055,
+          "perde": "hisar"
         },
         {
           "koma": 45,
           "cents": 1019,
-          "share": 0.082
+          "share": 0.082,
+          "perde": "huseyni"
         },
         {
           "koma": 49,
           "cents": 1109,
-          "share": 0.124
+          "share": 0.124,
+          "perde": "acem"
         }
       ],
       "intervals12": [
@@ -2285,7 +2359,9 @@
       "guclu": {
         "koma": 27,
         "cents": 611
-      }
+      },
+      "kararPerde": "irak",
+      "gucluPerde": "evic"
     },
     "evic": {
       "display": "evic",
@@ -2364,42 +2440,50 @@
         {
           "koma": 0,
           "cents": 0,
-          "share": 0.153
+          "share": 0.153,
+          "perde": "yegah"
         },
         {
           "koma": 9,
           "cents": 204,
-          "share": 0.142
+          "share": 0.142,
+          "perde": "huseyni asiran"
         },
         {
           "koma": 13,
           "cents": 294,
-          "share": 0.137
+          "share": 0.137,
+          "perde": "acemasiran"
         },
         {
           "koma": 22,
           "cents": 498,
-          "share": 0.134
+          "share": 0.134,
+          "perde": "rast"
         },
         {
           "koma": 31,
           "cents": 702,
-          "share": 0.146
+          "share": 0.146,
+          "perde": "dugah"
         },
         {
           "koma": 35,
           "cents": 792,
-          "share": 0.072
+          "share": 0.072,
+          "perde": "kurdi"
         },
         {
           "koma": 44,
           "cents": 996,
-          "share": 0.078
+          "share": 0.078,
+          "perde": "cargah"
         },
         {
           "koma": 48,
           "cents": 1087,
-          "share": 0.034
+          "share": 0.034,
+          "perde": "nim hicaz"
         }
       ],
       "intervals12": [
@@ -2414,7 +2498,9 @@
       "guclu": {
         "koma": 31,
         "cents": 702
-      }
+      },
+      "kararPerde": "yegah",
+      "gucluPerde": "acem"
     },
     "ferahnak": {
       "display": "ferahnak",
@@ -2426,42 +2512,50 @@
         {
           "koma": 0,
           "cents": 0,
-          "share": 0.175
+          "share": 0.175,
+          "perde": "irak"
         },
         {
           "koma": 5,
           "cents": 113,
-          "share": 0.141
+          "share": 0.141,
+          "perde": "rast"
         },
         {
           "koma": 14,
           "cents": 317,
-          "share": 0.162
+          "share": 0.162,
+          "perde": "dugah"
         },
         {
           "koma": 23,
           "cents": 521,
-          "share": 0.087
+          "share": 0.087,
+          "perde": "buselik"
         },
         {
           "koma": 26,
           "cents": 589,
-          "share": 0.035
+          "share": 0.035,
+          "perde": "cargah"
         },
         {
           "koma": 31,
           "cents": 702,
-          "share": 0.062
+          "share": 0.062,
+          "perde": "nim hicaz"
         },
         {
           "koma": 36,
           "cents": 815,
-          "share": 0.14
+          "share": 0.14,
+          "perde": "neva"
         },
         {
           "koma": 45,
           "cents": 1019,
-          "share": 0.111
+          "share": 0.111,
+          "perde": "huseyni"
         }
       ],
       "intervals12": [
@@ -2476,7 +2570,9 @@
       "guclu": {
         "koma": 23,
         "cents": 521
-      }
+      },
+      "kararPerde": "irak",
+      "gucluPerde": "neva"
     },
     "ferahnuma": {
       "display": "ferahnuma",
@@ -2555,42 +2651,50 @@
         {
           "koma": 0,
           "cents": 0,
-          "share": 0.136
+          "share": 0.136,
+          "perde": "dugah"
         },
         {
           "koma": 7,
           "cents": 158,
-          "share": 0.127
+          "share": 0.127,
+          "perde": "segah"
         },
         {
           "koma": 12,
           "cents": 272,
-          "share": 0.039
+          "share": 0.039,
+          "perde": "cargah"
         },
         {
           "koma": 13,
           "cents": 294,
-          "share": 0.167
+          "share": 0.167,
+          "perde": "cargah"
         },
         {
           "koma": 22,
           "cents": 498,
-          "share": 0.175
+          "share": 0.175,
+          "perde": "neva"
         },
         {
           "koma": 31,
           "cents": 702,
-          "share": 0.116
+          "share": 0.116,
+          "perde": "huseyni"
         },
         {
           "koma": 38,
           "cents": 860,
-          "share": 0.066
+          "share": 0.066,
+          "perde": "evic"
         },
         {
           "koma": 44,
           "cents": 996,
-          "share": 0.129
+          "share": 0.129,
+          "perde": "gerdaniye"
         }
       ],
       "intervals12": [
@@ -2605,7 +2709,9 @@
       "guclu": {
         "koma": 22,
         "cents": 498
-      }
+      },
+      "kararPerde": "dugah",
+      "gucluPerde": "gerdaniye"
     },
     "gulizar": {
       "display": "gulizar",
@@ -2617,52 +2723,62 @@
         {
           "koma": 0,
           "cents": 0,
-          "share": 0.036
+          "share": 0.036,
+          "perde": "dugah"
         },
         {
           "koma": 1,
           "cents": 23,
-          "share": 0.111
+          "share": 0.111,
+          "perde": "dugah"
         },
         {
           "koma": 10,
           "cents": 226,
-          "share": 0.164
+          "share": 0.164,
+          "perde": "buselik"
         },
         {
           "koma": 15,
           "cents": 340,
-          "share": 0.035
+          "share": 0.035,
+          "perde": "cargah"
         },
         {
           "koma": 19,
           "cents": 430,
-          "share": 0.132
+          "share": 0.132,
+          "perde": "hicaz"
         },
         {
           "koma": 23,
           "cents": 521,
-          "share": 0.037
+          "share": 0.037,
+          "perde": "neva"
         },
         {
           "koma": 26,
           "cents": 589,
-          "share": 0.069
+          "share": 0.069,
+          "perde": "hisar"
         },
         {
           "koma": 32,
           "cents": 725,
-          "share": 0.147
+          "share": 0.147,
+          "perde": "huseyni"
         },
         {
           "koma": 41,
           "cents": 928,
-          "share": 0.133
+          "share": 0.133,
+          "perde": "mahur"
         },
         {
           "koma": 48,
           "cents": 1087,
-          "share": 0.078
+          "share": 0.078,
+          "perde": "sehnaz"
         }
       ],
       "intervals12": [
@@ -2677,7 +2793,9 @@
       "guclu": {
         "koma": 32,
         "cents": 725
-      }
+      },
+      "kararPerde": "dugah",
+      "gucluPerde": "huseyni"
     },
     "hicaz": {
       "display": "hicaz",
@@ -2689,47 +2807,56 @@
         {
           "koma": 0,
           "cents": 0,
-          "share": 0.172
+          "share": 0.172,
+          "perde": "dugah"
         },
         {
           "koma": 5,
           "cents": 113,
-          "share": 0.118
+          "share": 0.118,
+          "perde": "kurdi"
         },
         {
           "koma": 12,
           "cents": 272,
-          "share": 0.037
+          "share": 0.037,
+          "perde": "cargah"
         },
         {
           "koma": 17,
           "cents": 385,
-          "share": 0.117
+          "share": 0.117,
+          "perde": "nim hicaz"
         },
         {
           "koma": 22,
           "cents": 498,
-          "share": 0.169
+          "share": 0.169,
+          "perde": "neva"
         },
         {
           "koma": 31,
           "cents": 702,
-          "share": 0.137
+          "share": 0.137,
+          "perde": "huseyni"
         },
         {
           "koma": 35,
           "cents": 792,
-          "share": 0.061
+          "share": 0.061,
+          "perde": "acem"
         },
         {
           "koma": 39,
           "cents": 883,
-          "share": 0.042
+          "share": 0.042,
+          "perde": "evic"
         },
         {
           "koma": 44,
           "cents": 996,
-          "share": 0.095
+          "share": 0.095,
+          "perde": "gerdaniye"
         }
       ],
       "intervals12": [
@@ -2744,7 +2871,9 @@
       "guclu": {
         "koma": 22,
         "cents": 498
-      }
+      },
+      "kararPerde": "dugah",
+      "gucluPerde": "neva"
     },
     "hicazasiran": {
       "display": "hicazasiran",
@@ -2833,42 +2962,50 @@
         {
           "koma": 0,
           "cents": 0,
-          "share": 0.138
+          "share": 0.138,
+          "perde": "dugah"
         },
         {
           "koma": 5,
           "cents": 113,
-          "share": 0.116
+          "share": 0.116,
+          "perde": "kurdi"
         },
         {
           "koma": 12,
           "cents": 272,
-          "share": 0.049
+          "share": 0.049,
+          "perde": "cargah"
         },
         {
           "koma": 17,
           "cents": 385,
-          "share": 0.154
+          "share": 0.154,
+          "perde": "nim hicaz"
         },
         {
           "koma": 22,
           "cents": 498,
-          "share": 0.199
+          "share": 0.199,
+          "perde": "neva"
         },
         {
           "koma": 31,
           "cents": 702,
-          "share": 0.129
+          "share": 0.129,
+          "perde": "huseyni"
         },
         {
           "koma": 35,
           "cents": 792,
-          "share": 0.057
+          "share": 0.057,
+          "perde": "acem"
         },
         {
           "koma": 44,
           "cents": 996,
-          "share": 0.069
+          "share": 0.069,
+          "perde": "gerdaniye"
         }
       ],
       "intervals12": [
@@ -2883,7 +3020,9 @@
       "guclu": {
         "koma": 22,
         "cents": 498
-      }
+      },
+      "kararPerde": "dugah",
+      "gucluPerde": "neva"
     },
     "hicazkar": {
       "display": "hicazkar",
@@ -2895,52 +3034,62 @@
         {
           "koma": 0,
           "cents": 0,
-          "share": 0.037
+          "share": 0.037,
+          "perde": "rast"
         },
         {
           "koma": 1,
           "cents": 23,
-          "share": 0.125
+          "share": 0.125,
+          "perde": "rast"
         },
         {
           "koma": 10,
           "cents": 226,
-          "share": 0.143
+          "share": 0.143,
+          "perde": "dugah"
         },
         {
           "koma": 15,
           "cents": 340,
-          "share": 0.113
+          "share": 0.113,
+          "perde": "segah"
         },
         {
           "koma": 23,
           "cents": 521,
-          "share": 0.041
+          "share": 0.041,
+          "perde": "cargah"
         },
         {
           "koma": 27,
           "cents": 611,
-          "share": 0.095
+          "share": 0.095,
+          "perde": "hicaz"
         },
         {
           "koma": 32,
           "cents": 725,
-          "share": 0.193
+          "share": 0.193,
+          "perde": "neva"
         },
         {
           "koma": 37,
           "cents": 838,
-          "share": 0.081
+          "share": 0.081,
+          "perde": "hisar"
         },
         {
           "koma": 41,
           "cents": 928,
-          "share": 0.032
+          "share": 0.032,
+          "perde": "huseyni"
         },
         {
           "koma": 49,
           "cents": 1109,
-          "share": 0.09
+          "share": 0.09,
+          "perde": "mahur"
         }
       ],
       "intervals12": [
@@ -2955,7 +3104,9 @@
       "guclu": {
         "koma": 32,
         "cents": 725
-      }
+      },
+      "kararPerde": "rast",
+      "gucluPerde": "gerdaniye"
     },
     "hicazuzzal": {
       "display": "hicaz_uzzal",
@@ -2967,42 +3118,50 @@
         {
           "koma": 0,
           "cents": 0,
-          "share": 0.166
+          "share": 0.166,
+          "perde": "dugah"
         },
         {
           "koma": 5,
           "cents": 113,
-          "share": 0.084
+          "share": 0.084,
+          "perde": "kurdi"
         },
         {
           "koma": 17,
           "cents": 385,
-          "share": 0.09
+          "share": 0.09,
+          "perde": "nim hicaz"
         },
         {
           "koma": 22,
           "cents": 498,
-          "share": 0.14
+          "share": 0.14,
+          "perde": "neva"
         },
         {
           "koma": 31,
           "cents": 702,
-          "share": 0.174
+          "share": 0.174,
+          "perde": "huseyni"
         },
         {
           "koma": 35,
           "cents": 792,
-          "share": 0.065
+          "share": 0.065,
+          "perde": "acem"
         },
         {
           "koma": 39,
           "cents": 883,
-          "share": 0.065
+          "share": 0.065,
+          "perde": "evic"
         },
         {
           "koma": 44,
           "cents": 996,
-          "share": 0.126
+          "share": 0.126,
+          "perde": "gerdaniye"
         }
       ],
       "intervals12": [
@@ -3017,7 +3176,9 @@
       "guclu": {
         "koma": 31,
         "cents": 702
-      }
+      },
+      "kararPerde": "dugah",
+      "gucluPerde": "huseyni"
     },
     "hicazzirgule": {
       "display": "hicaz_zirgule",
@@ -3029,47 +3190,56 @@
         {
           "koma": 0,
           "cents": 0,
-          "share": 0.195
+          "share": 0.195,
+          "perde": "dugah"
         },
         {
           "koma": 5,
           "cents": 113,
-          "share": 0.123
+          "share": 0.123,
+          "perde": "kurdi"
         },
         {
           "koma": 12,
           "cents": 272,
-          "share": 0.054
+          "share": 0.054,
+          "perde": "cargah"
         },
         {
           "koma": 17,
           "cents": 385,
-          "share": 0.116
+          "share": 0.116,
+          "perde": "nim hicaz"
         },
         {
           "koma": 22,
           "cents": 498,
-          "share": 0.146
+          "share": 0.146,
+          "perde": "neva"
         },
         {
           "koma": 31,
           "cents": 702,
-          "share": 0.139
+          "share": 0.139,
+          "perde": "huseyni"
         },
         {
           "koma": 36,
           "cents": 815,
-          "share": 0.057
+          "share": 0.057,
+          "perde": "acem"
         },
         {
           "koma": 44,
           "cents": 996,
-          "share": 0.054
+          "share": 0.054,
+          "perde": "gerdaniye"
         },
         {
           "koma": 48,
           "cents": 1087,
-          "share": 0.052
+          "share": 0.052,
+          "perde": "sehnaz"
         }
       ],
       "intervals12": [
@@ -3084,7 +3254,9 @@
       "guclu": {
         "koma": 22,
         "cents": 498
-      }
+      },
+      "kararPerde": "dugah",
+      "gucluPerde": "huseyni"
     },
     "hisar": {
       "display": "hisar",
@@ -3096,52 +3268,62 @@
         {
           "koma": 0,
           "cents": 0,
-          "share": 0.046
+          "share": 0.046,
+          "perde": "dugah"
         },
         {
           "koma": 1,
           "cents": 23,
-          "share": 0.129
+          "share": 0.129,
+          "perde": "dugah"
         },
         {
           "koma": 10,
           "cents": 226,
-          "share": 0.106
+          "share": 0.106,
+          "perde": "buselik"
         },
         {
           "koma": 14,
           "cents": 317,
-          "share": 0.042
+          "share": 0.042,
+          "perde": "cargah"
         },
         {
           "koma": 19,
           "cents": 430,
-          "share": 0.21
+          "share": 0.21,
+          "perde": "hicaz"
         },
         {
           "koma": 23,
           "cents": 521,
-          "share": 0.092
+          "share": 0.092,
+          "perde": "neva"
         },
         {
           "koma": 32,
           "cents": 725,
-          "share": 0.048
+          "share": 0.048,
+          "perde": "huseyni"
         },
         {
           "koma": 36,
           "cents": 815,
-          "share": 0.055
+          "share": 0.055,
+          "perde": "acem"
         },
         {
           "koma": 41,
           "cents": 928,
-          "share": 0.117
+          "share": 0.117,
+          "perde": "mahur"
         },
         {
           "koma": 48,
           "cents": 1087,
-          "share": 0.07
+          "share": 0.07,
+          "perde": "sehnaz"
         }
       ],
       "intervals12": [
@@ -3156,7 +3338,9 @@
       "guclu": {
         "koma": 19,
         "cents": 430
-      }
+      },
+      "kararPerde": "dugah",
+      "gucluPerde": "huseyni"
     },
     "hisarbuselik": {
       "display": "hisarbuselik",
@@ -3168,47 +3352,56 @@
         {
           "koma": 0,
           "cents": 0,
-          "share": 0.139
+          "share": 0.139,
+          "perde": "dugah"
         },
         {
           "koma": 9,
           "cents": 204,
-          "share": 0.116
+          "share": 0.116,
+          "perde": "buselik"
         },
         {
           "koma": 12,
           "cents": 272,
-          "share": 0.041
+          "share": 0.041,
+          "perde": "cargah"
         },
         {
           "koma": 13,
           "cents": 294,
-          "share": 0.14
+          "share": 0.14,
+          "perde": "cargah"
         },
         {
           "koma": 22,
           "cents": 498,
-          "share": 0.12
+          "share": 0.12,
+          "perde": "neva"
         },
         {
           "koma": 31,
           "cents": 702,
-          "share": 0.172
+          "share": 0.172,
+          "perde": "huseyni"
         },
         {
           "koma": 35,
           "cents": 792,
-          "share": 0.084
+          "share": 0.084,
+          "perde": "acem"
         },
         {
           "koma": 44,
           "cents": 996,
-          "share": 0.057
+          "share": 0.057,
+          "perde": "gerdaniye"
         },
         {
           "koma": 48,
           "cents": 1087,
-          "share": 0.06
+          "share": 0.06,
+          "perde": "sehnaz"
         }
       ],
       "intervals12": [
@@ -3223,7 +3416,9 @@
       "guclu": {
         "koma": 31,
         "cents": 702
-      }
+      },
+      "kararPerde": "dugah",
+      "gucluPerde": "huseyni"
     },
     "huseyni": {
       "display": "huseyni",
@@ -3235,47 +3430,56 @@
         {
           "koma": 0,
           "cents": 0,
-          "share": 0.138
+          "share": 0.138,
+          "perde": "dugah"
         },
         {
           "koma": 7,
           "cents": 158,
-          "share": 0.105
+          "share": 0.105,
+          "perde": "segah"
         },
         {
           "koma": 12,
           "cents": 272,
-          "share": 0.035
+          "share": 0.035,
+          "perde": "cargah"
         },
         {
           "koma": 13,
           "cents": 294,
-          "share": 0.137
+          "share": 0.137,
+          "perde": "cargah"
         },
         {
           "koma": 22,
           "cents": 498,
-          "share": 0.182
+          "share": 0.182,
+          "perde": "neva"
         },
         {
           "koma": 31,
           "cents": 702,
-          "share": 0.178
+          "share": 0.178,
+          "perde": "huseyni"
         },
         {
           "koma": 35,
           "cents": 792,
-          "share": 0.034
+          "share": 0.034,
+          "perde": "acem"
         },
         {
           "koma": 38,
           "cents": 860,
-          "share": 0.056
+          "share": 0.056,
+          "perde": "evic"
         },
         {
           "koma": 44,
           "cents": 996,
-          "share": 0.109
+          "share": 0.109,
+          "perde": "gerdaniye"
         }
       ],
       "intervals12": [
@@ -3290,7 +3494,9 @@
       "guclu": {
         "koma": 22,
         "cents": 498
-      }
+      },
+      "kararPerde": "dugah",
+      "gucluPerde": "huseyni"
     },
     "huseyniasiran": {
       "display": "huseyniasiran",
@@ -3302,47 +3508,56 @@
         {
           "koma": 0,
           "cents": 0,
-          "share": 0.048
+          "share": 0.048,
+          "perde": "huseyni asiran"
         },
         {
           "koma": 1,
           "cents": 23,
-          "share": 0.052
+          "share": 0.052,
+          "perde": "huseyni asiran"
         },
         {
           "koma": 10,
           "cents": 226,
-          "share": 0.111
+          "share": 0.111,
+          "perde": "irak"
         },
         {
           "koma": 19,
           "cents": 430,
-          "share": 0.217
+          "share": 0.217,
+          "perde": "zirgule"
         },
         {
           "koma": 26,
           "cents": 589,
-          "share": 0.063
+          "share": 0.063,
+          "perde": "kurdi"
         },
         {
           "koma": 27,
           "cents": 611,
-          "share": 0.12
+          "share": 0.12,
+          "perde": "kurdi"
         },
         {
           "koma": 32,
           "cents": 725,
-          "share": 0.174
+          "share": 0.174,
+          "perde": "buselik"
         },
         {
           "koma": 41,
           "cents": 928,
-          "share": 0.117
+          "share": 0.117,
+          "perde": "hicaz"
         },
         {
           "koma": 49,
           "cents": 1109,
-          "share": 0.043
+          "share": 0.043,
+          "perde": "hisar"
         }
       ],
       "intervals12": [
@@ -3357,7 +3572,9 @@
       "guclu": {
         "koma": 19,
         "cents": 430
-      }
+      },
+      "kararPerde": "huseyni asiran",
+      "gucluPerde": "huseyni"
     },
     "huzzam": {
       "display": "huzzam",
@@ -3369,42 +3586,50 @@
         {
           "koma": 0,
           "cents": 0,
-          "share": 0.095
+          "share": 0.095,
+          "perde": "segah"
         },
         {
           "koma": 4,
           "cents": 91,
-          "share": 0.032
+          "share": 0.032,
+          "perde": "buselik"
         },
         {
           "koma": 5,
           "cents": 113,
-          "share": 0.115
+          "share": 0.115,
+          "perde": "cargah"
         },
         {
           "koma": 14,
           "cents": 317,
-          "share": 0.197
+          "share": 0.197,
+          "perde": "neva"
         },
         {
           "koma": 20,
           "cents": 453,
-          "share": 0.145
+          "share": 0.145,
+          "perde": "hisar"
         },
         {
           "koma": 30,
           "cents": 679,
-          "share": 0.145
+          "share": 0.145,
+          "perde": "acem"
         },
         {
           "koma": 36,
           "cents": 815,
-          "share": 0.143
+          "share": 0.143,
+          "perde": "gerdaniye"
         },
         {
           "koma": 45,
           "cents": 1019,
-          "share": 0.06
+          "share": 0.06,
+          "perde": "muhayyer"
         }
       ],
       "intervals12": [
@@ -3419,7 +3644,9 @@
       "guclu": {
         "koma": 20,
         "cents": 453
-      }
+      },
+      "kararPerde": "segah",
+      "gucluPerde": "neva"
     },
     "irak": {
       "display": "irak",
@@ -3493,42 +3720,50 @@
         {
           "koma": 0,
           "cents": 0,
-          "share": 0.033
+          "share": 0.033,
+          "perde": "dugah"
         },
         {
           "koma": 1,
           "cents": 23,
-          "share": 0.128
+          "share": 0.128,
+          "perde": "dugah"
         },
         {
           "koma": 10,
           "cents": 226,
-          "share": 0.217
+          "share": 0.217,
+          "perde": "buselik"
         },
         {
           "koma": 19,
           "cents": 430,
-          "share": 0.16
+          "share": 0.16,
+          "perde": "hicaz"
         },
         {
           "koma": 23,
           "cents": 521,
-          "share": 0.077
+          "share": 0.077,
+          "perde": "neva"
         },
         {
           "koma": 32,
           "cents": 725,
-          "share": 0.085
+          "share": 0.085,
+          "perde": "huseyni"
         },
         {
           "koma": 41,
           "cents": 928,
-          "share": 0.104
+          "share": 0.104,
+          "perde": "mahur"
         },
         {
           "koma": 48,
           "cents": 1087,
-          "share": 0.096
+          "share": 0.096,
+          "perde": "sehnaz"
         }
       ],
       "intervals12": [
@@ -3543,7 +3778,9 @@
       "guclu": {
         "koma": 19,
         "cents": 430
-      }
+      },
+      "kararPerde": "dugah",
+      "gucluPerde": "neva"
     },
     "karcigar": {
       "display": "karcigar",
@@ -3555,42 +3792,50 @@
         {
           "koma": 0,
           "cents": 0,
-          "share": 0.135
+          "share": 0.135,
+          "perde": "dugah"
         },
         {
           "koma": 7,
           "cents": 158,
-          "share": 0.094
+          "share": 0.094,
+          "perde": "segah"
         },
         {
           "koma": 12,
           "cents": 272,
-          "share": 0.035
+          "share": 0.035,
+          "perde": "cargah"
         },
         {
           "koma": 13,
           "cents": 294,
-          "share": 0.154
+          "share": 0.154,
+          "perde": "cargah"
         },
         {
           "koma": 22,
           "cents": 498,
-          "share": 0.178
+          "share": 0.178,
+          "perde": "neva"
         },
         {
           "koma": 28,
           "cents": 634,
-          "share": 0.095
+          "share": 0.095,
+          "perde": "hisar"
         },
         {
           "koma": 38,
           "cents": 860,
-          "share": 0.082
+          "share": 0.082,
+          "perde": "evic"
         },
         {
           "koma": 44,
           "cents": 996,
-          "share": 0.127
+          "share": 0.127,
+          "perde": "gerdaniye"
         }
       ],
       "intervals12": [
@@ -3605,7 +3850,9 @@
       "guclu": {
         "koma": 22,
         "cents": 498
-      }
+      },
+      "kararPerde": "dugah",
+      "gucluPerde": "neva"
     },
     "kurdi": {
       "display": "kurdi",
@@ -3617,42 +3864,50 @@
         {
           "koma": 0,
           "cents": 0,
-          "share": 0.176
+          "share": 0.176,
+          "perde": "dugah"
         },
         {
           "koma": 4,
           "cents": 91,
-          "share": 0.098
+          "share": 0.098,
+          "perde": "kurdi"
         },
         {
           "koma": 12,
           "cents": 272,
-          "share": 0.054
+          "share": 0.054,
+          "perde": "cargah"
         },
         {
           "koma": 13,
           "cents": 294,
-          "share": 0.142
+          "share": 0.142,
+          "perde": "cargah"
         },
         {
           "koma": 22,
           "cents": 498,
-          "share": 0.156
+          "share": 0.156,
+          "perde": "neva"
         },
         {
           "koma": 31,
           "cents": 702,
-          "share": 0.154
+          "share": 0.154,
+          "perde": "huseyni"
         },
         {
           "koma": 35,
           "cents": 792,
-          "share": 0.081
+          "share": 0.081,
+          "perde": "acem"
         },
         {
           "koma": 44,
           "cents": 996,
-          "share": 0.074
+          "share": 0.074,
+          "perde": "gerdaniye"
         }
       ],
       "intervals12": [
@@ -3667,7 +3922,9 @@
       "guclu": {
         "koma": 22,
         "cents": 498
-      }
+      },
+      "kararPerde": "dugah",
+      "gucluPerde": "neva"
     },
     "kurdilihicazkar": {
       "display": "kurdilihicazkar",
@@ -3679,42 +3936,50 @@
         {
           "koma": 0,
           "cents": 0,
-          "share": 0.209
+          "share": 0.209,
+          "perde": "rast"
         },
         {
           "koma": 4,
           "cents": 91,
-          "share": 0.095
+          "share": 0.095,
+          "perde": "zirgule"
         },
         {
           "koma": 13,
           "cents": 294,
-          "share": 0.098
+          "share": 0.098,
+          "perde": "kurdi"
         },
         {
           "koma": 21,
           "cents": 475,
-          "share": 0.031
+          "share": 0.031,
+          "perde": "cargah"
         },
         {
           "koma": 22,
           "cents": 498,
-          "share": 0.118
+          "share": 0.118,
+          "perde": "cargah"
         },
         {
           "koma": 31,
           "cents": 702,
-          "share": 0.13
+          "share": 0.13,
+          "perde": "neva"
         },
         {
           "koma": 35,
           "cents": 792,
-          "share": 0.085
+          "share": 0.085,
+          "perde": "hisar"
         },
         {
           "koma": 44,
           "cents": 996,
-          "share": 0.131
+          "share": 0.131,
+          "perde": "acem"
         }
       ],
       "intervals12": [
@@ -3729,7 +3994,9 @@
       "guclu": {
         "koma": 31,
         "cents": 702
-      }
+      },
+      "kararPerde": "rast",
+      "gucluPerde": "gerdaniye"
     },
     "mahur": {
       "display": "mahur",
@@ -3741,42 +4008,50 @@
         {
           "koma": 0,
           "cents": 0,
-          "share": 0.045
+          "share": 0.045,
+          "perde": "rast"
         },
         {
           "koma": 1,
           "cents": 23,
-          "share": 0.098
+          "share": 0.098,
+          "perde": "rast"
         },
         {
           "koma": 10,
           "cents": 226,
-          "share": 0.141
+          "share": 0.141,
+          "perde": "dugah"
         },
         {
           "koma": 19,
           "cents": 430,
-          "share": 0.112
+          "share": 0.112,
+          "perde": "buselik"
         },
         {
           "koma": 28,
           "cents": 634,
-          "share": 0.1
+          "share": 0.1,
+          "perde": "hicaz"
         },
         {
           "koma": 32,
           "cents": 725,
-          "share": 0.192
+          "share": 0.192,
+          "perde": "neva"
         },
         {
           "koma": 41,
           "cents": 928,
-          "share": 0.131
+          "share": 0.131,
+          "perde": "huseyni"
         },
         {
           "koma": 50,
           "cents": 1132,
-          "share": 0.101
+          "share": 0.101,
+          "perde": "mahur"
         }
       ],
       "intervals12": [
@@ -3791,7 +4066,9 @@
       "guclu": {
         "koma": 32,
         "cents": 725
-      }
+      },
+      "kararPerde": "rast",
+      "gucluPerde": "gerdaniye"
     },
     "muhayyer": {
       "display": "muhayyer",
@@ -3803,42 +4080,50 @@
         {
           "koma": 0,
           "cents": 0,
-          "share": 0.205
+          "share": 0.205,
+          "perde": "dugah"
         },
         {
           "koma": 7,
           "cents": 158,
-          "share": 0.118
+          "share": 0.118,
+          "perde": "segah"
         },
         {
           "koma": 12,
           "cents": 272,
-          "share": 0.032
+          "share": 0.032,
+          "perde": "cargah"
         },
         {
           "koma": 13,
           "cents": 294,
-          "share": 0.138
+          "share": 0.138,
+          "perde": "cargah"
         },
         {
           "koma": 22,
           "cents": 498,
-          "share": 0.141
+          "share": 0.141,
+          "perde": "neva"
         },
         {
           "koma": 31,
           "cents": 702,
-          "share": 0.107
+          "share": 0.107,
+          "perde": "huseyni"
         },
         {
           "koma": 38,
           "cents": 860,
-          "share": 0.058
+          "share": 0.058,
+          "perde": "evic"
         },
         {
           "koma": 44,
           "cents": 996,
-          "share": 0.13
+          "share": 0.13,
+          "perde": "gerdaniye"
         }
       ],
       "intervals12": [
@@ -3853,7 +4138,9 @@
       "guclu": {
         "koma": 22,
         "cents": 498
-      }
+      },
+      "kararPerde": "dugah",
+      "gucluPerde": "muhayyer"
     },
     "muhayyerkurdi": {
       "display": "muhayyerkurdi",
@@ -3994,52 +4281,62 @@
         {
           "koma": 0,
           "cents": 0,
-          "share": 0.148
+          "share": 0.148,
+          "perde": "segah"
         },
         {
           "koma": 4,
           "cents": 91,
-          "share": 0.041
+          "share": 0.041,
+          "perde": "buselik"
         },
         {
           "koma": 5,
           "cents": 113,
-          "share": 0.08
+          "share": 0.08,
+          "perde": "cargah"
         },
         {
           "koma": 9,
           "cents": 204,
-          "share": 0.098
+          "share": 0.098,
+          "perde": "nim hicaz"
         },
         {
           "koma": 14,
           "cents": 317,
-          "share": 0.235
+          "share": 0.235,
+          "perde": "neva"
         },
         {
           "koma": 22,
           "cents": 498,
-          "share": 0.116
+          "share": 0.116,
+          "perde": "hisar"
         },
         {
           "koma": 27,
           "cents": 611,
-          "share": 0.075
+          "share": 0.075,
+          "perde": "acem"
         },
         {
           "koma": 31,
           "cents": 702,
-          "share": 0.045
+          "share": 0.045,
+          "perde": "evic"
         },
         {
           "koma": 36,
           "cents": 815,
-          "share": 0.068
+          "share": 0.068,
+          "perde": "gerdaniye"
         },
         {
           "koma": 49,
           "cents": 1109,
-          "share": 0.041
+          "share": 0.041,
+          "perde": "sunbule"
         }
       ],
       "intervals12": [
@@ -4054,7 +4351,9 @@
       "guclu": {
         "koma": 22,
         "cents": 498
-      }
+      },
+      "kararPerde": "segah",
+      "gucluPerde": "neva"
     },
     "neva": {
       "display": "neva",
@@ -4066,52 +4365,62 @@
         {
           "koma": 0,
           "cents": 0,
-          "share": 0.052
+          "share": 0.052,
+          "perde": "dugah"
         },
         {
           "koma": 1,
           "cents": 23,
-          "share": 0.108
+          "share": 0.108,
+          "perde": "dugah"
         },
         {
           "koma": 10,
           "cents": 226,
-          "share": 0.202
+          "share": 0.202,
+          "perde": "buselik"
         },
         {
           "koma": 19,
           "cents": 430,
-          "share": 0.147
+          "share": 0.147,
+          "perde": "hicaz"
         },
         {
           "koma": 23,
           "cents": 521,
-          "share": 0.036
+          "share": 0.036,
+          "perde": "neva"
         },
         {
           "koma": 26,
           "cents": 589,
-          "share": 0.033
+          "share": 0.033,
+          "perde": "hisar"
         },
         {
           "koma": 27,
           "cents": 611,
-          "share": 0.078
+          "share": 0.078,
+          "perde": "hisar"
         },
         {
           "koma": 32,
           "cents": 725,
-          "share": 0.12
+          "share": 0.12,
+          "perde": "huseyni"
         },
         {
           "koma": 41,
           "cents": 928,
-          "share": 0.103
+          "share": 0.103,
+          "perde": "mahur"
         },
         {
           "koma": 48,
           "cents": 1087,
-          "share": 0.054
+          "share": 0.054,
+          "perde": "sehnaz"
         }
       ],
       "intervals12": [
@@ -4126,7 +4435,9 @@
       "guclu": {
         "koma": 19,
         "cents": 430
-      }
+      },
+      "kararPerde": "dugah",
+      "gucluPerde": "neva"
     },
     "neveser": {
       "display": "neveser",
@@ -4200,47 +4511,56 @@
         {
           "koma": 0,
           "cents": 0,
-          "share": 0.156
+          "share": 0.156,
+          "perde": "rast"
         },
         {
           "koma": 9,
           "cents": 204,
-          "share": 0.128
+          "share": 0.128,
+          "perde": "dugah"
         },
         {
           "koma": 13,
           "cents": 294,
-          "share": 0.131
+          "share": 0.131,
+          "perde": "kurdi"
         },
         {
           "koma": 21,
           "cents": 475,
-          "share": 0.049
+          "share": 0.049,
+          "perde": "cargah"
         },
         {
           "koma": 22,
           "cents": 498,
-          "share": 0.115
+          "share": 0.115,
+          "perde": "cargah"
         },
         {
           "koma": 31,
           "cents": 702,
-          "share": 0.185
+          "share": 0.185,
+          "perde": "neva"
         },
         {
           "koma": 35,
           "cents": 792,
-          "share": 0.097
+          "share": 0.097,
+          "perde": "hisar"
         },
         {
           "koma": 44,
           "cents": 996,
-          "share": 0.06
+          "share": 0.06,
+          "perde": "acem"
         },
         {
           "koma": 48,
           "cents": 1087,
-          "share": 0.046
+          "share": 0.046,
+          "perde": "evic"
         }
       ],
       "intervals12": [
@@ -4255,7 +4575,9 @@
       "guclu": {
         "koma": 31,
         "cents": 702
-      }
+      },
+      "kararPerde": "rast",
+      "gucluPerde": "neva"
     },
     "nikriz": {
       "display": "nikriz",
@@ -4267,52 +4589,62 @@
         {
           "koma": 0,
           "cents": 0,
-          "share": 0.189
+          "share": 0.189,
+          "perde": "rast"
         },
         {
           "koma": 9,
           "cents": 204,
-          "share": 0.107
+          "share": 0.107,
+          "perde": "dugah"
         },
         {
           "koma": 14,
           "cents": 317,
-          "share": 0.096
+          "share": 0.096,
+          "perde": "kurdi"
         },
         {
           "koma": 21,
           "cents": 475,
-          "share": 0.037
+          "share": 0.037,
+          "perde": "cargah"
         },
         {
           "koma": 22,
           "cents": 498,
-          "share": 0.038
+          "share": 0.038,
+          "perde": "cargah"
         },
         {
           "koma": 26,
           "cents": 589,
-          "share": 0.096
+          "share": 0.096,
+          "perde": "nim hicaz"
         },
         {
           "koma": 31,
           "cents": 702,
-          "share": 0.181
+          "share": 0.181,
+          "perde": "neva"
         },
         {
           "koma": 40,
           "cents": 906,
-          "share": 0.093
+          "share": 0.093,
+          "perde": "huseyni"
         },
         {
           "koma": 44,
           "cents": 996,
-          "share": 0.041
+          "share": 0.041,
+          "perde": "acem"
         },
         {
           "koma": 47,
           "cents": 1064,
-          "share": 0.031
+          "share": 0.031,
+          "perde": "evic"
         }
       ],
       "intervals12": [
@@ -4327,7 +4659,9 @@
       "guclu": {
         "koma": 31,
         "cents": 702
-      }
+      },
+      "kararPerde": "rast",
+      "gucluPerde": "neva"
     },
     "nisabur": {
       "display": "nisabur",
@@ -4679,42 +5013,50 @@
         {
           "koma": 0,
           "cents": 0,
-          "share": 0.151
+          "share": 0.151,
+          "perde": "rast"
         },
         {
           "koma": 9,
           "cents": 204,
-          "share": 0.138
+          "share": 0.138,
+          "perde": "dugah"
         },
         {
           "koma": 17,
           "cents": 385,
-          "share": 0.15
+          "share": 0.15,
+          "perde": "segah"
         },
         {
           "koma": 21,
           "cents": 475,
-          "share": 0.044
+          "share": 0.044,
+          "perde": "cargah"
         },
         {
           "koma": 22,
           "cents": 498,
-          "share": 0.137
+          "share": 0.137,
+          "perde": "cargah"
         },
         {
           "koma": 31,
           "cents": 702,
-          "share": 0.171
+          "share": 0.171,
+          "perde": "neva"
         },
         {
           "koma": 40,
           "cents": 906,
-          "share": 0.089
+          "share": 0.089,
+          "perde": "huseyni"
         },
         {
           "koma": 48,
           "cents": 1087,
-          "share": 0.057
+          "share": 0.057,
+          "perde": "evic"
         }
       ],
       "intervals12": [
@@ -4729,7 +5071,9 @@
       "guclu": {
         "koma": 31,
         "cents": 702
-      }
+      },
+      "kararPerde": "rast",
+      "gucluPerde": "neva"
     },
     "rehavi": {
       "display": "rehavi",
@@ -4741,52 +5085,62 @@
         {
           "koma": 0,
           "cents": 0,
-          "share": 0.044
+          "share": 0.044,
+          "perde": "rast"
         },
         {
           "koma": 1,
           "cents": 23,
-          "share": 0.128
+          "share": 0.128,
+          "perde": "rast"
         },
         {
           "koma": 10,
           "cents": 226,
-          "share": 0.158
+          "share": 0.158,
+          "perde": "dugah"
         },
         {
           "koma": 19,
           "cents": 430,
-          "share": 0.085
+          "share": 0.085,
+          "perde": "buselik"
         },
         {
           "koma": 26,
           "cents": 589,
-          "share": 0.032
+          "share": 0.032,
+          "perde": "nim hicaz"
         },
         {
           "koma": 27,
           "cents": 611,
-          "share": 0.036
+          "share": 0.036,
+          "perde": "hicaz"
         },
         {
           "koma": 32,
           "cents": 725,
-          "share": 0.165
+          "share": 0.165,
+          "perde": "neva"
         },
         {
           "koma": 41,
           "cents": 928,
-          "share": 0.147
+          "share": 0.147,
+          "perde": "huseyni"
         },
         {
           "koma": 48,
           "cents": 1087,
-          "share": 0.054
+          "share": 0.054,
+          "perde": "evic"
         },
         {
           "koma": 49,
           "cents": 1109,
-          "share": 0.081
+          "share": 0.081,
+          "perde": "mahur"
         }
       ],
       "intervals12": [
@@ -4801,7 +5155,9 @@
       "guclu": {
         "koma": 32,
         "cents": 725
-      }
+      },
+      "kararPerde": "rast",
+      "gucluPerde": "neva"
     },
     "rengidil": {
       "display": "rengidil",
@@ -4942,42 +5298,50 @@
         {
           "koma": 0,
           "cents": 0,
-          "share": 0.128
+          "share": 0.128,
+          "perde": "dugah"
         },
         {
           "koma": 7,
           "cents": 158,
-          "share": 0.161
+          "share": 0.161,
+          "perde": "segah"
         },
         {
           "koma": 12,
           "cents": 272,
-          "share": 0.036
+          "share": 0.036,
+          "perde": "cargah"
         },
         {
           "koma": 13,
           "cents": 294,
-          "share": 0.238
+          "share": 0.238,
+          "perde": "cargah"
         },
         {
           "koma": 19,
           "cents": 430,
-          "share": 0.129
+          "share": 0.129,
+          "perde": "hicaz"
         },
         {
           "koma": 31,
           "cents": 702,
-          "share": 0.095
+          "share": 0.095,
+          "perde": "huseyni"
         },
         {
           "koma": 35,
           "cents": 792,
-          "share": 0.057
+          "share": 0.057,
+          "perde": "acem"
         },
         {
           "koma": 44,
           "cents": 996,
-          "share": 0.073
+          "share": 0.073,
+          "perde": "gerdaniye"
         }
       ],
       "intervals12": [
@@ -4992,7 +5356,9 @@
       "guclu": {
         "koma": 19,
         "cents": 430
-      }
+      },
+      "kararPerde": "dugah",
+      "gucluPerde": "cargah"
     },
     "sabazemzeme": {
       "display": "saba-zemzeme",
@@ -5205,52 +5571,62 @@
         {
           "koma": 0,
           "cents": 0,
-          "share": 0.154
+          "share": 0.154,
+          "perde": "segah"
         },
         {
           "koma": 4,
           "cents": 91,
-          "share": 0.037
+          "share": 0.037,
+          "perde": "buselik"
         },
         {
           "koma": 5,
           "cents": 113,
-          "share": 0.132
+          "share": 0.132,
+          "perde": "cargah"
         },
         {
           "koma": 14,
           "cents": 317,
-          "share": 0.198
+          "share": 0.198,
+          "perde": "neva"
         },
         {
           "koma": 22,
           "cents": 498,
-          "share": 0.115
+          "share": 0.115,
+          "perde": "hisar"
         },
         {
           "koma": 27,
           "cents": 611,
-          "share": 0.039
+          "share": 0.039,
+          "perde": "acem"
         },
         {
           "koma": 31,
           "cents": 702,
-          "share": 0.09
+          "share": 0.09,
+          "perde": "evic"
         },
         {
           "koma": 36,
           "cents": 815,
-          "share": 0.121
+          "share": 0.121,
+          "perde": "gerdaniye"
         },
         {
           "koma": 45,
           "cents": 1019,
-          "share": 0.045
+          "share": 0.045,
+          "perde": "muhayyer"
         },
         {
           "koma": 49,
           "cents": 1109,
-          "share": 0.035
+          "share": 0.035,
+          "perde": "sunbule"
         }
       ],
       "intervals12": [
@@ -5265,7 +5641,9 @@
       "guclu": {
         "koma": 22,
         "cents": 498
-      }
+      },
+      "kararPerde": "segah",
+      "gucluPerde": "neva"
     },
     "segahmaye": {
       "display": "segah-maye",
@@ -5349,57 +5727,68 @@
         {
           "koma": 0,
           "cents": 0,
-          "share": 0.032
+          "share": 0.032,
+          "perde": "dugah"
         },
         {
           "koma": 5,
           "cents": 113,
-          "share": 0.073
+          "share": 0.073,
+          "perde": "kurdi"
         },
         {
           "koma": 10,
           "cents": 226,
-          "share": 0.121
+          "share": 0.121,
+          "perde": "buselik"
         },
         {
           "koma": 19,
           "cents": 430,
-          "share": 0.145
+          "share": 0.145,
+          "perde": "hicaz"
         },
         {
           "koma": 23,
           "cents": 521,
-          "share": 0.04
+          "share": 0.04,
+          "perde": "neva"
         },
         {
           "koma": 24,
           "cents": 543,
-          "share": 0.062
+          "share": 0.062,
+          "perde": "neva"
         },
         {
           "koma": 32,
           "cents": 725,
-          "share": 0.08
+          "share": 0.08,
+          "perde": "huseyni"
         },
         {
           "koma": 36,
           "cents": 815,
-          "share": 0.061
+          "share": 0.061,
+          "perde": "acem"
         },
         {
           "koma": 41,
           "cents": 928,
-          "share": 0.211
+          "share": 0.211,
+          "perde": "mahur"
         },
         {
           "koma": 46,
           "cents": 1042,
-          "share": 0.059
+          "share": 0.059,
+          "perde": "gerdaniye"
         },
         {
           "koma": 50,
           "cents": 1132,
-          "share": 0.049
+          "share": 0.049,
+          "perde": "sehnaz"
         }
       ],
       "intervals12": [
@@ -5414,7 +5803,9 @@
       "guclu": {
         "koma": 19,
         "cents": 430
-      }
+      },
+      "kararPerde": "dugah",
+      "gucluPerde": "muhayyer"
     },
     "sehnazbuselik": {
       "display": "sehnazbuselik",
@@ -5565,47 +5956,56 @@
         {
           "koma": 0,
           "cents": 0,
-          "share": 0.186
+          "share": 0.186,
+          "perde": "yegah"
         },
         {
           "koma": 9,
           "cents": 204,
-          "share": 0.149
+          "share": 0.149,
+          "perde": "huseyni asiran"
         },
         {
           "koma": 13,
           "cents": 294,
-          "share": 0.144
+          "share": 0.144,
+          "perde": "acemasiran"
         },
         {
           "koma": 22,
           "cents": 498,
-          "share": 0.11
+          "share": 0.11,
+          "perde": "rast"
         },
         {
           "koma": 31,
           "cents": 702,
-          "share": 0.138
+          "share": 0.138,
+          "perde": "dugah"
         },
         {
           "koma": 35,
           "cents": 792,
-          "share": 0.074
+          "share": 0.074,
+          "perde": "kurdi"
         },
         {
           "koma": 43,
           "cents": 974,
-          "share": 0.037
+          "share": 0.037,
+          "perde": "cargah"
         },
         {
           "koma": 44,
           "cents": 996,
-          "share": 0.044
+          "share": 0.044,
+          "perde": "cargah"
         },
         {
           "koma": 48,
           "cents": 1087,
-          "share": 0.079
+          "share": 0.079,
+          "perde": "nim hicaz"
         }
       ],
       "intervals12": [
@@ -5620,7 +6020,9 @@
       "guclu": {
         "koma": 31,
         "cents": 702
-      }
+      },
+      "kararPerde": "yegah",
+      "gucluPerde": "neva"
     },
     "suzidil": {
       "display": "suzidil",
@@ -5905,37 +6307,44 @@
         {
           "koma": 0,
           "cents": 0,
-          "share": 0.235
+          "share": 0.235,
+          "perde": "dugah"
         },
         {
           "koma": 7,
           "cents": 158,
-          "share": 0.153
+          "share": 0.153,
+          "perde": "segah"
         },
         {
           "koma": 13,
           "cents": 294,
-          "share": 0.175
+          "share": 0.175,
+          "perde": "cargah"
         },
         {
           "koma": 22,
           "cents": 498,
-          "share": 0.16
+          "share": 0.16,
+          "perde": "neva"
         },
         {
           "koma": 31,
           "cents": 702,
-          "share": 0.08
+          "share": 0.08,
+          "perde": "huseyni"
         },
         {
           "koma": 38,
           "cents": 860,
-          "share": 0.049
+          "share": 0.049,
+          "perde": "evic"
         },
         {
           "koma": 44,
           "cents": 996,
-          "share": 0.098
+          "share": 0.098,
+          "perde": "gerdaniye"
         }
       ],
       "intervals12": [
@@ -5950,7 +6359,9 @@
       "guclu": {
         "koma": 22,
         "cents": 498
-      }
+      },
+      "kararPerde": "dugah",
+      "gucluPerde": "muhayyer"
     },
     "tahirbuselik": {
       "display": "tahirbuselik",
@@ -6044,42 +6455,50 @@
         {
           "koma": 0,
           "cents": 0,
-          "share": 0.162
+          "share": 0.162,
+          "perde": "dugah"
         },
         {
           "koma": 7,
           "cents": 158,
-          "share": 0.151
+          "share": 0.151,
+          "perde": "segah"
         },
         {
           "koma": 12,
           "cents": 272,
-          "share": 0.038
+          "share": 0.038,
+          "perde": "cargah"
         },
         {
           "koma": 13,
           "cents": 294,
-          "share": 0.172
+          "share": 0.172,
+          "perde": "cargah"
         },
         {
           "koma": 22,
           "cents": 498,
-          "share": 0.186
+          "share": 0.186,
+          "perde": "neva"
         },
         {
           "koma": 31,
           "cents": 702,
-          "share": 0.111
+          "share": 0.111,
+          "perde": "huseyni"
         },
         {
           "koma": 35,
           "cents": 792,
-          "share": 0.046
+          "share": 0.046,
+          "perde": "acem"
         },
         {
           "koma": 44,
           "cents": 996,
-          "share": 0.087
+          "share": 0.087,
+          "perde": "gerdaniye"
         }
       ],
       "intervals12": [
@@ -6094,7 +6513,9 @@
       "guclu": {
         "koma": 22,
         "cents": 498
-      }
+      },
+      "kararPerde": "dugah",
+      "gucluPerde": "neva"
     },
     "yegah": {
       "display": "yegah",
@@ -6106,12 +6527,14 @@
         {
           "koma": 0,
           "cents": 0,
-          "share": 0.051
+          "share": 0.051,
+          "perde": "yegah"
         },
         {
           "koma": 1,
           "cents": 23,
-          "share": 0.061
+          "share": 0.061,
+          "perde": "yegah"
         },
         {
           "koma": 4,
@@ -6121,37 +6544,44 @@
         {
           "koma": 10,
           "cents": 226,
-          "share": 0.196
+          "share": 0.196,
+          "perde": "huseyni asiran"
         },
         {
           "koma": 19,
           "cents": 430,
-          "share": 0.142
+          "share": 0.142,
+          "perde": "irak"
         },
         {
           "koma": 26,
           "cents": 589,
-          "share": 0.114
+          "share": 0.114,
+          "perde": "zirgule"
         },
         {
           "koma": 32,
           "cents": 725,
-          "share": 0.112
+          "share": 0.112,
+          "perde": "dugah"
         },
         {
           "koma": 41,
           "cents": 928,
-          "share": 0.126
+          "share": 0.126,
+          "perde": "buselik"
         },
         {
           "koma": 48,
           "cents": 1087,
-          "share": 0.051
+          "share": 0.051,
+          "perde": "nim hicaz"
         },
         {
           "koma": 50,
           "cents": 1132,
-          "share": 0.032
+          "share": 0.032,
+          "perde": "hicaz"
         }
       ],
       "intervals12": [
@@ -6166,7 +6596,9 @@
       "guclu": {
         "koma": 19,
         "cents": 430
-      }
+      },
+      "kararPerde": "yegah",
+      "gucluPerde": "neva"
     },
     "yenicargah": {
       "display": "yeni_cargah",

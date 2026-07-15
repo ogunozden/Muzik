@@ -13,6 +13,11 @@ export interface MakamKomaDegree {
   cents: number;
   /** Bu derecenin korpustaki kullanim payi (0..1). */
   share: number;
+  /**
+   * Otantik AEU perde adi (Rast/Dugah/Segah...) — AEU referansindan (tomato+
+   * Aydemir), makamin tonic perdesine demirlenir. Referans yoksa undefined.
+   */
+  perde?: string;
 }
 
 /**
@@ -39,6 +44,10 @@ export interface MakamKomaScale {
    * icin referans.
    */
   guclu: {koma: number; cents: number} | null;
+  /** Karar (durak) perdesinin AEU adi — AEU referansindan. Yoksa undefined. */
+  kararPerde?: string;
+  /** Guclu perdesinin AEU adi — AEU referansindan. Yoksa undefined. */
+  gucluPerde?: string;
 }
 
 export interface Makam {

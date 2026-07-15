@@ -26,6 +26,7 @@ const TXT_ROOT_CANDIDATES = [
   path.join(PROJECT_ROOT, "symb", "SymbTr-2.0.0", "txt"),
 ];
 const OUTPUT = path.join(PROJECT_ROOT, "src", "engines", "makam", "__generated__", "makam-corpus.json");
+const AEU_REFERENCE = path.join(PROJECT_ROOT, "src", "engines", "makam", "__generated__", "aeu-reference.json");
 const MIN_PIECES = 3;
 
 // 53-EDO (Holder komasi / AEU sistemi): 1 oktav = 53 koma, 1 koma = 1200/53 c.
@@ -229,20 +230,68 @@ export function deriveMakamKomaScales(txtRoot) {
   return result;
 }
 
+/**
+ * Koma dizisi derecelerine OTANTIK PERDE ADI ekler (A4 / F13.4). Perde adlari
+ * AEU referansindan (tomato + Aydemir) gelir; her makamin tonic PERDESINE
+ * demirlenir (offset/ahenk bagimsiz): tomatoKoma = tonicKoma + derece-koma,
+ * en yakin perde (±2 koma). kararPerde = makamin tonic perdesi. Referans yoksa
+ * adsiz kalir (yalniz cents).
+ */
+function attachPerdeNames(komaScales) {
+  let aeu;
+  try {
+    aeu = JSON.parse(readFileSync(AEU_REFERENCE, "utf8"));
+  } catch {
+    return; // referans yoksa perde adlandirma atlanir
+  }
+  const perdeKoma = aeu.perdeKoma ?? {};
+  const perdeEntries = Object.entries(perdeKoma);
+  const tonicByKey = new Map();
+  for (const [name, td] of Object.entries(aeu.makamTonicDominant ?? {})) {
+    tonicByKey.set(normalizeMakamName(name), td);
+  }
+  const nearestPerde = (absKoma) => {
+    let best = null;
+    let bestDist = 2.5; // ±2 koma tolerans (notr perde belirsizligi)
+    for (const [name, koma] of perdeEntries) {
+      const dist = Math.abs(koma - absKoma);
+      if (dist < bestDist) {
+        bestDist = dist;
+        best = name;
+      }
+    }
+    return best;
+  };
+  for (const [key, scale] of Object.entries(komaScales)) {
+    const td = tonicByKey.get(key);
+    if (!td) continue;
+    const tonicKoma = perdeKoma[td.tonic];
+    if (tonicKoma === undefined) continue;
+    scale.kararPerde = td.tonic;
+    scale.gucluPerde = td.dominant;
+    for (const degree of scale.degrees) {
+      const perde = nearestPerde(tonicKoma + degree.koma);
+      if (perde) degree.perde = perde;
+    }
+  }
+}
+
 export function buildMakamCorpusSummary() {
   const root = ROOT_CANDIDATES.find((candidate) => existsSync(candidate));
   if (!root) {
     throw new Error(`SymbTr MusicXML korpusu bulunamadi. 'npm run fetch:symbtr-v3' calistirin.\n${ROOT_CANDIDATES.join("\n")}`);
   }
   const txtRoot = TXT_ROOT_CANDIDATES.find((candidate) => existsSync(candidate));
+  const komaScales = txtRoot ? deriveMakamKomaScales(txtRoot) : {};
+  attachPerdeNames(komaScales); // A4: otantik perde adlari (AEU referansindan)
   return {
-    source: "SymbTr v3.0 (Zenodo 15470412, CC-BY 4.0); ariza=MusicXML <key>, koma dizisi=txt Koma53 (53-EDO/AEU)",
+    source: "SymbTr v3.0 (Zenodo 15470412, CC-BY 4.0); ariza=MusicXML <key>, koma dizisi=txt Koma53 (53-EDO/AEU); perde adlari=aeu-reference (tomato+Aydemir)",
     generatedFrom: path.relative(PROJECT_ROOT, root).replace(/\\/g, "/"),
     minPieces: MIN_PIECES,
     komaPerOctave: KOMA_PER_OCTAVE,
     centsPerKoma: Math.round(CENTS_PER_KOMA * 1000) / 1000,
     makams: deriveMakamSignatures(root),
-    komaScales: txtRoot ? deriveMakamKomaScales(txtRoot) : {},
+    komaScales,
   };
 }
 

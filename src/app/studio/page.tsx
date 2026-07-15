@@ -240,7 +240,10 @@ function NotaEditorPage() {
     label: i18n.language === "tr" ? instrument.nameTr : instrument.nameEn,
   }));
   const selectedInstrumentName = instrumentItems.find((instrument) => instrument.key === selectedInstrument)?.label ?? selectedInstrument;
-  const selectedMakamName = MAKAM_DATA.find((makam) => makam.id === selectedMakamId)?.name;
+  const selectedMakamObj = MAKAM_DATA.find((makam) => makam.id === selectedMakamId);
+  const selectedMakamName = selectedMakamObj?.name;
+  // A4: otantik 53-EDO koma dizisi (korpus-turevli perde adlariyla)
+  const selectedMakamKoma = selectedMakamObj?.komaScale;
   const selectedUsulName = USUL_DATA.find((usul) => usul.id === selectedUsulId)?.name;
   const studioStatus = isRecording
     ? t("notaEditor.statusRecording")
@@ -354,6 +357,35 @@ function NotaEditorPage() {
                         {isPlaying ? t("common.playing") : t("makam.playScale")}
                       </Button>
                     </label>
+
+                    {/* A4: otantik perde dizisi (korpus-turevli 53-EDO; karar/
+                        guclu AEU referansindan). 12-TET degil — koma perdeleri. */}
+                    {selectedMakamKoma?.kararPerde && (
+                      <div className="rounded-lg border border-[var(--color-border-subtle)] p-3">
+                        <div className={`mb-1 flex flex-wrap gap-x-4 gap-y-1 text-xs ${tokens.colors.text.secondary}`}>
+                          <span>
+                            Karar: <span className="font-semibold text-[var(--color-text-primary)] capitalize">{selectedMakamKoma.kararPerde}</span>
+                          </span>
+                          {selectedMakamKoma.gucluPerde && (
+                            <span>
+                              Güçlü: <span className="font-semibold text-[var(--color-text-primary)] capitalize">{selectedMakamKoma.gucluPerde}</span>
+                            </span>
+                          )}
+                          <span>{selectedMakamKoma.degrees.length} perde · 53-EDO</span>
+                        </div>
+                        <div className="flex flex-wrap gap-1.5">
+                          {selectedMakamKoma.degrees.map((degree, index) => (
+                            <span
+                              key={`${degree.koma}-${index}`}
+                              title={`${degree.cents} cent (${degree.koma} koma)`}
+                              className="rounded bg-[var(--color-bg-muted)] px-1.5 py-0.5 text-xs capitalize text-[var(--color-text-primary)]"
+                            >
+                              {degree.perde ?? `${degree.cents}c`}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    )}
 
                     <label className="grid gap-2">
                       <span className={`text-xs font-semibold ${tokens.colors.text.secondary}`}>{t("usul.usul")}</span>

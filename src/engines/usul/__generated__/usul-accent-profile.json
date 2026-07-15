@@ -1,0 +1,651 @@
+{
+  "source": "SymbTr txt (sure-agirlikli onset yogunlugu) + usul-corpus-meters.json",
+  "method": "duration-weighted onset density per beat; downbeat (beat-1 DUM) validation",
+  "minPieces": 5,
+  "usuls": {
+    "agiraksak": {
+      "display": "agiraksak",
+      "beats": 9,
+      "unit": 4,
+      "pieceCount": 139,
+      "profile": [
+        11.7,
+        11.2,
+        11.6,
+        11,
+        11.4,
+        10.6,
+        10.6,
+        10.9,
+        10.9
+      ],
+      "downbeatIsPeak": true
+    },
+    "agiraksaksemai": {
+      "display": "agir_aksaksemai",
+      "beats": 10,
+      "unit": 4,
+      "pieceCount": 19,
+      "profile": [
+        11.1,
+        9,
+        10.4,
+        10,
+        10.2,
+        9.4,
+        10.2,
+        10.1,
+        10,
+        9.6
+      ],
+      "downbeatIsPeak": true
+    },
+    "agircenber": {
+      "display": "agircenber",
+      "beats": 4,
+      "unit": 2,
+      "pieceCount": 7,
+      "profile": [
+        25.5,
+        24.1,
+        26.7,
+        23.8
+      ],
+      "downbeatIsPeak": true
+    },
+    "agirduyek": {
+      "display": "agirduyek",
+      "beats": 8,
+      "unit": 4,
+      "pieceCount": 21,
+      "profile": [
+        10.8,
+        12.7,
+        13.2,
+        12,
+        12.3,
+        13.8,
+        12.7,
+        12.5
+      ],
+      "downbeatIsPeak": false
+    },
+    "aksak": {
+      "display": "aksak",
+      "beats": 9,
+      "unit": 8,
+      "pieceCount": 439,
+      "profile": [
+        11,
+        11.3,
+        11.1,
+        11.2,
+        10.9,
+        11.1,
+        11,
+        11.2,
+        11.2
+      ],
+      "downbeatIsPeak": true
+    },
+    "aksaksemai": {
+      "display": "aksaksemai",
+      "beats": 10,
+      "unit": 8,
+      "pieceCount": 175,
+      "profile": [
+        9.6,
+        10.6,
+        9.8,
+        10.5,
+        9.5,
+        10.4,
+        9.5,
+        10,
+        9.6,
+        10.5
+      ],
+      "downbeatIsPeak": true
+    },
+    "aydin": {
+      "display": "aydin",
+      "beats": 9,
+      "unit": 8,
+      "pieceCount": 10,
+      "profile": [
+        11.5,
+        10.7,
+        11,
+        10.6,
+        10.5,
+        11.3,
+        11.2,
+        12.2,
+        10.9
+      ],
+      "downbeatIsPeak": true
+    },
+    "azeriyuruksemai": {
+      "display": "azeriyuruksemai",
+      "beats": 6,
+      "unit": 8,
+      "pieceCount": 6,
+      "profile": [
+        17,
+        17.3,
+        16.5,
+        17.2,
+        15.4,
+        16.7
+      ],
+      "downbeatIsPeak": true
+    },
+    "cenber": {
+      "display": "cenber",
+      "beats": 4,
+      "unit": 4,
+      "pieceCount": 12,
+      "profile": [
+        25.2,
+        25,
+        25.7,
+        24.1
+      ],
+      "downbeatIsPeak": true
+    },
+    "cifteduyek": {
+      "display": "cifteduyek",
+      "beats": 4,
+      "unit": 4,
+      "pieceCount": 6,
+      "profile": [
+        27.1,
+        26.6,
+        23.4,
+        22.8
+      ],
+      "downbeatIsPeak": true
+    },
+    "ciftesofyan": {
+      "display": "ciftesofyan",
+      "beats": 9,
+      "unit": 8,
+      "pieceCount": 15,
+      "profile": [
+        11.2,
+        11,
+        11.3,
+        11.1,
+        11.6,
+        10.5,
+        11.1,
+        11.4,
+        10.7
+      ],
+      "downbeatIsPeak": true
+    },
+    "curcuna": {
+      "display": "curcuna",
+      "beats": 10,
+      "unit": 8,
+      "pieceCount": 187,
+      "profile": [
+        9.6,
+        9.9,
+        10.2,
+        10.4,
+        9.9,
+        10.4,
+        9.5,
+        10.2,
+        9.6,
+        10.4
+      ],
+      "downbeatIsPeak": true
+    },
+    "darb": {
+      "display": "darb",
+      "beats": 6,
+      "unit": 4,
+      "pieceCount": 5,
+      "profile": [
+        23.3,
+        14.3,
+        11.4,
+        18.3,
+        17.6,
+        15.2
+      ],
+      "downbeatIsPeak": true
+    },
+    "darbifetih": {
+      "display": "darbifetih",
+      "beats": 4,
+      "unit": 4,
+      "pieceCount": 5,
+      "profile": [
+        30.3,
+        23.4,
+        23.2,
+        23.1
+      ],
+      "downbeatIsPeak": true
+    },
+    "devrihindi": {
+      "display": "devrihindi",
+      "beats": 7,
+      "unit": 4,
+      "pieceCount": 86,
+      "profile": [
+        14.6,
+        14.1,
+        14.7,
+        13.7,
+        14.3,
+        14.2,
+        14.4
+      ],
+      "downbeatIsPeak": true
+    },
+    "devrikebir": {
+      "display": "devrikebir",
+      "beats": 4,
+      "unit": 4,
+      "pieceCount": 45,
+      "profile": [
+        26.6,
+        23.8,
+        25.5,
+        24.1
+      ],
+      "downbeatIsPeak": true
+    },
+    "devrirevan": {
+      "display": "devrirevan",
+      "beats": 14,
+      "unit": 8,
+      "pieceCount": 17,
+      "profile": [
+        8.8,
+        6.9,
+        6.8,
+        7.3,
+        9.4,
+        6.4,
+        6.6,
+        6.6,
+        7.1,
+        6,
+        7,
+        6.4,
+        8.1,
+        6.7
+      ],
+      "downbeatIsPeak": true
+    },
+    "devrirevanihindi": {
+      "display": "devrirevanihindi",
+      "beats": 14,
+      "unit": 8,
+      "pieceCount": 12,
+      "profile": [
+        11.8,
+        5.4,
+        7.6,
+        7.4,
+        9.7,
+        6.1,
+        6.3,
+        6.6,
+        6.1,
+        6,
+        8.2,
+        5.2,
+        7.3,
+        6.3
+      ],
+      "downbeatIsPeak": true
+    },
+    "devrituran": {
+      "display": "devrituran",
+      "beats": 7,
+      "unit": 8,
+      "pieceCount": 16,
+      "profile": [
+        14,
+        14.8,
+        13.7,
+        14.5,
+        14.3,
+        13.9,
+        14.7
+      ],
+      "downbeatIsPeak": true
+    },
+    "durakevferi": {
+      "display": "durakevferi",
+      "beats": 7,
+      "unit": 4,
+      "pieceCount": 7,
+      "profile": [
+        15.6,
+        13.9,
+        14.1,
+        14.7,
+        14,
+        13.1,
+        14.6
+      ],
+      "downbeatIsPeak": true
+    },
+    "duyek": {
+      "display": "duyek",
+      "beats": 8,
+      "unit": 8,
+      "pieceCount": 440,
+      "profile": [
+        10,
+        18.1,
+        13.3,
+        8.6,
+        12.2,
+        15.5,
+        9.9,
+        12.3
+      ],
+      "downbeatIsPeak": false
+    },
+    "evfer": {
+      "display": "evfer",
+      "beats": 9,
+      "unit": 8,
+      "pieceCount": 33,
+      "profile": [
+        11,
+        11.1,
+        11.2,
+        11.1,
+        11.1,
+        12,
+        10.2,
+        10.9,
+        11.3
+      ],
+      "downbeatIsPeak": true
+    },
+    "evsat": {
+      "display": "evsat",
+      "beats": 13,
+      "unit": 8,
+      "pieceCount": 5,
+      "profile": [
+        7.6,
+        6.9,
+        8.7,
+        7.6,
+        7.9,
+        8,
+        7.4,
+        7.1,
+        7.8,
+        7.6,
+        6.8,
+        8.6,
+        8
+      ],
+      "downbeatIsPeak": false
+    },
+    "fahte": {
+      "display": "fahte",
+      "beats": 4,
+      "unit": 4,
+      "pieceCount": 9,
+      "profile": [
+        26.6,
+        25.5,
+        24,
+        23.9
+      ],
+      "downbeatIsPeak": true
+    },
+    "hafif": {
+      "display": "hafif",
+      "beats": 4,
+      "unit": 4,
+      "pieceCount": 28,
+      "profile": [
+        26.5,
+        24.5,
+        25,
+        24
+      ],
+      "downbeatIsPeak": true
+    },
+    "muhammes": {
+      "display": "muhammes",
+      "beats": 4,
+      "unit": 4,
+      "pieceCount": 25,
+      "profile": [
+        26.7,
+        24.6,
+        24.1,
+        24.6
+      ],
+      "downbeatIsPeak": true
+    },
+    "musemmen": {
+      "display": "musemmen",
+      "beats": 8,
+      "unit": 8,
+      "pieceCount": 46,
+      "profile": [
+        12.7,
+        14.5,
+        9.2,
+        13.8,
+        14.5,
+        13.3,
+        15.1,
+        6.9
+      ],
+      "downbeatIsPeak": false
+    },
+    "musemmenii": {
+      "display": "musemmen_ii",
+      "beats": 8,
+      "unit": 8,
+      "pieceCount": 8,
+      "profile": [
+        12.5,
+        14.9,
+        9.9,
+        14.5,
+        11.3,
+        13.1,
+        9.7,
+        14.1
+      ],
+      "downbeatIsPeak": false
+    },
+    "nimsofyan": {
+      "display": "nimsofyan",
+      "beats": 2,
+      "unit": 4,
+      "pieceCount": 133,
+      "profile": [
+        46.3,
+        53.7
+      ],
+      "downbeatIsPeak": false
+    },
+    "oynak": {
+      "display": "oynak",
+      "beats": 9,
+      "unit": 8,
+      "pieceCount": 14,
+      "profile": [
+        11,
+        11.4,
+        11,
+        11.4,
+        11.2,
+        11,
+        11,
+        10.5,
+        11.5
+      ],
+      "downbeatIsPeak": true
+    },
+    "raksaksagi": {
+      "display": "raksaksagi",
+      "beats": 9,
+      "unit": 8,
+      "pieceCount": 18,
+      "profile": [
+        11.2,
+        11.1,
+        11,
+        11.1,
+        10.9,
+        11,
+        11.3,
+        10.9,
+        11.4
+      ],
+      "downbeatIsPeak": true
+    },
+    "sarkidevrirevani": {
+      "display": "sarkidevrirevani",
+      "beats": 13,
+      "unit": 4,
+      "pieceCount": 6,
+      "profile": [
+        8.1,
+        8.7,
+        7.7,
+        7.4,
+        8.2,
+        8.3,
+        7.2,
+        8.3,
+        7,
+        6.8,
+        6.9,
+        8,
+        7.2
+      ],
+      "downbeatIsPeak": true
+    },
+    "semai": {
+      "display": "semai",
+      "beats": 3,
+      "unit": 4,
+      "pieceCount": 138,
+      "profile": [
+        33.2,
+        33.6,
+        33.2
+      ],
+      "downbeatIsPeak": true
+    },
+    "senginsemai": {
+      "display": "senginsemai",
+      "beats": 6,
+      "unit": 4,
+      "pieceCount": 89,
+      "profile": [
+        18.5,
+        15.1,
+        18.7,
+        14.5,
+        17.8,
+        15.4
+      ],
+      "downbeatIsPeak": true
+    },
+    "serbest": {
+      "display": "serbest",
+      "beats": 4,
+      "unit": 4,
+      "pieceCount": 17,
+      "profile": [
+        18.8,
+        19.8,
+        22.4,
+        39
+      ],
+      "downbeatIsPeak": false
+    },
+    "sofyan": {
+      "display": "sofyan",
+      "beats": 4,
+      "unit": 4,
+      "pieceCount": 365,
+      "profile": [
+        24.8,
+        27,
+        23.6,
+        24.6
+      ],
+      "downbeatIsPeak": true
+    },
+    "turkaksagi": {
+      "display": "turkaksagi",
+      "beats": 5,
+      "unit": 8,
+      "pieceCount": 87,
+      "profile": [
+        20.4,
+        20,
+        19.6,
+        20.1,
+        19.9
+      ],
+      "downbeatIsPeak": true
+    },
+    "yuruksemai": {
+      "display": "yuruksemai",
+      "beats": 6,
+      "unit": 4,
+      "pieceCount": 92,
+      "profile": [
+        17.5,
+        15.8,
+        17.2,
+        16.2,
+        17.2,
+        16
+      ],
+      "downbeatIsPeak": true
+    },
+    "yuruksemaiii": {
+      "display": "yuruksemai_ii",
+      "beats": 6,
+      "unit": 8,
+      "pieceCount": 49,
+      "profile": [
+        17,
+        16.1,
+        17.4,
+        16,
+        17.3,
+        16.3
+      ],
+      "downbeatIsPeak": true
+    },
+    "zencir": {
+      "display": "zencir",
+      "beats": 4,
+      "unit": 4,
+      "pieceCount": 12,
+      "profile": [
+        28,
+        23.3,
+        25.1,
+        23.6
+      ],
+      "downbeatIsPeak": true
+    }
+  }
+}

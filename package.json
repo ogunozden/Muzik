@@ -64,6 +64,7 @@
     "test:coverage": "vitest run --coverage",
     "fetch:symbtr-v3": "node scripts/fetch-symbtr-v3.mjs",
     "derive:usul-meters": "node scripts/derive-usul-corpus-meters.mjs",
+    "derive:usul-accent-profile": "node scripts/derive-usul-accent-profile.mjs",
     "derive:makam-corpus": "node scripts/derive-makam-corpus.mjs"
   },
   "dependencies": {

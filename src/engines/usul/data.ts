@@ -284,6 +284,13 @@ const DEVRI_REVAN_VELVELE: Stroke[] = [
   DU(8), ME(8.5), DU(9, 1), ME(10, 1),
   [11, "tek", 1], [12, "ka", 1], [13, "tek", 1], [14, "ka", 1],
 ]; // Gonul s.104
+const TURKI_DARB_VELVELE: Stroke[] = [
+  // 6+4+4+4 (18/4): Tek te ke Tek Kâ Tek Kâ | Düm dü me Düm te ke | Düm te ke Tek Kâ | Düm dü me Düm Düm
+  [1, "tek", 1], [2, "te", 0.5], [2.5, "ke", 0.5], [3, "tek", 1], [4, "ka", 1], [5, "tek", 1], [6, "ka", 1],
+  [7, "dum", 1], DU(8), ME(8.5), [9, "dum", 1], [10, "te", 0.5], [10.5, "ke", 0.5],
+  [11, "dum", 1], [12, "te", 0.5], [12.5, "ke", 0.5], [13, "tek", 1], [14, "ka", 1],
+  [15, "dum", 1], DU(16), ME(16.5), [17, "dum", 1], [18, "dum", 1],
+]; // Gonul s.106
 
 export const USUL_DATA: Usul[] = [
   // --- Kucuk usuller ---
@@ -356,9 +363,11 @@ export const USUL_DATA: Usul[] = [
     [13, "ta", 1], [14, "hek", 1], [15, "te", 0.5], [15.5, "ke", 0.5], [16, "te", 0.5], [16.5, "ke", 0.5],
   ], NIM_HAFIF_VELVELE), // s.227 (darp) + Gonul s.107 (velvele)
   makeUsul("darbiturki", "Darb-ı Türkı", "Darb-i Turki", 18, "4", [
-    [1, "dum", 2], [3, "dum", 2], [5, "tek", 2], [7, "dum", 4],
-    [11, "tek", 4], [15, "tek", 1], [16, "ka", 1], [17, "tek", 1], [18, "ka", 1],
-  ]), // s.131 (1. sekil; kitap: ON SEKIZ zamanli — onceki 20/4 kaydi yanlisti)
+    // 6+4+4+4 (Gonul s.105): Teek Tek Kâ Tek Kâ | Düüm Düüm | Teek Tek Kâ | Düüm Düm Düm
+    [1, "tek", 2], [3, "tek", 1], [4, "ka", 1], [5, "tek", 1], [6, "ka", 1],
+    [7, "dum", 2], [9, "dum", 2], [11, "tek", 2], [13, "tek", 1], [14, "ka", 1],
+    [15, "dum", 2], [17, "dum", 1], [18, "dum", 1],
+  ], TURKI_DARB_VELVELE), // Gonul s.105 (darp 6+4+4+4, ON SEKIZ zamanli) + s.106 (velvele)
   makeUsul("fahte", "Fahte", "Fahte", 20, "4", FAHTE, FAHTE_VELVELE), // s.139 (darp) + Gonul s.105
   makeUsul("cember", "Çember", "Cember", 24, "4", CEMBER, CEMBER_VELVELE), // s.157
   makeUsul("devrikebir", "Devr-i Kebir", "Devr-i Kebir", 28, "4", DEVRI_KEBIR, DEVRI_KEBIR_VELVELE), // s.181

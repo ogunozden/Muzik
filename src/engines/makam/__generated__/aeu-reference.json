@@ -56,5 +56,24 @@
     "saba": {"tonic": "dugah", "dominant": "cargah"},
     "bestenigar": {"tonic": "irak", "dominant": "cargah"},
     "ferahnak": {"tonic": "irak", "dominant": "neva"}
+  },
+  "makamSeyir": {
+    "rast": "cikici", "rehavi": "cikici-inici", "suzidilara": "cikici",
+    "mahur": "inici", "zavil": "inici", "nikriz": "cikici", "segah": "cikici",
+    "mustear": "cikici", "huzzam": "cikici-inici", "hicazkar": "inici",
+    "kurdilihicazkar": "inici", "buselik": "cikici", "nihavent": "cikici-inici",
+    "neveser": "cikici", "seddiaraban": "inici", "acem": "cikici-inici",
+    "acemasiran": "inici", "ferahfeza": "inici", "ussak": "cikici",
+    "beyati": "cikici-inici", "beyatiaraban": "inici", "karcigar": "cikici-inici",
+    "neva": "cikici-inici", "tahir": "inici", "huseyni": "cikici-inici",
+    "muhayyer": "inici", "huseyniasiran": "cikici-inici", "dilkeshaveryan": "inici",
+    "kurdi": "cikici-inici", "gerdaniye": "inici", "gulizar": "inici",
+    "isfahan": "cikici-inici", "nisaburek": "cikici-inici", "yegah": "inici",
+    "hicaz": "cikici-inici", "hicazhumayun": "cikici-inici", "hicazuzzal": "cikici-inici",
+    "hicazzirgule": "cikici-inici", "uzzal": "cikici-inici", "sultaniyegah": "inici",
+    "sehnaz": "inici", "hisar": "cikici-inici", "hisarbuselik": "cikici-inici",
+    "suzidil": "inici", "evcara": "inici", "cargah": "cikici", "saba": "cikici",
+    "bestenigar": "cikici-inici", "sevkefza": "inici", "ferahnak": "inici",
+    "evic": "inici", "evc": "inici"
   }
 }

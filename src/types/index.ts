@@ -48,6 +48,12 @@ export interface MakamKomaScale {
   kararPerde?: string;
   /** Guclu perdesinin AEU adi — AEU referansindan. Yoksa undefined. */
   gucluPerde?: string;
+  /**
+   * Seyir (ezgi yonu): "cikici" | "inici" | "cikici-inici". OTORITER kaynaktan
+   * (Aydemir 2010) — korpustan guvenilir turetilemez (bkz. ADR 0003). Yoksa
+   * undefined.
+   */
+  seyir?: string;
 }
 
 export interface Makam {

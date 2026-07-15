@@ -66,4 +66,21 @@ describe("makam koma dizisi <-> AEU referans capraz-dogrulama (A2)", () => {
       expect(perdeKoma[td.dominant], `${name}: dominant ${td.dominant}`).toBeDefined();
     }
   });
+
+  it("seyir (otoriter kaynak) yalniz gecerli 3 sinif; korpus dizisine baglanir", () => {
+    const valid = new Set(["cikici", "inici", "cikici-inici"]);
+    const seyir = (aeuReference as {makamSeyir: Record<string, string>}).makamSeyir;
+    for (const [name, value] of Object.entries(seyir)) {
+      expect(valid.has(value), `${name}: seyir '${value}' gecerli`).toBe(true);
+    }
+    // korpustaki koma dizilerine bagli seyir sayisi
+    let attached = 0;
+    for (const scale of Object.values(komaScales) as Array<{seyir?: string}>) {
+      if (scale.seyir) {
+        expect(valid.has(scale.seyir)).toBe(true);
+        attached += 1;
+      }
+    }
+    expect(attached, "seyir bagli makam").toBeGreaterThanOrEqual(20);
+  });
 });

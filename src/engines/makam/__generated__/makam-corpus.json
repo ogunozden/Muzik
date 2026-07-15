@@ -1351,6 +1351,7 @@
         "koma": 19,
         "cents": 430
       },
+      "seyir": "cikici-inici",
       "kararPerde": "dugah",
       "gucluPerde": "neva"
     },
@@ -1423,6 +1424,7 @@
         "koma": 18,
         "cents": 408
       },
+      "seyir": "inici",
       "kararPerde": "acemasiran",
       "gucluPerde": "acem"
     },
@@ -1827,6 +1829,7 @@
         "koma": 32,
         "cents": 725
       },
+      "seyir": "cikici-inici",
       "kararPerde": "irak",
       "gucluPerde": "cargah"
     },
@@ -1899,6 +1902,7 @@
         "koma": 22,
         "cents": 498
       },
+      "seyir": "cikici-inici",
       "kararPerde": "dugah",
       "gucluPerde": "neva"
     },
@@ -1972,7 +1976,8 @@
       "guclu": {
         "koma": 32,
         "cents": 725
-      }
+      },
+      "seyir": "inici"
     },
     "buselik": {
       "display": "buselik",
@@ -2049,6 +2054,7 @@
         "koma": 31,
         "cents": 702
       },
+      "seyir": "cikici",
       "kararPerde": "dugah",
       "gucluPerde": "huseyni"
     },
@@ -2133,6 +2139,7 @@
         "koma": 18,
         "cents": 408
       },
+      "seyir": "cikici",
       "kararPerde": "cargah",
       "gucluPerde": "gerdaniye"
     },
@@ -2360,6 +2367,7 @@
         "koma": 27,
         "cents": 611
       },
+      "seyir": "inici",
       "kararPerde": "irak",
       "gucluPerde": "evic"
     },
@@ -2428,7 +2436,8 @@
       "guclu": {
         "koma": 22,
         "cents": 498
-      }
+      },
+      "seyir": "inici"
     },
     "ferahfeza": {
       "display": "ferahfeza",
@@ -2499,6 +2508,7 @@
         "koma": 31,
         "cents": 702
       },
+      "seyir": "inici",
       "kararPerde": "yegah",
       "gucluPerde": "acem"
     },
@@ -2571,6 +2581,7 @@
         "koma": 23,
         "cents": 521
       },
+      "seyir": "inici",
       "kararPerde": "irak",
       "gucluPerde": "neva"
     },
@@ -2710,6 +2721,7 @@
         "koma": 22,
         "cents": 498
       },
+      "seyir": "inici",
       "kararPerde": "dugah",
       "gucluPerde": "gerdaniye"
     },
@@ -2794,6 +2806,7 @@
         "koma": 32,
         "cents": 725
       },
+      "seyir": "inici",
       "kararPerde": "dugah",
       "gucluPerde": "huseyni"
     },
@@ -2872,6 +2885,7 @@
         "koma": 22,
         "cents": 498
       },
+      "seyir": "cikici-inici",
       "kararPerde": "dugah",
       "gucluPerde": "neva"
     },
@@ -3021,6 +3035,7 @@
         "koma": 22,
         "cents": 498
       },
+      "seyir": "cikici-inici",
       "kararPerde": "dugah",
       "gucluPerde": "neva"
     },
@@ -3105,6 +3120,7 @@
         "koma": 32,
         "cents": 725
       },
+      "seyir": "inici",
       "kararPerde": "rast",
       "gucluPerde": "gerdaniye"
     },
@@ -3177,6 +3193,7 @@
         "koma": 31,
         "cents": 702
       },
+      "seyir": "cikici-inici",
       "kararPerde": "dugah",
       "gucluPerde": "huseyni"
     },
@@ -3255,6 +3272,7 @@
         "koma": 22,
         "cents": 498
       },
+      "seyir": "cikici-inici",
       "kararPerde": "dugah",
       "gucluPerde": "huseyni"
     },
@@ -3339,6 +3357,7 @@
         "koma": 19,
         "cents": 430
       },
+      "seyir": "cikici-inici",
       "kararPerde": "dugah",
       "gucluPerde": "huseyni"
     },
@@ -3417,6 +3436,7 @@
         "koma": 31,
         "cents": 702
       },
+      "seyir": "cikici-inici",
       "kararPerde": "dugah",
       "gucluPerde": "huseyni"
     },
@@ -3495,6 +3515,7 @@
         "koma": 22,
         "cents": 498
       },
+      "seyir": "cikici-inici",
       "kararPerde": "dugah",
       "gucluPerde": "huseyni"
     },
@@ -3573,6 +3594,7 @@
         "koma": 19,
         "cents": 430
       },
+      "seyir": "cikici-inici",
       "kararPerde": "huseyni asiran",
       "gucluPerde": "huseyni"
     },
@@ -3645,6 +3667,7 @@
         "koma": 20,
         "cents": 453
       },
+      "seyir": "cikici-inici",
       "kararPerde": "segah",
       "gucluPerde": "neva"
     },
@@ -3779,6 +3802,7 @@
         "koma": 19,
         "cents": 430
       },
+      "seyir": "cikici-inici",
       "kararPerde": "dugah",
       "gucluPerde": "neva"
     },
@@ -3851,6 +3875,7 @@
         "koma": 22,
         "cents": 498
       },
+      "seyir": "cikici-inici",
       "kararPerde": "dugah",
       "gucluPerde": "neva"
     },
@@ -3923,6 +3948,7 @@
         "koma": 22,
         "cents": 498
       },
+      "seyir": "cikici-inici",
       "kararPerde": "dugah",
       "gucluPerde": "neva"
     },
@@ -3995,6 +4021,7 @@
         "koma": 31,
         "cents": 702
       },
+      "seyir": "inici",
       "kararPerde": "rast",
       "gucluPerde": "gerdaniye"
     },
@@ -4067,6 +4094,7 @@
         "koma": 32,
         "cents": 725
       },
+      "seyir": "inici",
       "kararPerde": "rast",
       "gucluPerde": "gerdaniye"
     },
@@ -4139,6 +4167,7 @@
         "koma": 22,
         "cents": 498
       },
+      "seyir": "inici",
       "kararPerde": "dugah",
       "gucluPerde": "muhayyer"
     },
@@ -4352,6 +4381,7 @@
         "koma": 22,
         "cents": 498
       },
+      "seyir": "cikici",
       "kararPerde": "segah",
       "gucluPerde": "neva"
     },
@@ -4436,6 +4466,7 @@
         "koma": 19,
         "cents": 430
       },
+      "seyir": "cikici-inici",
       "kararPerde": "dugah",
       "gucluPerde": "neva"
     },
@@ -4499,7 +4530,8 @@
       "guclu": {
         "koma": 32,
         "cents": 725
-      }
+      },
+      "seyir": "cikici"
     },
     "nihavent": {
       "display": "nihavent",
@@ -4576,6 +4608,7 @@
         "koma": 31,
         "cents": 702
       },
+      "seyir": "cikici-inici",
       "kararPerde": "rast",
       "gucluPerde": "neva"
     },
@@ -4660,6 +4693,7 @@
         "koma": 31,
         "cents": 702
       },
+      "seyir": "cikici",
       "kararPerde": "rast",
       "gucluPerde": "neva"
     },
@@ -4785,7 +4819,8 @@
       "guclu": {
         "koma": 31,
         "cents": 702
-      }
+      },
+      "seyir": "cikici-inici"
     },
     "nuhuft": {
       "display": "nuhuft",
@@ -5072,6 +5107,7 @@
         "koma": 31,
         "cents": 702
       },
+      "seyir": "cikici",
       "kararPerde": "rast",
       "gucluPerde": "neva"
     },
@@ -5156,6 +5192,7 @@
         "koma": 32,
         "cents": 725
       },
+      "seyir": "cikici-inici",
       "kararPerde": "rast",
       "gucluPerde": "neva"
     },
@@ -5357,6 +5394,7 @@
         "koma": 19,
         "cents": 430
       },
+      "seyir": "cikici",
       "kararPerde": "dugah",
       "gucluPerde": "cargah"
     },
@@ -5642,6 +5680,7 @@
         "koma": 22,
         "cents": 498
       },
+      "seyir": "cikici",
       "kararPerde": "segah",
       "gucluPerde": "neva"
     },
@@ -5804,6 +5843,7 @@
         "koma": 19,
         "cents": 430
       },
+      "seyir": "inici",
       "kararPerde": "dugah",
       "gucluPerde": "muhayyer"
     },
@@ -5944,7 +5984,8 @@
       "guclu": {
         "koma": 23,
         "cents": 521
-      }
+      },
+      "seyir": "inici"
     },
     "sultaniyegah": {
       "display": "sultaniyegah",
@@ -6021,6 +6062,7 @@
         "koma": 31,
         "cents": 702
       },
+      "seyir": "inici",
       "kararPerde": "yegah",
       "gucluPerde": "neva"
     },
@@ -6094,7 +6136,8 @@
       "guclu": {
         "koma": 19,
         "cents": 430
-      }
+      },
+      "seyir": "inici"
     },
     "suzidilara": {
       "display": "suzidilara",
@@ -6171,7 +6214,8 @@
       "guclu": {
         "koma": 32,
         "cents": 725
-      }
+      },
+      "seyir": "cikici"
     },
     "suzinak": {
       "display": "suzinak",
@@ -6360,6 +6404,7 @@
         "koma": 22,
         "cents": 498
       },
+      "seyir": "inici",
       "kararPerde": "dugah",
       "gucluPerde": "muhayyer"
     },
@@ -6514,6 +6559,7 @@
         "koma": 22,
         "cents": 498
       },
+      "seyir": "cikici",
       "kararPerde": "dugah",
       "gucluPerde": "neva"
     },
@@ -6597,6 +6643,7 @@
         "koma": 19,
         "cents": 430
       },
+      "seyir": "inici",
       "kararPerde": "yegah",
       "gucluPerde": "neva"
     },
@@ -6732,7 +6779,8 @@
       "guclu": {
         "koma": 31,
         "cents": 702
-      }
+      },
+      "seyir": "inici"
     }
   }
 }

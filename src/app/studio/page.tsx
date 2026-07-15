@@ -42,6 +42,13 @@ const VexFlowViewer = dynamic(
   }
 );
 
+// Seyir (ezgi yonu) etiketleri — otoriter kaynak degeri -> Turkce gosterim.
+const SEYIR_LABELS: Record<string, string> = {
+  cikici: "Çıkıcı",
+  inici: "İnici",
+  "cikici-inici": "Çıkıcı-inici",
+};
+
 // Instrument surface loading skeleton
 function InstrumentSurfaceSkeleton() {
   return (
@@ -376,6 +383,11 @@ function NotaEditorPage() {
                           {selectedMakamKoma.gucluPerde && (
                             <span>
                               Güçlü: <span className="font-semibold text-[var(--color-text-primary)] capitalize">{selectedMakamKoma.gucluPerde}</span>
+                            </span>
+                          )}
+                          {selectedMakamKoma.seyir && (
+                            <span>
+                              Seyir: <span className="font-semibold text-[var(--color-text-primary)]">{SEYIR_LABELS[selectedMakamKoma.seyir] ?? selectedMakamKoma.seyir}</span>
                             </span>
                           )}
                           <span>{selectedMakamKoma.degrees.length} perde · 53-EDO</span>

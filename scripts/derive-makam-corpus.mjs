@@ -250,6 +250,13 @@ function attachPerdeNames(komaScales) {
   for (const [name, td] of Object.entries(aeu.makamTonicDominant ?? {})) {
     tonicByKey.set(normalizeMakamName(name), td);
   }
+  // Seyir (ezgi yonu) OTORITER kaynaktan gelir (Aydemir 2010) — korpustan
+  // guvenilir turetilemez (nota istatistigi cikici/inici'yi ayirmaz; kanit:
+  // 2 prob 5/13). Bkz. docs/adr/0003.
+  const seyirByKey = new Map();
+  for (const [name, seyir] of Object.entries(aeu.makamSeyir ?? {})) {
+    seyirByKey.set(normalizeMakamName(name), seyir);
+  }
   const nearestPerde = (absKoma) => {
     let best = null;
     let bestDist = 2.5; // ±2 koma tolerans (notr perde belirsizligi)
@@ -263,6 +270,8 @@ function attachPerdeNames(komaScales) {
     return best;
   };
   for (const [key, scale] of Object.entries(komaScales)) {
+    const seyir = seyirByKey.get(key);
+    if (seyir) scale.seyir = seyir; // otoriter (Aydemir); perdeden bagimsiz
     const td = tonicByKey.get(key);
     if (!td) continue;
     const tonicKoma = perdeKoma[td.tonic];

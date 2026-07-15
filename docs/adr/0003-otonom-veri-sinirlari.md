@@ -23,6 +23,12 @@ türetilemeyene bulunan MUADİL yapıyı kayda geçirir.
   `komaScale.kararPC`'de. Elle değeri notasyon konvansiyonudur, hardcode değil.
 - **`characteristic`/`description`:** editoryal Türkçe metin; müzik verisi
   değil, meşru elle-yazım.
+- **`perde` adları + `seyir` (ezgi yönü):** OTORİTER referanstan gelir (tomato
+  AEU perde tablosu + Aydemir 2010 karar/güçlü/seyir). Seyir korpustan
+  GÜVENİLİR türetilemez (nota istatistiği çıkıcı/inici'yi ayırmaz — kanıt: 2
+  prob, 5/13; korpus rast'ı yanlışlıkla inici sınıflar). Bu yüzden türetilmez,
+  makine-okunur otoriter kaynaktan kaynaklanır (perde adları koma dizisine
+  karşı çapraz-doğrulanır: güçlü aralığı 36/36 korpus derecesi).
 
 ## Karar 2 — Usul MERTEBE ve TEMPO korpustan türetilir; VURUŞ DESENLERİ türetilemez
 

@@ -134,6 +134,18 @@ const DEVRI_HINDI_VELVELE: Stroke[] = [
 const DEVRI_TURAN_VELVELE: Stroke[] = [
   DU(1), ME(1.5), DU(2), ME(2.5), [3, "dum", 2], [5, "tek", 2], [7, "tek", 1],
 ]; // s.37
+// Aksak Semâî velvelesi: DÜM TE KE TEK KÂ TE KE DÜ ME DÜM TEEK TEK. Kaynak:
+// Gönül "Türk Mûsikîsi Usûlleri" s.102 (temiz tipografik; Kudüm kitabi s.67
+// capraz-referans). Curcuna ayni desendedir (ayni darp). F11.7.
+const AKSAK_SEMAI_VELVELE: Stroke[] = [
+  [1, "dum", 1], [2, "te", 0.5], [2.5, "ke", 0.5], [3, "tek", 0.5], [3.5, "ka", 0.5],
+  [4, "te", 0.5], [4.5, "ke", 0.5], DU(5, 0.5), ME(5.5, 0.5), [6, "dum", 2], [8, "tek", 2], [10, "tek", 1],
+]; // Gonul s.102
+// Oynak velvelesi (3+6): DÜM TEK TEK DÜM TE KE TEK KÂ TEK KÂ. Gonul s.102.
+const OYNAK_VELVELE: Stroke[] = [
+  [1, "dum", 1], [2, "tek", 1], [3, "tek", 1], [4, "dum", 1], [5, "te", 0.5], [5.5, "ke", 0.5],
+  [6, "tek", 1], [7, "ka", 1], [8, "tek", 1], [9, "ka", 1],
+]; // Gonul s.102
 const FAHTE: Stroke[] = [
   [1, "dum", 2], [3, "dum", 1], [4, "dum", 1], [5, "tek", 2], [7, "tek", 2],
   [9, "tek", 2], [11, "dum", 2], [13, "ta", 2], [15, "hek", 2],
@@ -189,14 +201,14 @@ export const USUL_DATA: Usul[] = [
   ], EVFER_VELVELE), // s.53: aksaktan farki son iki tek'in deger degisimi
   makeUsul("oynak", "Oynak", "Oynak", 9, "8", [
     [1, "dum", 1], [2, "tek", 1], [3, "tek", 1], [4, "dum", 2], [6, "tek", 2], [8, "tek", 2],
-  ]), // s.63
-  makeUsul("aksaksemai", "Aksaksemâî", "Aksak Semai", 10, "8", AKSAK_SEMAI), // s.67
+  ], OYNAK_VELVELE), // s.63 (darp) + Gonul s.102 (velvele)
+  makeUsul("aksaksemai", "Aksaksemâî", "Aksak Semai", 10, "8", AKSAK_SEMAI, AKSAK_SEMAI_VELVELE), // s.67
   // Curcuna = 10/8 (gercek notasyon). Kitap (s.66) onu Aksak Semai'nin 10/16
   // mertebesi sayar ama SymbTr v3 korpusundaki curcuna eserlerinin TAMAMI 10/8
   // notalidir; pedagoji de 10/8 der (darp: 3+2+2+3 = Düm2 Te1 Kâ2 Düm2 Tek2
   // Tek1, Aksak Semai ile ayni desen — kaynaklar ikisini esitler; curcuna
   // livelier/hizli karakterdir). 10/16 curcuna'yi 2x hizli caliyordu.
-  makeUsul("curcuna", "Curcuna", "Curcuna", 10, "8", AKSAK_SEMAI), // s.66 + korpus 10/8
+  makeUsul("curcuna", "Curcuna", "Curcuna", 10, "8", AKSAK_SEMAI, AKSAK_SEMAI_VELVELE), // s.66-67 + korpus 10/8
   makeUsul("lenkfahte", "Lenk Fahte", "Lenk Fahte", 10, "4", [
     [1, "dum", 2], [3, "tek", 3], [6, "dum", 1], [7, "tek", 2], [9, "te", 1], [10, "ke", 1],
   ]), // s.76 (daima 2. mertebesi 10/4 kullanilir)

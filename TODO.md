@@ -462,11 +462,27 @@ teknoloji ne". Arastirma sonucu (SymbTr Koma53 sutunu + tomato/makam_information
       CANLI DOGRULAMA: hicaz secilip calindiginda sample'lar otantik koma
       frekanslarina kaydiriliyor (koma5 313.6Hz -> D#'ten ×1.008 = Nim Hicaz
       113c; ilk 6 derece beklenen oranlarla birebir), 0 konsol hatasi.
-- [ ] F13.3 Notasyon: VexFlow koma arizalari (+ =1 koma, bs =5 koma, bss =8
-      koma; Bakiye 4 koma ≈ ceyrek-ton). SymbTr NotaAE/Nota53 adlari zaten koma
-      arizasini tasir; skor motorunda koma dizisi -> arıza glyph eslemesi.
-- [ ] F13.4 Perde adlari (Rast/Dugah/Segah/...) + karar/guclu tomato
-      makam_information'a karsi capraz-dogrulama gate'i (opsiyonel saglamlik).
+- [x] F13.3/A1 Notasyon: otantik AEU koma arizasi glyph render. VexFlow Glyphs
+      enum'unda 8 AEU arizasinin HEPSI (codepoint U+E44x) mevcut; kod-alias'i
+      olmayanlar Accidental.setText ile kesin codepoint'ten cizilir. score-
+      format komaAccidentalGlyphName; ScoreSurface standart # / b yerine koma
+      glyph'i. 5 test (eslesme + gercek VexFlow SVG render jsdom'da).
+- [x] F13.4/A2+A4 Perde adlari + tomato capraz-dogrulama: aeu-reference.json
+      (tomato AEU perde->koma + Aydemir karar/guclu/seyir). A2: guclu araligi
+      36/36 korpus derecesi (offset-bagimsiz). A4: her dereceye perde adi
+      (40 makam); studio panelinde perde dizisi + karar/guclu. 3+3 test.
+- [x] A3 Mikrotonal klavye: snapMidiToMakamFrequency tuslari makam koma perde-
+      izgarasina snap eder (playNoteAtFrequency). CANLI: hicaz D#4 -> 0.984
+      playbackRate (mikrotonal). 5 test.
+- [x] A5 Seyir (ezgi yonu): OTORITER kaynaktan (Aydemir 2010; korpustan
+      turetilemez — 2 prob 5/13). aeu-reference makamSeyir (54 makam); studio
+      panelinde gosterilir. Bkz. ADR 0003.
+- [x] B3 Katalog genisletme: score-engine 6->12 eser, CESITLI makamlar (rast/
+      ussak/huseyni/nihavent/segah/kurdi); her eser catalog.generated'da
+      cozumlenir + yerel-once import. 12/12 gercek event. A1 koma notasyonunu
+      farkli makamlarda sergiler.
+- [x] E1 Bakim: 5 dependabot bump uygulandi (@types/node 26 major engines ile
+      hizali, postcss/unocss/genai/vite-plugin-react); 0 vulnerability.
 
 ### Dis Girdi Bekleyenler (ADR 0002 Karar 3 sozlesmesi)
 

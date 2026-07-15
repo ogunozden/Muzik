@@ -24,9 +24,9 @@ function formatCatalogLabel(value: string): string {
     .join(" ");
 }
 
-function createCalibrationPieceDefinition(entry: SymbTrCatalogEntry): PieceDefinition {
+function createSymbtrPieceDefinition(entry: SymbTrCatalogEntry, idPrefix: string): PieceDefinition {
   return {
-    id: `calibration-${entry.id}`,
+    id: `${idPrefix}-${entry.id}`,
     title: formatCatalogLabel(entry.title),
     displayTitle: formatCatalogLabel(entry.title),
     composer: formatCatalogLabel(entry.composer),
@@ -54,11 +54,30 @@ function createCalibrationPieceDefinition(entry: SymbTrCatalogEntry): PieceDefin
 export const SCORE_ENGINE_CALIBRATION_PIECES = SCORE_ENGINE_CALIBRATION_CATALOG_IDS
   .map((catalogId) => getSymbTrEntryById(catalogId))
   .filter((entry): entry is SymbTrCatalogEntry => Boolean(entry))
-  .map(createCalibrationPieceDefinition);
+  .map((entry) => createSymbtrPieceDefinition(entry, "calibration"));
+
+// Katalog genisletme (B3): CESITLI makamlardan gercek SymbTr eserleri. Her eser
+// symbtrRawUrl'den kaynak veriyi ceker (runtime import -> validator -> quality
+// gate). Farkli makamlar A1 koma notasyonunu de sergiler (rast/ussak/segah...
+// otantik koma arizalari). ID'ler catalog.generated.json'dan (3000 eser).
+export const SCORE_ENGINE_CATALOG_CATALOG_IDS = [
+  "rast--agirsemai--aksaksemai--cekmis_yuzune--tascizade_recep_celebi",
+  "ussak--agirsemai--agir_aksaksemai--padisah-i_isvesin--tahir_aga",
+  "huseyni--agirsemai--aksaksemai--acildi_gonce-i--komurcuzade",
+  "nihavent--agirsemai--aksaksemai--gordum_yine--ali_rifat_cagatay",
+  "segah--aranagme--yuruksemai_ii--1--",
+  "kurdi--agirsemai--aksaksemai--guzelsin_bibedelsin--haci_faik_bey",
+] as const;
+
+export const SCORE_ENGINE_CATALOG_PIECES = SCORE_ENGINE_CATALOG_CATALOG_IDS
+  .map((catalogId) => getSymbTrEntryById(catalogId))
+  .filter((entry): entry is SymbTrCatalogEntry => Boolean(entry))
+  .map((entry) => createSymbtrPieceDefinition(entry, "catalog"));
 
 export const SCORE_ENGINE_DOCUMENT_PIECES = [
   HICAZKAR_PESREV,
   ...SCORE_ENGINE_CALIBRATION_PIECES,
+  ...SCORE_ENGINE_CATALOG_PIECES,
 ] as const satisfies readonly PieceDefinition[];
 
 export function getScoreEngineDocumentPiece(documentId: string): PieceDefinition | undefined {

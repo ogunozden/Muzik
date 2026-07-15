@@ -1,6 +1,6 @@
 import {describe, expect, it} from "vitest";
 import {HICAZKAR_PESREV} from "@/data/pieces/hicazkarPesrev";
-import {SCORE_ENGINE_CALIBRATION_PIECES} from "../calibration";
+import {SCORE_ENGINE_CALIBRATION_PIECES, SCORE_ENGINE_CATALOG_PIECES, SCORE_ENGINE_DOCUMENT_PIECES} from "../calibration";
 import {inferMeterFromSymbtrEvents, parseSymbtrToCanonical} from "../importer";
 import {parseSymbtrScore} from "@/data/symbtr/parser";
 import {validateCanonicalScore} from "../validator";
@@ -91,6 +91,23 @@ describe("ScoreEngine SymbTr importer and validator", () => {
       true,
     );
     expect(SCORE_ENGINE_CALIBRATION_PIECES.every((piece) => piece.meter === "auto")).toBe(true);
+  });
+
+  it("katalogu CESITLI makamlardan gercek eserlerle genisletir (B3), uydurmadan", () => {
+    // Her katalog eseri catalog.generated.json'da COZUMLENIR (uydurulmaz) ve
+    // kaynak SymbTr txt'sini ceker. Farkli makamlar A1 koma notasyonunu sergiler.
+    expect(SCORE_ENGINE_CATALOG_PIECES.length).toBeGreaterThanOrEqual(5);
+    expect(
+      SCORE_ENGINE_CATALOG_PIECES.every((piece) => piece.symbtrRawUrl.endsWith(`${piece.symbtrCatalogId}.txt`)),
+    ).toBe(true);
+    // makam cesitliligi (tek makam degil)
+    const makams = new Set(SCORE_ENGINE_CATALOG_PIECES.map((piece) => piece.makam.toLocaleLowerCase("tr")));
+    expect(makams.size).toBeGreaterThanOrEqual(5);
+    // hepsi belge katalogunda; toplam eser sayisi buyudu (1 + 5 + N)
+    expect(SCORE_ENGINE_DOCUMENT_PIECES.length).toBeGreaterThanOrEqual(11);
+    for (const piece of SCORE_ENGINE_CATALOG_PIECES) {
+      expect(SCORE_ENGINE_DOCUMENT_PIECES).toContain(piece);
+    }
   });
 
   it("infers a renderable meter from SymbTr measure spans for auto-meter catalog imports", () => {

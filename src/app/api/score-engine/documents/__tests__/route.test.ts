@@ -25,7 +25,9 @@ describe("/api/score-engine/documents route", () => {
     };
 
     expect(response.status).toBe(200);
-    expect(payload.documents).toHaveLength(6);
+    // 1 belge (Hicazkar) + 5 kalibrasyon + 6 katalog (B3 genisletme, cesitli
+    // makamlar). Her eser kaynakli SymbTr'den gelir; medya kaynagi kabul edilmez.
+    expect(payload.documents).toHaveLength(12);
     expect(payload.documents[0]).toMatchObject({
       id: "score:hicazkar-pesrev-osman-bey",
       eventCount: 2,

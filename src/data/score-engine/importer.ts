@@ -389,6 +389,23 @@ export async function importPieceCanonicalDocument(
   piece: PieceDefinition,
   fetcher: typeof fetch = fetch,
 ): Promise<SymbtrCanonicalImportResult> {
+  // YEREL ONCE (B3): sunucu tarafinda korpus dosyalari mevcuttur; GitHub raw'a
+  // gitmeden yereldeki txt'yi kullan (agdan bagimsiz, rate-limit yok, offline
+  // calisir). Tarayicida readFirstExistingLocalSymbtrFile null doner -> URL'e
+  // duser. Yerel de URL de yoksa hata (uydurma yapilmaz).
+  const local = piece.symbtrCatalogId
+    ? readFirstExistingLocalSymbtrFile(piece.symbtrCatalogId, "txt", "txt")
+    : null;
+  if (local) {
+    return parseSymbtrToCanonical({
+      raw: local.raw,
+      piece,
+      scoreId: `score:${piece.id}`,
+      sourceReference: local.path,
+      sourceKind: "remote",
+    });
+  }
+
   if (!piece.symbtrRawUrl) {
     throw new Error(`Piece ${piece.id} için SymbTr raw URL yok.`);
   }

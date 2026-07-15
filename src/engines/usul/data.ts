@@ -168,6 +168,22 @@ const LENK_FAHTE_VELVELE: Stroke[] = [
   [1, "dum", 1], [2, "dum", 1], [3, "te", 0.5], [3.5, "ke", 0.5], [4, "tek", 1], [5, "ka", 1],
   DU(6), ME(6.5), [7, "tek", 1], [8, "ka", 1], [9, "tek", 1], [10, "ka", 1],
 ]; // Gonul s.102
+// Nim Hafif velvelesi (4+4+4+4): darp-capali 4 grup.
+// DÜM TE KE TEK KÂ | DÜM TE KE TEK KÂ | DÜ ME DÜ ME TE KE TE KE | TEK KÂ DÜM TE KE TEK KÂ
+const NIM_HAFIF_VELVELE: Stroke[] = [
+  [1, "dum", 1], [2, "te", 0.5], [2.5, "ke", 0.5], [3, "tek", 1], [4, "ka", 1],
+  [5, "dum", 1], [6, "te", 0.5], [6.5, "ke", 0.5], [7, "tek", 1], [8, "ka", 1],
+  DU(9), ME(9.5), DU(10), ME(10.5), [11, "te", 0.5], [11.5, "ke", 0.5], [12, "te", 0.5], [12.5, "ke", 0.5],
+  [13, "tek", 0.5], [13.5, "ka", 0.5], [14, "dum", 1], [15, "te", 0.5], [15.5, "ke", 0.5], [16, "tek", 0.5], [16.5, "ka", 0.5],
+]; // Gonul s.107
+// Nim Berefşan velvelesi: DÜM TEK KÂ | DÜM TE KE TEK KÂ TE KE | DÜM TE KE |
+// DÜ ME DÜ ME | TE KE TE KE TEK KÂ. Darp DÜM'lerine hizali (Gonul s.107).
+const NIM_BERAFSAN_VELVELE: Stroke[] = [
+  [1, "dum", 1], [2, "tek", 1], [3, "ka", 1],
+  [4, "dum", 1], [5, "te", 0.5], [5.5, "ke", 0.5], [6, "tek", 1], [7, "ka", 1], [8, "te", 0.5], [8.5, "ke", 0.5],
+  [9, "dum", 1], [10, "te", 0.5], [10.5, "ke", 0.5], DU(11), ME(11.5), DU(12), ME(12.5),
+  [13, "te", 0.5], [13.5, "ke", 0.5], [14, "te", 0.5], [14.5, "ke", 0.5], [15, "tek", 1], [16, "ka", 1],
+]; // Gonul s.107
 const FAHTE: Stroke[] = [
   [1, "dum", 2], [3, "dum", 1], [4, "dum", 1], [5, "tek", 2], [7, "tek", 2],
   [9, "tek", 2], [11, "dum", 2], [13, "ta", 2], [15, "hek", 2],
@@ -254,12 +270,12 @@ export const USUL_DATA: Usul[] = [
     [1, "dum", 2], [3, "tek", 1], [4, "dum", 2], [6, "tek", 1], [7, "dum", 2],
     [9, "dum", 1], [10, "tek", 1], [11, "dum", 1], [12, "dum", 1], [13, "tek", 2],
     [15, "tek", 1], [16, "ka", 1],
-  ]), // s.121 (2. sekil — klasik eserlerde kullanilan)
+  ], NIM_BERAFSAN_VELVELE), // s.121 (darp) + Gonul s.107 (velvele)
   makeUsul("nimhafif", "Nim Hafif", "Nim Hafif", 16, "4", [
     [1, "dum", 1], [2, "tek", 1], [3, "tek", 2], [5, "dum", 1], [6, "tek", 1], [7, "tek", 2],
     [9, "dum", 1], [10, "tek", 1], [11, "dum", 1], [12, "dum", 1],
     [13, "ta", 1], [14, "hek", 1], [15, "te", 0.5], [15.5, "ke", 0.5], [16, "te", 0.5], [16.5, "ke", 0.5],
-  ]), // s.227: Darb-i Fetih'in son on alti zamani Nim Hafif dizilisidir
+  ], NIM_HAFIF_VELVELE), // s.227 (darp) + Gonul s.107 (velvele)
   makeUsul("darbiturki", "Darb-ı Türkı", "Darb-i Turki", 18, "4", [
     [1, "dum", 2], [3, "dum", 2], [5, "tek", 2], [7, "dum", 4],
     [11, "tek", 4], [15, "tek", 1], [16, "ka", 1], [17, "tek", 1], [18, "ka", 1],

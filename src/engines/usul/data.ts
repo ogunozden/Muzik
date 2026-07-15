@@ -257,6 +257,26 @@ const BEREFSAN_VELVELE: Stroke[] = [
   [23, "hek", 2, "Heek"], [25, "hek", 1, "Hek"], [26, "te", 0.5], [26.5, "ke", 0.5],
   [27, "tek", 1], [28, "ka", 1], [29, "tek", 1], [30, "ka", 1], [31, "tek", 1], [32, "ka", 1],
 ]; // Gonul s.110
+const MUHAMMES: Stroke[] = [
+  // 8+8+8+8 (Kâr, Beste ve Pesrevlerde)
+  [1, "dum", 2], [3, "tek", 1], [4, "ka", 1], [5, "dum", 2], [7, "tek", 2],
+  [9, "dum", 2], [11, "dum", 2], [13, "tek", 2], [15, "tek", 1], [16, "ka", 1],
+  [17, "dum", 2], [19, "tek", 2], [21, "tek", 1], [22, "ka", 1], [23, "dum", 2],
+  [25, "ta", 2], [27, "hek", 2], [29, "tek", 1], [30, "ka", 1], [31, "tek", 1], [32, "ka", 1],
+]; // Gonul s.110
+const MUHAMMES_VELVELE: Stroke[] = [
+  // 1. satir (16): Düm Düm Tek | te ke | tek kâ tek kâ | Dü Me | dü me dü me | tek kâ tek kâ
+  [1, "dum", 1, "Düm"], [2, "dum", 1, "Düm"], [3, "tek", 1],
+  [4, "te", 0.5], [4.5, "ke", 0.5], [5, "tek", 1], [6, "ka", 1], [7, "tek", 1], [8, "ka", 1],
+  DU(9, 1), ME(10, 1), DU(11), ME(11.5), DU(12), ME(12.5),
+  [13, "tek", 1], [14, "ka", 1], [15, "tek", 1], [16, "ka", 1],
+  // 2. satir (16): Heek Heek Hek | te ke | tek kâ | dü me dü me | te ke te ke | tek kâ tek kâ
+  [17, "hek", 2, "Heek"], [19, "hek", 2, "Heek"], [21, "hek", 1, "Hek"],
+  [22, "te", 0.5], [22.5, "ke", 0.5], [23, "tek", 1], [24, "ka", 1],
+  DU(25), ME(25.5), DU(26), ME(26.5),
+  [27, "te", 0.5], [27.5, "ke", 0.5], [28, "te", 0.5], [28.5, "ke", 0.5],
+  [29, "tek", 1], [30, "ka", 1], [31, "tek", 1], [32, "ka", 1],
+]; // Gonul s.110
 
 export const USUL_DATA: Usul[] = [
   // --- Kucuk usuller ---
@@ -344,6 +364,7 @@ export const USUL_DATA: Usul[] = [
     [28, "dum", 1], [29, "ta", 1], [30, "hek", 1],
     [31, "te", 0.5], [31.5, "ke", 0.5], [32, "te", 0.5], [32.5, "ke", 0.5],
   ], HAFIF_VELVELE), // s.199 (darp) + Gonul s.109 (velvele)
+  makeUsul("muhammes", "Muhammes", "Muhammes", 32, "4", MUHAMMES, MUHAMMES_VELVELE), // Gonul s.110 (8+8+8+8)
   makeUsul("berafsan", "Berafsan", "Berefsan", 32, "4", BERAFSAN, BEREFSAN_VELVELE), // s.208 (darp) + Gonul s.110 (velvele)
   makeUsul("darbifeth", "Darb-ı Feth", "Darb-i Fetih", 88, "4", [
     [1, "dum", 2], [3, "tek", 1], [4, "tek", 1], [5, "dum", 2], [7, "tek", 1], [8, "tek", 1],

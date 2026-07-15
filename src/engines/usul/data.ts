@@ -146,6 +146,16 @@ const OYNAK_VELVELE: Stroke[] = [
   [1, "dum", 1], [2, "tek", 1], [3, "tek", 1], [4, "dum", 1], [5, "te", 0.5], [5.5, "ke", 0.5],
   [6, "tek", 1], [7, "ka", 1], [8, "tek", 1], [9, "ka", 1],
 ]; // Gonul s.102
+// Nim Çember velvelesi (4+6+2): DÜM TE KE TEK KÂ DÜM DÜM TEK TE KE TEK KÂ TEK KÂ.
+const NIM_CEMBER_VELVELE: Stroke[] = [
+  [1, "dum", 1], [2, "te", 0.5], [2.5, "ke", 0.5], [3, "tek", 1], [4, "ka", 1], [5, "dum", 1],
+  [6, "dum", 1], [7, "tek", 1], [8, "te", 0.5], [8.5, "ke", 0.5], [9, "tek", 1], [10, "ka", 1], [11, "tek", 1], [12, "ka", 1],
+]; // Gonul s.103
+// Frenkçin velvelesi: DÜM DÜÜM DÜ ME DÜ ME DÜM TE KE TEK KÂ TEK KÂ.
+const FRENKCIN_VELVELE: Stroke[] = [
+  [1, "dum", 1], [2, "dum", 2], DU(4), ME(4.5), DU(5), ME(5.5), [6, "dum", 1],
+  [7, "te", 0.5], [7.5, "ke", 0.5], [8, "tek", 1], [9, "ka", 1], [10, "tek", 1], [11, "ka", 2],
+]; // Gonul s.103
 const FAHTE: Stroke[] = [
   [1, "dum", 2], [3, "dum", 1], [4, "dum", 1], [5, "tek", 2], [7, "tek", 2],
   [9, "tek", 2], [11, "dum", 2], [13, "ta", 2], [15, "hek", 2],
@@ -215,11 +225,11 @@ export const USUL_DATA: Usul[] = [
   makeUsul("frenkcin", "Frenkçin", "Frenkcin", 12, "4", [
     [1, "dum", 1], [2, "dum", 2], [4, "dum", 1], [5, "dum", 2],
     [7, "tek", 1], [8, "ka", 1], [9, "tek", 1], [10, "ka", 1], [11, "tek", 1], [12, "ka", 1],
-  ]), // s.85
+  ], FRENKCIN_VELVELE), // s.85 (darp) + Gonul s.103 (velvele)
   makeUsul("nimcember", "Nim Çember", "Nim Cember", 12, "8", [
     [1, "dum", 2], [3, "te", 1], [4, "ke", 1], [5, "dum", 2],
     [7, "ta", 2], [9, "hek", 2], [11, "te", 1], [12, "ke", 1],
-  ]), // s.90
+  ], NIM_CEMBER_VELVELE), // s.90 (darp) + Gonul s.103 (velvele)
   makeUsul("devrirevan", "Devrirevan", "Devr-i Revan", 14, "8", [
     [1, "dum", 3], [4, "dum", 2], [6, "tek", 2], [8, "dum", 3], [11, "tek", 2], [13, "tek", 2],
   ]), // s.101

@@ -221,6 +221,19 @@ const DEVRI_KEBIR_VELVELE: Stroke[] = [
   DU(21), ME(21.5), DU(22), ME(22.5), [23, "te", 0.5], [23.5, "ke", 0.5], [24, "te", 0.5], [24.5, "ke", 0.5],
   DU(25), ME(25.5), DU(26), ME(26.5), [27, "tek", 0.5], [27.5, "ka", 0.5], [28, "tek", 0.5], [28.5, "ka", 0.5],
 ]; // Gonul s.108
+// Hafif velvelesi (4+4+4+4+4+4+4+4, 32/4): 8 grup, darp-capali. Gonul s.109.
+// DÜM TE KE TEK KÂ | DÜM TE KE TEK KÂ | DÜ ME DÜ ME TEK KÂ | DÜM TE KE TEK KÂ |
+// DÜ ME DÜ ME TEK KÂ | DÜM TE KE TEK KÂ | HEK TE KE TEK KÂ | TEK KÂ TEK KÂ
+const HAFIF_VELVELE: Stroke[] = [
+  [1, "dum", 1], [2, "te", 0.5], [2.5, "ke", 0.5], [3, "tek", 1], [4, "ka", 1],
+  [5, "dum", 1], [6, "te", 0.5], [6.5, "ke", 0.5], [7, "tek", 1], [8, "ka", 1],
+  DU(9), ME(9.5), DU(10), ME(10.5), [11, "tek", 1], [12, "ka", 1],
+  [13, "dum", 1], [14, "te", 0.5], [14.5, "ke", 0.5], [15, "tek", 1], [16, "ka", 1],
+  DU(17), ME(17.5), DU(18), ME(18.5), [19, "tek", 1], [20, "ka", 1],
+  [21, "dum", 1], [22, "te", 0.5], [22.5, "ke", 0.5], [23, "tek", 1], [24, "ka", 1],
+  [25, "hek", 1], [26, "te", 0.5], [26.5, "ke", 0.5], [27, "tek", 1], [28, "ka", 1],
+  [29, "tek", 1], [30, "ka", 1], [31, "tek", 1], [32, "ka", 1],
+]; // Gonul s.109
 const DEVRI_KEBIR: Stroke[] = [
   [1, "dum", 2], [3, "dum", 2], [5, "tek", 2], [7, "dum", 1], [8, "tek", 1],
   [9, "te", 0.5], [9.5, "ke", 0.5], [10, "dum", 1], [11, "tek", 2], [13, "tek", 2],
@@ -318,7 +331,7 @@ export const USUL_DATA: Usul[] = [
     [25, "dum", 1], [26, "tek", 1], [27, "te", 0.5], [27.5, "ke", 0.5],
     [28, "dum", 1], [29, "ta", 1], [30, "hek", 1],
     [31, "te", 0.5], [31.5, "ke", 0.5], [32, "te", 0.5], [32.5, "ke", 0.5],
-  ]), // s.199
+  ], HAFIF_VELVELE), // s.199 (darp) + Gonul s.109 (velvele)
   makeUsul("berafsan", "Berafsan", "Berefsan", 32, "4", BERAFSAN), // s.208
   makeUsul("darbifeth", "Darb-ı Feth", "Darb-i Fetih", 88, "4", [
     [1, "dum", 2], [3, "tek", 1], [4, "tek", 1], [5, "dum", 2], [7, "tek", 1], [8, "tek", 1],

@@ -277,6 +277,13 @@ const MUHAMMES_VELVELE: Stroke[] = [
   [27, "te", 0.5], [27.5, "ke", 0.5], [28, "te", 0.5], [28.5, "ke", 0.5],
   [29, "tek", 1], [30, "ka", 1], [31, "tek", 1], [32, "ka", 1],
 ]; // Gonul s.110
+const DEVRI_REVAN_VELVELE: Stroke[] = [
+  // 3+4+3+4 (14/8, birim sekizlik): Düm Tek Kâ | Dü Me Tek Kâ | dü me Dü Me | Tek Kâ Tek Kâ
+  [1, "dum", 1, "Düm"], [2, "tek", 1], [3, "ka", 1],
+  DU(4, 1), ME(5, 1), [6, "tek", 1], [7, "ka", 1],
+  DU(8), ME(8.5), DU(9, 1), ME(10, 1),
+  [11, "tek", 1], [12, "ka", 1], [13, "tek", 1], [14, "ka", 1],
+]; // Gonul s.104
 
 export const USUL_DATA: Usul[] = [
   // --- Kucuk usuller ---
@@ -332,7 +339,7 @@ export const USUL_DATA: Usul[] = [
   ], NIM_CEMBER_VELVELE), // s.90 (darp) + Gonul s.103 (velvele)
   makeUsul("devrirevan", "Devrirevan", "Devr-i Revan", 14, "8", [
     [1, "dum", 3], [4, "dum", 2], [6, "tek", 2], [8, "dum", 3], [11, "tek", 2], [13, "tek", 2],
-  ]), // s.101
+  ], DEVRI_REVAN_VELVELE), // s.101 (darp, Mevlevi) + Gonul s.104 (velvele)
   makeUsul("raksan", "Raksan", "Raksan", 15, "8", [
     [1, "dum", 1], [2, "tek", 1], [3, "tek", 1], [4, "dum", 2], [6, "te", 1], [7, "ka", 2],
     [9, "dum", 2], [11, "tek", 2], [13, "te", 1], [14, "ka", 2],

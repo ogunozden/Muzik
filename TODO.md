@@ -490,17 +490,31 @@ Kaynak: docs/usul-velvele-gonul.md (Gonul s.101-109 ~40 usul darp+velvele metni)
 Yontem: DARP-CAPALI hizalama (darp beat iskeleti + referans hece dizisi) +
 dosum testi (toplam=beats) + iki-kitap capraz-kontrol. Fabrikasyon YOK.
 
-- [~] F14.1 Velvele verisi: ~28/36 usulde VAR. Yontem: DARP-CAPALI hizalama
-      (darp grup iskeleti + referans hece dizisi) + dosum testi — GUVENILIR.
+- [~] F14.1 Velvele verisi: mevcut usullerin velvelesi. Yontem: DARP-CAPALI
+      hizalama (darp grup iskeleti + referans hece dizisi) + dosum testi.
   - [x] aksaksemai, curcuna, oynak, nimcember, frenkcin, raksan, lenkfahte,
-        nimhafif, nimberafsan, fahte, cember, devrikebir (12 — bu oturum)
-  - [ ] hafif(32), berafsan(32) — kendi Gonul sayfalari (s.106/109) re-render
-  - [ ] devrirevan(14) — benim darp'im (3+2+2+3+2+2) referans Mevlevi (3+4+3+4)
-        ile FARKLI; darp eslemesi/uzlastirmasi gerekir
-  - [ ] darb(6) — Gonul temiz tablosunda yok; Kudum s.29 taramasindan
-  - [ ] KOMPOZIT (bilesenlerden compose edilebilir): zincir(120) = cifteduyek+
-        fahte+cember+devrikebir+berafsan; cifteduyek velvelesi + berafsan lazim
-  - [ ] OZEL: darbiturki(18) velvelesiz (kitap der -> eklenmez); darbifeth(88)
+        nimhafif, nimberafsan, fahte, cember, devrikebir (12)
+  - [x] hafif(32) Gonul s.109; berafsan(32) Gonul s.110
+  - [x] devrirevan(14) Gonul s.104 — NOT: darp'im (dum3 dum2 tek2...) zaten
+        Gonul 3+4+3+4 gruplamasiyla ayni, uyumsuzluk YOKtu; sadece velvele eklendi
+  - [x] darbiturki(18) — Heper s.131 darp'i Gonul s.105 (6+4+4+4) ile
+        DEGISTIRILDI + velvele s.106 (kitap velvelesiz DEGIL, velvelesi var)
+  - [ ] darb(6) — Gonul temiz tablosunda yok, velvelesiz birakildi (fabrikasyon yok)
+  - [ ] KOMPOZIT: zincir(120) = cifteduyek+fahte+cember+devrikebir+berafsan
+        velvelelerinden compose; cifteduyek velvelesi (Gonul s.105) lazim.
+        darbifeth(88) — 88 zamanlik ozel velvele (Gonul re-render).
+- [~] F14.1b YENI USULLER: korpusta repertuvari VAR ama engine tanimi YOK olan
+      usuller (usul-corpus-meters'da 70 tanimsiz; cogu gurultu/mertebe, ~15
+      gercek). Bu eserler su an usul metadata'siz (darp/velvele/tempo yok)
+      render ediliyor. Gonul temiz dizgiden darp+velvele aktarilir, tempo
+      korpustan otonom baglanir.
+  - [x] muhammes(32) Gonul s.110; nimdevir(18) Gonul s.106
+  - [ ] cifteduyek(16) Gonul s.105 [zincir velvelesini de acar]
+  - [ ] ferimuhammes(16)/fer(16) Gonul s.104
+  - [ ] sarkidevrirevani(13/8), bektasidevrirevani(13/8), nimevsat(13/8) Gonul s.104
+  - [ ] evsat(26), nimsakil(24), bestedevrirevani(26), remel(28), firengifer(28)
+        Gonul s.107-108 (re-render)
+  - [ ] tekvurus(11/8), ikizaksak(12/8), cengiharbi(10/4) Gonul s.102-103
 - [ ] F14.2 Usul Ansiklopedisi UI (/references/usul): darp<->velvele toggle +
       calim (UsulPanel/UsulNotation hazir, syllable tasiyor)
 - [ ] F14.3 Makam Rehberi: studio panelini genislet (koma+perde+seyir)

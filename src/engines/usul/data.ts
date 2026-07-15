@@ -212,6 +212,15 @@ const CEMBER: Stroke[] = [
   [9, "tek", 2], [11, "tek", 2], [13, "tek", 2], [15, "dum", 2],
   [17, "ta", 2], [19, "hek", 2], [21, "tek", 1], [22, "ka", 1], [23, "tek", 1], [24, "ka", 1],
 ]; // s.157
+// Devr-i Kebîr velvelesi (6+4+4+6+4+4): darp-capali, Gonul s.108.
+const DEVRI_KEBIR_VELVELE: Stroke[] = [
+  [1, "dum", 1], [2, "tek", 1], DU(3), ME(3.5), [4, "dum", 1], [5, "tek", 1], [6, "te", 0.5], [6.5, "ke", 0.5],
+  [7, "dum", 1], [8, "tek", 1], [9, "te", 0.5], [9.5, "ke", 0.5], [10, "dum", 1],
+  [11, "tek", 2], [13, "tek", 2],
+  [15, "hek", 1], [16, "tek", 2], [18, "hek", 1], [19, "te", 0.5], [19.5, "ke", 0.5], [20, "tek", 0.5], [20.5, "ka", 0.5],
+  DU(21), ME(21.5), DU(22), ME(22.5), [23, "te", 0.5], [23.5, "ke", 0.5], [24, "te", 0.5], [24.5, "ke", 0.5],
+  DU(25), ME(25.5), DU(26), ME(26.5), [27, "tek", 0.5], [27.5, "ka", 0.5], [28, "tek", 0.5], [28.5, "ka", 0.5],
+]; // Gonul s.108
 const DEVRI_KEBIR: Stroke[] = [
   [1, "dum", 2], [3, "dum", 2], [5, "tek", 2], [7, "dum", 1], [8, "tek", 1],
   [9, "te", 0.5], [9.5, "ke", 0.5], [10, "dum", 1], [11, "tek", 2], [13, "tek", 2],
@@ -300,7 +309,7 @@ export const USUL_DATA: Usul[] = [
   ]), // s.131 (1. sekil; kitap: ON SEKIZ zamanli — onceki 20/4 kaydi yanlisti)
   makeUsul("fahte", "Fahte", "Fahte", 20, "4", FAHTE, FAHTE_VELVELE), // s.139 (darp) + Gonul s.105
   makeUsul("cember", "Çember", "Cember", 24, "4", CEMBER, CEMBER_VELVELE), // s.157
-  makeUsul("devrikebir", "Devr-i Kebir", "Devr-i Kebir", 28, "4", DEVRI_KEBIR), // s.181
+  makeUsul("devrikebir", "Devr-i Kebir", "Devr-i Kebir", 28, "4", DEVRI_KEBIR, DEVRI_KEBIR_VELVELE), // s.181
   makeUsul("hafif", "Hafif", "Hafif", 32, "4", [
     [1, "dum", 1], [2, "tek", 1], [3, "tek", 2], [5, "dum", 1], [6, "tek", 1], [7, "tek", 2],
     [9, "dum", 2], [11, "tek", 1], [12, "ka", 1], [13, "dum", 1], [14, "tek", 1], [15, "tek", 2],

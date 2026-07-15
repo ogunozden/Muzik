@@ -14,6 +14,7 @@ import {
   buildGlyphClassMapText,
   formatKeySignaturePolicy,
   formatKomaAccidental,
+  komaAccidentalGlyphName,
   formatNotationLabel,
   formatPercent,
   getSurfaceHeight,
@@ -151,8 +152,11 @@ export function ScoreSurface({
 
     void (async () => {
       try {
-        const {Accidental, Annotation, Beam, Dot, Formatter, Renderer, Stave, StaveNote, StaveTie, Voice} =
-          await import("vexflow");
+        const vexflow = await import("vexflow");
+        const {Accidental, Annotation, Beam, Dot, Formatter, Renderer, Stave, StaveNote, StaveTie, Voice} = vexflow;
+        // `Glyphs` enum runtime'da var ama entry type'inda re-export edilmemis
+        // (glyphs.d.ts). Koma arizasi codepoint'leri icin cast ile erisilir.
+        const GLYPHS = (vexflow as unknown as {Glyphs: Record<string, string>}).Glyphs;
         if (cancelled) return;
 
         const renderer = new Renderer(container, Renderer.Backends.SVG);
@@ -190,7 +194,22 @@ export function ScoreSurface({
               Dot.buildAndAttach([vfNote], {all: true});
             }
 
-            if (visibleLayers.accidentals && mappedEvent.pitch.accidental) {
+            // Otantik koma arizasi (F13.3): kaynak SymbTr koma tasiyorsa,
+            // standart # / b YERINE gercek AEU glyph'i cizilir (bakiye, kucuk/
+            // buyuk mucenneb, koma). VexFlow Glyphs enum'unda kod-alias'i
+            // olmayanlar da setText ile kesin codepoint'ten cizilir. Standart-
+            // disi koma (glyph yok) eski metin annotation'a duser.
+            const komaGlyphName = visibleLayers.accidentals
+              ? komaAccidentalGlyphName(mappedEvent.pitch.komaAccidental)
+              : null;
+            const komaGlyph = komaGlyphName ? GLYPHS[komaGlyphName] : null;
+
+            if (komaGlyph) {
+              const isFlat = mappedEvent.pitch.komaAccidental?.startsWith("b") ?? false;
+              const komaAcc = new Accidental(isFlat ? "b" : "#");
+              komaAcc.setText(komaGlyph);
+              vfNote.addModifier(komaAcc, 0);
+            } else if (visibleLayers.accidentals && mappedEvent.pitch.accidental) {
               vfNote.addModifier(new Accidental(mappedEvent.pitch.accidental), 0);
             }
 
@@ -200,12 +219,14 @@ export function ScoreSurface({
               vfNote.addModifier(new Accidental("n"), 0);
             }
 
-            const komaAccidental = visibleLayers.accidentals
-              ? formatKomaAccidental(mappedEvent.pitch.komaAccidental)
-              : null;
-            if (komaAccidental) {
+            // Glyph yoksa (standart-disi koma) metin annotation fallback.
+            const komaAnnotationText =
+              visibleLayers.accidentals && !komaGlyph
+                ? formatKomaAccidental(mappedEvent.pitch.komaAccidental)
+                : null;
+            if (komaAnnotationText) {
               vfNote.addModifier(
-                new Annotation(komaAccidental)
+                new Annotation(komaAnnotationText)
                   .setJustification(Annotation.HorizontalJustify.CENTER)
                   .setVerticalJustification(Annotation.VerticalJustify.TOP),
                 0,

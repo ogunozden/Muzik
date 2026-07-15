@@ -97,6 +97,29 @@ export function formatKomaAccidental(value: string | null): string | null {
   return value.replace("#", "♯").replace("b", "♭");
 }
 
+/**
+ * SymbTr koma arizasini (ör. "#4"=bakiye diyez, "b5"=kucuk mucenneb bemol)
+ * VexFlow SMuFL glyph ADINA esler. AEU'nun standart koma arizalari (koma=1,
+ * bakiye=4, kucuk mucenneb=5, buyuk mucenneb=8) — hepsi VexFlow Glyphs
+ * enum'unda (Bravura) mevcut, kod-alias'i olmayanlar setText ile cizilir.
+ * Standart-disi (2,3,9 koma vb.) icin null -> metin annotation'a duser.
+ */
+const KOMA_GLYPH_BY_ACCIDENTAL: Record<string, string> = {
+  "#1": "accidentalKomaSharp",
+  b1: "accidentalKomaFlat",
+  "#4": "accidentalBakiyeSharp",
+  b4: "accidentalBakiyeFlat",
+  "#5": "accidentalKucukMucennebSharp",
+  b5: "accidentalKucukMucennebFlat",
+  "#8": "accidentalBuyukMucennebSharp",
+  b8: "accidentalBuyukMucennebFlat",
+};
+
+export function komaAccidentalGlyphName(value: string | null): string | null {
+  if (!value) return null;
+  return KOMA_GLYPH_BY_ACCIDENTAL[value] ?? null;
+}
+
 export function formatKeySignaturePolicy(document: CanonicalScoreDocument): string {
   const accidentals = document.notationPolicy.keySignature.accidentals;
   if (accidentals.length === 0) return "key policy: kaynak eksik";

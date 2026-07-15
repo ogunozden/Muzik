@@ -94,7 +94,7 @@
     "jsdom": "^29.1.1",
     "lint-staged": "^17.0.7",
     "playwright": "^1.60.0",
-    "postcss": "^8.5.14",
+    "postcss": "^8.5.19",
     "typescript": "^6.0.3",
     "vitest": "^4.1.8"
   },

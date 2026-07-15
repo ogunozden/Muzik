@@ -245,6 +245,18 @@ const BERAFSAN: Stroke[] = [
   [17, "dum", 2], [19, "tek", 2], [21, "dum", 2], [23, "dum", 2],
   [25, "ta", 2], [27, "hek", 2], [29, "tek", 1], [30, "ka", 1], [31, "tek", 1], [32, "ka", 1],
 ]; // s.208
+const BEREFSAN_VELVELE: Stroke[] = [
+  // 1. satir (16): Düüm Düüm Teek | te ke te ke | tek kâ tek kâ | Dü Me | dü me dü me
+  [1, "dum", 2, "Düüm"], [3, "dum", 2, "Düüm"], [5, "tek", 2, "Teek"],
+  [7, "te", 0.5], [7.5, "ke", 0.5], [8, "te", 0.5], [8.5, "ke", 0.5],
+  [9, "tek", 1], [10, "ka", 1], [11, "tek", 1], [12, "ka", 1],
+  DU(13, 1), ME(14, 1), DU(15), ME(15.5), DU(16), ME(16.5),
+  // 2. satir (16): te ke te ke | tek kâ tek kâ | Heek Hek | te ke | tek kâ tek kâ tek kâ
+  [17, "te", 0.5], [17.5, "ke", 0.5], [18, "te", 0.5], [18.5, "ke", 0.5],
+  [19, "tek", 1], [20, "ka", 1], [21, "tek", 1], [22, "ka", 1],
+  [23, "hek", 2, "Heek"], [25, "hek", 1, "Hek"], [26, "te", 0.5], [26.5, "ke", 0.5],
+  [27, "tek", 1], [28, "ka", 1], [29, "tek", 1], [30, "ka", 1], [31, "tek", 1], [32, "ka", 1],
+]; // Gonul s.110
 
 export const USUL_DATA: Usul[] = [
   // --- Kucuk usuller ---
@@ -332,7 +344,7 @@ export const USUL_DATA: Usul[] = [
     [28, "dum", 1], [29, "ta", 1], [30, "hek", 1],
     [31, "te", 0.5], [31.5, "ke", 0.5], [32, "te", 0.5], [32.5, "ke", 0.5],
   ], HAFIF_VELVELE), // s.199 (darp) + Gonul s.109 (velvele)
-  makeUsul("berafsan", "Berafsan", "Berefsan", 32, "4", BERAFSAN), // s.208
+  makeUsul("berafsan", "Berafsan", "Berefsan", 32, "4", BERAFSAN, BEREFSAN_VELVELE), // s.208 (darp) + Gonul s.110 (velvele)
   makeUsul("darbifeth", "Darb-ı Feth", "Darb-i Fetih", 88, "4", [
     [1, "dum", 2], [3, "tek", 1], [4, "tek", 1], [5, "dum", 2], [7, "tek", 1], [8, "tek", 1],
     [9, "tek", 1], [10, "ka", 1], [11, "dum", 2], [13, "tek", 1], [14, "tek", 1], [15, "dum", 2],

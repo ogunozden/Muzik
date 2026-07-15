@@ -184,6 +184,24 @@ const NIM_BERAFSAN_VELVELE: Stroke[] = [
   [9, "dum", 1], [10, "te", 0.5], [10.5, "ke", 0.5], DU(11), ME(11.5), DU(12), ME(12.5),
   [13, "te", 0.5], [13.5, "ke", 0.5], [14, "te", 0.5], [14.5, "ke", 0.5], [15, "tek", 1], [16, "ka", 1],
 ]; // Gonul s.107
+// Fahte velvelesi (4+6+6+4): darp-capali. DÜM DÜ ME DÜM DÜM | TEK TE KE TEK KÂ
+// TEK KÂ | DÜ ME DÜM TEK DÜ ME TE KE TEK KÂ | TEK KÂ TEK KÂ (Gonul s.105).
+const FAHTE_VELVELE: Stroke[] = [
+  [1, "dum", 1], DU(2), ME(2.5), [3, "dum", 1], [4, "dum", 1],
+  [5, "tek", 1], [6, "te", 0.5], [6.5, "ke", 0.5], [7, "tek", 1], [8, "ka", 1], [9, "tek", 1], [10, "ka", 1],
+  DU(11), ME(11.5), [12, "dum", 1], [13, "tek", 1], DU(14), ME(14.5), [15, "te", 0.5], [15.5, "ke", 0.5], [16, "tek", 0.5], [16.5, "ka", 0.5],
+  [17, "tek", 1], [18, "ka", 1], [19, "tek", 1], [20, "ka", 1],
+]; // Gonul s.105
+// Çember velvelesi (4+4+6+6+4 = 4+Fahte): darp-capali. DÜM TE KE TEK KÂ |
+// DÜM DÜ ME DÜM DÜM | TEK TE KE TEK KÂ TEK KÂ | DÜ ME DÜM TEK TE KE TEK KÂ |
+// TEK KÂ TEK KÂ (Gonul s.106).
+const CEMBER_VELVELE: Stroke[] = [
+  [1, "dum", 1], [2, "te", 0.5], [2.5, "ke", 0.5], [3, "tek", 1], [4, "ka", 1],
+  [5, "dum", 1], DU(6), ME(6.5), [7, "dum", 1], [8, "dum", 1],
+  [9, "tek", 1], [10, "te", 0.5], [10.5, "ke", 0.5], [11, "tek", 1], [12, "ka", 1], [13, "tek", 1], [14, "ka", 1],
+  DU(15), ME(15.5), [16, "dum", 1], [17, "tek", 1], [18, "te", 0.5], [18.5, "ke", 0.5], [19, "tek", 1], [20, "ka", 1],
+  [21, "tek", 1], [22, "ka", 1], [23, "tek", 1], [24, "ka", 1],
+]; // Gonul s.106
 const FAHTE: Stroke[] = [
   [1, "dum", 2], [3, "dum", 1], [4, "dum", 1], [5, "tek", 2], [7, "tek", 2],
   [9, "tek", 2], [11, "dum", 2], [13, "ta", 2], [15, "hek", 2],
@@ -280,8 +298,8 @@ export const USUL_DATA: Usul[] = [
     [1, "dum", 2], [3, "dum", 2], [5, "tek", 2], [7, "dum", 4],
     [11, "tek", 4], [15, "tek", 1], [16, "ka", 1], [17, "tek", 1], [18, "ka", 1],
   ]), // s.131 (1. sekil; kitap: ON SEKIZ zamanli — onceki 20/4 kaydi yanlisti)
-  makeUsul("fahte", "Fahte", "Fahte", 20, "4", FAHTE), // s.139
-  makeUsul("cember", "Çember", "Cember", 24, "4", CEMBER), // s.157
+  makeUsul("fahte", "Fahte", "Fahte", 20, "4", FAHTE, FAHTE_VELVELE), // s.139 (darp) + Gonul s.105
+  makeUsul("cember", "Çember", "Cember", 24, "4", CEMBER, CEMBER_VELVELE), // s.157
   makeUsul("devrikebir", "Devr-i Kebir", "Devr-i Kebir", 28, "4", DEVRI_KEBIR), // s.181
   makeUsul("hafif", "Hafif", "Hafif", 32, "4", [
     [1, "dum", 1], [2, "tek", 1], [3, "tek", 2], [5, "dum", 1], [6, "tek", 1], [7, "tek", 2],

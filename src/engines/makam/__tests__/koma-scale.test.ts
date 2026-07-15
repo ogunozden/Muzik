@@ -1,5 +1,10 @@
 import {describe, expect, it} from "vitest";
 import {getMakamById, komaToFrequency, getMakamKomaFrequencies, MAKAM_DATA} from "../data";
+import makamCorpus from "../__generated__/makam-corpus.json";
+
+const NOTE_SEMITONE: Record<string, number> = {
+  C: 0, "C#": 1, D: 2, "D#": 3, E: 4, F: 5, "F#": 6, G: 7, "G#": 8, A: 9, "A#": 10, B: 11,
+};
 
 /**
  * Otantik 53-EDO (Holder komasi / AEU) makam dizisi sozlesme testleri.
@@ -93,5 +98,57 @@ describe("getMakamKomaFrequencies", () => {
   it("koma dizisi olmayan (korpus disi) makamda null doner", () => {
     const noKoma = MAKAM_DATA.find((m) => !m.komaScale);
     if (noKoma) expect(getMakamKomaFrequencies(noKoma)).toBeNull();
+  });
+});
+
+/**
+ * HARDCODE -> OTONOM sozlesmesi: makam `intervals` (12-TET) artik elle
+ * yazilmaz, koma dizisinden turetilir; `dominant` turetilemedigi icin (yapisal
+ * teori notasi) en azindan korpusta belirgin bir derece oldugu DOGRULANIR.
+ */
+describe("makam 12-TET intervals korpus-turevi (hardcode -> otonom)", () => {
+  const komaScales = makamCorpus.komaScales as Record<string, {intervals12: number[] | null}>;
+
+  it("kapsanan makamlarda `intervals` korpus intervals12 ile ayni (el-yazimi degil)", () => {
+    let checked = 0;
+    for (const makam of MAKAM_DATA) {
+      const derived = makam.komaScale?.intervals12;
+      if (!derived) continue;
+      expect(makam.intervals, `${makam.id}: intervals korpustan`).toEqual(derived);
+      checked += 1;
+    }
+    expect(checked).toBeGreaterThanOrEqual(20);
+  });
+
+  it("turetilen her intervals12 gecerli heptatoni: 7 adim, toplam 12, pozitif", () => {
+    let count = 0;
+    for (const entry of Object.values(komaScales)) {
+      if (!entry.intervals12) continue;
+      expect(entry.intervals12).toHaveLength(7);
+      expect(entry.intervals12.reduce((a, b) => a + b, 0)).toBe(12);
+      for (const step of entry.intervals12) expect(step).toBeGreaterThan(0);
+      count += 1;
+    }
+    expect(count).toBeGreaterThanOrEqual(60);
+  });
+
+  it("her makamin `dominant`i korpusta belirgin bir derece (dominant DOGRULAMA muadili)", () => {
+    // Guclu frekansla kesin turetilemez; en azindan el-yazimi dominant'in
+    // korpus koma dizisinde (±1 yarim-ton) yer aldigini garanti ederiz.
+    let validated = 0;
+    for (const makam of MAKAM_DATA) {
+      if (!makam.komaScale) continue;
+      const tonic = NOTE_SEMITONE[makam.tonic];
+      const dom = NOTE_SEMITONE[makam.dominant];
+      if (tonic === undefined || dom === undefined) continue;
+      const domSemi = ((dom - tonic) % 12 + 12) % 12;
+      const corpusSemis = new Set(makam.komaScale.degrees.map((d) => Math.round((d.koma * 12) / 53) % 12));
+      const present = [...corpusSemis].some(
+        (s) => Math.abs(s - domSemi) <= 1 || Math.abs(s - domSemi) >= 11,
+      );
+      expect(present, `${makam.id}: dominant ${makam.dominant} korpusta`).toBe(true);
+      validated += 1;
+    }
+    expect(validated).toBeGreaterThanOrEqual(20);
   });
 });

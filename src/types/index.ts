@@ -27,6 +27,18 @@ export interface MakamKomaScale {
   kararAgreement: number;
   /** Karara gore artan dizi dereceleri (koma/cent/pay). */
   degrees: MakamKomaDegree[];
+  /**
+   * Koma dizisinden OTONOM turetilen 12-TET `intervals` (7 adim, toplam 12).
+   * El-yazimi yerine korpus-turevi notasyon izdusumu; temiz heptatoni
+   * cikmazsa null (el-yazimina duser).
+   */
+  intervals12: number[] | null;
+  /**
+   * Guclu (dominant) ADAYI — 4.-5. bolge en cok kullanilan derece. Frekansla
+   * KESIN turetilemez (yapisal teori notasi); el-yazimi dominant'i DOGRULAMAK
+   * icin referans.
+   */
+  guclu: {koma: number; cents: number} | null;
 }
 
 export interface Makam {

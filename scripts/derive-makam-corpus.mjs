@@ -124,6 +124,43 @@ export function parsePieceKomas(text) {
 }
 
 const pitchClass = (koma) => ((koma % KOMA_PER_OCTAVE) + KOMA_PER_OCTAVE) % KOMA_PER_OCTAVE;
+const komaToSemitone = (koma) => Math.round((koma * 12) / KOMA_PER_OCTAVE);
+
+/**
+ * 12-TET `intervals` dizisini koma dizisinden OTONOM turetir: karar (0) +
+ * en guclu 6 karar-disi/oktav-disi derece en yakin yarim-tona izdusurulur.
+ * Temiz bir 7-nota heptatoni cikarsa dondurur; cikmazsa null (el-yazimina
+ * duselir). Not: makam kromatik olabilir; bu, 12-TET NOTASYON izdusumudur —
+ * otantik perde komaScale'dedir.
+ */
+function deriveIntervals12(degrees) {
+  const byShare = [...degrees].sort((a, b) => b.share - a.share);
+  const semis = new Set();
+  for (const d of byShare) {
+    const s = komaToSemitone(d.koma);
+    if (s <= 0 || s >= 12) continue; // 0 = karar, 12 = oktav
+    semis.add(s);
+    if (semis.size >= 6) break;
+  }
+  if (semis.size < 6) return null;
+  const scale = [0, ...Array.from(semis).sort((a, b) => a - b)]; // 7 nota
+  const intervals = [];
+  for (let i = 1; i < scale.length; i += 1) intervals.push(scale[i] - scale[i - 1]);
+  intervals.push(12 - scale[scale.length - 1]); // son perde -> oktav
+  return intervals.length === 7 ? intervals : null;
+}
+
+/**
+ * Guclu (dominant) ADAYI: 4.-5. derece bolgesindeki (koma ~18..34) en cok
+ * kullanilan derece. Guclu frekansla KESIN turetilemez (yapisal teori notasi);
+ * bu yalniz el-yazimi dominant'i DOGRULAMAK icin referans olarak tutulur.
+ */
+function deriveGucluCandidate(degrees) {
+  const region = degrees.filter((d) => d.koma >= 18 && d.koma <= 34);
+  if (region.length === 0) return null;
+  const top = region.sort((a, b) => b.share - a.share)[0];
+  return {koma: top.koma, cents: Math.round(top.koma * CENTS_PER_KOMA)};
+}
 
 // Makam basina KARAR-GORELI koma dizisini turetir. Karar (durak/tonik), eser
 // sonlari makamin kararinda biter kabulu ile son-nota perde-sinifinin modu
@@ -185,6 +222,8 @@ export function deriveMakamKomaScales(txtRoot) {
       kararPC,
       kararAgreement,
       degrees,
+      intervals12: deriveIntervals12(degrees),
+      guclu: deriveGucluCandidate(degrees),
     };
   }
   return result;

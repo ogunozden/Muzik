@@ -16,10 +16,14 @@ describe("makam/data", () => {
       expect(result).toBeUndefined();
     });
 
-    it("should return correct intervals for huseyni", () => {
+    it("returns corpus-derived intervals for huseyni (not hand-authored)", () => {
+      // `intervals` artik SymbTr koma dizisinden OTONOM turetilir. Huseyni'nin
+      // korpus-turevi 12-TET izdusumu, eski el-yazimi [2,2,1,2,1,2,2] yerine
+      // makamin gercek notr/minor 3.'sunu yansitir.
       const huseyni = getMakamById("huseyni");
       expect(huseyni).toBeDefined();
-      expect(huseyni?.intervals).toEqual([2, 2, 1, 2, 1, 2, 2]);
+      expect(huseyni?.intervals).toEqual([2, 1, 2, 2, 2, 1, 2]);
+      expect(huseyni?.intervals.reduce((a, b) => a + b, 0)).toBe(12); // oktav
     });
 
     it("should return all makams have required properties", () => {

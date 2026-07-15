@@ -1329,7 +1329,20 @@
           "cents": 1087,
           "share": 0.049
         }
-      ]
+      ],
+      "intervals12": [
+        2,
+        2,
+        1,
+        2,
+        2,
+        2,
+        1
+      ],
+      "guclu": {
+        "koma": 19,
+        "cents": 430
+      }
     },
     "acemasiran": {
       "display": "acemasiran",
@@ -1378,7 +1391,20 @@
           "cents": 1109,
           "share": 0.12
         }
-      ]
+      ],
+      "intervals12": [
+        2,
+        2,
+        1,
+        2,
+        2,
+        2,
+        1
+      ],
+      "guclu": {
+        "koma": 18,
+        "cents": 408
+      }
     },
     "acemkurdi": {
       "display": "acemkurdi",
@@ -1427,7 +1453,20 @@
           "cents": 996,
           "share": 0.101
         }
-      ]
+      ],
+      "intervals12": [
+        1,
+        2,
+        2,
+        2,
+        1,
+        2,
+        2
+      ],
+      "guclu": {
+        "koma": 22,
+        "cents": 498
+      }
     },
     "arazbar": {
       "display": "arazbar",
@@ -1476,7 +1515,20 @@
           "cents": 1109,
           "share": 0.036
         }
-      ]
+      ],
+      "intervals12": [
+        2,
+        2,
+        1,
+        2,
+        2,
+        2,
+        1
+      ],
+      "guclu": {
+        "koma": 32,
+        "cents": 725
+      }
     },
     "arazbarbuselik": {
       "display": "arazbarbuselik",
@@ -1530,7 +1582,20 @@
           "cents": 1132,
           "share": 0.043
         }
-      ]
+      ],
+      "intervals12": [
+        2,
+        2,
+        1,
+        2,
+        2,
+        2,
+        1
+      ],
+      "guclu": {
+        "koma": 32,
+        "cents": 725
+      }
     },
     "askefza": {
       "display": "askefza",
@@ -1579,7 +1644,20 @@
           "cents": 996,
           "share": 0.08
         }
-      ]
+      ],
+      "intervals12": [
+        1,
+        2,
+        2,
+        2,
+        1,
+        2,
+        2
+      ],
+      "guclu": {
+        "koma": 22,
+        "cents": 498
+      }
     },
     "besteisfahan": {
       "display": "besteisfahan",
@@ -1633,7 +1711,20 @@
           "cents": 1109,
           "share": 0.046
         }
-      ]
+      ],
+      "intervals12": [
+        2,
+        2,
+        2,
+        1,
+        2,
+        2,
+        1
+      ],
+      "guclu": {
+        "koma": 19,
+        "cents": 430
+      }
     },
     "bestenigar": {
       "display": "bestenigar",
@@ -1692,7 +1783,20 @@
           "cents": 1087,
           "share": 0.137
         }
-      ]
+      ],
+      "intervals12": [
+        2,
+        2,
+        1,
+        2,
+        2,
+        2,
+        1
+      ],
+      "guclu": {
+        "koma": 32,
+        "cents": 725
+      }
     },
     "beyati": {
       "display": "beyati",
@@ -1741,7 +1845,20 @@
           "cents": 996,
           "share": 0.095
         }
-      ]
+      ],
+      "intervals12": [
+        2,
+        1,
+        2,
+        2,
+        1,
+        2,
+        2
+      ],
+      "guclu": {
+        "koma": 22,
+        "cents": 498
+      }
     },
     "beyatiaraban": {
       "display": "beyatiaraban",
@@ -1800,7 +1917,20 @@
           "cents": 1087,
           "share": 0.063
         }
-      ]
+      ],
+      "intervals12": [
+        2,
+        2,
+        2,
+        1,
+        2,
+        2,
+        1
+      ],
+      "guclu": {
+        "koma": 32,
+        "cents": 725
+      }
     },
     "buselik": {
       "display": "buselik",
@@ -1854,7 +1984,20 @@
           "cents": 1087,
           "share": 0.033
         }
-      ]
+      ],
+      "intervals12": [
+        2,
+        1,
+        2,
+        2,
+        1,
+        2,
+        2
+      ],
+      "guclu": {
+        "koma": 31,
+        "cents": 702
+      }
     },
     "cargah": {
       "display": "cargah",
@@ -1913,7 +2056,20 @@
           "cents": 1177,
           "share": 0.05
         }
-      ]
+      ],
+      "intervals12": [
+        1,
+        1,
+        2,
+        1,
+        2,
+        2,
+        3
+      ],
+      "guclu": {
+        "koma": 18,
+        "cents": 408
+      }
     },
     "dilkeshaveran": {
       "display": "dilkeshaveran",
@@ -1977,7 +2133,20 @@
           "cents": 1109,
           "share": 0.032
         }
-      ]
+      ],
+      "intervals12": [
+        2,
+        2,
+        2,
+        1,
+        2,
+        2,
+        1
+      ],
+      "guclu": {
+        "koma": 19,
+        "cents": 430
+      }
     },
     "dugah": {
       "display": "dugah",
@@ -2036,7 +2205,20 @@
           "cents": 1109,
           "share": 0.107
         }
-      ]
+      ],
+      "intervals12": [
+        2,
+        2,
+        4,
+        1,
+        1,
+        1,
+        1
+      ],
+      "guclu": {
+        "koma": 19,
+        "cents": 430
+      }
     },
     "evcara": {
       "display": "evcara",
@@ -2090,7 +2272,20 @@
           "cents": 1109,
           "share": 0.124
         }
-      ]
+      ],
+      "intervals12": [
+        1,
+        1,
+        3,
+        1,
+        1,
+        4,
+        1
+      ],
+      "guclu": {
+        "koma": 27,
+        "cents": 611
+      }
     },
     "evic": {
       "display": "evic",
@@ -2144,7 +2339,20 @@
           "cents": 1109,
           "share": 0.04
         }
-      ]
+      ],
+      "intervals12": [
+        1,
+        2,
+        2,
+        1,
+        2,
+        2,
+        2
+      ],
+      "guclu": {
+        "koma": 22,
+        "cents": 498
+      }
     },
     "ferahfeza": {
       "display": "ferahfeza",
@@ -2193,7 +2401,20 @@
           "cents": 1087,
           "share": 0.034
         }
-      ]
+      ],
+      "intervals12": [
+        2,
+        1,
+        2,
+        2,
+        1,
+        2,
+        2
+      ],
+      "guclu": {
+        "koma": 31,
+        "cents": 702
+      }
     },
     "ferahnak": {
       "display": "ferahnak",
@@ -2242,7 +2463,20 @@
           "cents": 1019,
           "share": 0.111
         }
-      ]
+      ],
+      "intervals12": [
+        1,
+        2,
+        2,
+        2,
+        1,
+        2,
+        2
+      ],
+      "guclu": {
+        "koma": 23,
+        "cents": 521
+      }
     },
     "ferahnuma": {
       "display": "ferahnuma",
@@ -2296,7 +2530,20 @@
           "cents": 996,
           "share": 0.083
         }
-      ]
+      ],
+      "intervals12": [
+        1,
+        2,
+        1,
+        1,
+        2,
+        3,
+        2
+      ],
+      "guclu": {
+        "koma": 22,
+        "cents": 498
+      }
     },
     "gerdaniye": {
       "display": "gerdaniye",
@@ -2345,7 +2592,20 @@
           "cents": 996,
           "share": 0.129
         }
-      ]
+      ],
+      "intervals12": [
+        2,
+        1,
+        2,
+        2,
+        2,
+        1,
+        2
+      ],
+      "guclu": {
+        "koma": 22,
+        "cents": 498
+      }
     },
     "gulizar": {
       "display": "gulizar",
@@ -2404,7 +2664,20 @@
           "cents": 1087,
           "share": 0.078
         }
-      ]
+      ],
+      "intervals12": [
+        2,
+        2,
+        2,
+        1,
+        2,
+        2,
+        1
+      ],
+      "guclu": {
+        "koma": 32,
+        "cents": 725
+      }
     },
     "hicaz": {
       "display": "hicaz",
@@ -2458,7 +2731,20 @@
           "cents": 996,
           "share": 0.095
         }
-      ]
+      ],
+      "intervals12": [
+        1,
+        3,
+        1,
+        2,
+        1,
+        2,
+        2
+      ],
+      "guclu": {
+        "koma": 22,
+        "cents": 498
+      }
     },
     "hicazasiran": {
       "display": "hicazasiran",
@@ -2522,7 +2808,20 @@
           "cents": 996,
           "share": 0.186
         }
-      ]
+      ],
+      "intervals12": [
+        2,
+        1,
+        2,
+        1,
+        3,
+        1,
+        2
+      ],
+      "guclu": {
+        "koma": 22,
+        "cents": 498
+      }
     },
     "hicazhumayun": {
       "display": "hicaz_humayun",
@@ -2571,7 +2870,20 @@
           "cents": 996,
           "share": 0.069
         }
-      ]
+      ],
+      "intervals12": [
+        1,
+        3,
+        1,
+        2,
+        1,
+        2,
+        2
+      ],
+      "guclu": {
+        "koma": 22,
+        "cents": 498
+      }
     },
     "hicazkar": {
       "display": "hicazkar",
@@ -2630,7 +2942,20 @@
           "cents": 1109,
           "share": 0.09
         }
-      ]
+      ],
+      "intervals12": [
+        2,
+        1,
+        3,
+        1,
+        1,
+        3,
+        1
+      ],
+      "guclu": {
+        "koma": 32,
+        "cents": 725
+      }
     },
     "hicazuzzal": {
       "display": "hicaz_uzzal",
@@ -2679,7 +3004,20 @@
           "cents": 996,
           "share": 0.126
         }
-      ]
+      ],
+      "intervals12": [
+        1,
+        3,
+        1,
+        2,
+        1,
+        2,
+        2
+      ],
+      "guclu": {
+        "koma": 31,
+        "cents": 702
+      }
     },
     "hicazzirgule": {
       "display": "hicaz_zirgule",
@@ -2733,7 +3071,20 @@
           "cents": 1087,
           "share": 0.052
         }
-      ]
+      ],
+      "intervals12": [
+        1,
+        2,
+        1,
+        1,
+        2,
+        1,
+        4
+      ],
+      "guclu": {
+        "koma": 22,
+        "cents": 498
+      }
     },
     "hisar": {
       "display": "hisar",
@@ -2792,7 +3143,20 @@
           "cents": 1087,
           "share": 0.07
         }
-      ]
+      ],
+      "intervals12": [
+        2,
+        2,
+        1,
+        3,
+        1,
+        2,
+        1
+      ],
+      "guclu": {
+        "koma": 19,
+        "cents": 430
+      }
     },
     "hisarbuselik": {
       "display": "hisarbuselik",
@@ -2846,7 +3210,20 @@
           "cents": 1087,
           "share": 0.06
         }
-      ]
+      ],
+      "intervals12": [
+        2,
+        1,
+        2,
+        2,
+        1,
+        3,
+        1
+      ],
+      "guclu": {
+        "koma": 31,
+        "cents": 702
+      }
     },
     "huseyni": {
       "display": "huseyni",
@@ -2900,7 +3277,20 @@
           "cents": 996,
           "share": 0.109
         }
-      ]
+      ],
+      "intervals12": [
+        2,
+        1,
+        2,
+        2,
+        2,
+        1,
+        2
+      ],
+      "guclu": {
+        "koma": 22,
+        "cents": 498
+      }
     },
     "huseyniasiran": {
       "display": "huseyniasiran",
@@ -2954,7 +3344,20 @@
           "cents": 1109,
           "share": 0.043
         }
-      ]
+      ],
+      "intervals12": [
+        2,
+        2,
+        2,
+        1,
+        2,
+        2,
+        1
+      ],
+      "guclu": {
+        "koma": 19,
+        "cents": 430
+      }
     },
     "huzzam": {
       "display": "huzzam",
@@ -3003,7 +3406,20 @@
           "cents": 1019,
           "share": 0.06
         }
-      ]
+      ],
+      "intervals12": [
+        1,
+        2,
+        2,
+        2,
+        1,
+        2,
+        2
+      ],
+      "guclu": {
+        "koma": 20,
+        "cents": 453
+      }
     },
     "irak": {
       "display": "irak",
@@ -3052,7 +3468,20 @@
           "cents": 1087,
           "share": 0.132
         }
-      ]
+      ],
+      "intervals12": [
+        2,
+        2,
+        2,
+        1,
+        2,
+        2,
+        1
+      ],
+      "guclu": {
+        "koma": 32,
+        "cents": 725
+      }
     },
     "isfahan": {
       "display": "isfahan",
@@ -3101,7 +3530,20 @@
           "cents": 1087,
           "share": 0.096
         }
-      ]
+      ],
+      "intervals12": [
+        2,
+        2,
+        1,
+        2,
+        2,
+        2,
+        1
+      ],
+      "guclu": {
+        "koma": 19,
+        "cents": 430
+      }
     },
     "karcigar": {
       "display": "karcigar",
@@ -3150,7 +3592,20 @@
           "cents": 996,
           "share": 0.127
         }
-      ]
+      ],
+      "intervals12": [
+        2,
+        1,
+        2,
+        1,
+        3,
+        1,
+        2
+      ],
+      "guclu": {
+        "koma": 22,
+        "cents": 498
+      }
     },
     "kurdi": {
       "display": "kurdi",
@@ -3199,7 +3654,20 @@
           "cents": 996,
           "share": 0.074
         }
-      ]
+      ],
+      "intervals12": [
+        1,
+        2,
+        2,
+        2,
+        1,
+        2,
+        2
+      ],
+      "guclu": {
+        "koma": 22,
+        "cents": 498
+      }
     },
     "kurdilihicazkar": {
       "display": "kurdilihicazkar",
@@ -3248,7 +3716,20 @@
           "cents": 996,
           "share": 0.131
         }
-      ]
+      ],
+      "intervals12": [
+        1,
+        2,
+        2,
+        2,
+        1,
+        2,
+        2
+      ],
+      "guclu": {
+        "koma": 31,
+        "cents": 702
+      }
     },
     "mahur": {
       "display": "mahur",
@@ -3297,7 +3778,20 @@
           "cents": 1132,
           "share": 0.101
         }
-      ]
+      ],
+      "intervals12": [
+        2,
+        2,
+        2,
+        1,
+        2,
+        2,
+        1
+      ],
+      "guclu": {
+        "koma": 32,
+        "cents": 725
+      }
     },
     "muhayyer": {
       "display": "muhayyer",
@@ -3346,7 +3840,20 @@
           "cents": 996,
           "share": 0.13
         }
-      ]
+      ],
+      "intervals12": [
+        2,
+        1,
+        2,
+        2,
+        2,
+        1,
+        2
+      ],
+      "guclu": {
+        "koma": 22,
+        "cents": 498
+      }
     },
     "muhayyerkurdi": {
       "display": "muhayyerkurdi",
@@ -3395,7 +3902,20 @@
           "cents": 996,
           "share": 0.111
         }
-      ]
+      ],
+      "intervals12": [
+        1,
+        2,
+        2,
+        2,
+        1,
+        2,
+        2
+      ],
+      "guclu": {
+        "koma": 22,
+        "cents": 498
+      }
     },
     "muhayyersunbule": {
       "display": "muhayyersunbule",
@@ -3449,7 +3969,20 @@
           "cents": 1109,
           "share": 0.056
         }
-      ]
+      ],
+      "intervals12": [
+        2,
+        3,
+        2,
+        2,
+        1,
+        1,
+        1
+      ],
+      "guclu": {
+        "koma": 32,
+        "cents": 725
+      }
     },
     "mustear": {
       "display": "mustear",
@@ -3508,7 +4041,20 @@
           "cents": 1109,
           "share": 0.041
         }
-      ]
+      ],
+      "intervals12": [
+        1,
+        1,
+        1,
+        2,
+        1,
+        2,
+        4
+      ],
+      "guclu": {
+        "koma": 22,
+        "cents": 498
+      }
     },
     "neva": {
       "display": "neva",
@@ -3567,7 +4113,20 @@
           "cents": 1087,
           "share": 0.054
         }
-      ]
+      ],
+      "intervals12": [
+        2,
+        2,
+        2,
+        1,
+        2,
+        2,
+        1
+      ],
+      "guclu": {
+        "koma": 19,
+        "cents": 430
+      }
     },
     "neveser": {
       "display": "neveser",
@@ -3616,7 +4175,20 @@
           "cents": 1042,
           "share": 0.106
         }
-      ]
+      ],
+      "intervals12": [
+        2,
+        1,
+        3,
+        1,
+        2,
+        1,
+        2
+      ],
+      "guclu": {
+        "koma": 32,
+        "cents": 725
+      }
     },
     "nihavent": {
       "display": "nihavent",
@@ -3670,7 +4242,20 @@
           "cents": 1087,
           "share": 0.046
         }
-      ]
+      ],
+      "intervals12": [
+        2,
+        1,
+        2,
+        2,
+        1,
+        2,
+        2
+      ],
+      "guclu": {
+        "koma": 31,
+        "cents": 702
+      }
     },
     "nikriz": {
       "display": "nikriz",
@@ -3729,7 +4314,20 @@
           "cents": 1064,
           "share": 0.031
         }
-      ]
+      ],
+      "intervals12": [
+        2,
+        1,
+        3,
+        1,
+        2,
+        1,
+        2
+      ],
+      "guclu": {
+        "koma": 31,
+        "cents": 702
+      }
     },
     "nisabur": {
       "display": "nisabur",
@@ -3778,7 +4376,20 @@
           "cents": 1132,
           "share": 0.066
         }
-      ]
+      ],
+      "intervals12": [
+        1,
+        1,
+        2,
+        1,
+        2,
+        4,
+        1
+      ],
+      "guclu": {
+        "koma": 19,
+        "cents": 430
+      }
     },
     "nisaburek": {
       "display": "nisaburek",
@@ -3827,7 +4438,20 @@
           "cents": 1064,
           "share": 0.043
         }
-      ]
+      ],
+      "intervals12": [
+        2,
+        2,
+        1,
+        2,
+        2,
+        2,
+        1
+      ],
+      "guclu": {
+        "koma": 31,
+        "cents": 702
+      }
     },
     "nuhuft": {
       "display": "nuhuft",
@@ -3881,7 +4505,20 @@
           "cents": 996,
           "share": 0.219
         }
-      ]
+      ],
+      "intervals12": [
+        2,
+        1,
+        2,
+        2,
+        1,
+        2,
+        2
+      ],
+      "guclu": {
+        "koma": 22,
+        "cents": 498
+      }
     },
     "pencgah": {
       "display": "pencgah",
@@ -3945,7 +4582,20 @@
           "cents": 1132,
           "share": 0.038
         }
-      ]
+      ],
+      "intervals12": [
+        1,
+        1,
+        2,
+        3,
+        2,
+        2,
+        1
+      ],
+      "guclu": {
+        "koma": 19,
+        "cents": 430
+      }
     },
     "pesendide": {
       "display": "pesendide",
@@ -4004,7 +4654,20 @@
           "cents": 1132,
           "share": 0.056
         }
-      ]
+      ],
+      "intervals12": [
+        1,
+        1,
+        2,
+        3,
+        2,
+        2,
+        1
+      ],
+      "guclu": {
+        "koma": 32,
+        "cents": 725
+      }
     },
     "rast": {
       "display": "rast",
@@ -4053,7 +4716,20 @@
           "cents": 1087,
           "share": 0.057
         }
-      ]
+      ],
+      "intervals12": [
+        2,
+        2,
+        1,
+        2,
+        2,
+        2,
+        1
+      ],
+      "guclu": {
+        "koma": 31,
+        "cents": 702
+      }
     },
     "rehavi": {
       "display": "rehavi",
@@ -4112,7 +4788,20 @@
           "cents": 1109,
           "share": 0.081
         }
-      ]
+      ],
+      "intervals12": [
+        2,
+        2,
+        2,
+        1,
+        2,
+        2,
+        1
+      ],
+      "guclu": {
+        "koma": 32,
+        "cents": 725
+      }
     },
     "rengidil": {
       "display": "rengidil",
@@ -4161,7 +4850,20 @@
           "cents": 1109,
           "share": 0.104
         }
-      ]
+      ],
+      "intervals12": [
+        1,
+        3,
+        1,
+        2,
+        1,
+        3,
+        1
+      ],
+      "guclu": {
+        "koma": 23,
+        "cents": 521
+      }
     },
     "ruhnevaz": {
       "display": "ruhnevaz",
@@ -4215,7 +4917,20 @@
           "cents": 1087,
           "share": 0.05
         }
-      ]
+      ],
+      "intervals12": [
+        2,
+        1,
+        2,
+        2,
+        1,
+        2,
+        2
+      ],
+      "guclu": {
+        "koma": 31,
+        "cents": 702
+      }
     },
     "saba": {
       "display": "saba",
@@ -4264,7 +4979,20 @@
           "cents": 996,
           "share": 0.073
         }
-      ]
+      ],
+      "intervals12": [
+        2,
+        1,
+        1,
+        3,
+        1,
+        2,
+        2
+      ],
+      "guclu": {
+        "koma": 19,
+        "cents": 430
+      }
     },
     "sabazemzeme": {
       "display": "saba-zemzeme",
@@ -4323,7 +5051,20 @@
           "cents": 1109,
           "share": 0.069
         }
-      ]
+      ],
+      "intervals12": [
+        4,
+        1,
+        2,
+        2,
+        1,
+        1,
+        1
+      ],
+      "guclu": {
+        "koma": 32,
+        "cents": 725
+      }
     },
     "sazkar": {
       "display": "sazkar",
@@ -4372,7 +5113,20 @@
           "cents": 1109,
           "share": 0.158
         }
-      ]
+      ],
+      "intervals12": [
+        2,
+        2,
+        2,
+        1,
+        2,
+        2,
+        1
+      ],
+      "guclu": {
+        "koma": 32,
+        "cents": 725
+      }
     },
     "sedaraban": {
       "display": "sedaraban",
@@ -4426,7 +5180,20 @@
           "cents": 1042,
           "share": 0.06
         }
-      ]
+      ],
+      "intervals12": [
+        2,
+        1,
+        3,
+        1,
+        2,
+        1,
+        2
+      ],
+      "guclu": {
+        "koma": 32,
+        "cents": 725
+      }
     },
     "segah": {
       "display": "segah",
@@ -4485,7 +5252,20 @@
           "cents": 1109,
           "share": 0.035
         }
-      ]
+      ],
+      "intervals12": [
+        1,
+        2,
+        2,
+        2,
+        1,
+        2,
+        2
+      ],
+      "guclu": {
+        "koma": 22,
+        "cents": 498
+      }
     },
     "segahmaye": {
       "display": "segah-maye",
@@ -4544,7 +5324,20 @@
           "cents": 1109,
           "share": 0.179
         }
-      ]
+      ],
+      "intervals12": [
+        2,
+        2,
+        2,
+        1,
+        2,
+        2,
+        1
+      ],
+      "guclu": {
+        "koma": 32,
+        "cents": 725
+      }
     },
     "sehnaz": {
       "display": "sehnaz",
@@ -4608,7 +5401,20 @@
           "cents": 1132,
           "share": 0.049
         }
-      ]
+      ],
+      "intervals12": [
+        1,
+        1,
+        2,
+        1,
+        2,
+        2,
+        3
+      ],
+      "guclu": {
+        "koma": 19,
+        "cents": 430
+      }
     },
     "sehnazbuselik": {
       "display": "sehnazbuselik",
@@ -4662,7 +5468,20 @@
           "cents": 1132,
           "share": 0.134
         }
-      ]
+      ],
+      "intervals12": [
+        2,
+        2,
+        1,
+        3,
+        1,
+        2,
+        1
+      ],
+      "guclu": {
+        "koma": 19,
+        "cents": 430
+      }
     },
     "sevkefza": {
       "display": "sevkefza",
@@ -4721,7 +5540,20 @@
           "cents": 1109,
           "share": 0.032
         }
-      ]
+      ],
+      "intervals12": [
+        1,
+        3,
+        1,
+        2,
+        1,
+        2,
+        2
+      ],
+      "guclu": {
+        "koma": 23,
+        "cents": 521
+      }
     },
     "sultaniyegah": {
       "display": "sultaniyegah",
@@ -4775,7 +5607,20 @@
           "cents": 1087,
           "share": 0.079
         }
-      ]
+      ],
+      "intervals12": [
+        2,
+        1,
+        2,
+        2,
+        1,
+        3,
+        1
+      ],
+      "guclu": {
+        "koma": 31,
+        "cents": 702
+      }
     },
     "suzidil": {
       "display": "suzidil",
@@ -4834,7 +5679,20 @@
           "cents": 1132,
           "share": 0.124
         }
-      ]
+      ],
+      "intervals12": [
+        2,
+        1,
+        1,
+        4,
+        1,
+        2,
+        1
+      ],
+      "guclu": {
+        "koma": 19,
+        "cents": 430
+      }
     },
     "suzidilara": {
       "display": "suzidilara",
@@ -4898,7 +5756,20 @@
           "cents": 1132,
           "share": 0.115
         }
-      ]
+      ],
+      "intervals12": [
+        1,
+        1,
+        2,
+        3,
+        2,
+        2,
+        1
+      ],
+      "guclu": {
+        "koma": 32,
+        "cents": 725
+      }
     },
     "suzinak": {
       "display": "suzinak",
@@ -4952,7 +5823,20 @@
           "cents": 1109,
           "share": 0.105
         }
-      ]
+      ],
+      "intervals12": [
+        2,
+        1,
+        3,
+        1,
+        2,
+        2,
+        1
+      ],
+      "guclu": {
+        "koma": 32,
+        "cents": 725
+      }
     },
     "suzinakzirgule": {
       "display": "suzinak-zirgule",
@@ -4996,7 +5880,20 @@
           "cents": 1087,
           "share": 0.082
         }
-      ]
+      ],
+      "intervals12": [
+        1,
+        3,
+        1,
+        2,
+        1,
+        3,
+        1
+      ],
+      "guclu": {
+        "koma": 31,
+        "cents": 702
+      }
     },
     "tahir": {
       "display": "tahir",
@@ -5040,7 +5937,20 @@
           "cents": 996,
           "share": 0.098
         }
-      ]
+      ],
+      "intervals12": [
+        2,
+        1,
+        2,
+        2,
+        2,
+        1,
+        2
+      ],
+      "guclu": {
+        "koma": 22,
+        "cents": 498
+      }
     },
     "tahirbuselik": {
       "display": "tahirbuselik",
@@ -5109,7 +6019,20 @@
           "cents": 1132,
           "share": 0.054
         }
-      ]
+      ],
+      "intervals12": [
+        2,
+        2,
+        1,
+        2,
+        2,
+        2,
+        1
+      ],
+      "guclu": {
+        "koma": 32,
+        "cents": 725
+      }
     },
     "ussak": {
       "display": "ussak",
@@ -5158,7 +6081,20 @@
           "cents": 996,
           "share": 0.087
         }
-      ]
+      ],
+      "intervals12": [
+        2,
+        1,
+        2,
+        2,
+        1,
+        2,
+        2
+      ],
+      "guclu": {
+        "koma": 22,
+        "cents": 498
+      }
     },
     "yegah": {
       "display": "yegah",
@@ -5217,7 +6153,20 @@
           "cents": 1132,
           "share": 0.032
         }
-      ]
+      ],
+      "intervals12": [
+        2,
+        2,
+        2,
+        1,
+        2,
+        2,
+        1
+      ],
+      "guclu": {
+        "koma": 19,
+        "cents": 430
+      }
     },
     "yenicargah": {
       "display": "yeni_cargah",
@@ -5266,7 +6215,20 @@
           "cents": 1177,
           "share": 0.032
         }
-      ]
+      ],
+      "intervals12": [
+        2,
+        2,
+        1,
+        2,
+        2,
+        2,
+        1
+      ],
+      "guclu": {
+        "koma": 18,
+        "cents": 408
+      }
     },
     "zavil": {
       "display": "zavil",
@@ -5325,7 +6287,20 @@
           "cents": 1109,
           "share": 0.105
         }
-      ]
+      ],
+      "intervals12": [
+        2,
+        2,
+        1,
+        2,
+        2,
+        2,
+        1
+      ],
+      "guclu": {
+        "koma": 31,
+        "cents": 702
+      }
     }
   }
 }

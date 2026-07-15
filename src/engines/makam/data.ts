@@ -65,8 +65,13 @@ function attachCorpusData(makam: Makam): Makam {
   if (!key) return makam;
   const entry = CORPUS_MAKAMS[key];
   const komaScale = CORPUS_KOMA_SCALES[key];
+  // 12-TET `intervals` artik korpus koma dizisinden OTONOM turetilir (elle
+  // yazilan yerine); temiz heptatoni cikmazsa el-yazimina duser. Otantik perde
+  // komaScale'de; bu, 12-TET notasyon izdusumu.
+  const intervals = komaScale?.intervals12 ?? makam.intervals;
   return {
     ...makam,
+    intervals,
     keySignature: entry.keySignature,
     keySignatureConsensus: entry.consensus,
     ...(komaScale ? {komaScale} : {}),

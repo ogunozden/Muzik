@@ -156,6 +156,12 @@ const FRENKCIN_VELVELE: Stroke[] = [
   [1, "dum", 1], [2, "dum", 2], DU(4), ME(4.5), DU(5), ME(5.5), [6, "dum", 1],
   [7, "te", 0.5], [7.5, "ke", 0.5], [8, "tek", 1], [9, "ka", 1], [10, "tek", 1], [11, "ka", 2],
 ]; // Gonul s.103
+// Raksan velvelesi (Raksan 2, 5+5+5): uc esit grup (DÜM TE KE TEK KÂ TE KE).
+const RAKSAN_VELVELE: Stroke[] = [
+  [1, "dum", 1], [2, "te", 0.5], [2.5, "ke", 0.5], [3, "tek", 1], [4, "ka", 1], [5, "te", 0.5], [5.5, "ke", 0.5],
+  [6, "dum", 1], [7, "te", 0.5], [7.5, "ke", 0.5], [8, "tek", 1], [9, "ka", 1], [10, "te", 0.5], [10.5, "ke", 0.5],
+  [11, "dum", 1], [12, "te", 0.5], [12.5, "ke", 0.5], [13, "tek", 1], [14, "ka", 1], [15, "te", 0.5], [15.5, "ke", 0.5],
+]; // Gonul s.104
 const FAHTE: Stroke[] = [
   [1, "dum", 2], [3, "dum", 1], [4, "dum", 1], [5, "tek", 2], [7, "tek", 2],
   [9, "tek", 2], [11, "dum", 2], [13, "ta", 2], [15, "hek", 2],
@@ -236,7 +242,7 @@ export const USUL_DATA: Usul[] = [
   makeUsul("raksan", "Raksan", "Raksan", 15, "8", [
     [1, "dum", 1], [2, "tek", 1], [3, "tek", 1], [4, "dum", 2], [6, "te", 1], [7, "ka", 2],
     [9, "dum", 2], [11, "tek", 2], [13, "te", 1], [14, "ka", 2],
-  ]), // s.103
+  ], RAKSAN_VELVELE), // s.103 (darp) + Gonul s.104 (velvele, Raksan 2)
   // --- Buyuk usuller ---
   makeUsul("nimberafsan", "Nim Berafsan", "Nim Berefsan", 16, "4", [
     [1, "dum", 2], [3, "tek", 1], [4, "dum", 2], [6, "tek", 1], [7, "dum", 2],

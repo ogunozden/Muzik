@@ -100,6 +100,33 @@ export function getMakamKomaFrequencies(makam: Makam, octave = 4): number[] | nu
   return freqs;
 }
 
+/**
+ * 12-TET bir klavye tusunu (midiNumber) makamin OTANTIK koma perde-izgarasina
+ * SNAP eder: tusun karara gore cent'i hesaplanir, oktav-ici en yakin dizi
+ * derecesine (koma perdesi) kaydirilir, oktav ekseni korunur. Boylece piyano
+ * makam-farkindalikli calar (hicaz'in 113c ikilisi gibi). komaScale yoksa null
+ * (12-TET calinir). Bkz. playNoteAtFrequency.
+ */
+export function snapMidiToMakamFrequency(makam: Makam, midiNumber: number, octaveAnchor = 4): number | null {
+  const scale = makam.komaScale;
+  if (!scale || scale.degrees.length === 0) return null;
+  const kararHz = midiToFrequency(noteNameToMidi(makam.tonic, octaveAnchor));
+  const centsFromKarar = 1200 * Math.log2(midiToFrequency(midiNumber) / kararHz);
+  const octaveOffset = Math.floor(centsFromKarar / 1200);
+  const centsInOctave = centsFromKarar - octaveOffset * 1200; // 0..1200
+  const candidates = [...scale.degrees.map((degree) => degree.cents), 1200]; // + ust karar
+  let nearest = candidates[0];
+  let bestDistance = Infinity;
+  for (const candidate of candidates) {
+    const distance = Math.abs(candidate - centsInOctave);
+    if (distance < bestDistance) {
+      bestDistance = distance;
+      nearest = candidate;
+    }
+  }
+  return kararHz * Math.pow(2, (octaveOffset * 1200 + nearest) / 1200);
+}
+
 const MAKAM_BASE: Makam[] = [
   {
     id: "rast",

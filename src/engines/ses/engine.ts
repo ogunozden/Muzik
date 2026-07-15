@@ -56,6 +56,20 @@ export async function playNote(
   await playInstrumentNote(midiNumber, instrument, duration, 0.22);
 }
 
+/**
+ * Tek notayi OTANTIK FREKANSTA calar (makam koma perdesi; 12-TET disi). En
+ * yakin sample'a demirlenir, targetFrequency ile tam perdeye kaydirilir.
+ * Bkz. snapMidiToMakamFrequency (mikrotonal klavye).
+ */
+export async function playNoteAtFrequency(
+  frequency: number,
+  duration: number = 0.5,
+  instrument: InstrumentType = "ud"
+): Promise<void> {
+  const nearestMidi = Math.round(69 + 12 * Math.log2(frequency / 440));
+  await playInstrumentNote(nearestMidi, instrument, duration, 0.22, frequency);
+}
+
 export async function playScale(
   notes: number[],
   duration: number = 0.4,

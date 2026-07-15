@@ -2,7 +2,7 @@
 
 import {memo, useCallback, useMemo, useRef} from "react";
 import {PIANO_KEYS, midiToNoteName} from "@/engines/nota/data";
-import {playNote} from "@/engines/ses/engine";
+import {playNote, playNoteAtFrequency} from "@/engines/ses/engine";
 import type {InstrumentType} from "@/engines/ses/engine";
 import {tokens} from "@/shared/tokens";
 
@@ -37,6 +37,11 @@ interface InstrumentSurfaceProps {
   instrument?: InstrumentType;
   instrumentName?: string;
   noteCountLabel?: string;
+  /**
+   * Tusu makam koma perde-izgarasina SNAP eden fonksiyon (A3). Bir frekans
+   * dondururse o OTANTIK perde calinir (12-TET degil); null ise 12-TET.
+   */
+  snapToFrequency?: (midiNumber: number) => number | null;
 }
 
 interface NoteKey {
@@ -90,6 +95,7 @@ function InstrumentSurfaceComponent({
   instrument = "ud",
   instrumentName,
   noteCountLabel = "36 notes",
+  snapToFrequency,
 }: InstrumentSurfaceProps) {
   const activeRef = useRef<Set<number>>(new Set());
   const selectedInstrument = isMelodicInstrument(instrument) ? instrument : "ud";
@@ -102,8 +108,15 @@ function InstrumentSurfaceComponent({
     if (activeRef.current.has(midiNumber)) return;
     activeRef.current.add(midiNumber);
     onNoteOn?.(midiNumber);
-    await playNote(midiNumber, 0.5, selectedInstrument);
-  }, [onNoteOn, selectedInstrument]);
+    // Makam secili + koma dizisi varsa tusu otantik koma perdesine snap et
+    // (12-TET degil); yoksa esit-tampere cal.
+    const snapped = snapToFrequency?.(midiNumber) ?? null;
+    if (snapped) {
+      await playNoteAtFrequency(snapped, 0.5, selectedInstrument);
+    } else {
+      await playNote(midiNumber, 0.5, selectedInstrument);
+    }
+  }, [onNoteOn, selectedInstrument, snapToFrequency]);
 
   const handleNoteOff = useCallback((midiNumber: number) => {
     activeRef.current.delete(midiNumber);

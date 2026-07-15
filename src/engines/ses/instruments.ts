@@ -207,6 +207,7 @@ export async function playInstrumentNote(
   instrument: InstrumentType,
   duration: number = 0.5,
   gain: number = 0.22,
+  targetFrequency?: number,
 ): Promise<void> {
   const ok = await initAudio();
   const context = getOrCreateAudioContext();
@@ -217,11 +218,12 @@ export async function playInstrumentNote(
 
   if (profile.type === "melodic") {
     await preloadInstrumentSamples(instrument);
-    if (scheduleSampledMelodicNote(context, midiNumber, instrument, startAt, duration, gain)) {
+    // targetFrequency: makam koma perdesi gibi mikrotonal perde (12-TET disi).
+    if (scheduleSampledMelodicNote(context, midiNumber, instrument, startAt, duration, gain, targetFrequency)) {
       return;
     }
     if (!SYNTHETIC_FALLBACK_ENABLED) return;
-    scheduleSynthMelodicNote(context, midiNumber, instrument, startAt, duration, gain);
+    scheduleSynthMelodicNote(context, midiNumber, instrument, startAt, duration, gain, targetFrequency);
   } else if (profile.type === "percussion") {
     await preloadPercussionSymbolSamples(["tek"]);
     if (!scheduleSampledPercussionHit(context, "tek", false, startAt, duration)) {

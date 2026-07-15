@@ -6,7 +6,7 @@ import { UnifiedLayout } from "@/shared/ui/layout/UnifiedLayout";
 import { StudioTabs } from "@/features/studio/StudioTabs";
 import dynamic from "next/dynamic";
 import { useMidiInput } from "@/hooks/useMidiInput";
-import { MAKAM_DATA } from "@/engines/makam/data";
+import { MAKAM_DATA, snapMidiToMakamFrequency } from "@/engines/makam/data";
 import { USUL_DATA } from "@/engines/usul/data";
 import { midiToNoteName, noteNameToMidi } from "@/engines/nota/data";
 import { playSequence, stopAll } from "@/engines/ses/engine";
@@ -136,6 +136,13 @@ function NotaEditorPage() {
     
     activeNoteStartTimes.current.delete(midiNumber);
   }, [isRecording, addRecordedNote, setActiveNotes]);
+
+  // A3: klavye tusunu secili makamin OTANTIK koma perde-izgarasina snap eder
+  // (12-TET degil). Makam yoksa/koma dizisi yoksa null -> esit-tampere.
+  const makamSnap = useCallback((midiNumber: number): number | null => {
+    const makam = MAKAM_DATA.find((m) => m.id === selectedMakamId);
+    return makam ? snapMidiToMakamFrequency(makam, midiNumber) : null;
+  }, [selectedMakamId]);
 
   useMidiInput({
     onNoteOn: handleNoteOn,
@@ -470,6 +477,7 @@ function NotaEditorPage() {
                       instrument={selectedInstrument}
                       instrumentName={selectedInstrumentName}
                       noteCountLabel={t("notaEditor.surfacePadCount")}
+                      snapToFrequency={makamSnap}
                     />
                   </div>
                 </CardBody>

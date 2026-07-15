@@ -315,6 +315,19 @@ const CIFTE_DUYEK_VELVELE: Stroke[] = [
   [8, "te", 0.5], [8.5, "ke", 0.5], DU(9, 1), ME(10, 1), DU(11), ME(11.5),
   [12, "dum", 1, "Düm"], [13, "tek", 1], [14, "te", 0.5], [14.5, "ke", 0.5], [15, "tek", 1], [16, "ka", 1],
 ]; // Gonul s.105 (Velvele-1)
+const FERI_MUHAMMES: Stroke[] = [
+  // 4+4+4+4 (16/4): Düüm Tek Kâ | Düüm Teek | Düm Tek dü me Düm | Tâ Hek te ke te ke
+  [1, "dum", 2], [3, "tek", 1], [4, "ka", 1], [5, "dum", 2], [7, "tek", 2],
+  [9, "dum", 1], [10, "tek", 1], DU(11), ME(11.5), [12, "dum", 1],
+  [13, "ta", 1], [14, "hek", 1], [15, "te", 0.5], [15.5, "ke", 0.5], [16, "te", 0.5], [16.5, "ke", 0.5],
+]; // Gonul s.104
+const FERI_MUHAMMES_VELVELE: Stroke[] = [
+  // 16/4: Düm Düm Tek te ke | Tek Kâ Tek Kâ | dü me dü me te ke te ke | Tek Kâ Tek Kâ
+  [1, "dum", 1], [2, "dum", 1], [3, "tek", 1], [4, "te", 0.5], [4.5, "ke", 0.5],
+  [5, "tek", 1], [6, "ka", 1], [7, "tek", 1], [8, "ka", 1],
+  DU(9), ME(9.5), DU(10), ME(10.5), [11, "te", 0.5], [11.5, "ke", 0.5], [12, "te", 0.5], [12.5, "ke", 0.5],
+  [13, "tek", 1], [14, "ka", 1], [15, "tek", 1], [16, "ka", 1],
+]; // Gonul s.104
 
 export const USUL_DATA: Usul[] = [
   // --- Kucuk usuller ---
@@ -393,6 +406,8 @@ export const USUL_DATA: Usul[] = [
     [15, "dum", 2], [17, "dum", 1], [18, "dum", 1],
   ], TURKI_DARB_VELVELE), // Gonul s.105 (darp 6+4+4+4, ON SEKIZ zamanli) + s.106 (velvele)
   makeUsul("cifteduyek", "Çifte Düyek", "Cifte Duyek", 16, "4", CIFTE_DUYEK_16, CIFTE_DUYEK_VELVELE), // Gonul s.105 (8+8); korpusta repertuvari var
+  makeUsul("ferimuhammes", "Fer'î Muhammes", "Feri Muhammes", 16, "4", FERI_MUHAMMES, FERI_MUHAMMES_VELVELE), // Gonul s.104 (4+4+4+4)
+  makeUsul("fer", "Fer", "Fer", 16, "4", FERI_MUHAMMES, FERI_MUHAMMES_VELVELE), // Gonul s.104: Fer = Fer'î Muhammes (ayni desen)
   makeUsul("nimdevir", "Nim Devir", "Nim Devir", 18, "4", NIM_DEVIR, NIM_DEVIR_VELVELE), // Gonul s.106 (6+4+4+4); korpusta repertuvari var
 
   makeUsul("fahte", "Fahte", "Fahte", 20, "4", FAHTE, FAHTE_VELVELE), // s.139 (darp) + Gonul s.105

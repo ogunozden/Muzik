@@ -490,13 +490,17 @@ Kaynak: docs/usul-velvele-gonul.md (Gonul s.101-109 ~40 usul darp+velvele metni)
 Yontem: DARP-CAPALI hizalama (darp beat iskeleti + referans hece dizisi) +
 dosum testi (toplam=beats) + iki-kitap capraz-kontrol. Fabrikasyon YOK.
 
-- [~] F14.1 Velvele verisi: 23/36 usulde VAR. Kalan 10 hedef:
-  - [x] aksaksemai, curcuna, oynak, nimcember, frenkcin, raksan (bu oturum)
-  - [ ] darb(6), lenkfahte(10), devrirevan(14) — orta
-  - [ ] nimhafif(16), nimberafsan(16), fahte(20), cember(24), devrikebir(28),
-        hafif(32) — buyuk (kesin deger icin gerekirse re-render)
-  - [ ] OZEL: darbiturki(18) velvelesiz (kitap der); darbifeth(88)/zincir(120)
-        compound/velvele-formu (karar); tam berafsan(32) Gonul s.109+ re-render
+- [~] F14.1 Velvele verisi: ~28/36 usulde VAR. Yontem: DARP-CAPALI hizalama
+      (darp grup iskeleti + referans hece dizisi) + dosum testi — GUVENILIR.
+  - [x] aksaksemai, curcuna, oynak, nimcember, frenkcin, raksan, lenkfahte,
+        nimhafif, nimberafsan, fahte, cember, devrikebir (12 — bu oturum)
+  - [ ] hafif(32), berafsan(32) — kendi Gonul sayfalari (s.106/109) re-render
+  - [ ] devrirevan(14) — benim darp'im (3+2+2+3+2+2) referans Mevlevi (3+4+3+4)
+        ile FARKLI; darp eslemesi/uzlastirmasi gerekir
+  - [ ] darb(6) — Gonul temiz tablosunda yok; Kudum s.29 taramasindan
+  - [ ] KOMPOZIT (bilesenlerden compose edilebilir): zincir(120) = cifteduyek+
+        fahte+cember+devrikebir+berafsan; cifteduyek velvelesi + berafsan lazim
+  - [ ] OZEL: darbiturki(18) velvelesiz (kitap der -> eklenmez); darbifeth(88)
 - [ ] F14.2 Usul Ansiklopedisi UI (/references/usul): darp<->velvele toggle +
       calim (UsulPanel/UsulNotation hazir, syllable tasiyor)
 - [ ] F14.3 Makam Rehberi: studio panelini genislet (koma+perde+seyir)

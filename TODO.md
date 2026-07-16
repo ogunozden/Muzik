@@ -522,13 +522,18 @@ dosum testi (toplam=beats) + iki-kitap capraz-kontrol. Fabrikasyon YOK.
       (4 paralel ajan; TDV Islam Ansiklopedisi, dergipark, usuller.com, ITU tezi,
       salihbora, tarihi edvarlar). Kural: kaynakli darp -> eklendi, kaynaksiz ->
       eklenmedi (uydurma yok).
-  - [x] EKLENDI (11): ayindevrirevani(14/8=Mevlevi DR), agirevfer(9/4),
+  - [x] EKLENDI (16): ayindevrirevani(14/8=Mevlevi DR), agirevfer(9/4),
         mevlevievferi(9/4) [Evfer 2.mertebe], raksaksagi(9/8, 2+3+2+2),
         aydin(9/8, 2+2+2+3), agircenber(24/2=Cenber 2.mertebe),
         darbeyn(60/4=DevriKebir+Berefsan), yuruksofyan(2/4=NimSofyan),
         devrisureyyasofyani(10/16=tarihi Curcuna),
         sakil(48), havi(64) — repo'daki Heper "Turk Musikisinde Usuller ve
         Kudum" kitabindan (OCR tablosu + PDF s.220 render); MODERN kanonik.
+        + Adana Musiki Dernegi/TDV taramasi: katikofti(=musemmen), musemmenii,
+        turkdarbi(=darbiturki), agiraksaksemai(10/4), agirsenginsemai(6/2).
+  - [ ] DARP YOK (TDV yalniz zaman veriyor, Adana'da yok, hece darp gerekli
+        3. kaynak I.H.Ozkan kitabi): durakevferi(21), bektasiraksi(15),
+        bektasiraksani(15). Zaman biliniyor, darp dizisi BULUNAMADI.
   - [ ] DARP KAMUYA ACIK KAYNAKTA YOK (yalniz mus2/SymbTr ic DB): dolap(12/8),
         gulsen(6/8), turkmen(18/8), bulgardarbi(8/8). Tek yol: repo'daki
         symb/SymbTr-3.0/mu2/ .mu2 dosyalarindan usul satirini cikarmak.

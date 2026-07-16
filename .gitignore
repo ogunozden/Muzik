@@ -55,3 +55,9 @@ output/
 
 # Runtime mutable state (SQLite; ADR 0001)
 /var/
+
+# Playwright E2E artifacts
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/

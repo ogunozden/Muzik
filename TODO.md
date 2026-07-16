@@ -556,8 +556,12 @@ dosum testi (toplam=beats) + iki-kitap capraz-kontrol. Fabrikasyon YOK.
 - [x] F14.4 Makam seyir metinleri: Gonul s.307+ (s.316 degil) seyir tarifleri
       pdftotext ile cikarilip 24 ana makama baglandi (makam-seyir.generated.json);
       studio katlanabilir seyir metni gosterir. Makam tipine seyir{yon,metin}.
-- [ ] F14.5 Alistirma dizini (Gonul s.114-154 usul-solfej eslesmeleri)
-- [ ] F14.6 Rehberli ogrenme akisi (stepper, kitabin pedagoji sirasi)
+- [ ] F14.5 Alistirma dizini (Gonul s.114-154): NOT temiz-metin degil. pdftotext
+      yalniz pedagojik yonerge veriyor (s.93-117); alistirmalar NOTASYON
+      (solfej skorlari), usul/makam etiketi sayfa basliklarinda. Gercek dizin
+      icin her alistirmanin nota-sayfasi okunmali (buyuk, dusuk yapi) -> ertelendi.
+- [ ] F14.6 Rehberli ogrenme akisi (stepper): UX tasarim isi; kucuk->buyuk usul +
+      makam pedagoji sirasi. Veri hazir (94 usul + 24 makam seyir); UI bekliyor.
 
 ### Dis Girdi Bekleyenler (ADR 0002 Karar 3 sozlesmesi)
 

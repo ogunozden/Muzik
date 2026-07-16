@@ -15,6 +15,7 @@ export type RoutePath =
   | "referencesCuration"
   | "archive"
   | "rhythm"
+  | "ogren"
   | "samples"
   | "makam"
   | "usul"
@@ -53,6 +54,7 @@ export const routes = {
   referencesCuration: "/references/curation",
   archive: "/archive",
   rhythm: "/rhythm",
+  ogren: "/ogren",
   samples: "/samples",
   makam: "/makam",
   usul: "/usul",
@@ -115,6 +117,12 @@ export const routeMetadata: Record<RoutePath, Route> = {
     name: "rhythm",
     titleKey: "nav.rhythm",
     description: "Usül ve harici perküsyon çalışma",
+  },
+  ogren: {
+    path: routes.ogren,
+    name: "ogren",
+    titleKey: "nav.ogren",
+    description: "Rehberli usül öğrenme akışı — küçükten büyüğe adım adım",
   },
   samples: {
     path: routes.samples,

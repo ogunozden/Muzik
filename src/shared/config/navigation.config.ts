@@ -40,6 +40,7 @@ export const navigation: NavItem[] = [
       {id: "studioFollow", label: "nav.studioFollow", href: routes.studioFollow, type: "link", icon: "🎧"},
       {id: "studio", label: "nav.studio", href: routes.studio, type: "link", icon: "🎼"},
       {id: "rhythm", label: "nav.rhythm", href: routes.rhythm, type: "link", icon: "🥁"},
+      {id: "ogren", label: "nav.ogren", href: routes.ogren, type: "link", icon: "🎓"},
     ],
   },
   {

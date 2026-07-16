@@ -497,6 +497,7 @@ export const USUL_DATA: Usul[] = [
   makeUsul("yuruksemai", "Yürüksemâî", "Yuruk Semai", 6, "8", YURUK_SEMAI, YURUK_SEMAI_VELVELE), // s.25
   makeUsul("senginsemai", "Sengin Semai", "Sengin Semai", 6, "4", YURUK_SEMAI, YURUK_SEMAI_VELVELE), // s.25: YS 2. mertebesi
   makeUsul("agirsemai", "Ağır Semai", "Agir Semai", 6, "2", YURUK_SEMAI, YURUK_SEMAI_VELVELE), // s.25: YS 3. mertebesi (agir semai)
+  makeUsul("agirsenginsemai", "Ağır Sengin Semai", "Agir Sengin Semai", 6, "2", YURUK_SEMAI, YURUK_SEMAI_VELVELE), // Sengin Semai ailesi 6/2 mertebe; ayni darp
   makeUsul("darb", "Darb", "Darb", 6, "4", [[1, "dum", 2], [3, "tek", 2], [5, "tek", 2]]), // s.29
   makeUsul("devirhindi", "Devr-i Hindi", "Devr-i Hindi", 7, "8", [
     [1, "dum", 1], [2, "tek", 1], [3, "tek", 1], [4, "dum", 2], [6, "tek", 2],
@@ -525,6 +526,7 @@ export const USUL_DATA: Usul[] = [
     [1, "dum", 1], [2, "tek", 1], [3, "tek", 1], [4, "dum", 2], [6, "tek", 2], [8, "tek", 2],
   ], OYNAK_VELVELE), // s.63 (darp) + Gonul s.102 (velvele)
   makeUsul("aksaksemai", "Aksaksemâî", "Aksak Semai", 10, "8", AKSAK_SEMAI, AKSAK_SEMAI_VELVELE), // s.67
+  makeUsul("agiraksaksemai", "Ağır Aksak Semâî", "Agir Aksak Semai", 10, "4", AKSAK_SEMAI, AKSAK_SEMAI_VELVELE), // Adana ?pnum=369: Aksak Semai'nin 10/4 agir mertebesi, ayni darp
   // Curcuna = 10/8 (gercek notasyon). Kitap (s.66) onu Aksak Semai'nin 10/16
   // mertebesi sayar ama SymbTr v3 korpusundaki curcuna eserlerinin TAMAMI 10/8
   // notalidir; pedagoji de 10/8 der (darp: 3+2+2+3 = Düm2 Te1 Kâ2 Düm2 Tek2

@@ -503,18 +503,25 @@ dosum testi (toplam=beats) + iki-kitap capraz-kontrol. Fabrikasyon YOK.
   - [ ] KOMPOZIT: zincir(120) = cifteduyek+fahte+cember+devrikebir+berafsan
         velvelelerinden compose; cifteduyek velvelesi (Gonul s.105) lazim.
         darbifeth(88) — 88 zamanlik ozel velvele (Gonul re-render).
-- [~] F14.1b YENI USULLER: korpusta repertuvari VAR ama engine tanimi YOK olan
-      usuller (usul-corpus-meters'da 70 tanimsiz; cogu gurultu/mertebe, ~15
-      gercek). Bu eserler su an usul metadata'siz (darp/velvele/tempo yok)
-      render ediliyor. Gonul temiz dizgiden darp+velvele aktarilir, tempo
-      korpustan otonom baglanir.
-  - [x] muhammes(32) Gonul s.110; nimdevir(18) Gonul s.106
-  - [ ] cifteduyek(16) Gonul s.105 [zincir velvelesini de acar]
-  - [ ] ferimuhammes(16)/fer(16) Gonul s.104
-  - [ ] sarkidevrirevani(13/8), bektasidevrirevani(13/8), nimevsat(13/8) Gonul s.104
-  - [ ] evsat(26), nimsakil(24), bestedevrirevani(26), remel(28), firengifer(28)
-        Gonul s.107-108 (re-render)
-  - [ ] tekvurus(11/8), ikizaksak(12/8), cengiharbi(10/4) Gonul s.102-103
+- [x] F14.1b YENI USULLER: korpusta repertuvari VAR ama engine tanimi YOK olan
+      usuller. Gonul s.101-110 temiz dizgiden darp+velvele aktarildi, tempo
+      korpustan otonom baglanir. Gonul tablosundaki TUM korpus-destekli
+      usuller islendi (18 usul, hepsi dosum testinden gecti):
+  - [x] muhammes(32) s.110; nimdevir(18) s.106; cifteduyek(16) s.105
+  - [x] ferimuhammes(16)/fer(16) s.104; nimevsat(13/8) s.104
+  - [x] sarkidevrirevani(13/8), bektasidevrirevani(13/8) s.104
+  - [x] tekvurus(11/8), ikizaksak(12/8) s.103; cengiharbi(10/4, velvelesiz) s.103
+  - [x] nimsakil(24), evsat(26) s.107; bestedevrirevani(26) s.108
+  - [x] remel(28), firengifer(28) s.109
+- [ ] F14.1c Korpus YAZIM VARYANTLARI: usul VAR ama korpus farkli yaziyor →
+      normalizeUsulNameForCorpus eslesmiyor, tempo baglanmiyor. Eslestirme
+      (alias) gerekir: berefsan=berafsan, cenber=cember, devrihindi=devirhindi,
+      devrituran=devirituran, nimberefsan=nimberafsan, darbifetih=darbifeth,
+      zencir=zincir, turkdarbi=darbiturki (SymbTr yazimi vs engine id).
+- [ ] F14.1d Gonul tablosunda OLMAYAN korpus usulleri (baska kaynak/sayfa
+      gerekir): sakil(tam), havi, muasser, darbeyn, cevher, dolap, gulsen,
+      aydin, turkmen, katikofti, bulgardarbi, devrisureyya + mertebe
+      varyantlari (agircenber, agirevfer, agirsenginsemai, aksaksemaievferi...)
 - [ ] F14.2 Usul Ansiklopedisi UI (/references/usul): darp<->velvele toggle +
       calim (UsulPanel/UsulNotation hazir, syllable tasiyor)
 - [ ] F14.3 Makam Rehberi: studio panelini genislet (koma+perde+seyir)

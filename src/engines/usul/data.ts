@@ -736,6 +736,27 @@ export function getUsulById(id: string): Usul | undefined {
   return USUL_DATA.find((usul) => usul.id === id);
 }
 
+/**
+ * Usulun vurgu gruplamasi (accent grouping) — darptaki kuvvetli vuruslarin
+ * (dum/ta) baslattigi bolumlerin zaman uzunluklari. Orn. Aksak (dum b1, b5) ->
+ * [4, 5]. Gruplama darptan TURETILIR (ekstra veri degil); yapisal usullerde
+ * yalniz 1. dum kesin oldugundan tek grup dondurur (durustce eksik).
+ */
+export function getUsulGrouping(usul: Usul): number[] {
+  const accents = usul.symbols.filter((s) => s.isAccent).map((s) => s.beat);
+  // Bolum sinirlari: beat 1 + kuvvetli vurus (dum/ta) konumlari. Usul zayif
+  // baslarsa (orn. nimevsat tek-ka...) 1. bolum ilk dum'e kadar uzanir.
+  const boundaries = accents[0] === 1 ? accents : [1, ...accents];
+  if (boundaries.length === 0) return [usul.beats];
+  const groups: number[] = [];
+  for (let i = 0; i < boundaries.length; i += 1) {
+    const start = boundaries[i];
+    const end = i + 1 < boundaries.length ? boundaries[i + 1] : usul.beats + 1;
+    groups.push(Math.round((end - start) * 100) / 100);
+  }
+  return groups;
+}
+
 export function getUsulBeatDuration(usul: Usul, bpm: number): number {
   const beatUnit = parseInt(usul.unit);
   return (60 / bpm) * (4 / beatUnit);

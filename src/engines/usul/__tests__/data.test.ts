@@ -1,5 +1,5 @@
 import {describe, expect, it} from "vitest";
-import {getUsulById, getUsulBeatDuration, USUL_DATA} from "../data";
+import {getUsulById, getUsulBeatDuration, getUsulGrouping, PROVISIONAL_USUL_IDS, USUL_DATA} from "../data";
 
 /**
  * Usul verisi sozlesme testleri (2026-07-14 kaynakli yeniden yazim).
@@ -190,6 +190,27 @@ describe("usul/data", () => {
     it("returns a positive duration for every usul", () => {
       for (const usul of USUL_DATA) {
         expect(getUsulBeatDuration(usul, 60)).toBeGreaterThan(0);
+      }
+    });
+  });
+
+  describe("getUsulGrouping (vurgu gruplamasi)", () => {
+    it("derives accent grouping from dum/ta positions", () => {
+      expect(getUsulGrouping(getUsulById("aksak")!)).toEqual([4, 5]); // dum b1, b5
+      expect(getUsulGrouping(getUsulById("sofyan")!)).toEqual([4]); // tek dum
+      expect(getUsulGrouping(getUsulById("duyek")!)).toEqual([4, 4]); // dum b1, b5
+    });
+
+    it("grouping sums to the beat count for every usul", () => {
+      for (const usul of USUL_DATA) {
+        const sum = getUsulGrouping(usul).reduce((a, b) => a + b, 0);
+        expect(sum, `${usul.id}: gruplama toplami`).toBe(usul.beats);
+      }
+    });
+
+    it("provisional usuls have a single (unverified) accent group", () => {
+      for (const id of PROVISIONAL_USUL_IDS) {
+        expect(getUsulGrouping(getUsulById(id)!).length, `${id}`).toBe(1);
       }
     });
   });

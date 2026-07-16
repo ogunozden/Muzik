@@ -25,7 +25,7 @@ import {useCallback, useEffect, useRef, useState} from "react";
 import {useTranslation} from "react-i18next";
 import {LabeledSelect, LabeledSlider, PageHeader, PageShell, PageSurface, UsulPanel} from "@/shared/ui";
 import {UnifiedLayout} from "@/shared/ui/layout/UnifiedLayout";
-import {USUL_DATA, getUsulBeatDuration, PROVISIONAL_USUL_IDS} from "@/engines/usul/data";
+import {USUL_DATA, getUsulBeatDuration, getUsulGrouping, PROVISIONAL_USUL_IDS} from "@/engines/usul/data";
 import type {InstrumentType} from "@/engines/ses/engine";
 import {startRhythmLoop, stopAll, type RhythmLoopController} from "@/engines/ses/engine";
 import type {UsulNotationHandle} from "@/shared/ui/organisms/UsulNotation";
@@ -221,6 +221,19 @@ export default function UsulPage() {
           title={t("usul.title")}
           description={t("usul.subtitle")}
         />
+
+        {selectedUsulObj && (
+          <div className="mb-4 flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-[var(--color-text-secondary)]">
+            <span>
+              <strong className="text-[var(--color-text-primary)]">{selectedUsulObj.name}</strong>
+              {" — "}{selectedUsulObj.beats}/{selectedUsulObj.unit}
+            </span>
+            <span>Vurgu: {getUsulGrouping(selectedUsulObj).join("+")}</span>
+            {selectedUsulObj.defaultBpm ? <span>Tempo: ~{selectedUsulObj.defaultBpm}</span> : null}
+            {selectedUsulObj.velvele?.length ? <span>Velvele: var</span> : null}
+            <span className="ml-auto opacity-70">{USUL_DATA.length} usûl</span>
+          </div>
+        )}
 
         <UsulPanel
           ref={notationRef}

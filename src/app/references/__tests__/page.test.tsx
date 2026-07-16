@@ -116,7 +116,7 @@ describe("ReferencesPage", () => {
     expect(fetchMock).toHaveBeenCalledWith(
       "/api/external-references",
       expect.objectContaining({
-        headers: {"x-external-reference-ops-token": "secret-token"},
+        headers: expect.objectContaining({"x-external-reference-ops-token": "secret-token"}),
       }),
     );
   });

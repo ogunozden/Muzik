@@ -736,7 +736,7 @@ describe("ReferencesCurationPage", () => {
     expect(fetchMock).toHaveBeenCalledWith(
       expect.stringMatching(/^\/api\/external-references\?/),
       expect.objectContaining({
-        headers: {"x-external-reference-ops-token": "secret-token"},
+        headers: expect.objectContaining({"x-external-reference-ops-token": "secret-token"}),
       }),
     );
 
@@ -744,7 +744,7 @@ describe("ReferencesCurationPage", () => {
     await waitFor(() => expect(fetchMock).toHaveBeenCalledWith(
       expect.stringContaining("backlogOffset=1"),
       expect.objectContaining({
-        headers: {"x-external-reference-ops-token": "secret-token"},
+        headers: expect.objectContaining({"x-external-reference-ops-token": "secret-token"}),
       }),
     ));
 
@@ -752,7 +752,7 @@ describe("ReferencesCurationPage", () => {
     await waitFor(() => expect(fetchMock).toHaveBeenCalledWith(
       expect.stringContaining("candidateOffset=1"),
       expect.objectContaining({
-        headers: {"x-external-reference-ops-token": "secret-token"},
+        headers: expect.objectContaining({"x-external-reference-ops-token": "secret-token"}),
       }),
     ));
 
@@ -760,7 +760,7 @@ describe("ReferencesCurationPage", () => {
     await waitFor(() => expect(fetchMock).toHaveBeenCalledWith(
       expect.stringContaining("groupOffset=1"),
       expect.objectContaining({
-        headers: {"x-external-reference-ops-token": "secret-token"},
+        headers: expect.objectContaining({"x-external-reference-ops-token": "secret-token"}),
       }),
     ));
 

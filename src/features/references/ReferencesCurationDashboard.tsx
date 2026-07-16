@@ -19,6 +19,7 @@ import {SourceDiscoveryPanel} from "./SourceDiscoveryPanel";
 import {ArtifactInventoryPanel, ProdCycleAuditPanel, QualityFeedbackPanel} from "./CurationSummaryPanels";
 import {BacklogBatchPanel} from "./BacklogBatchPanel";
 import {AutoAttachedSection, ReviewGroupsSection, ReviewQueueSection, type CurationReviewSectionsCtx} from "./CurationReviewSections";
+import {fetchExternalReferenceState, runExternalReferenceAction} from "@/shared/api/external-references-client";
 import {
   ALL_FILTER_VALUE,
   buildArtifactInventory,
@@ -38,7 +39,6 @@ import {
 // Curation page (server) bu tipi dashboard modulunden bekliyor; geriye uyumlu re-export.
 export type {ExternalReferenceState} from "./curation-dashboard-types";
 
-const OPS_TOKEN_HEADER = "x-external-reference-ops-token";
 const emptyState: ExternalReferenceState = {};
 const candidateGroupDecisionStatusOptions = ["rejected", "conflict", "deferred"];
 const deletionFilterOptions = ["Silme yok", "Silme bekleyenler", "Silinenler"];
@@ -111,17 +111,12 @@ export function ReferencesCurationDashboard({
     if (composerFilter !== ALL_FILTER_VALUE) params.set("composer", composerFilter);
     if (priorityGroupFilter !== ALL_FILTER_VALUE) params.set("priorityGroup", priorityGroupFilter);
 
-    const response = await fetch(`/api/external-references?${params.toString()}`, {
-      cache: "no-store",
-      headers: opsToken ? {[OPS_TOKEN_HEADER]: opsToken} : undefined,
-    });
-    const data = await response.json();
-
-    if (!response.ok) {
-      throw new Error(data.error ?? "Kürasyon durumu okunamadı.");
-    }
-
-    const nextState = data as ExternalReferenceState;
+    const nextState = await fetchExternalReferenceState<ExternalReferenceState>(
+      params,
+      opsToken,
+      undefined,
+      "Kürasyon durumu okunamadı.",
+    );
     setState(nextState);
     setBacklogOffset(nextState.curation?.backlogPage?.offset ?? requestedBacklogOffset);
     setCandidateOffset(nextState.curation?.candidateReviewPage?.offset ?? requestedCandidateOffset);
@@ -150,23 +145,17 @@ export function ReferencesCurationDashboard({
     setMessage("");
 
     try {
-      const response = await fetch("/api/external-references", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          ...(opsToken ? {[OPS_TOKEN_HEADER]: opsToken} : {}),
-        },
-        body: JSON.stringify({action, ...payload}),
-      });
-      const data = await response.json();
+      const {state: nextState, result} = await runExternalReferenceAction<unknown, ExternalReferenceState>(
+        action,
+        payload,
+        opsToken,
+        undefined,
+        "Kürasyon operasyonu tamamlanamadı.",
+      );
 
-      if (!response.ok) {
-        throw new Error(data.error ?? "Kürasyon operasyonu tamamlanamadı.");
-      }
-
-      setState(data.state as ExternalReferenceState);
-      setMessage(getOperationMessage(action, data.result));
-      return data.result as unknown;
+      setState(nextState);
+      setMessage(getOperationMessage(action, result));
+      return result;
     } catch (error) {
       setMessage(error instanceof Error ? error.message : "Kürasyon operasyonu tamamlanamadı.");
       return null;

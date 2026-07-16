@@ -4,6 +4,7 @@ import {useState} from "react";
 import {Button} from "@/shared/ui/atoms/Button";
 import {Input} from "@/shared/ui/atoms/Input";
 import {Card, CardBody, CardHeader} from "@/shared/ui/atoms/Card";
+import {runExternalReferenceAction} from "@/shared/api/external-references-client";
 
 interface SourceSubmissionFormProps {
   catalogId?: string;
@@ -23,20 +24,14 @@ export function SourceSubmissionForm({catalogId, title, makam, composer}: Source
     if (!url.trim()) return;
     setStatus("sending");
     try {
-      const res = await fetch("/api/external-references", {
-        method: "POST",
-        headers: {"Content-Type": "application/json"},
-        body: JSON.stringify({
-          action: "stage",
-          url: url.trim(),
-          title: desc.trim() || title || "",
-          catalogId: catalogId || "",
-          observedTitle: title || "",
-          makam: makam || "",
-          composer: composer || "",
-        }),
+      await runExternalReferenceAction("stage", {
+        url: url.trim(),
+        title: desc.trim() || title || "",
+        catalogId: catalogId || "",
+        observedTitle: title || "",
+        makam: makam || "",
+        composer: composer || "",
       });
-      if (!res.ok) throw new Error(await res.text());
       setStatus("ok");
       setTimeout(() => { setOpen(false); setStatus("idle"); setUrl(""); setDesc(""); }, 2000);
     } catch {

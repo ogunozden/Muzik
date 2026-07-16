@@ -6,6 +6,7 @@ import {UnifiedLayout} from "@/shared/ui/layout/UnifiedLayout";
 import {Button, Input} from "@/shared/ui";
 import {tokens} from "@/shared/tokens";
 import {CurationTabs} from "./CurationTabs";
+import {fetchExternalReferenceState, runExternalReferenceAction} from "@/shared/api/external-references-client";
 
 type OperationAction = "stage" | "map" | "sync" | "audit";
 
@@ -107,7 +108,6 @@ const emptyState: ExternalReferenceState = {
 };
 const MAX_BULK_TEXT_CHARS = 100_000;
 const MAX_SOURCE_FIELD_CHARS = 2_048;
-const OPS_TOKEN_HEADER = "x-external-reference-ops-token";
 
 function today(): string {
   return new Date().toISOString().slice(0, 10);
@@ -172,17 +172,13 @@ export function ReferencesOperationsDashboard({
   const [message, setMessage] = useState(initialMessage);
 
   const loadState = useCallback(async () => {
-    const response = await fetch("/api/external-references", {
-      cache: "no-store",
-      headers: opsToken ? {[OPS_TOKEN_HEADER]: opsToken} : undefined,
-    });
-    const data = await response.json();
-
-    if (!response.ok) {
-      throw new Error(data.error ?? "Harici kaynak durumu okunamadı.");
-    }
-
-    setState(data as ExternalReferenceState);
+    const nextState = await fetchExternalReferenceState<ExternalReferenceState>(
+      undefined,
+      opsToken,
+      undefined,
+      "Harici kaynak durumu okunamadı.",
+    );
+    setState(nextState);
   }, [opsToken]);
 
   const runOperation = useCallback(async (action: OperationAction, payload: Record<string, unknown> = {}) => {
@@ -190,25 +186,16 @@ export function ReferencesOperationsDashboard({
     setMessage("");
 
     try {
-      const response = await fetch("/api/external-references", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          ...(opsToken ? {[OPS_TOKEN_HEADER]: opsToken} : {}),
-        },
-        body: JSON.stringify({
-          action,
-          ...payload,
-        }),
-      });
-      const data = await response.json();
+      const {state: nextState, result} = await runExternalReferenceAction<unknown, ExternalReferenceState>(
+        action,
+        payload,
+        opsToken,
+        undefined,
+        "Operasyon tamamlanamadı.",
+      );
 
-      if (!response.ok) {
-        throw new Error(data.error ?? "Operasyon tamamlanamadı.");
-      }
-
-      setState(data.state as ExternalReferenceState);
-      setMessage(getOperationMessage(action, data.result));
+      setState(nextState);
+      setMessage(getOperationMessage(action, result));
       if (action === "stage" && !payload.dryRun) {
         setForm(initialFormState());
         setBulkText("");

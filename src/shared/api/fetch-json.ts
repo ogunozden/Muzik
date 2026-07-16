@@ -22,15 +22,26 @@ interface ApiErrorBody {
 /**
  * Verilen endpoint'ten JSON okur. HTTP hatalarinda ApiError firlatir;
  * cagiran taraf `signal` ile istegi iptal edebilir (AbortError yayilir).
+ *
+ * `init` (opsiyonel): method/body/header gibi ek fetch secenekleri (POST icin).
+ * `fallbackErrorMessage` (opsiyonel): yanit govdesinde `error` yoksa kullanilacak
+ * ozel hata metni. Ikisi de verilmezse davranis eski (GET, generic mesaj) — geriye
+ * uyumlu, mevcut `fetchJson(url, signal)` cagrilari degismeden calisir.
  */
-export async function fetchJson<T>(input: string, signal?: AbortSignal): Promise<T> {
+export async function fetchJson<T>(
+  input: string,
+  signal?: AbortSignal,
+  init?: RequestInit,
+  fallbackErrorMessage?: string,
+): Promise<T> {
   const response = await fetch(input, {
+    ...init,
     signal,
-    headers: {Accept: "application/json"},
+    headers: {Accept: "application/json", ...init?.headers},
   });
 
   if (!response.ok) {
-    let message = `Istek basarisiz (${response.status})`;
+    let message = fallbackErrorMessage ?? `Istek basarisiz (${response.status})`;
     try {
       const body = (await response.json()) as ApiErrorBody;
       if (typeof body.error === "string" && body.error.length > 0) {

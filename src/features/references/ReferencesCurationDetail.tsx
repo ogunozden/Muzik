@@ -4,6 +4,7 @@ import {FormEvent, useCallback, useMemo, useState} from "react";
 import Link from "next/link";
 import {Button, Input, UnifiedLayout} from "@/shared/ui";
 import {tokens} from "@/shared/tokens";
+import {fetchExternalReferenceState, runExternalReferenceAction} from "@/shared/api/external-references-client";
 
 type CurationAction = "curation-feedback" | "curation-manual-correction";
 type FeedbackEventType =
@@ -105,7 +106,6 @@ interface CorrectionFormState {
   notes: string;
 }
 
-const OPS_TOKEN_HEADER = "x-external-reference-ops-token";
 const emptyState: ExternalReferenceState = {};
 const detailViews: Array<{id: DetailView; label: string}> = [
   {id: "scores", label: "Notalar"},
@@ -350,17 +350,13 @@ export function ReferencesCurationDetail({
   ), [catalogId, state]);
 
   const loadState = useCallback(async () => {
-    const response = await fetch("/api/external-references", {
-      cache: "no-store",
-      headers: opsToken ? {[OPS_TOKEN_HEADER]: opsToken} : undefined,
-    });
-    const data = await response.json();
-
-    if (!response.ok) {
-      throw new Error(data.error ?? "Kürasyon detayı okunamadı.");
-    }
-
-    setState(data as ExternalReferenceState);
+    const nextState = await fetchExternalReferenceState<ExternalReferenceState>(
+      undefined,
+      opsToken,
+      undefined,
+      "Kürasyon detayı okunamadı.",
+    );
+    setState(nextState);
   }, [opsToken]);
 
   const runOperation = useCallback(async (action: CurationAction, payload: Record<string, unknown>) => {
@@ -368,21 +364,15 @@ export function ReferencesCurationDetail({
     setMessage("");
 
     try {
-      const response = await fetch("/api/external-references", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          ...(opsToken ? {[OPS_TOKEN_HEADER]: opsToken} : {}),
-        },
-        body: JSON.stringify({action, ...payload}),
-      });
-      const data = await response.json();
+      const {state: nextState} = await runExternalReferenceAction<unknown, ExternalReferenceState>(
+        action,
+        payload,
+        opsToken,
+        undefined,
+        "Kürasyon işlemi tamamlanamadı.",
+      );
 
-      if (!response.ok) {
-        throw new Error(data.error ?? "Kürasyon işlemi tamamlanamadı.");
-      }
-
-      setState(data.state as ExternalReferenceState);
+      setState(nextState);
       setMessage(action === "curation-manual-correction" ? "Manuel düzeltme kaydedildi." : "Feedback kaydedildi.");
     } catch (error) {
       setMessage(error instanceof Error ? error.message : "Kürasyon işlemi tamamlanamadı.");

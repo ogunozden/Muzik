@@ -334,7 +334,7 @@ const MAKAM_BASE: Makam[] = [
     description: "Neşeli ve canlı bir makam. Şarkı formlarında sıkça kullanılır.",
   },
   {
-    id: " çargah",
+    id: "cargah",
     name: "Çargah",
     nameTr: "Çargah",
     nameEn: "Cargah",

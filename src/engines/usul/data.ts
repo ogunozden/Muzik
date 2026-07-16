@@ -673,6 +673,24 @@ export const USUL_DATA: Usul[] = [
     ...shift(DEVRI_KEBIR, 60),
     ...shift(BERAFSAN, 88),
   ]), // s.234: bes usulun zinciri (16+20+24+28+32 = 120; onceki 88/4 kaydi yanlisti)
+  // --- SymbTr ritim-otoriter, darp ONAYLANMAMIS (yapisal) ---
+  // usul_extended.json (SymbTr-extras) clustering'inden sure dizisi OTORITER;
+  // ancak dum/tek stroke tipi hicbir makine-okunur kaynakta yok (deneysel
+  // kanit: sureden turetme duyek/aksaksemai/yuruksemai'de yanlis). 1. dum
+  // kesin, kalan tek yapisal; geleneksel nota geldiginde duzeltilecek.
+  makeUsul("azeriyuruksemai", "Âzerî Yürüksemâî", "Azeri Yuruksemai", 6, "8", [[1, "dum", 2], [3, "tek", 1], [4, "tek", 1], [5, "tek", 2]]),
+  makeUsul("bektasiraksani", "Bektâşî Raksânı", "Bektasi Raksani", 15, "8", [[1, "dum", 2], [3, "tek", 1], [4, "tek", 2], [6, "tek", 2], [8, "tek", 1], [9, "tek", 2], [11, "tek", 2], [13, "tek", 2], [15, "tek", 1]]),
+  makeUsul("bulgardarbi", "Bulgar Darbı", "Bulgar Darbi", 8, "8", [[1, "dum", 1], [2, "tek", 1], [3, "tek", 1], [4, "tek", 2], [6, "tek", 1], [7, "tek", 1], [8, "tek", 1]]),
+  makeUsul("devriaryan", "Devr-i Âryân", "Devr-i Aryan", 14, "8", [[1, "dum", 4], [5, "tek", 6], [11, "tek", 4]]),
+  makeUsul("devrihindiii", "Devr-i Hindî II", "Devr-i Hindi II", 7, "8", [[1, "dum", 3], [4, "tek", 2], [6, "tek", 2]]),
+  makeUsul("devrisureyya", "Devr-i Süreyyâ", "Devr-i Sureyya", 10, "8", [[1, "dum", 2], [3, "tek", 1], [4, "tek", 1], [5, "tek", 2], [7, "tek", 2], [9, "tek", 2]]),
+  makeUsul("devrituranii", "Devr-i Turan II", "Devr-i Turan II", 14, "16", [[1, "dum", 4], [5, "tek", 4], [9, "tek", 6]]),
+  makeUsul("iraksak", "İraksak", "Iraksak", 18, "8", [[1, "dum", 2], [3, "tek", 4], [7, "tek", 2], [9, "tek", 4], [13, "tek", 6]]),
+  makeUsul("muasser", "Muasser", "Muasser", 10, "4", [[1, "dum", 1], [2, "tek", 1], [3, "tek", 1], [4, "tek", 1], [5, "tek", 2], [7, "tek", 2], [9, "tek", 1], [10, "tek", 1]]),
+  makeUsul("nazliduyek", "Nazlı Düyek", "Nazli Duyek", 12, "8", [[1, "dum", 1], [2, "tek", 4], [6, "tek", 1], [7, "tek", 3], [10, "tek", 3]]),
+  makeUsul("raksaksagiii", "Raks Aksağı II", "Raks Aksagi II", 18, "16", [[1, "dum", 4], [5, "tek", 6], [11, "tek", 4], [15, "tek", 4]]),
+  makeUsul("sturkaksagi", "S. Türk Aksağı", "S. Turk Aksagi", 10, "4", [[1, "dum", 4], [5, "tek", 4], [9, "tek", 2]]),
+  makeUsul("yuruksemaiii", "Yürüksemâî II", "Yuruksemai II", 6, "8", [[1, "dum", 1], [2, "tek", 2], [4, "tek", 1], [5, "tek", 2]]),
 ];
 
 export function getUsulById(id: string): Usul | undefined {

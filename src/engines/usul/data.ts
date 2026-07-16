@@ -717,9 +717,12 @@ export const USUL_DATA: Usul[] = [
   makeUsul("dolap", "Dolap", "Dolap", 12, "8", [[1, "dum", 1], [2, "tek", 1], [3, "tek", 1], [4, "tek", 2], [6, "tek", 1], [7, "tek", 2], [9, "tek", 2], [11, "tek", 2]]),
   makeUsul("gulsen", "Gülşen", "Gulsen", 6, "8", [[1, "dum", 3], [4, "tek", 1], [5, "tek", 1], [6, "tek", 1]]),
   makeUsul("cevher", "Cevher", "Cevher", 10, "8", [[1, "dum", 2], [3, "tek", 1], [4, "tek", 2], [6, "tek", 2], [8, "tek", 1], [9, "tek", 2]]),
-  // Darp: Heper "Türk Musikisinde Usuller ve Kudüm" s.269 (nota), "Bektâşî Raksânî"
-  // basligiyla 16/8: DÜM DÜM TEK DÜM TEK DÜM TEK / 3 2 2 2 2 3 2. DUNYA/SymbTr bu
-  // 16-zaman usulu "Raksı" olarak listeler; 15-zaman "Raksânî" (bektasiraksani) ayridir.
+  // Darp: Heper "Türk Musikisinde Usuller ve Kudüm" s.269 (nota), 16/8:
+  // DÜM DÜM TEK DÜM TEK DÜM TEK / 3 2 2 2 2 3 2. Web arastirmasi (2026-07-16,
+  // TDV İslam Ans. + musikoloji makaleleri) dogruladi: "Bektaşi Raksı" 16 zamanli
+  // buyuk usuldur; kaynaklar "Raksı"/"Raksanı" isimlerini karistirir; 15-zamanli
+  // Raksanı (bektasiraksani, SymbTr [2,1,2,2,1,2,2,2,1]) AYRI bir formdur. 16-zaman
+  // darp 16-zaman girise (Raksı) atanir — zaman-tutarli, isim kaviyatindan bagimsiz.
   makeUsul("bektasiraksi", "Bektâşî Raksı", "Bektasi Raksi", 16, "8", [[1, "dum", 3], [4, "dum", 2], [6, "tek", 2], [8, "dum", 2], [10, "tek", 2], [12, "dum", 3], [15, "tek", 2]]),
   makeUsul("bektasiraksievferi", "Bektâşî Raksı Evferi", "Bektasi Raksi Evferi", 16, "8", [[1, "dum", 2], [3, "tek", 1], [4, "tek", 2], [6, "tek", 2], [8, "tek", 2], [10, "tek", 2], [12, "tek", 2], [14, "tek", 1], [15, "tek", 2]]),
   makeUsul("murekkepsofyan", "Mürekkep Sofyan", "Murekkep Sofyan", 12, "8", [[1, "dum", 1], [2, "tek", 2], [4, "tek", 1], [5, "tek", 2], [7, "tek", 2], [9, "tek", 1], [10, "tek", 2], [12, "tek", 1]]),

@@ -546,7 +546,7 @@ export const USUL_DATA: Usul[] = [
   // Tek1, Aksak Semai ile ayni desen — kaynaklar ikisini esitler; curcuna
   // livelier/hizli karakterdir). 10/16 curcuna'yi 2x hizli caliyordu.
   makeUsul("curcuna", "Curcuna", "Curcuna", 10, "8", AKSAK_SEMAI, AKSAK_SEMAI_VELVELE), // s.66-67 + korpus 10/8
-  makeUsul("devrisureyyasofyani", "Devr-i Süreyyâ Sofyanî", "Devr-i Sureyya Sofyani", 10, "16", AKSAK_SEMAI, AKSAK_SEMAI_VELVELE), // tarihi Curcuna (10/16); cok kaynakta Curcuna = "Devri Sureyya Sofyani"
+  makeUsul("devrisureyyasofyani", "Devr-i Süreyyâ Sofyanî", "Devr-i Sureyya Sofyani", 10, "16", [[1, "dum", 5], [6, "tek", 2], [8, "tek", 3]]), // SymbTr clustering [5,2,3] otoriter (onceki Curcuna esitlemesi ritimle celisiyordu); darp yapisal
   makeUsul("lenkfahte", "Lenk Fahte", "Lenk Fahte", 10, "4", [
     [1, "dum", 2], [3, "tek", 3], [6, "dum", 1], [7, "tek", 2], [9, "te", 1], [10, "ke", 1],
   ], LENK_FAHTE_VELVELE), // s.76 (darp) + Gonul s.102 (velvele)
@@ -691,6 +691,15 @@ export const USUL_DATA: Usul[] = [
   makeUsul("raksaksagiii", "Raks Aksağı II", "Raks Aksagi II", 18, "16", [[1, "dum", 4], [5, "tek", 6], [11, "tek", 4], [15, "tek", 4]]),
   makeUsul("sturkaksagi", "S. Türk Aksağı", "S. Turk Aksagi", 10, "4", [[1, "dum", 4], [5, "tek", 4], [9, "tek", 2]]),
   makeUsul("yuruksemaiii", "Yürüksemâî II", "Yuruksemai II", 6, "8", [[1, "dum", 1], [2, "tek", 2], [4, "tek", 1], [5, "tek", 2]]),
+  // .mu2 code-14 duzum'unden (usul_extended clustering'i bos olanlar); ayni yapisal kural.
+  makeUsul("dolap", "Dolap", "Dolap", 12, "8", [[1, "dum", 1], [2, "tek", 1], [3, "tek", 1], [4, "tek", 2], [6, "tek", 1], [7, "tek", 2], [9, "tek", 2], [11, "tek", 2]]),
+  makeUsul("gulsen", "Gülşen", "Gulsen", 6, "8", [[1, "dum", 3], [4, "tek", 1], [5, "tek", 1], [6, "tek", 1]]),
+  makeUsul("cevher", "Cevher", "Cevher", 10, "8", [[1, "dum", 2], [3, "tek", 1], [4, "tek", 2], [6, "tek", 2], [8, "tek", 1], [9, "tek", 2]]),
+  makeUsul("bektasiraksi", "Bektâşî Raksı", "Bektasi Raksi", 8, "8", [[1, "dum", 2], [3, "tek", 1], [4, "tek", 2], [6, "tek", 2], [8, "tek", 1]]),
+  makeUsul("bektasiraksievferi", "Bektâşî Raksı Evferi", "Bektasi Raksi Evferi", 16, "8", [[1, "dum", 2], [3, "tek", 1], [4, "tek", 2], [6, "tek", 2], [8, "tek", 2], [10, "tek", 2], [12, "tek", 2], [14, "tek", 1], [15, "tek", 2]]),
+  makeUsul("murekkepsofyan", "Mürekkep Sofyan", "Murekkep Sofyan", 12, "8", [[1, "dum", 1], [2, "tek", 2], [4, "tek", 1], [5, "tek", 2], [7, "tek", 2], [9, "tek", 1], [10, "tek", 2], [12, "tek", 1]]),
+  makeUsul("turkmen", "Türkmen", "Turkmen", 18, "8", [[1, "dum", 2], [3, "tek", 2], [5, "tek", 2], [7, "tek", 2], [9, "tek", 2], [11, "tek", 2], [13, "tek", 2], [15, "tek", 2], [17, "tek", 2]]),
+  makeUsul("kcurcuna", "K. Curcuna", "K. Curcuna", 10, "8", [[1, "dum", 5], [6, "tek", 2], [8, "tek", 3]]),
 ];
 
 export function getUsulById(id: string): Usul | undefined {

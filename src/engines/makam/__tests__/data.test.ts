@@ -75,6 +75,23 @@ describe("makam/data", () => {
     it("rast seyir mentions its karar perde", () => {
       expect(getMakamById("rast")?.seyir?.metin).toContain("Rast");
     });
+
+    it("Gönül parser genisletmesiyle yeni makamlar da seyir tasir (P1.1)", () => {
+      // parser Türkçe-id'li makamlari + Hicaz ailesi alt-girdilerini + E9
+      // makamlarini yakalar (eski parser 24, yeni 33).
+      for (const id of ["hüzzam", "kürdi", "karcığar", "hicazkar", "ferahfeza", "hicaz", "uzzal", "dügah", "rehavi"]) {
+        const seyir = getMakamById(id)?.seyir;
+        expect(seyir?.metin.length, `${id} seyir`).toBeGreaterThan(30);
+        expect(seyir?.yon, `${id} yon`).toMatch(/Çıkıcı|İnici/);
+      }
+    });
+
+    it("seyir metinleri bolum-basligi tasmasi icermez", () => {
+      for (const makam of MAKAM_DATA) {
+        if (!makam.seyir) continue;
+        expect(makam.seyir.metin, `${makam.id}`).not.toContain("MAKAMLAR");
+      }
+    });
   });
 
   describe("korpus-destekli ek makamlar (E9)", () => {

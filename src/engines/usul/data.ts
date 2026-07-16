@@ -477,6 +477,8 @@ export const USUL_DATA: Usul[] = [
   // --- Kucuk usuller ---
   makeUsul("nimsofyan", "Nimsofyan", "Nimsofyan", 2, "4", [[1, "dum", 1], [2, "tek", 1]],
     [[1, "dum", 1], [2, "te", 0.5], [2.5, "ke", 0.5]]), // s.11
+  makeUsul("yuruksofyan", "Yürük Sofyan", "Yuruk Sofyan", 2, "4", [[1, "dum", 1], [2, "tek", 1]],
+    [[1, "dum", 1], [2, "te", 0.5], [2.5, "ke", 0.5]]), // Ozalp/Karadeniz: Nim Sofyan'in diger adi (Yürük/Tek Sofyan)
   makeUsul("semai", "Semai", "Semai", 3, "4", [[1, "dum", 1], [2, "tek", 1], [3, "tek", 1]],
     [[1, "dum", 1], [2, "tek", 1], [3, "te", 0.5], [3.5, "ke", 0.5]]), // s.15
   makeUsul("sofyan", "Sofyan", "Sofyan", 4, "4", [[1, "dum", 2], [3, "te", 1], [4, "ke", 1]],
@@ -520,6 +522,7 @@ export const USUL_DATA: Usul[] = [
   // Tek1, Aksak Semai ile ayni desen — kaynaklar ikisini esitler; curcuna
   // livelier/hizli karakterdir). 10/16 curcuna'yi 2x hizli caliyordu.
   makeUsul("curcuna", "Curcuna", "Curcuna", 10, "8", AKSAK_SEMAI, AKSAK_SEMAI_VELVELE), // s.66-67 + korpus 10/8
+  makeUsul("devrisureyyasofyani", "Devr-i Süreyyâ Sofyanî", "Devr-i Sureyya Sofyani", 10, "16", AKSAK_SEMAI, AKSAK_SEMAI_VELVELE), // tarihi Curcuna (10/16); cok kaynakta Curcuna = "Devri Sureyya Sofyani"
   makeUsul("lenkfahte", "Lenk Fahte", "Lenk Fahte", 10, "4", [
     [1, "dum", 2], [3, "tek", 3], [6, "dum", 1], [7, "tek", 2], [9, "te", 1], [10, "ke", 1],
   ], LENK_FAHTE_VELVELE), // s.76 (darp) + Gonul s.102 (velvele)

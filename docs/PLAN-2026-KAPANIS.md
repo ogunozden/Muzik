@@ -31,7 +31,11 @@ Yeni rota `/ogren`, UnifiedLayout + PageShell deseni. **Usûl-merkezli** (kullan
 - [x] **E1.6 Test**: 16 test (müfredat geçerliliği, ilerleme kalıcılığı, stepper akışı).
 - Doğrulama: tsc 0 hata, lint temiz, guardrails (architecture+layout) PASS, tarayıcıda
   /ogren doğrulandı, tam suite 633/633 yeşil.
-- Not: makam-merkezli akış (Seçenek B) ileride ek eksen olarak eklenebilir (opsiyonel).
+- [x] **E1.7 Makam ekseni (Seçenek B) EKLENDİ** (2026-07-16): `/ogren` artık usûl + makam
+      sekmeli. Makam ekseni: basit→mürekkep 24 makam (yalnız seyir'i olanlar — her adımda
+      tam kaynaklı: koma dizisi [korpus] + seyir [Gönül]), gam çalma (53-EDO koma frekansı),
+      açılır seyir tarifi. `useLearningProgress` storageKey-parametreli (usûl/makam ayrı
+      ilerleme). 11 makam testi + 3 E2E. Tarayıcıda Rast koma dizisi + otoriter seyir doğrulandı.
 
 ### E2. Yapısal usûllerin düm/tek doğrulaması *(veri kalitesi)* — KISMEN TAMAM
 Başlangıçta 22 usûl "ONAYLANMAMIS (yapisal)". **Bulgu (2026-07-16):** Heper Kudüm

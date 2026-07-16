@@ -428,15 +428,11 @@ Motorun bir sonraki seviyeye tasinmasi icin (oncelik sirasiyla):
       merkezinde delta 0. Playhead hizalama testi mevcut (usul-notation-layout).
 - [ ] F12.6 AudioWorklet'e gecis (ornek-hassas planlama) — mevcut
       lookahead yeterli; yalniz cok dusuk-latency hedefi olursa
-- [ ] F11.7 Velvele 2. asama: sekli yogun/cok satirli oldugu icin bu turda
-      DAHIL EDILMEYENLER (fabrikasyon yapilmadi): darb(s.29), oynak(s.63),
-      aksaksemai+curcuna(s.67), lenkfahte(s.76), frenkcin(s.85),
-      nimcember(s.90), devrirevan(s.101), raksan(s.103) + buyuk usuller
-      (nimberafsan s.122, fahte s.140, cember s.158, devrikebir s.182+,
-      hafif s.200, berafsan s.209). Yontem hazir: render'li sayfalar
-      scratchpad'de; zoom/parca okumayla ayni boru hattina eklenir.
-      (Darb-i Turki: kitap velvelesiz der; Darb-i Fetih 1. sekil zaten
-      velveleli kaliptir; Zincir halkalarin birlesimidir)
+- [x] F11.7 Velvele 2. asama — F14.1'de TAMAMLANDI: oynak, aksaksemai, curcuna,
+      lenkfahte, frenkcin, nimcember, devrirevan, raksan, nimberafsan, fahte,
+      cember, devrikebir, hafif, berafsan velveleleri eklendi. Kalan yalniz
+      darb(6) — Gonul temiz tablosunda velvelesi yok (fabrikasyon yapilmadi).
+      darbifeth 1. sekil zaten velveleli; zincir velvelesi kompozit (F14.1).
 
 ### F13 — Otantik makam perdesi (53-EDO / AEU koma) [ARASTIRMA + UYGULAMA]
 

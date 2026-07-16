@@ -378,6 +378,11 @@ const IKIZ_AKSAK_VELVELE: Stroke[] = [
   [1, "dum", 1], [2, "tek", 1], [3, "tek", 1], [4, "dum", 1], [5, "te", 0.5], [5.5, "ke", 0.5], [6, "tek", 1], [7, "ka", 1],
   DU(8), ME(8.5), [9, "dum", 1], [10, "tek", 2], [12, "tek", 1],
 ]; // Gonul s.103
+const CENGI_HARBI: Stroke[] = [
+  // 2+2+3+3 (10/4): Düm Tek | Düm Tek | Düm Tek Tek | Düm Tek Tek
+  [1, "dum", 1], [2, "tek", 1], [3, "dum", 1], [4, "tek", 1], [5, "dum", 1],
+  [6, "tek", 1], [7, "tek", 1], [8, "dum", 1], [9, "tek", 1], [10, "tek", 1],
+]; // Gonul s.103 (velvelesiz — mehter usulu)
 
 export const USUL_DATA: Usul[] = [
   // --- Kucuk usuller ---
@@ -423,6 +428,7 @@ export const USUL_DATA: Usul[] = [
   makeUsul("lenkfahte", "Lenk Fahte", "Lenk Fahte", 10, "4", [
     [1, "dum", 2], [3, "tek", 3], [6, "dum", 1], [7, "tek", 2], [9, "te", 1], [10, "ke", 1],
   ], LENK_FAHTE_VELVELE), // s.76 (darp) + Gonul s.102 (velvele)
+  makeUsul("cengiharbi", "Çeng-i Harbî", "Cengi Harbi", 10, "4", CENGI_HARBI), // Gonul s.103 (2+2+3+3); velvelesiz mehter usulu, korpusta repertuvari var
   makeUsul("tekvurus", "Tek Vuruş", "Tek Vurus", 11, "8", TEK_VURUS, TEK_VURUS_VELVELE), // Gonul s.103 (5+6); korpusta repertuvari var
   makeUsul("frenkcin", "Frenkçin", "Frenkcin", 12, "4", [
     [1, "dum", 1], [2, "dum", 2], [4, "dum", 1], [5, "dum", 2],

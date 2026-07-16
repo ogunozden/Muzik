@@ -25,7 +25,7 @@ import {useCallback, useEffect, useRef, useState} from "react";
 import {useTranslation} from "react-i18next";
 import {LabeledSelect, LabeledSlider, PageHeader, PageShell, PageSurface, UsulPanel} from "@/shared/ui";
 import {UnifiedLayout} from "@/shared/ui/layout/UnifiedLayout";
-import {USUL_DATA, getUsulBeatDuration} from "@/engines/usul/data";
+import {USUL_DATA, getUsulBeatDuration, PROVISIONAL_USUL_IDS} from "@/engines/usul/data";
 import type {InstrumentType} from "@/engines/ses/engine";
 import {startRhythmLoop, stopAll, type RhythmLoopController} from "@/engines/ses/engine";
 import type {UsulNotationHandle} from "@/shared/ui/organisms/UsulNotation";
@@ -304,6 +304,13 @@ export default function UsulPage() {
               </label>
             )}
           </div>
+          {selectedUsulObj && PROVISIONAL_USUL_IDS.has(selectedUsulObj.id) && (
+            <p className="mt-3 rounded-md border border-[var(--color-amber-300,#fcd34d)] bg-[var(--color-amber-50,#fffbeb)] px-3 py-2 text-xs text-[var(--color-amber-800,#92400e)]">
+              ⚠ Bu usulün <strong>süre/ritmi</strong> SymbTr korpusundan otoriter, ancak
+              <strong> düm/tek vurgu dizisi onaylanmamıştır</strong> (yalnız 1. düm kesin,
+              kalan tek yapısal varsayılan). Geleneksel nota kaynağıyla doğrulanacaktır.
+            </p>
+          )}
         </PageSurface>
 
         {/* Ses-gorsel kalibrasyonu: sistem gecikmesi cihazdan cihaza degistigi

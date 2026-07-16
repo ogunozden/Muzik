@@ -712,6 +712,16 @@ export const USUL_DATA: Usul[] = [
   makeUsul("kcurcuna", "K. Curcuna", "K. Curcuna", 10, "8", [[1, "dum", 5], [6, "tek", 2], [8, "tek", 3]]),
 ];
 
+// Darp'i SymbTr clustering'inden turetilen, dum/tek stroke tipi ONAYLANMAMIS
+// usuller: sure/ritim otoriter (SymbTr), 1. dum kesin, kalan tek yapisal
+// varsayilan. Gelenksel nota (Heper/Ozkan) ile dogrulanmali. UI bunlari isaretler.
+export const PROVISIONAL_USUL_IDS: ReadonlySet<string> = new Set([
+  "azeriyuruksemai", "bektasiraksani", "bulgardarbi", "devriaryan", "devrihindiii",
+  "devrisureyya", "devrituranii", "iraksak", "muasser", "nazliduyek", "raksaksagiii",
+  "sturkaksagi", "yuruksemaiii", "dolap", "gulsen", "cevher", "bektasiraksi",
+  "bektasiraksievferi", "murekkepsofyan", "turkmen", "kcurcuna", "devrisureyyasofyani",
+]);
+
 export function getUsulById(id: string): Usul | undefined {
   return USUL_DATA.find((usul) => usul.id === id);
 }

@@ -359,6 +359,15 @@ const BEKTASI_DEVRI_REVAN_VELVELE: Stroke[] = [
   DU(5), ME(5.5), [6, "dum", 1], [7, "tek", 2], [9, "te", 0.5], [9.5, "ke", 0.5],
   [10, "dum", 1], [11, "te", 0.5], [11.5, "ke", 0.5], [12, "tek", 1], [13, "ka", 1],
 ]; // Gonul s.104
+const TEK_VURUS: Stroke[] = [
+  // 5+6 (11/8): Düüm Teek Tek | Düüm Teek Teek
+  [1, "dum", 2], [3, "tek", 2], [5, "tek", 1], [6, "dum", 2], [8, "tek", 2], [10, "tek", 2],
+]; // Gonul s.103
+const TEK_VURUS_VELVELE: Stroke[] = [
+  // 5+6 (11/8): Düm te ke Tek Kâ te ke | Düm te ke Tek Kâ Tek Kâ
+  [1, "dum", 1], [2, "te", 0.5], [2.5, "ke", 0.5], [3, "tek", 1], [4, "ka", 1], [5, "te", 0.5], [5.5, "ke", 0.5],
+  [6, "dum", 1], [7, "te", 0.5], [7.5, "ke", 0.5], [8, "tek", 1], [9, "ka", 1], [10, "tek", 1], [11, "ka", 1],
+]; // Gonul s.103
 
 export const USUL_DATA: Usul[] = [
   // --- Kucuk usuller ---
@@ -404,6 +413,7 @@ export const USUL_DATA: Usul[] = [
   makeUsul("lenkfahte", "Lenk Fahte", "Lenk Fahte", 10, "4", [
     [1, "dum", 2], [3, "tek", 3], [6, "dum", 1], [7, "tek", 2], [9, "te", 1], [10, "ke", 1],
   ], LENK_FAHTE_VELVELE), // s.76 (darp) + Gonul s.102 (velvele)
+  makeUsul("tekvurus", "Tek Vuruş", "Tek Vurus", 11, "8", TEK_VURUS, TEK_VURUS_VELVELE), // Gonul s.103 (5+6); korpusta repertuvari var
   makeUsul("frenkcin", "Frenkçin", "Frenkcin", 12, "4", [
     [1, "dum", 1], [2, "dum", 2], [4, "dum", 1], [5, "dum", 2],
     [7, "tek", 1], [8, "ka", 1], [9, "tek", 1], [10, "ka", 1], [11, "tek", 1], [12, "ka", 1],

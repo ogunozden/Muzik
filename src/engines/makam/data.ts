@@ -620,20 +620,11 @@ const MAKAM_BASE: Makam[] = [
     description: "Acı ve hüzünlü bir makam. Hicaz ailesiyle bağlantılıdır.",
   },
   // --- Korpus-destekli ek makamlar (E9, 2026-07-16) ---
-  // Bunlar app'te eksikti; koma dizisi + intervals SymbTr korpusundan (attach-
-  // CorpusData ile otomatik baglanir), karar/guclu korpus kararPerde/gucluPerde
-  // ile HIZALI (teori-uyumlu, uydurma yok). Yalniz isim + kisa aile-notu editoryal.
-  {
-    id: "huzzam",
-    name: "Hüzzam",
-    nameTr: "Hüzzam",
-    nameEn: "Huzzam",
-    tonic: "C",
-    intervals: [1, 2, 2, 2, 1, 2, 2],
-    dominant: "F",
-    characteristic: "Segâh perdesi",
-    description: "Segâh ailesinden, içli karakteriyle çok sevilen makam; sanat müziğinde geniş kullanım.",
-  },
+  // GERCEKTEN YENI makamlar (app'te yoktu). Koma dizisi + intervals SymbTr
+  // korpusundan attachCorpusData ile otomatik baglanir; karar/guclu korpus
+  // kararPerde/gucluPerde ile HIZALI. NOT: huzzam/kurdi/karcigar app'te ZATEN
+  // vardi (Turkce-karakterli id: "hüzzam"/"kürdi"/"karcığar", normalize-eslesme
+  // ile korpus koma'yi zaten aliyorlar); dubleyi onlemek icin eklenmedi.
   {
     id: "hicazkar",
     name: "Hicazkâr",
@@ -644,28 +635,6 @@ const MAKAM_BASE: Makam[] = [
     dominant: "G",
     characteristic: "Rast perdesi",
     description: "Hicaz ailesinden, rast perdesinde karar kılan mürekkep makam.",
-  },
-  {
-    id: "karcigar",
-    name: "Karcığar",
-    nameTr: "Karcığar",
-    nameEn: "Karcigar",
-    tonic: "C",
-    intervals: [2, 1, 2, 1, 3, 1, 2],
-    dominant: "F",
-    characteristic: "Dügâh perdesi",
-    description: "Uşşak ve hicaz renklerini birleştiren canlı, oynak makam.",
-  },
-  {
-    id: "kurdi",
-    name: "Kürdi",
-    nameTr: "Kürdi",
-    nameEn: "Kurdi",
-    tonic: "C",
-    intervals: [1, 2, 2, 2, 1, 2, 2],
-    dominant: "F",
-    characteristic: "Dügâh perdesi",
-    description: "Sade ve yaygın makam; kürdi dizisiyle inici-çıkıcı seyreder.",
   },
   {
     id: "ferahfeza",

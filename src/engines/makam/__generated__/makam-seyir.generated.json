@@ -134,6 +134,30 @@
     "ferahfeza": {
       "yon": "İnici",
       "metin": "/ Seyyid Ahmet Ağa (1728-1794) (Dede Ef. Katkısıyla) Farklı işleniş şekilleri mevcuttur. 1.Acem+Yegâh’ta Nihâvend karar. 2. Acemaşîran+Yegâh’ta Nihâvend karar. 3. Nevâ’da Nihâvend+ Yegâh’ta Nihâvend karar eder."
+    },
+    "neva": {
+      "yon": "İnici-Çıkıcı",
+      "metin": "Nevâ odağında güçlüsü nevâ ile kararı dügâh perdeleri arasında Beyâti seslerle seyre başlar. Nevâ üzerinde Buselik ve Rast seyreder. Bu esnâda Rast makâmının tabiatı gereği eviç perdesinde yedensiz Segâh kalışlar görülür. Acem perdesi tutularak nevâ üzerinde Bûselik, Beyâtî gibi geçkiler de gösterilir. Seyir esnasında sıklıkla karar-güçlü nevâ-eviç atlamaları gösterilir. Tâhir makâmına benzemek endişesi ile Muhayyer üzerinde çok seyredilmez. Dizi seslerinde karar altına genişlemeden dügâh’ta karar verir."
+    },
+    "kurdilihicazkar": {
+      "yon": "İnici",
+      "metin": "/Hacı Ârif Bey Tiz karar bölgesinde seyre başlar. Hicazkâr makamı gereğince işlenerek, Nevâ’da Uşşak’lı, Beyâtî’li, Kürdî’li asma kalışlar yapılır. Rast perdesinde Kürdî seyirle karar verir. Kürdîlihicazkâr makâmının girişinde günümüzde kullanılan farklı seyirleri de vardır. Buna göre; x Hicazkâr + Kürdî x Zirgüleli Hicaz (gerdâniye'de) + Kürdî x Arazbar + Kürdî x İnici Kürdî (Makâmın aslî seyirlerinden değildir.) Kürdîlihicazkâr makâmında yapılan seyirlerde, yapılan çeşnilere göre donanımda yer alan perdelerin işâret ettikleri bölgelerin tiz sınırlarında düşünülmesi önem arz eder."
+    },
+    "suzinak": {
+      "yon": "İnici-Çıkıcı",
+      "metin": "Basit ve Zirgüleli olmak üzere iki türü vardır. Güçlüsü olan nevâ perdesi civarından seyre başlar. Ekseriyetle yerinde Hüzzam seyrettikten sonra (bazı eserlerde nevâ üzerinde Hicaz çargâh'ta Nikrîz işlendiği de görülür) Rast sesler duyurularak karar altına genişlemeden karar verilir. Zirgüleli Sûzinâk makâmında, karara gelişlerde zirgüle perdesi ile rast’ta karar verilir."
+    },
+    "sehnaz": {
+      "yon": "İnici",
+      "metin": "Seyre, şehnâz perdesi ile muhayyer açarak başlanır muhayyer üzerinde Bûselik işlenir. Hüseynî’de Hümâyun seyredilip, hüseynî veya nevâ’da asma karar yapılarak yerinde Hicaz (Hümâyun) karar verilir."
+    },
+    "acemkurdi": {
+      "yon": "İnici",
+      "metin": "Acem makâmı doyurucu işlenip Kürdî karar eder. Karâra gelişlerde hüseynî perdesi hisâr'a dönüştürülerek yeden yürüyüşü ve karar hissi güçlendirildiği görülmektedir."
+    },
+    "evic": {
+      "yon": "İnici",
+      "metin": "Eviç’te Segâh açar, Nevâ’da yedenli Rast’lı asma kalışlar yapılır. Yerinde Nevâ duyurularak, ırak’ta Segâh’lı karar verir. Karâra gelişlerde uşşak perdesinin segâh basılmasına dikkat edilmelidir."
     }
   }
 }

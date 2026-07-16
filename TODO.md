@@ -500,9 +500,9 @@ dosum testi (toplam=beats) + iki-kitap capraz-kontrol. Fabrikasyon YOK.
   - [x] darbiturki(18) — Heper s.131 darp'i Gonul s.105 (6+4+4+4) ile
         DEGISTIRILDI + velvele s.106 (kitap velvelesiz DEGIL, velvelesi var)
   - [ ] darb(6) — Gonul temiz tablosunda yok, velvelesiz birakildi (fabrikasyon yok)
-  - [ ] KOMPOZIT: zincir(120) = cifteduyek+fahte+cember+devrikebir+berafsan
-        velvelelerinden compose; cifteduyek velvelesi (Gonul s.105) lazim.
-        darbifeth(88) — 88 zamanlik ozel velvele (Gonul re-render).
+  - [x] KOMPOZIT: zincir(120) velvelesi bilesen velvelelerinden kuruldu
+        (duyek x2 + fahte + cember + devrikebir + berefsan). shift() syllable
+        korur. darbifeth(88) — ozel velvele, Gonul re-render gerekir (dusuk oncelik).
 - [x] F14.1b YENI USULLER: korpusta repertuvari VAR ama engine tanimi YOK olan
       usuller. Gonul s.101-110 temiz dizgiden darp+velvele aktarildi, tempo
       korpustan otonom baglanir. Gonul tablosundaki TUM korpus-destekli
@@ -545,12 +545,12 @@ dosum testi (toplam=beats) + iki-kitap capraz-kontrol. Fabrikasyon YOK.
   - [x] EKLENMEDI (gercek usul degil / veri yok): serbest (olcusuz), ikibir
         (standart degil), murekkepnimsofyan (bogus meter). => 93+ usul tanimli,
         korpusta yalniz bu 3 etiket eslesmiyor. USUL VERI KATMANI TAMAM (37->94).
-- [~] F14.2 Usul Ansiklopedisi UI: CEKIRDEK HAZIR — /rhythm sayfasi tum 94
-      usulu (USUL_DATA.map) + UsulNotation + darp<->velvele toggle (velvelesi
-      olanlarda checkbox) + calim (perkusyon/bpm/loop) + korpus temposu sunuyor.
-      Eklenen ~35 usul otomatik akiyor. KALAN (polish): usul secicide
-      kucuk/buyuk gruplama, metadata (vurgu gruplamasi/kaynak) gosterimi,
-      yapisal-usul isareti.
+- [x] F14.2 Usul Ansiklopedisi UI: /rhythm sayfasi tum 94 usulu + UsulNotation +
+      darp<->velvele toggle + calim + korpus temposu. EKLENDI: (1) yapisal usul
+      ROZETI (PROVISIONAL_USUL_IDS — dum/tek onaylanmamis usullerde uyari),
+      (2) metadata satiri (zaman/mertebe + getUsulGrouping vurgu gruplamasi +
+      tempo + velvele gostergesi + usul sayisi). Testli. KALAN (dusuk oncelik):
+      secicide kucuk/buyuk optgroup (Select atomu degisikligi gerekir).
 - [ ] F14.3 Makam Rehberi: studio panelini genislet (koma+perde+seyir)
 - [ ] F14.4 Makam seyir metinleri (Gonul s.316) -> makam-seyir zenginlestirme
 - [ ] F14.5 Alistirma dizini (Gonul s.114-154 usul-solfej eslesmeleri)

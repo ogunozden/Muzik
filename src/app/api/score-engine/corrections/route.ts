@@ -13,6 +13,9 @@ const VALID_TYPES = new Set<ScoreCorrectionEventType>([
   "rollback",
 ]);
 
+const MAX_ID_CHARS = 256;
+const MAX_PAYLOAD_CHARS = 64_000;
+
 interface CorrectionRequest {
   documentId?: unknown;
   type?: unknown;
@@ -30,6 +33,15 @@ export async function POST(request: NextRequest) {
 
     if (!VALID_TYPES.has(body.type as ScoreCorrectionEventType)) {
       return NextResponse.json({error: "Correction event tipi geçersiz."}, {status: 400});
+    }
+
+    // Savunma derinligi (derin-analiz P2.6): sinirsiz id/payload SQLite'i
+    // buyutur/bellek DoS'u. Duzeltme olaylari kucuktur.
+    if (body.documentId.length > MAX_ID_CHARS || body.targetId.length > MAX_ID_CHARS) {
+      return NextResponse.json({error: "documentId/targetId çok uzun."}, {status: 413});
+    }
+    if (body.payload !== undefined && JSON.stringify(body.payload).length > MAX_PAYLOAD_CHARS) {
+      return NextResponse.json({error: "payload çok büyük."}, {status: 413});
     }
 
     const event = createScoreCorrectionEvent({

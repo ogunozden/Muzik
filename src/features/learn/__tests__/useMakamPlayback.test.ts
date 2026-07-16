@@ -1,7 +1,7 @@
 import {describe, it, expect, vi, beforeEach} from "vitest";
 import {renderHook, act, waitFor} from "@testing-library/react";
 
-const playScaleAtFrequencies = vi.fn(async () => {});
+const playScaleAtFrequencies = vi.fn(async (..._args: unknown[]) => {});
 const stopAll = vi.fn();
 vi.mock("@/engines/ses/engine", () => ({
   playScaleAtFrequencies: (...args: unknown[]) => playScaleAtFrequencies(...args),
@@ -27,7 +27,7 @@ describe("useMakamPlayback", () => {
     });
     expect(playScaleAtFrequencies).toHaveBeenCalledTimes(1);
     // Frekans dizisi (ilk arg) boş olmamalı — koma perde dizisi.
-    expect((playScaleAtFrequencies.mock.calls[0][0] as number[]).length).toBeGreaterThan(4);
+    expect((playScaleAtFrequencies.mock.calls[0][0] as unknown as number[]).length).toBeGreaterThan(4);
     expect(result.current.isPlaying).toBe(false);
   });
 

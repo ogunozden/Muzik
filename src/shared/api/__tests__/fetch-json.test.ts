@@ -30,7 +30,7 @@ describe("fetchJson", () => {
         throw new SyntaxError("not json");
       },
     }));
-    const error = await fetchJson("/api/x").catch((e) => e);
+    const error = (await fetchJson("/api/x").catch((e) => e)) as ApiError;
     expect(error).toBeInstanceOf(ApiError);
     expect(error.status).toBe(404);
     expect(error.message).toContain("404");

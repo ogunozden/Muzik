@@ -20,6 +20,9 @@ import {ArtifactInventoryPanel, ProdCycleAuditPanel, QualityFeedbackPanel} from 
 import {BacklogBatchPanel} from "./BacklogBatchPanel";
 import {AutoAttachedSection, ReviewGroupsSection, ReviewQueueSection, type CurationReviewSectionsCtx} from "./CurationReviewSections";
 import {fetchExternalReferenceState, runExternalReferenceAction} from "@/shared/api/external-references-client";
+import {useArtifactInventoryFilters} from "./hooks/useArtifactInventoryFilters";
+import {useReferenceFilters} from "./hooks/useReferenceFilters";
+import {useCurationSelection} from "./hooks/useCurationSelection";
 import {
   ALL_FILTER_VALUE,
   buildArtifactInventory,
@@ -54,17 +57,21 @@ export function ReferencesCurationDashboard({
   const [opsToken, setOpsToken] = useState("");
   const [activeOperation, setActiveOperation] = useState<CurationAction | "refresh" | null>(null);
   const [message, setMessage] = useState(initialMessage);
-  const [statusFilter, setStatusFilter] = useState(ALL_FILTER_VALUE);
-  const [providerFilter, setProviderFilter] = useState(ALL_FILTER_VALUE);
+  const {
+    statusFilter,
+    setStatusFilter,
+    providerFilter,
+    setProviderFilter,
+    deletionFilter,
+    setDeletionFilter,
+  } = useReferenceFilters();
   const [makamFilter, setMakamFilter] = useState(ALL_FILTER_VALUE);
   const [formFilter, setFormFilter] = useState(ALL_FILTER_VALUE);
   const [usulFilter, setUsulFilter] = useState(ALL_FILTER_VALUE);
   const [composerFilter, setComposerFilter] = useState(ALL_FILTER_VALUE);
-  const [deletionFilter, setDeletionFilter] = useState(ALL_FILTER_VALUE);
   const [priorityGroupFilter, setPriorityGroupFilter] = useState(ALL_FILTER_VALUE);
   const [backlogOffset, setBacklogOffset] = useState(0);
   const [backlogLimit, setBacklogLimit] = useState(100);
-  const [selectedReferenceKeys, setSelectedReferenceKeys] = useState<string[]>([]);
   const [candidateManifestText, setCandidateManifestText] = useState("");
   const [candidateReviewExportText, setCandidateReviewExportText] = useState("");
   const [candidateImportDryRun, setCandidateImportDryRun] = useState(true);
@@ -81,9 +88,14 @@ export function ReferencesCurationDashboard({
   const [candidateLimit, setCandidateLimit] = useState(100);
   const [candidateStatusFilter, setCandidateStatusFilter] = useState(ALL_FILTER_VALUE);
   const [candidateProfileFilter, setCandidateProfileFilter] = useState(ALL_FILTER_VALUE);
-  const [artifactCategoryFilter, setArtifactCategoryFilter] = useState(ALL_FILTER_VALUE);
-  const [artifactStatusFilter, setArtifactStatusFilter] = useState(ALL_FILTER_VALUE);
-  const [artifactQuery, setArtifactQuery] = useState("");
+  const {
+    artifactCategoryFilter,
+    setArtifactCategoryFilter,
+    artifactStatusFilter,
+    setArtifactStatusFilter,
+    artifactQuery,
+    setArtifactQuery,
+  } = useArtifactInventoryFilters();
   const [query, setQuery] = useState("");
 
   const loadState = useCallback(async (
@@ -227,41 +239,13 @@ export function ReferencesCurationDashboard({
     });
   }, [composerFilter, deletionFilter, formFilter, makamFilter, providerFilter, query, state, statusFilter, usulFilter]);
 
-  const selectedReferences = useMemo(() => {
-    const selectedKeySet = new Set(selectedReferenceKeys);
-    return filteredReferences.filter((reference) => selectedKeySet.has(getReferenceKey(reference)));
-  }, [filteredReferences, selectedReferenceKeys]);
-
-  const toggleReferenceSelection = useCallback((reference: CurationReference, checked: boolean) => {
-    const key = getReferenceKey(reference);
-    if (key === ":") return;
-
-    setSelectedReferenceKeys((current) => {
-      const next = new Set(current);
-      if (checked) {
-        next.add(key);
-      } else {
-        next.delete(key);
-      }
-      return [...next];
-    });
-  }, []);
-
-  const toggleVisibleReferenceSelection = useCallback((checked: boolean) => {
-    setSelectedReferenceKeys((current) => {
-      const next = new Set(current);
-      for (const reference of filteredReferences) {
-        const key = getReferenceKey(reference);
-        if (key === ":") continue;
-        if (checked) {
-          next.add(key);
-        } else {
-          next.delete(key);
-        }
-      }
-      return [...next];
-    });
-  }, [filteredReferences]);
+  const {
+    selectedReferenceKeys,
+    setSelectedReferenceKeys,
+    selectedReferences,
+    toggleReferenceSelection,
+    toggleVisibleReferenceSelection,
+  } = useCurationSelection(filteredReferences);
 
   const recordBulkFeedback = useCallback((eventType: "user-approved" | "user-prioritized" | "user-removed") => {
     const feedbackEvents = selectedReferences

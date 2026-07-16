@@ -479,6 +479,18 @@ const FRENGIFER_VELVELE: Stroke[] = [
   DU(13, 1), ME(14, 1), DU(15), ME(15.5), DU(16), ME(16.5), [17, "tek", 1], [18, "ka", 1], [19, "tek", 1], [20, "ka", 1],
   DU(21, 1), ME(22, 1), DU(23), ME(23.5), DU(24), ME(24.5), [25, "tek", 1], [26, "ka", 1], [27, "tek", 1], [28, "ka", 1],
 ]; // Gonul s.109
+const HEZEC: Stroke[] = [
+  // 6+4+4+4+4 (22/4): Düüm Düm Düm Teek | Düm Düm Teek | Düüm Teek | Düüm Teek | Tek Kâ Tek Kâ
+  [1, "dum", 2], [3, "dum", 1], [4, "dum", 1], [5, "tek", 2], [7, "dum", 1], [8, "dum", 1], [9, "tek", 2],
+  [11, "dum", 2], [13, "tek", 2], [15, "dum", 2], [17, "tek", 2], [19, "tek", 1], [20, "ka", 1], [21, "tek", 1], [22, "ka", 1],
+]; // Gonul s.106
+const HEZEC_VELVELE: Stroke[] = [
+  // 6+4+4+4+4 (22/4): Düm Düm te ke te ke Tek Kâ | dü me dü me te ke te ke | Tek Kâ te ke | Tek Kâ te ke | Tek Kâ Tek Kâ Tek Kâ
+  [1, "dum", 1], [2, "dum", 1], [3, "te", 0.5], [3.5, "ke", 0.5], [4, "te", 0.5], [4.5, "ke", 0.5], [5, "tek", 1], [6, "ka", 1],
+  DU(7), ME(7.5), DU(8), ME(8.5), [9, "te", 0.5], [9.5, "ke", 0.5], [10, "te", 0.5], [10.5, "ke", 0.5],
+  [11, "tek", 1], [12, "ka", 1], [13, "te", 0.5], [13.5, "ke", 0.5], [14, "tek", 1], [15, "ka", 1], [16, "te", 0.5], [16.5, "ke", 0.5],
+  [17, "tek", 1], [18, "ka", 1], [19, "tek", 1], [20, "ka", 1], [21, "tek", 1], [22, "ka", 1],
+]; // Gonul s.106
 
 export const USUL_DATA: Usul[] = [
   // --- Kucuk usuller ---
@@ -576,6 +588,7 @@ export const USUL_DATA: Usul[] = [
   makeUsul("nimdevir", "Nim Devir", "Nim Devir", 18, "4", NIM_DEVIR, NIM_DEVIR_VELVELE), // Gonul s.106 (6+4+4+4); korpusta repertuvari var
 
   makeUsul("fahte", "Fahte", "Fahte", 20, "4", FAHTE, FAHTE_VELVELE), // s.139 (darp) + Gonul s.105
+  makeUsul("hezec", "Hezeç", "Hezec", 22, "4", HEZEC, HEZEC_VELVELE), // Gonul s.106 (6+4+4+4+4); korpus repertuvari yok, pedagojik
   makeUsul("cember", "Çember", "Cember", 24, "4", CEMBER, CEMBER_VELVELE), // s.157
   makeUsul("agircenber", "Ağır Çenber", "Agir Cenber", 24, "2", CEMBER, CEMBER_VELVELE), // TDV/Ozkan: Cenber'in 2. mertebesi (24/2), ayni darp
   makeUsul("nimsakil", "Nim Sakîl", "Nim Sakil", 24, "4", NIM_SAKIL, NIM_SAKIL_VELVELE), // Gonul s.107 (4+6+6+4+4); korpusta repertuvari var

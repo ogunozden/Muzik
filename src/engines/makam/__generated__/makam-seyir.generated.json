@@ -158,6 +158,26 @@
     "evic": {
       "yon": "İnici",
       "metin": "Eviç’te Segâh açar, Nevâ’da yedenli Rast’lı asma kalışlar yapılır. Yerinde Nevâ duyurularak, ırak’ta Segâh’lı karar verir. Karâra gelişlerde uşşak perdesinin segâh basılmasına dikkat edilmelidir."
+    },
+    "ferahnak": {
+      "yon": "İnici",
+      "metin": "/ Şakir Ağa Nevâ’da Rast, daha sıklıkla Rast Mâye işlenir (Eviç üzerinde yedensiz Segâh hüseynî üzerinde Uşşak gösterilir), sonra güçlü olan dügâh perdesine Pençgâh inilir. Yegâh’ta Rast duyurularak Irak perdesinde Segâh’lı karar verir."
+    },
+    "evcara": {
+      "yon": "İnici",
+      "metin": "/ III. Selim Han Eviç açarak ve sıklıkla eviç’te Segâh ve/veya müstear seslerle seyre başlanır. Güçlüsü olan nim hicaz perdesi üzerinde Hümâyun seyreder. Bu esnâda eviç’te Segâh, Müstear çeşniler sıklıkla tercih edilmiştir. Hicaz çeşnisi ile ırak’ta yedenli (acemaşîrân) karar eder. Tiz bölgede nim hicaz üzerinde seyrettiği Hümâyun’un devâmı olarak Bûselik seyir sıklıkla görülür. Başka makamlara geçkiler de bu bölümde yapılabilir."
+    },
+    "muhayyerkurdi": {
+      "yon": "İnici",
+      "metin": "Muhayyer üzerinde uşşak veya kürdî açarak seyredip Kürdî karar eder. Karâra gelişlerde hüseynî perdesi hisâra dönüştürülerek yeden yürüyüşü ve karar hissi güçlendirildiği görülmektedir."
+    },
+    "suzidil": {
+      "yon": "İnici",
+      "metin": "/ Abdülhalim Ağa Güçlüsü hüseynî perdesi üzerinde (yedenli) Hicaz Zirgüle seyreder. Bu seyirde tiz bûselik sıklıkla duyurulur. Karara dönüşlerde hisâr perdesi kaldırılarak ve nevâ duyurularak dügâha kadar Bûselik inilir. Aşîrân’da Hümâyun sesleri ile yedenli veya yedensiz karar edilir."
+    },
+    "gulizar": {
+      "yon": "İnici",
+      "metin": "Hüseynî seslerde hüseynî-muhayyer arasında seyre başlar. Hüseynî ve Hüseynî’de Hüseynî gösterildikten sonra (Bu esnâda tiz segâh perdesinin tiz bûselik basıldığına dikkat etmek gerekir.) yerinde Hüseynî karar verir. Seyirde, muhayyer-hüseynî, gerdâniye-hüseynî, dügâh-muhayyer atlamalarına yer verilir. Makâmın gereği olarak Karcığar geçki sıklıkla yapılır."
     }
   }
 }

@@ -413,6 +413,19 @@ const EVSAT_VELVELE: Stroke[] = [
   [19, "tek", 1], [20, "ka", 1], [21, "tek", 1], [22, "ka", 1],
   [23, "tek", 1], [24, "ka", 1], [25, "tek", 1], [26, "ka", 1],
 ]; // Gonul s.107
+const BESTE_DEVRI_REVAN: Stroke[] = [
+  // 5+4+4+5+4+4 (26/4): Düüüüüm(5) Düüüüm(4) Teeeek(4) Düüüüüm(5) Teeeek(4) Teeeek(4)
+  [1, "dum", 5], [6, "dum", 4], [10, "tek", 4], [14, "dum", 5], [19, "tek", 4], [23, "tek", 4],
+]; // Gonul s.108
+const BESTE_DEVRI_REVAN_VELVELE: Stroke[] = [
+  // 5+4+4+5+4+4 (26/4): her grup Düm/Hek te ke Tek Kâ (+te ke) dolgusu; G3/G6 Tek Kâ Tek Kâ
+  [1, "dum", 1], [2, "te", 0.5], [2.5, "ke", 0.5], [3, "tek", 1], [4, "ka", 1], [5, "te", 0.5], [5.5, "ke", 0.5],
+  [6, "dum", 1], [7, "te", 0.5], [7.5, "ke", 0.5], [8, "tek", 1], [9, "ka", 1],
+  [10, "tek", 1], [11, "ka", 1], [12, "tek", 1], [13, "ka", 1],
+  [14, "dum", 1], [15, "te", 0.5], [15.5, "ke", 0.5], [16, "tek", 1], [17, "ka", 1], [18, "te", 0.5], [18.5, "ke", 0.5],
+  [19, "hek", 1], [20, "te", 0.5], [20.5, "ke", 0.5], [21, "tek", 1], [22, "ka", 1],
+  [23, "tek", 1], [24, "ka", 1], [25, "tek", 1], [26, "ka", 1],
+]; // Gonul s.108
 
 export const USUL_DATA: Usul[] = [
   // --- Kucuk usuller ---
@@ -505,6 +518,7 @@ export const USUL_DATA: Usul[] = [
   makeUsul("cember", "Çember", "Cember", 24, "4", CEMBER, CEMBER_VELVELE), // s.157
   makeUsul("nimsakil", "Nim Sakîl", "Nim Sakil", 24, "4", NIM_SAKIL, NIM_SAKIL_VELVELE), // Gonul s.107 (4+6+6+4+4); korpusta repertuvari var
   makeUsul("evsat", "Evsat", "Evsat", 26, "4", EVSAT, EVSAT_VELVELE), // Gonul s.107 (5+4+4+5+4+4); korpusta repertuvari var
+  makeUsul("bestedevrirevani", "Beste Devr-i Revânî", "Beste Devr-i Revani", 26, "4", BESTE_DEVRI_REVAN, BESTE_DEVRI_REVAN_VELVELE), // Gonul s.108 (5+4+4+5+4+4); korpusta repertuvari var
   makeUsul("devrikebir", "Devr-i Kebir", "Devr-i Kebir", 28, "4", DEVRI_KEBIR, DEVRI_KEBIR_VELVELE), // s.181
   makeUsul("hafif", "Hafif", "Hafif", 32, "4", [
     [1, "dum", 1], [2, "tek", 1], [3, "tek", 2], [5, "dum", 1], [6, "tek", 1], [7, "tek", 2],

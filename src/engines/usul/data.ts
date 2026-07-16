@@ -348,6 +348,17 @@ const SARKI_DEVRI_REVAN_VELVELE: Stroke[] = [
   [1, "dum", 1], [2, "tek", 1], [3, "ka", 1], [4, "dum", 1], [5, "te", 0.5], [5.5, "ke", 0.5],
   [6, "tek", 1], [7, "ka", 1], DU(8), ME(8.5), [9, "dum", 1], [10, "tek", 2], [12, "tek", 1], [13, "ka", 1],
 ]; // Gonul s.104
+const BEKTASI_DEVRI_REVAN: Stroke[] = [
+  // 4+5+4 (13/8): Düüm Tek Kâ | Düüm Teek Tek | Düüm Tek Kâ
+  [1, "dum", 2], [3, "tek", 1], [4, "ka", 1], [5, "dum", 2], [7, "tek", 2], [9, "tek", 1],
+  [10, "dum", 2], [12, "tek", 1], [13, "ka", 1],
+]; // Gonul s.104
+const BEKTASI_DEVRI_REVAN_VELVELE: Stroke[] = [
+  // 4+5+4 (13/8): Düm te ke Tek Kâ | dü me Düm Teek | te ke Düm te ke Tek Kâ
+  [1, "dum", 1], [2, "te", 0.5], [2.5, "ke", 0.5], [3, "tek", 1], [4, "ka", 1],
+  DU(5), ME(5.5), [6, "dum", 1], [7, "tek", 2], [9, "te", 0.5], [9.5, "ke", 0.5],
+  [10, "dum", 1], [11, "te", 0.5], [11.5, "ke", 0.5], [12, "tek", 1], [13, "ka", 1],
+]; // Gonul s.104
 
 export const USUL_DATA: Usul[] = [
   // --- Kucuk usuller ---
@@ -403,6 +414,7 @@ export const USUL_DATA: Usul[] = [
   ], NIM_CEMBER_VELVELE), // s.90 (darp) + Gonul s.103 (velvele)
   makeUsul("nimevsat", "Nim Evsat", "Nim Evsat", 13, "8", NIM_EVSAT, NIM_EVSAT_VELVELE), // Gonul s.104 (5+4+4); korpusta repertuvari var
   makeUsul("sarkidevrirevani", "Şarkı Devr-i Revânî", "Sarki Devr-i Revani", 13, "8", SARKI_DEVRI_REVAN, SARKI_DEVRI_REVAN_VELVELE), // Gonul s.104 (3+4+4+2)
+  makeUsul("bektasidevrirevani", "Bektâşî Devr-i Revânî", "Bektasi Devr-i Revani", 13, "8", BEKTASI_DEVRI_REVAN, BEKTASI_DEVRI_REVAN_VELVELE), // Gonul s.104 (4+5+4)
   makeUsul("devrirevan", "Devrirevan", "Devr-i Revan", 14, "8", [
     [1, "dum", 3], [4, "dum", 2], [6, "tek", 2], [8, "dum", 3], [11, "tek", 2], [13, "tek", 2],
   ], DEVRI_REVAN_VELVELE), // s.101 (darp, Mevlevi) + Gonul s.104 (velvele)

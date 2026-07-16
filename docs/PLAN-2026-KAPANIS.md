@@ -74,15 +74,23 @@ hisarbuselik, segahira, hincin, tarzannef, irakeyn, rehavi, zengule.
 - [ ] **E4.4 Kontrast**: yapısal-usûl rozeti (amber) + tüm durum renkleri WCAG AA.
 - Kabul: kritik akışlar ekran-okuyucu yürüyüşünden geçer; axe 0 kritik.
 
-### E5. E2E testleri CI'da (F6.3)
-- [ ] **E5.1 Playwright akışları**: /rhythm usûl çal, /studio makam çal+seyir, /ogren stepper.
-- [ ] **E5.2 CI adımı**: canlı server + Playwright (bundle-size + coverage zaten CI'da).
-- Kabul: kritik-akış E2E CI'da yeşil.
+### E5. E2E testleri CI'da (F6.3) — ✅ TAMAM (2026-07-16)
+- [x] **E5.1 Playwright akışları**: `@playwright/test` kuruldu, `playwright.config.ts`
+      (webServer + PLAYWRIGHT_BASE_URL). `e2e/ogren.spec.ts` (adım ilerletme, tamamlandı
+      sayma, localStorage kalıcılığı/reload, klavye ok gezinme, seviye haritası atlama) +
+      `e2e/smoke.spec.ts` (/rhythm + /studio hatasız yüklenme). **8/8 yeşil.**
+- [x] **E5.2 CI adımı**: ci.yml'ye `playwright install chromium` + `test:e2e` eklendi.
+- Kabul: kritik-akış E2E yeşil ✓.
 
-### E6. Büyük dosya bölme kalanı (F4.6)
-- [ ] **E6.1 Envanter**: >800 satır kaynak dosyaları listele (`guardrails:architecture`).
-- [ ] **E6.2 Bölme**: cohesion'a göre modüllere ayır (route-state deseni gibi).
-- Kabul: guardrail ratchet altında; testler yeşil.
+### E6. Büyük dosya bölme kalanı (F4.6) — DEĞERLENDİRİLDİ, ERTELENDİ
+- [x] **E6.1 Envanter**: 800+ satır 3 dosya, hepsi ratchet'te grandfathered (guardrail
+      PASS): `studio/follow/page.tsx` (1021/1025), `references/curation/page.tsx` (848/855),
+      `ReferencesCurationDetail.tsx` (803/810). data.ts (780/810) saf veri.
+- [ ] **E6.2 Bölme**: **ERTELENDİ.** Gerekçe: 800+ dosyaların tamamı çekirdek-dışı
+      references-curation alanında; dar ratchet headroom'lu ve karmaşık çalışan sayfalar →
+      bölme yüksek regresyon riski, düşük değer. Guardrail zaten yeşil (ratchet altında).
+      Çekirdek müzik-öğrenme akışında 800+ dosya yok. Bir referans sayfası zaten
+      dokunulduğunda parçalanacak (fırsatçı decomposition).
 
 ---
 

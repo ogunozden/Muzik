@@ -567,6 +567,7 @@ export const USUL_DATA: Usul[] = [
 
   makeUsul("fahte", "Fahte", "Fahte", 20, "4", FAHTE, FAHTE_VELVELE), // s.139 (darp) + Gonul s.105
   makeUsul("cember", "Çember", "Cember", 24, "4", CEMBER, CEMBER_VELVELE), // s.157
+  makeUsul("agircenber", "Ağır Çenber", "Agir Cenber", 24, "2", CEMBER, CEMBER_VELVELE), // TDV/Ozkan: Cenber'in 2. mertebesi (24/2), ayni darp
   makeUsul("nimsakil", "Nim Sakîl", "Nim Sakil", 24, "4", NIM_SAKIL, NIM_SAKIL_VELVELE), // Gonul s.107 (4+6+6+4+4); korpusta repertuvari var
   makeUsul("evsat", "Evsat", "Evsat", 26, "4", EVSAT, EVSAT_VELVELE), // Gonul s.107 (5+4+4+5+4+4); korpusta repertuvari var
   makeUsul("bestedevrirevani", "Beste Devr-i Revânî", "Beste Devr-i Revani", 26, "4", BESTE_DEVRI_REVAN, BESTE_DEVRI_REVAN_VELVELE), // Gonul s.108 (5+4+4+5+4+4); korpusta repertuvari var
@@ -584,6 +585,13 @@ export const USUL_DATA: Usul[] = [
   ], HAFIF_VELVELE), // s.199 (darp) + Gonul s.109 (velvele)
   makeUsul("muhammes", "Muhammes", "Muhammes", 32, "4", MUHAMMES, MUHAMMES_VELVELE), // Gonul s.110 (8+8+8+8)
   makeUsul("berafsan", "Berafsan", "Berefsan", 32, "4", BERAFSAN, BEREFSAN_VELVELE), // s.208 (darp) + Gonul s.110 (velvele)
+  // Darbeyn = iki buyuk usulun ardarda vurulusu (mürekkep sinif). En yaygin/
+  // standart bicim: Devr-i Kebir (28) + Berefsan (32) = 60 (TDV Darbeyn maddesi;
+  // ITU tezi 22 eser incelemesi). Zincir gibi bilesenlerin darbindan kurulur.
+  makeUsul("darbeyn", "Darbeyn", "Darbeyn", 60, "4", [
+    ...DEVRI_KEBIR,
+    ...shift(BERAFSAN, 28),
+  ]), // TDV Darbeyn + ITU tezi: Devr-i Kebir + Berefsan; korpus 60/4
   makeUsul("darbifeth", "Darb-ı Feth", "Darb-i Fetih", 88, "4", [
     [1, "dum", 2], [3, "tek", 1], [4, "tek", 1], [5, "dum", 2], [7, "tek", 1], [8, "tek", 1],
     [9, "tek", 1], [10, "ka", 1], [11, "dum", 2], [13, "tek", 1], [14, "tek", 1], [15, "dum", 2],

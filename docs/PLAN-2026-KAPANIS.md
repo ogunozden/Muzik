@@ -17,26 +17,21 @@ döşüm/parite testinden geçer.
 
 ## P0 — Yüksek değer, icra edilebilir
 
-### E1. Rehberli Öğrenme Akışı (F14.6) — *tek büyük yeni özellik*
-Veri hazır (94 usûl + 24 makam seyir). Amaç: sıfırdan öğrenen için pedagoji-sıralı akış.
-Yeni rota `/ogren` (veya `/rehber`), UnifiedLayout + PageShell deseni.
+### E1. Rehberli Öğrenme Akışı (F14.6) — ✅ TAMAM (2026-07-16)
+Yeni rota `/ogren`, UnifiedLayout + PageShell deseni. **Usûl-merkezli** (kullanıcı kararı).
 
-- [ ] **E1.1 Pedagoji sırası kararı** *(BLOKAJ: kullanıcı girdisi gerekir)*
-  - Seçenek A (usûl-merkezli): küçük→büyük usûl (2→120 zaman), her adımda darp→velvele→çalım.
-  - Seçenek B (makam-merkezli): temel→mürekkep makam, her adımda dizi→seyir→dinle.
-  - Seçenek C (hibrit haftalık müfredat): usûl + makam paralel ilerler.
-  - Çıktı: adım listesi (JSON) — hangi usûl/makam, hangi sırada, ne gösterilir.
-- [ ] **E1.2 Stepper iskeleti**: `LearningStepper` bileşeni (adım göstergesi, ileri/geri,
-      ilerleme kaydı localStorage). Erişilebilir (klavye + aria).
-- [ ] **E1.3 Adım içeriği**: her adımda mevcut bileşenleri göm — `UsulNotation`
-      (darp/velvele + çalım) ve makam seyir metni + koma dizisi (studio panelinden çıkar,
-      paylaşılabilir bileşene taşı).
-- [ ] **E1.4 "Öğrendim/tekrar" işaretleme** + ilerleme özeti (kaç usûl/makam tamamlandı).
-- [ ] **E1.5 Navigation** kaydı (`navigation.config.ts` + `routes.config.ts`) + i18n etiketleri.
-- [ ] **E1.6 Test**: stepper akış testi (RTL), ilerleme kaydı, erişilebilirlik (axe).
-- Kabul: sıfırdan öğrenen bir kullanıcı akışı baştan sona takip edip her adımı
-  dinleyebilir/işaretleyebilir; TR i18n tam; a11y PASS.
-- Bağımlılık: E1.1 (kullanıcı kararı) → gerisi.
+- [x] **E1.1 Pedagoji sırası kararı**: **Seçenek A (usûl-merkezli)** seçildi — küçük→büyük
+      usûl (2→120 zaman). 26 kanonik öğretim usûlü, 6 seviye (`curriculum.ts`).
+- [x] **E1.2 Stepper iskeleti**: `LearningStepper` — adım göstergesi, ileri/geri, seviye
+      haritası, klavye ok gezinme, aria-live, progressbar. `useLearningProgress` (localStorage).
+- [x] **E1.3 Adım içeriği**: `UsulNotation` (darp/velvele) + `useUsulPlayback` (metronom
+      çalım, /rhythm çekirdeğinin yeniden-kullanılabilir hook'u, ortak kalibrasyon).
+- [x] **E1.4 "Öğrendim/tekrar" işaretleme** + ilerleme özeti (N/26).
+- [x] **E1.5 Navigation** (Çalışma hub) + routes + i18n (nav.ogren) bağlandı.
+- [x] **E1.6 Test**: 16 test (müfredat geçerliliği, ilerleme kalıcılığı, stepper akışı).
+- Doğrulama: tsc 0 hata, lint temiz, guardrails (architecture+layout) PASS, tarayıcıda
+  /ogren doğrulandı, tam suite 633/633 yeşil.
+- Not: makam-merkezli akış (Seçenek B) ileride ek eksen olarak eklenebilir (opsiyonel).
 
 ### E2. Yapısal usûllerin düm/tek doğrulaması *(veri kalitesi)* — KISMEN TAMAM
 Başlangıçta 22 usûl "ONAYLANMAMIS (yapisal)". **Bulgu (2026-07-16):** Heper Kudüm

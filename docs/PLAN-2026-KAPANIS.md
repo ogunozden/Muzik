@@ -121,12 +121,18 @@ geçmiş manuel anchor.
 - [ ] **E8.1** repeat/segno taşıyan kaynaklı korpus verisi gelirse → mevcut boru hattı devralır.
 - Aksiyon: **beklemede** (dış girdi). Ayrıca aksiyon yok.
 
-### E9. Makam repertuvarı genişletme *(opsiyonel, büyük)*
-Gönül seyir bölümünde 87 makam var; app'te 34. Ek makamlar (Pençgâh, Sûzinâk, Hüzzam...)
-eklenebilir — ama her biri koma dizisi (korpus) + seyir gerektirir.
-- [ ] **E9.1** Korpusta koma dizisi OLAN ek makamları belirle → seyir zaten hazır → ekle.
-- [ ] **E9.2** Korpusta olmayanlar → koma dizisi kaynağı olmadan eklenmez.
-- Maliyet: orta-yüksek. Önce korpus-destekli kesişimi çıkar.
+### E9. Makam repertuvarı genişletme — ✅ KISMEN (2026-07-16)
+Korpusta 75 makam koma verisi var; app'te 34 idi.
+- [x] **E9.1** Boşluk çıkarıldı: 41 korpus makamı app'te yoktu. **Kritik bulgu:** app
+      `tonic:"C"` normalize konvansiyonu kullanır (her makam C'den gösterilir) → yeni makam
+      da C, düşük risk. Koma/intervals korpustan; karar/güçlü korpus kararPerde/gucluPerde'den.
+- [x] **E9.2** **5 yaygın makam eklendi** (34→**39**): Hüzzam (152 eser), Hicazkâr (88),
+      Karcığar (71), Kürdi, Ferahfezâ — korpus-karar teoriyle HİZALI olanlar. Koma otantik
+      (53-EDO), tarayıcıda /studio'da doğrulandı. 5 regresyon testi.
+- [ ] **E9.3** *(domain validation bekliyor)* Neva, Çârgâh, Kürdilihicazkâr, Sûzinâk vb. —
+      korpus-karar ile teori-karar arasında gerilim var (ör. Neva korpusta "dügâh", teoride
+      "neva"). Uydurmamak için ATLANDI; uzman onayıyla eklenebilir.
+- Not: yeni makamların seyir'i yok (öğrenme akışında değil, /studio ansiklopedisinde).
 
 ---
 

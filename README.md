@@ -142,7 +142,7 @@ zinciri calistirir (`.github/workflows/ci.yml`).
 
 ## Dokumanlar
 
-- [TODO.md](TODO.md) — yol haritasi (FAZ 0-9) ve acik is
+- [TODO.md](TODO.md) — yalnizca acik/kalan is (tamamlanan tam kayit: `docs/archive/`)
 - [ENGINEERING_RULESET.md](ENGINEERING_RULESET.md) — baglayici kod/mimari kurallari
 - [PRODUCT_ARCHITECTURE.md](PRODUCT_ARCHITECTURE.md) — urun mimarisi
 - [docs/](docs/) — pipeline, kurasyon, UX/UI denetim, naming, AI kullanim planlari

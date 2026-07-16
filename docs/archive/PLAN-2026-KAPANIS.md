@@ -1,3 +1,8 @@
+> ARŞİV — DURUM (2026-07-16): Bu kapanış planındaki E1–E11 kalemlerinin
+> tamamlananları kapatıldı. Açık kalan kalemler (E5 CI-E2E, E7 alıştırma dizini,
+> E8 repeat/segno kaynağı, E9.3 makam domain-doğrulama, E10 count-in, E11 worklet)
+> kök TODO.md'ye taşındı. Aşağısı tarihsel kayıttır.
+
 # Muzik — Kapanış Planı (2026-07-16)
 
 Kaynak-destekli veri/UI gap'lerinin tamamı kapandı (usûl 37→94 + ansiklopedi;

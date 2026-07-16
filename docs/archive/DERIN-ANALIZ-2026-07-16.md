@@ -1,3 +1,8 @@
+> ARŞİV — DURUM (2026-07-16): Bu derin-analiz snapshot'ındaki tüm P0/P1/P2/P3
+> maddeleri uygulandı (çârgâh id, SSRF, CSRF, samples cache, Gönül seyir parser,
+> 6+5 makam, koma bug, P2 testleri, ölü kod, fetch DRY, god-component hook'ları).
+> Gerçekten açık kalan az sayıda madde kök TODO.md'ye taşındı. Aşağısı tarihsel kayıttır.
+
 # Derin Analiz — Yapılacaklar Tespiti (2026-07-16)
 
 ## İCRA DURUMU (2026-07-16, /goal "yapılacakları tamamla")

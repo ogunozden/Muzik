@@ -38,26 +38,32 @@ Yeni rota `/ogren` (veya `/rehber`), UnifiedLayout + PageShell deseni.
   dinleyebilir/işaretleyebilir; TR i18n tam; a11y PASS.
 - Bağımlılık: E1.1 (kullanıcı kararı) → gerisi.
 
-### E2. Yapısal usûllerin düm/tek doğrulaması *(veri kalitesi)*
-22 usûl "ONAYLANMAMIS (yapisal)" — süre otoriter (SymbTr), düm/tek yapısal varsayılan.
-Amaç: geleneksel notadan (Heper/Özkan/Gönül) gerçek düm/tek okuyup rozeti kaldırmak.
+### E2. Yapısal usûllerin düm/tek doğrulaması *(veri kalitesi)* — KISMEN TAMAM
+Başlangıçta 22 usûl "ONAYLANMAMIS (yapisal)". **Bulgu (2026-07-16):** Heper Kudüm
+kitabında **"KULLANILMAYAN USÜLLER" bölümü (s.267-271)** provisional usûllerin gerçek
+düm/tek darplarını içeriyor — provisional blokajının gerçek çözümü.
 
-- [ ] **E2.1 Kaynak taraması**: her yapısal usûl için hangi kitapta darp var mı envanteri
-      (Heper Kudüm OCR/repo, Gönül, Özkan kitabı temin edilirse). Kaynağı olanları listele.
-- [ ] **E2.2 Okuma + düzeltme** *(usûl başına, döşüm testli)*: kaynağı bulunan yapısal
-      usûlün gerçek darpını oku, güncelle, `PROVISIONAL_USUL_IDS`'ten çıkar.
-      Öncelik sırası (korpus repertuvarı çok olan): bektasiraksani, devrisureyya, iraksak,
-      cevher, dolap, bulgardarbi, azeriyuruksemai...
-- [ ] **E2.3 UI**: rozet otomatik kalkar (PROVISIONAL_USUL_IDS'ten çıkınca).
-- Kabul: her düzeltilen usûlde düm/tek kaynak-notlu; rozet kalkar; test yeşil.
-- Not: kaynağı OLMAYAN usûller yapısal kalır (uydurma yok) — bu doğru davranış.
+- [x] **E2.1 Kaynak taraması**: Heper KULLANILMAYAN bölümü render edildi (s.267-271).
+      İçindeki usûller: Darb-ı Bulgar, Mazmûrî, Devr-i Türkî, Bektaşî Raksânî, Şîrîn,
+      Devr-i Sagîr. App verisiyle kesişen: yalnız **bulgardarbi** ve **bektaşî ailesi**.
+- [x] **E2.2 Okuma + düzeltme** (döşüm testli, commit'li):
+      - **bulgardarbi** (s.267): `DÜM TEK DÜM TEK DÜM TEK TEK / 1 1 1 2 1 1 1` (8 zaman).
+        SymbTr clustering `[1,1,1,2,1,1,1]` ile birebir. ✅ de-provisioned.
+      - **bektasiraksi** (s.269): `16/8, DÜM DÜM TEK DÜM TEK DÜM TEK / 3 2 2 2 2 3 2`.
+        Önceki 8-zaman kodlama hataydı; SymbTr pulses=16 doğruladı. ✅ de-provisioned.
+        ⚠️ İsim kaviyatı: Heper "Raksânî" der, DUNYA "Raksı" — uzman onayı bekliyor.
+- Sonuç: provisional 22 → **20**. Kalan 20 usûlün düm/tek'i Heper/SymbTr/Gönül'de YOK
+  (Mazmûrî vb. app'te değil; diğerleri hiçbir makine-okunur kaynakta değil) → dürüstçe
+  provisional kalır. Özkan tam kitabı temin edilirse tekrar bakılır.
 
 ### E3. Makam seyir kapsamını tamamla *(veri)*
 Şu an 24/34 app makamı Gönül seyir metnine bağlı. Kalan 10: nevaber, nevadur, ureyş,
 hisarbuselik, segahira, hincin, tarzannef, irakeyn, rehavi, zengule.
 
-- [ ] **E3.1 Gönül'de arama**: kalan 10 makamı Gönül seyir bölümünde (s.307+) farklı
-      yazımla ara (rehavi/rehâvî, zengule/zengüle...). Bulunanları alias'la eşle.
+- [x] **E3.1 Gönül'de arama**: kalan 10 makam (nevaber, nevadur, ureyş, hisarbuselik,
+      segahira, hincin, tarzannef, irakeyn, rehavi, zengule) Gönül seyir bölümünde
+      çoklu yazım varyantıyla arandı — **hiçbiri bulunamadı** (Gönül seyir bölümü bu
+      nadir makamları içermiyor). Jenerik description korunur; uydurma seyir eklenmez.
 - [ ] **E3.2 Gönül'de olmayan app-makamları**: bunların app'te olması gerekiyor mu?
       (bazıları nadir mürekkep makam). Gerekliyse kaynak bul; değilse jenerik description kalır.
 - Kabul: eşleşme oranı raporlanır; her yeni eşleşme testli.

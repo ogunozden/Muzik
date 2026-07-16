@@ -15,8 +15,23 @@ function normalizeUsulNameForCorpus(name: string): string {
     .replace(/[^a-z0-9]/g, "");
 }
 
+// SymbTr korpusu bazi usulleri farkli yazar (ayni usul, ortografik varyant);
+// engine adi korpus anahtarina koprulenir. Tempo yine KORPUSTAN gelir —
+// uydurma yok, yalnizca yazim uzlastirmasi. Karsiligi olmayan (or. agirsemai)
+// tempsuz kalir (bos birakma > uydurma).
+const CORPUS_NAME_ALIASES: Record<string, string> = {
+  berafsan: "berefsan",
+  nimberafsan: "nimberefsan",
+  cember: "cenber",
+  zincir: "zencir",
+  darbifeth: "darbifetih",
+  frengifer: "firengifer",
+};
+
 function corpusDefaultBpm(nameTr: string): number | undefined {
-  const tempo = CORPUS_USULS[normalizeUsulNameForCorpus(nameTr)]?.tempoMedian;
+  const key = normalizeUsulNameForCorpus(nameTr);
+  const resolved = key in CORPUS_USULS ? key : CORPUS_NAME_ALIASES[key];
+  const tempo = resolved ? CORPUS_USULS[resolved]?.tempoMedian : undefined;
   if (!tempo || !Number.isFinite(tempo)) return undefined;
   return Math.min(200, Math.max(40, Math.round(tempo / 10) * 10));
 }

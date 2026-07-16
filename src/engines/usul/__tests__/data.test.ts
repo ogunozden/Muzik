@@ -162,6 +162,15 @@ describe("usul/data", () => {
       }
     });
 
+    it("bridges SymbTr orthographic variants to corpus tempo (alias)", () => {
+      // Ayni usul, korpus farkli yazar: berafsan/berefsan, cember/cenber,
+      // zincir/zencir, darbifeth/darbifetih, nimberafsan/nimberefsan,
+      // frengifer/firengifer. Alias sayesinde tempo KORPUSTAN baglanir.
+      for (const id of ["berafsan", "cember", "zincir", "darbifeth", "nimberafsan", "firengifer"]) {
+        expect(getUsulById(id)?.defaultBpm, `${id} defaultBpm`).toBeGreaterThan(0);
+      }
+    });
+
     it("distinguishes curcuna from aksak semai by tempo (same darp, faster)", () => {
       // Ayni desen; korpus curcuna'yi belirgin daha hizli calar (180 vs 120).
       const curcuna = getUsulById("curcuna")?.defaultBpm ?? 0;

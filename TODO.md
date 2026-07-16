@@ -551,8 +551,11 @@ dosum testi (toplam=beats) + iki-kitap capraz-kontrol. Fabrikasyon YOK.
       (2) metadata satiri (zaman/mertebe + getUsulGrouping vurgu gruplamasi +
       tempo + velvele gostergesi + usul sayisi). Testli. KALAN (dusuk oncelik):
       secicide kucuk/buyuk optgroup (Select atomu degisikligi gerekir).
-- [ ] F14.3 Makam Rehberi: studio panelini genislet (koma+perde+seyir)
-- [ ] F14.4 Makam seyir metinleri (Gonul s.316) -> makam-seyir zenginlestirme
+- [x] F14.3 Makam Rehberi: studio makam paneli ZATEN karar/guclu/seyir-yon +
+      53-EDO koma perde dizisini gosteriyordu; F14.4 ile seyir METNI de eklendi.
+- [x] F14.4 Makam seyir metinleri: Gonul s.307+ (s.316 degil) seyir tarifleri
+      pdftotext ile cikarilip 24 ana makama baglandi (makam-seyir.generated.json);
+      studio katlanabilir seyir metni gosterir. Makam tipine seyir{yon,metin}.
 - [ ] F14.5 Alistirma dizini (Gonul s.114-154 usul-solfej eslesmeleri)
 - [ ] F14.6 Rehberli ogrenme akisi (stepper, kitabin pedagoji sirasi)
 

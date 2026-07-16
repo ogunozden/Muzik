@@ -318,7 +318,7 @@ export default function UsulPage() {
             )}
           </div>
           {selectedUsulObj && PROVISIONAL_USUL_IDS.has(selectedUsulObj.id) && (
-            <p className="mt-3 rounded-md border border-[var(--color-amber-300,#fcd34d)] bg-[var(--color-amber-50,#fffbeb)] px-3 py-2 text-xs text-[var(--color-amber-800,#92400e)]">
+            <p role="status" className="mt-3 rounded-md border border-[var(--color-amber-300,#fcd34d)] bg-[var(--color-amber-50,#fffbeb)] px-3 py-2 text-xs text-[var(--color-amber-800,#92400e)]">
               ⚠ Bu usulün <strong>süre/ritmi</strong> SymbTr korpusundan otoriter, ancak
               <strong> düm/tek vurgu dizisi onaylanmamıştır</strong> (yalnız 1. düm kesin,
               kalan tek yapısal varsayılan). Geleneksel nota kaynağıyla doğrulanacaktır.
@@ -331,12 +331,14 @@ export default function UsulPage() {
             sesin onundeyse artir, gerideyse azalt. Deger kalicidir. */}
         <PageSurface className="mb-6 p-5">
           <div className="flex items-center justify-between gap-3">
-            <label htmlFor="sync-offset" className="text-sm text-[var(--color-text-primary)]">
-              Ses-görsel ofset
-              <span className="ml-2 text-xs text-[var(--color-text-secondary)]">
+            <div>
+              <label htmlFor="sync-offset" className="text-sm text-[var(--color-text-primary)]">
+                Ses-görsel ofset
+              </label>
+              <span id="sync-offset-hint" className="ml-2 text-xs text-[var(--color-text-secondary)]">
                 imleç sesin önündeyse artır
               </span>
-            </label>
+            </div>
             <span className="tabular-nums text-sm font-semibold text-[var(--color-text-primary)]">
               {syncOffsetMs > 0 ? "+" : ""}
               {syncOffsetMs} ms
@@ -345,7 +347,8 @@ export default function UsulPage() {
           <input
             id="sync-offset"
             type="range"
-            aria-label="Ses-görsel ofset (ms)"
+            aria-describedby="sync-offset-hint"
+            aria-valuetext={`${syncOffsetMs > 0 ? "+" : ""}${syncOffsetMs} ms`}
             min={-SYNC_OFFSET_MAX_MS}
             max={SYNC_OFFSET_MAX_MS}
             step={5}

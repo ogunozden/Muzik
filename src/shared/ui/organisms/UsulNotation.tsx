@@ -12,7 +12,7 @@
 
 "use client";
 
-import React, {forwardRef, useImperativeHandle, useRef} from "react";
+import React, {forwardRef, useId, useImperativeHandle, useRef} from "react";
 import type {UsulSymbol} from "@/types";
 
 /**
@@ -88,6 +88,17 @@ export const UsulNotation = forwardRef<UsulNotationHandle, UsulNotationProps>(fu
   const scrollRef = useRef<HTMLDivElement>(null);
   const playheadRef = useRef<SVGLineElement>(null);
 
+  // Erisilebilirlik (WCAG 1.1.1): role="img" SVG alt ogeleri (DÜM/TEK, vurgular,
+  // vurus sirasi) accessibility tree'den dislar. Darp desenini ekran okuyucuya
+  // vurus-vurus aktaran gizli bir metni aria-describedby ile bagliyoruz.
+  const patternDescId = useId();
+  const patternDescription = symbols
+    .map(
+      (sym) =>
+        `${sym.beat}. vuruş ${sym.syllable ?? SYMBOL_STYLES[sym.symbol]?.label ?? sym.symbol}${sym.isAccent ? " (vurgulu)" : ""}`,
+    )
+    .join(", ");
+
   const configs = {
     sm: {lineSpacing: 8, minPerBeat: 34, maxPerBeat: 56},
     md: {lineSpacing: 11, minPerBeat: 44, maxPerBeat: 84},
@@ -153,6 +164,7 @@ export const UsulNotation = forwardRef<UsulNotationHandle, UsulNotationProps>(fu
             viewBox={`0 0 ${totalWidth} ${totalHeight}`}
             role="img"
             aria-label={`${beats}/${unit} usul kalıbı`}
+            aria-describedby={patternDescId}
           >
             {/* Vurus izgarasi: her tam vurusta acik dikey cizgi */}
             {Array.from({length: beats + 1}, (_, i) => (
@@ -308,6 +320,11 @@ export const UsulNotation = forwardRef<UsulNotationHandle, UsulNotationProps>(fu
           </svg>
         </div>
       </div>
+
+      {/* Ekran okuyucu icin darp dokumU (SVG'nin aria-describedby hedefi) */}
+      <span id={patternDescId} className="sr-only">
+        {beats}/{unit} usul kalıbı: {patternDescription}
+      </span>
 
       {/* Lejant: yalniz desende gecen darp turleri, gercek renklerle */}
       <div className="mt-2 flex flex-wrap items-center justify-center gap-x-4 gap-y-1 text-xs">

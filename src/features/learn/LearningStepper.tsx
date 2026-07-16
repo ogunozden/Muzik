@@ -78,6 +78,10 @@ export function LearningStepper() {
     const el = containerRef.current;
     if (!el) return;
     const onKey = (e: KeyboardEvent) => {
+      // Ekran okuyucu gozat-modu / form kontrolleriyle catismasin: yalniz kart
+      // govdesindeyken ok tuslarini yakala (input/checkbox/link haric).
+      const target = e.target as HTMLElement | null;
+      if (target?.closest("input, select, textarea, a, [contenteditable]")) return;
       if (e.key === "ArrowRight") {
         e.preventDefault();
         goTo(stepIndex + 1);
@@ -100,7 +104,7 @@ export function LearningStepper() {
   }
 
   return (
-    <div ref={containerRef} tabIndex={-1} role="region" aria-label="Rehberli usul ogrenme akisi" className="outline-none">
+    <div ref={containerRef} tabIndex={-1} role="region" aria-label="Rehberli usul ogrenme akisi">
       {/* Ilerleme ozeti */}
       <div className="mb-4">
         <div className="mb-1 flex items-center justify-between text-sm text-[var(--color-text-secondary)]">
@@ -161,7 +165,7 @@ export function LearningStepper() {
         </section>
 
         {isProvisional && (
-          <p className="mb-4 rounded-md border border-[var(--color-amber-300,#fcd34d)] bg-[var(--color-amber-50,#fffbeb)] px-3 py-2 text-xs text-[var(--color-amber-800,#92400e)]">
+          <p role="status" className="mb-4 rounded-md border border-[var(--color-amber-300,#fcd34d)] bg-[var(--color-amber-50,#fffbeb)] px-3 py-2 text-xs text-[var(--color-amber-800,#92400e)]">
             ⚠ Bu usulun suresi/ritmi otoriter, ancak dum/tek vurgu dizisi henuz
             geleneksel nota kaynagiyla dogrulanmamistir.
           </p>
@@ -172,7 +176,7 @@ export function LearningStepper() {
           <Button
             variant="accent"
             size="sm"
-            ariaLabel={isPlaying ? "Durdur" : "Calmayi baslat"}
+            ariaLabel={isPlaying ? "Durdur" : "Dinle"}
             onPress={togglePlay}
           >
             {isPlaying ? "■ Durdur" : "▶ Dinle"}
@@ -233,9 +237,18 @@ export function LearningStepper() {
       <nav aria-label="Seviye haritasi" className="mt-6 flex flex-col gap-2">
         {CURRICULUM.map((level) => {
           const startIndex = CURRICULUM_STEPS.findIndex((s) => s.levelId === level.id);
+          const levelHeadingId = `learn-level-${level.id}`;
           return (
-            <div key={level.id} className="flex flex-wrap items-center gap-2">
-              <span className="w-40 shrink-0 text-xs font-medium text-[var(--color-text-secondary)]">
+            <div
+              key={level.id}
+              role="group"
+              aria-labelledby={levelHeadingId}
+              className="flex flex-wrap items-center gap-2"
+            >
+              <span
+                id={levelHeadingId}
+                className="w-40 shrink-0 text-xs font-medium text-[var(--color-text-secondary)]"
+              >
                 {level.title}
               </span>
               <div className="flex flex-wrap gap-1.5">

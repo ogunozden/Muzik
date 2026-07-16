@@ -308,12 +308,14 @@ function NotaEditorPage() {
               </p>
             </div>
 
-            <div className="grid gap-2 sm:grid-cols-3 lg:grid-cols-1" aria-label={t("notaEditor.workflowLabel")}>
+            <div className="grid gap-2 sm:grid-cols-3 lg:grid-cols-1" role="list" aria-label={t("notaEditor.workflowLabel")}>
               {workflowSteps.map((step, index) => {
                 const isActive = currentStep === index + 1;
                 return (
                   <div
                     key={step.number}
+                    role="listitem"
+                    aria-current={isActive ? "step" : undefined}
                     className={`rounded-lg border px-4 py-3 transition-colors ${
                       isActive
                         ? "border-[var(--color-primary-300)] bg-[var(--color-primary-50)]"
@@ -344,7 +346,8 @@ function NotaEditorPage() {
                         {t("notaEditor.setupDescription")}
                       </p>
                     </div>
-                    <Badge color={isRecording ? "danger" : "primary"} ariaLabel={t("recording.status")}>
+                    <Badge color={isRecording ? "danger" : "primary"}>
+                      <span className="sr-only">{t("recording.status")}: </span>
                       {studioStatus}
                     </Badge>
                   </div>
@@ -362,7 +365,7 @@ function NotaEditorPage() {
                       {/* Otantik 53-EDO koma perdesinde dinle (korpus-turevli;
                           12-TET degil — hicaz'in 113c ikilisi duyulur). */}
                       <Button
-                        ariaLabel={t("makam.playScale")}
+                        ariaLabel={isPlaying ? t("common.playing") : t("makam.playScale")}
                         variant="secondary"
                         size="sm"
                         isDisabled={!selectedMakamId || isPlaying}
@@ -487,10 +490,12 @@ function NotaEditorPage() {
                       </p>
                     </div>
                     <div className="flex flex-wrap gap-2">
-                      <Badge color="primary" ariaLabel={t("makam.title")}>
+                      <Badge color="primary">
+                        <span className="sr-only">{t("makam.title")}: </span>
                         {selectedMakamName ?? t("notaEditor.noMakam")}
                       </Badge>
-                      <Badge color="secondary" ariaLabel={t("usul.title")}>
+                      <Badge color="secondary">
+                        <span className="sr-only">{t("usul.title")}: </span>
                         {selectedUsulName ?? t("notaEditor.noUsul")}
                       </Badge>
                     </div>
@@ -603,12 +608,12 @@ function NotaEditorPage() {
                           {isSaving ? t("common.saving") : t("common.save")}
                         </Button>
                         {saveError && (
-                          <p className="mt-3 text-sm text-[var(--color-error)]">
+                          <p role="alert" className="mt-3 text-sm text-[var(--color-error)]">
                             {saveError}
                           </p>
                         )}
                         {saveMessage && (
-                          <p className="mt-3 text-sm text-[var(--color-success)]">
+                          <p role="status" className="mt-3 text-sm text-[var(--color-success)]">
                             {saveMessage}
                           </p>
                         )}

@@ -42,7 +42,9 @@ describe("UsulPage", () => {
 
   it("persists the audio/visual calibration offset to localStorage", async () => {
     render(<UsulPage />);
-    const slider = await screen.findByRole("slider", {name: "Ses-görsel ofset (ms)"});
+    // Erisilebilir isim artik native <label htmlFor>'dan gelir ("Ses-görsel ofset");
+    // "(ms)" birimi aria-valuetext ile duyurulur (a11y duzeltmesi, WCAG 1.3.1).
+    const slider = await screen.findByRole("slider", {name: "Ses-görsel ofset"});
 
     fireEvent.change(slider, {target: {value: "60"}});
 

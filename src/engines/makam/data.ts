@@ -53,14 +53,21 @@ function withinOneEdit(a: string, b: string): boolean {
   return edits + (long.length - j) + (short.length - i) <= 1;
 }
 
-// Makam adini korpus anahtarina cozumler (ariza ve koma dizisi ayni eslemeyi
-// paylasir): once tam ad/id, sonra BENZERSIZ tek-harf yazim varyanti.
+// Korpus anahtar kumesi: ariza (makams) VE koma dizisi (komaScales) anahtarlarinin
+// BIRLESIMI — bazi makamlarda (buselik/cargah) yalniz komaScales girdisi var,
+// makams yok; yalniz makams'a bakmak koma'yi baglamayi kacirir (2026-07 bug fix).
+const CORPUS_KEY_HAS_DATA = (key: string): boolean =>
+  Boolean(CORPUS_MAKAMS[key]) || Boolean(CORPUS_KOMA_SCALES[key]);
+
+// Makam adini korpus anahtarina cozumler: once tam ad/id, sonra BENZERSIZ
+// tek-harf yazim varyanti.
 function resolveCorpusKey(makam: Makam): string | undefined {
   const norm = normalizeMakamName(makam.nameTr);
-  if (CORPUS_MAKAMS[norm]) return norm;
+  if (CORPUS_KEY_HAS_DATA(norm)) return norm;
   const idNorm = normalizeMakamName(makam.id);
-  if (CORPUS_MAKAMS[idNorm]) return idNorm;
-  const near = Object.keys(CORPUS_MAKAMS).filter((key) => withinOneEdit(key, norm));
+  if (CORPUS_KEY_HAS_DATA(idNorm)) return idNorm;
+  const allKeys = new Set([...Object.keys(CORPUS_MAKAMS), ...Object.keys(CORPUS_KOMA_SCALES)]);
+  const near = [...allKeys].filter((key) => withinOneEdit(key, norm));
   return near.length === 1 ? near[0] : undefined;
 }
 
@@ -69,7 +76,7 @@ function attachCorpusData(makam: Makam): Makam {
   const base = seyir ? {...makam, seyir} : makam;
   const key = resolveCorpusKey(makam);
   if (!key) return base;
-  const entry = CORPUS_MAKAMS[key];
+  const entry = CORPUS_MAKAMS[key]; // yalniz komaScales'te olan makamda undefined olabilir
   const komaScale = CORPUS_KOMA_SCALES[key];
   // 12-TET `intervals` artik korpus koma dizisinden OTONOM turetilir (elle
   // yazilan yerine); temiz heptatoni cikmazsa el-yazimina duser. Otantik perde
@@ -78,8 +85,7 @@ function attachCorpusData(makam: Makam): Makam {
   return {
     ...base,
     intervals,
-    keySignature: entry.keySignature,
-    keySignatureConsensus: entry.consensus,
+    ...(entry ? {keySignature: entry.keySignature, keySignatureConsensus: entry.consensus} : {}),
     ...(komaScale ? {komaScale} : {}),
     ...(seyir ? {seyir} : {}),
   };

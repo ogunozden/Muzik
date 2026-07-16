@@ -539,6 +539,7 @@ export const USUL_DATA: Usul[] = [
   ], OYNAK_VELVELE), // s.63 (darp) + Gonul s.102 (velvele)
   makeUsul("aksaksemai", "Aksaksemâî", "Aksak Semai", 10, "8", AKSAK_SEMAI, AKSAK_SEMAI_VELVELE), // s.67
   makeUsul("agiraksaksemai", "Ağır Aksak Semâî", "Agir Aksak Semai", 10, "4", AKSAK_SEMAI, AKSAK_SEMAI_VELVELE), // Adana ?pnum=369: Aksak Semai'nin 10/4 agir mertebesi, ayni darp
+  makeUsul("aksaksemaiii", "Aksak Semâî III", "Aksak Semai III", 10, "2", AKSAK_SEMAI, AKSAK_SEMAI_VELVELE), // Aksak Semai 3. mertebe (10/2), ayni darp
   makeUsul("aksaksemaievferi", "Aksaksemâî Evferi", "Aksak Semai Evferi", 10, "8", AKSAK_SEMAI, AKSAK_SEMAI_VELVELE), // SymbTr .mu2 duzum=212221 = Aksak Semai darpi birebir; ayni darp
   // Curcuna = 10/8 (gercek notasyon). Kitap (s.66) onu Aksak Semai'nin 10/16
   // mertebesi sayar ama SymbTr v3 korpusundaki curcuna eserlerinin TAMAMI 10/8
@@ -590,6 +591,15 @@ export const USUL_DATA: Usul[] = [
   makeUsul("nimdevir", "Nim Devir", "Nim Devir", 18, "4", NIM_DEVIR, NIM_DEVIR_VELVELE), // Gonul s.106 (6+4+4+4); korpusta repertuvari var
 
   makeUsul("fahte", "Fahte", "Fahte", 20, "4", FAHTE, FAHTE_VELVELE), // s.139 (darp) + Gonul s.105
+  // Durak Evferi = Türk Aksağı(5) + 4 Sofyan(16) = 21 (TDV + sufi.gen.tr belgeli
+  // yapi). Bilesenlerin GERCEK darpindan kuruldu (zincir gibi); dini muside na't/durak.
+  makeUsul("durakevferi", "Durak Evferi", "Durak Evferi", 21, "4", [
+    [1, "dum", 2], [3, "tek", 2], [5, "tek", 1], // Türk Aksağı
+    [6, "dum", 2], [8, "te", 1], [9, "ke", 1], // Sofyan 1
+    [10, "dum", 2], [12, "te", 1], [13, "ke", 1], // Sofyan 2
+    [14, "dum", 2], [16, "te", 1], [17, "ke", 1], // Sofyan 3
+    [18, "dum", 2], [20, "te", 1], [21, "ke", 1], // Sofyan 4
+  ]), // TDV: 21 zamanli; yapi = Türk Aksağı + 4 Sofyan
   makeUsul("hezec", "Hezeç", "Hezec", 22, "4", HEZEC, HEZEC_VELVELE), // Gonul s.106 (6+4+4+4+4); korpus repertuvari yok, pedagojik
   makeUsul("cember", "Çember", "Cember", 24, "4", CEMBER, CEMBER_VELVELE), // s.157
   makeUsul("agircenber", "Ağır Çenber", "Agir Cenber", 24, "2", CEMBER, CEMBER_VELVELE), // TDV/Ozkan: Cenber'in 2. mertebesi (24/2), ayni darp

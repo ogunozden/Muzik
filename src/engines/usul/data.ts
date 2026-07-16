@@ -88,7 +88,9 @@ function toStressPattern(beats: number, symbols: readonly UsulSymbol[]): number[
 }
 
 function shift(strokes: readonly Stroke[], offset: number): Stroke[] {
-  return strokes.map(([beat, symbol, timeValue]) => [beat + offset, symbol, timeValue]);
+  return strokes.map(([beat, symbol, timeValue, syllable]) =>
+    syllable !== undefined ? [beat + offset, symbol, timeValue, syllable] : [beat + offset, symbol, timeValue],
+  );
 }
 
 function makeUsul(
@@ -682,6 +684,14 @@ export const USUL_DATA: Usul[] = [
     ...shift(CEMBER, 36),
     ...shift(DEVRI_KEBIR, 60),
     ...shift(BERAFSAN, 88),
+  ], [
+    // velvele de bilesen velvelelerinden kurulur (darp ile ayni offsetler)
+    ...DUYEK_VELVELE,
+    ...shift(DUYEK_VELVELE, 8),
+    ...shift(FAHTE_VELVELE, 16),
+    ...shift(CEMBER_VELVELE, 36),
+    ...shift(DEVRI_KEBIR_VELVELE, 60),
+    ...shift(BEREFSAN_VELVELE, 88),
   ]), // s.234: bes usulun zinciri (16+20+24+28+32 = 120; onceki 88/4 kaydi yanlisti)
   // --- SymbTr ritim-otoriter, darp ONAYLANMAMIS (yapisal) ---
   // usul_extended.json (SymbTr-extras) clustering'inden sure dizisi OTORITER;

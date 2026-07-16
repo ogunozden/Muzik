@@ -18,3 +18,8 @@ jobs:
       - run: npm run build
       - run: npm run audit:bundle-size
       - run: npm run audit:security
+      # E2E (E5/F6.3): kritik akislar gercek tarayicida. webServer config'i CI'da
+      # (reuseExistingServer=false) taze `next dev` baslatir; PLAYWRIGHT_BASE_URL
+      # verilmez. Chromium runner'a kurulur.
+      - run: npx playwright install --with-deps chromium
+      - run: npm run test:e2e

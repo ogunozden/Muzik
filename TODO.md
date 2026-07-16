@@ -513,11 +513,11 @@ dosum testi (toplam=beats) + iki-kitap capraz-kontrol. Fabrikasyon YOK.
   - [x] tekvurus(11/8), ikizaksak(12/8) s.103; cengiharbi(10/4, velvelesiz) s.103
   - [x] nimsakil(24), evsat(26) s.107; bestedevrirevani(26) s.108
   - [x] remel(28), firengifer(28) s.109
-- [ ] F14.1c Korpus YAZIM VARYANTLARI: usul VAR ama korpus farkli yaziyor →
-      normalizeUsulNameForCorpus eslesmiyor, tempo baglanmiyor. Eslestirme
-      (alias) gerekir: berefsan=berafsan, cenber=cember, devrihindi=devirhindi,
-      devrituran=devirituran, nimberefsan=nimberafsan, darbifetih=darbifeth,
-      zencir=zincir, turkdarbi=darbiturki (SymbTr yazimi vs engine id).
+- [x] F14.1c Korpus YAZIM VARYANTLARI: CORPUS_NAME_ALIASES ile 6 usul korpus
+      temposuna baglandi (berafsan/berefsan, cember/cenber, zincir/zencir,
+      darbifeth/darbifetih, nimberafsan/nimberefsan, frengifer/firengifer).
+      NOT: devirhindi/devirituran ZATEN eslesir (isim normalize -> devrihindi/
+      devrituran, korpus anahtariyla ayni). agirsemai korpusta yok, tempsuz.
 - [ ] F14.1d Gonul tablosunda OLMAYAN korpus usulleri (baska kaynak/sayfa
       gerekir): sakil(tam), havi, muasser, darbeyn, cevher, dolap, gulsen,
       aydin, turkmen, katikofti, bulgardarbi, devrisureyya + mertebe

@@ -383,6 +383,20 @@ const CENGI_HARBI: Stroke[] = [
   [1, "dum", 1], [2, "tek", 1], [3, "dum", 1], [4, "tek", 1], [5, "dum", 1],
   [6, "tek", 1], [7, "tek", 1], [8, "dum", 1], [9, "tek", 1], [10, "tek", 1],
 ]; // Gonul s.103 (velvelesiz — mehter usulu)
+const NIM_SAKIL: Stroke[] = [
+  // 4+6+6+4+4 (24/4, Ver.1): Düüm Tek Kâ | Düüm Tek Kâ Tek Kâ | Düüm Tek Kâ te ke Düm | Taa Heek | Tek Kâ Tek Kâ
+  [1, "dum", 2], [3, "tek", 1], [4, "ka", 1], [5, "dum", 2], [7, "tek", 1], [8, "ka", 1], [9, "tek", 1], [10, "ka", 1],
+  [11, "dum", 2], [13, "tek", 1], [14, "ka", 1], [15, "te", 0.5], [15.5, "ke", 0.5], [16, "dum", 1],
+  [17, "ta", 2], [19, "hek", 2], [21, "tek", 1], [22, "ka", 1], [23, "tek", 1], [24, "ka", 1],
+]; // Gonul s.107 (Ver.1)
+const NIM_SAKIL_VELVELE: Stroke[] = [
+  // 4+6+6+4+4 (24/4, Velvele 1): darp gruplarina dosum
+  [1, "dum", 1], [2, "te", 0.5], [2.5, "ke", 0.5], [3, "tek", 1], [4, "ka", 1],
+  DU(5), ME(5.5), [6, "dum", 1], [7, "tek", 1], [8, "te", 0.5], [8.5, "ke", 0.5], [9, "tek", 1], [10, "ka", 1],
+  [11, "dum", 1], [12, "te", 0.5], [12.5, "ke", 0.5], [13, "tek", 1], [14, "ka", 1], DU(15), ME(15.5), [16, "dum", 1],
+  [17, "tek", 1], [18, "te", 0.5], [18.5, "ke", 0.5], [19, "tek", 1], [20, "ka", 1],
+  [21, "tek", 1], [22, "ka", 1], [23, "tek", 1], [24, "ka", 1],
+]; // Gonul s.107 (Velvele 1)
 
 export const USUL_DATA: Usul[] = [
   // --- Kucuk usuller ---
@@ -473,6 +487,7 @@ export const USUL_DATA: Usul[] = [
 
   makeUsul("fahte", "Fahte", "Fahte", 20, "4", FAHTE, FAHTE_VELVELE), // s.139 (darp) + Gonul s.105
   makeUsul("cember", "Çember", "Cember", 24, "4", CEMBER, CEMBER_VELVELE), // s.157
+  makeUsul("nimsakil", "Nim Sakîl", "Nim Sakil", 24, "4", NIM_SAKIL, NIM_SAKIL_VELVELE), // Gonul s.107 (4+6+6+4+4); korpusta repertuvari var
   makeUsul("devrikebir", "Devr-i Kebir", "Devr-i Kebir", 28, "4", DEVRI_KEBIR, DEVRI_KEBIR_VELVELE), // s.181
   makeUsul("hafif", "Hafif", "Hafif", 32, "4", [
     [1, "dum", 1], [2, "tek", 1], [3, "tek", 2], [5, "dum", 1], [6, "tek", 1], [7, "tek", 2],

@@ -31,8 +31,27 @@ function isPrivateIpv4(hostname) {
   );
 }
 
+// IPv4-mapped IPv6'dan govdedeki IPv4'u cikar. Node URL parser'i noktali formu
+// (::ffff:127.0.0.1) hex forma (::ffff:7f00:1) normalize eder — her ikisini de coz.
+function ipv4FromMappedV6(normalized) {
+  const dotted = normalized.match(/^::ffff:(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})$/);
+  if (dotted) return dotted[1];
+  const hex = normalized.match(/^::ffff:([0-9a-f]{1,4}):([0-9a-f]{1,4})$/);
+  if (hex) {
+    const g1 = Number.parseInt(hex[1], 16);
+    const g2 = Number.parseInt(hex[2], 16);
+    return `${(g1 >> 8) & 0xff}.${g1 & 0xff}.${(g2 >> 8) & 0xff}.${g2 & 0xff}`;
+  }
+  return null;
+}
+
 function isBlockedMetadataHost(hostname) {
   const normalized = normalizeHostname(hostname);
+
+  // IPv4-mapped IPv6 (::ffff:127.0.0.1 / ::ffff:7f00:1) loopback/private ise engelle;
+  // aksi halde bu formla SSRF korumasi atlatilir.
+  const mappedV4 = ipv4FromMappedV6(normalized);
+  if (mappedV4 && isPrivateIpv4(mappedV4)) return true;
 
   return (
     normalized === "localhost" ||
@@ -67,6 +86,33 @@ function validateMetadataUrl(value) {
   }
 
   return {ok: true, url};
+}
+
+// SSRF sertlestirmesi: yonlendirmeleri MANUEL takip et ve HER hop'un hedefini
+// validateMetadataUrl'den gecir. `redirect:"follow"` ile bir HTTPS host, 302 ile
+// http://127.0.0.1'e (Ollama vb. yerel servis) yonlendirip ilk dogrulamayi
+// atlatabiliyordu; burada her Location yeniden dogrulanir.
+async function followValidatedRedirects(fetchImpl, startUrl, options, maxHops = 5) {
+  let currentUrl = startUrl;
+  for (let hop = 0; hop <= maxHops; hop += 1) {
+    const response = await fetchImpl(currentUrl, {...options, redirect: "manual"});
+    const isRedirect = response.status >= 300 && response.status < 400 && response.status !== 304;
+    if (!isRedirect) return {ok: true, response};
+
+    const location = response.headers.get("location");
+    if (!location) return {ok: true, response};
+
+    let nextUrl;
+    try {
+      nextUrl = new URL(location, currentUrl);
+    } catch {
+      return {ok: false, reason: "invalid redirect location"};
+    }
+    const validation = validateMetadataUrl(nextUrl.toString());
+    if (!validation.ok) return {ok: false, reason: `redirect to ${validation.reason}`};
+    currentUrl = validation.url.toString();
+  }
+  return {ok: false, reason: "too many redirects"};
 }
 
 function asText(value) {
@@ -275,11 +321,16 @@ export async function fetchExternalHtmlMetadata(source, {
   const timeout = setTimeout(() => abortController.abort(), timeoutMs);
 
   try {
-    const response = await fetchImpl(validation.url, {
+    const redirectResult = await followValidatedRedirects(fetchImpl, validation.url.toString(), {
       method: "GET",
-      redirect: "follow",
       signal: abortController.signal,
     });
+    if (!redirectResult.ok) {
+      return {
+        notes: appendNote(source.notes, `Page metadata fetch skipped: ${redirectResult.reason}.`),
+      };
+    }
+    const response = redirectResult.response;
 
     if (!response.ok) {
       return {

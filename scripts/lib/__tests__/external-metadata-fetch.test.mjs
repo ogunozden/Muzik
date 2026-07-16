@@ -1,5 +1,13 @@
-import {describe, expect, it} from "vitest";
-import {extractHtmlMetadata} from "../external-metadata-fetch.mjs";
+import {describe, expect, it, vi} from "vitest";
+import {extractHtmlMetadata, fetchExternalHtmlMetadata} from "../external-metadata-fetch.mjs";
+
+function redirectResponse(location) {
+  return {
+    status: 302,
+    ok: false,
+    headers: {get: (key) => (key.toLowerCase() === "location" ? location : null)},
+  };
+}
 
 describe("external metadata fetch", () => {
   it("extracts title, description, author and signal provenance from HTML", () => {
@@ -43,5 +51,26 @@ describe("external metadata fetch", () => {
         "schema:lyrics",
       ]),
     }));
+  });
+
+  describe("SSRF redirect sertlestirmesi", () => {
+    it("https loopback'e yonlendirmeyi engeller (Location re-validation)", async () => {
+      const fetchImpl = vi.fn(async () => redirectResponse("https://127.0.0.1:11434/api"));
+      const result = await fetchExternalHtmlMetadata({url: "https://example.com/eser", notes: ""}, {fetchImpl});
+      expect(result.notes).toMatch(/redirect to loopback or private host/i);
+      expect(fetchImpl).toHaveBeenCalledTimes(1); // yonlendirme takip EDILMEDI
+    });
+
+    it("http'ye (cross-protocol) yonlendirmeyi engeller", async () => {
+      const fetchImpl = vi.fn(async () => redirectResponse("http://127.0.0.1:11434/api"));
+      const result = await fetchExternalHtmlMetadata({url: "https://example.com/eser", notes: ""}, {fetchImpl});
+      expect(result.notes).toMatch(/redirect to URL must use HTTPS/i);
+    });
+
+    it("IPv4-mapped IPv6 loopback'e (::ffff:127.0.0.1) yonlendirmeyi engeller", async () => {
+      const fetchImpl = vi.fn(async () => redirectResponse("https://[::ffff:127.0.0.1]/api"));
+      const result = await fetchExternalHtmlMetadata({url: "https://example.com/eser", notes: ""}, {fetchImpl});
+      expect(result.notes).toMatch(/redirect to loopback or private host/i);
+    });
   });
 });

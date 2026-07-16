@@ -65,22 +65,28 @@ async function getAvailableSampleUrls(): Promise<Set<string>> {
   if (!availableSampleUrlsPromise) {
     availableSampleUrlsPromise = fetch("/api/samples", {cache: "no-store"})
       .then(async (response) => {
-        if (!response.ok) return new Set<string>();
+        // Sunucu hatasi (5xx/404): gecici kabul et, KALICI cache'leme.
+        if (!response.ok) throw new Error(`samples endpoint ${response.status}`);
 
         const data = await response.json() as {
           slots?: Array<{url: string; installed: boolean}>;
         };
 
-        return new Set(
+        const urls = new Set(
           (data.slots ?? [])
             .filter((slot) => slot.installed)
             .map((slot) => slot.url)
         );
-      })
-      .catch(() => new Set<string>())
-      .then((urls) => {
+        // Yalniz BASARILI yanit kalici cache'lenir (bos olsa da: gercekten kurulu
+        // sample yok demektir). Boylece sonraki cagrilar hizli yol izler.
         availableSampleUrls = urls;
         return urls;
+      })
+      .catch(() => {
+        // Gecici hata (ag reddi / 5xx): sonucu cache'LEME; promise'i sifirla ki
+        // bir sonraki cagri yeniden denesin — yoksa oturum boyu sessiz ses kaybi.
+        availableSampleUrlsPromise = null;
+        return new Set<string>();
       });
   }
 

@@ -17,6 +17,17 @@ function isLoopbackRequest(request: Request): boolean {
   return host === "localhost" || host === "127.0.0.1" || host === "::1" || host === "[::1]";
 }
 
+// CSRF savunmasi: Host-tabanli loopback kontrolu tek basina yetmez — kotucul bir
+// sayfa `text/plain` POST (CORS "simple request") ile localhost'a yazip yerel
+// script/dosya islemi tetikleyebilir. Taraycilar fetch/XHR'de her zaman
+// Sec-Fetch-Site gonderir; "cross-site"/"same-site" = baska origin'den (CSRF
+// adayi) → tokensiz unsafe-local yolu icin reddet. "same-origin"/"none" veya
+// header yoklugu (tarayici-disi istemci: curl/script) guvenli sayilir.
+function isCrossOriginBrowserRequest(request: Request): boolean {
+  const secFetchSite = request.headers.get("sec-fetch-site");
+  return secFetchSite === "cross-site" || secFetchSite === "same-site";
+}
+
 function tokenMatches(actual: string | null, expected: string): boolean {
   if (!actual) return false;
 
@@ -37,7 +48,8 @@ export function getLocalOperationAccessError(
   const allowUnsafeLocalTokenless =
     process.env.NODE_ENV !== "production" &&
     process.env[options.unsafeLocalEnv] === "true" &&
-    isLoopbackRequest(request);
+    isLoopbackRequest(request) &&
+    !isCrossOriginBrowserRequest(request);
 
   if (!operationsEnabled) {
     return NextResponse.json({error: options.disabledMessage}, {status: 403});

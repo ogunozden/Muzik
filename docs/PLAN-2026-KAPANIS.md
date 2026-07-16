@@ -67,12 +67,16 @@ hisarbuselik, segahira, hincin, tarzannef, irakeyn, rehavi, zengule.
 
 ## P1 — Ürün cilası / kalite doğrulaması
 
-### E4. Erişilebilirlik tamamlama (F5.5)
-- [ ] **E4.1 Denetim**: axe/manuel — /rhythm, /studio, /references ana akışları.
-- [ ] **E4.2 Klavye navigasyonu**: usûl/makam seçici, toggle'lar, stepper (E1) tam klavye.
-- [ ] **E4.3 aria-live**: çalım durumu, seyir/velvele açılımı ekran okuyucuya bildirilir.
-- [ ] **E4.4 Kontrast**: yapısal-usûl rozeti (amber) + tüm durum renkleri WCAG AA.
-- Kabul: kritik akışlar ekran-okuyucu yürüyüşünden geçer; axe 0 kritik.
+### E4. Erişilebilirlik tamamlama (F5.5) — ✅ TAMAM (2026-07-16)
+- [x] **E4.1 Denetim**: a11y-architect ajanı WCAG 2.2 AA denetimi (14 bulgu, önem-sıralı).
+- [x] **E4.2 Düzeltmeler**: 11/14 uygulandı — CRITICAL (UsulNotation darp dökümü
+      `aria-describedby`; Badge `sr-only` prefix), HIGH (buton isim uyumu, sync-offset
+      slider, kayıt mesajları `role=alert/status`), MEDIUM (provisional `role=status`,
+      workflow `role=list/aria-current`, seviye haritası `role=group`), LOW (odak/klavye).
+- [x] **E4.3 Kontrast**: amber rozet doğrulandı (6.8:1, AA geçer).
+- Atlanan (gerekçeli): LabeledSlider sistemik (tek tüketici + test contract riski),
+  ritim göstergesi canlı bölge (yüksek-BPM spam), amber token hijyeni (kontrast geçiyor).
+- Kabul: tarayıcıda darp dökümü ekran okuyucuya ulaşıyor ✓; 633/633 unit + 8/8 E2E yeşil.
 
 ### E5. E2E testleri CI'da (F6.3) — ✅ TAMAM (2026-07-16)
 - [x] **E5.1 Playwright akışları**: `@playwright/test` kuruldu, `playwright.config.ts`

@@ -545,8 +545,12 @@ dosum testi (toplam=beats) + iki-kitap capraz-kontrol. Fabrikasyon YOK.
   - [x] EKLENMEDI (gercek usul degil / veri yok): serbest (olcusuz), ikibir
         (standart degil), murekkepnimsofyan (bogus meter). => 93+ usul tanimli,
         korpusta yalniz bu 3 etiket eslesmiyor. USUL VERI KATMANI TAMAM (37->94).
-- [ ] F14.2 Usul Ansiklopedisi UI (/references/usul): darp<->velvele toggle +
-      calim (UsulPanel/UsulNotation hazir, syllable tasiyor)
+- [~] F14.2 Usul Ansiklopedisi UI: CEKIRDEK HAZIR — /rhythm sayfasi tum 94
+      usulu (USUL_DATA.map) + UsulNotation + darp<->velvele toggle (velvelesi
+      olanlarda checkbox) + calim (perkusyon/bpm/loop) + korpus temposu sunuyor.
+      Eklenen ~35 usul otomatik akiyor. KALAN (polish): usul secicide
+      kucuk/buyuk gruplama, metadata (vurgu gruplamasi/kaynak) gosterimi,
+      yapisal-usul isareti.
 - [ ] F14.3 Makam Rehberi: studio panelini genislet (koma+perde+seyir)
 - [ ] F14.4 Makam seyir metinleri (Gonul s.316) -> makam-seyir zenginlestirme
 - [ ] F14.5 Alistirma dizini (Gonul s.114-154 usul-solfej eslesmeleri)

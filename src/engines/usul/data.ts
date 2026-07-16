@@ -588,6 +588,17 @@ export const USUL_DATA: Usul[] = [
   ], HAFIF_VELVELE), // s.199 (darp) + Gonul s.109 (velvele)
   makeUsul("muhammes", "Muhammes", "Muhammes", 32, "4", MUHAMMES, MUHAMMES_VELVELE), // Gonul s.110 (8+8+8+8)
   makeUsul("berafsan", "Berafsan", "Berefsan", 32, "4", BERAFSAN, BEREFSAN_VELVELE), // s.208 (darp) + Gonul s.110 (velvele)
+  // Sakil = 48 zamanli, Beste yapiminda en buyuk usullerden. Heper Kudum kitabi
+  // "ZAMAN VE VURGULARI" tablosundan (repo symb/…KUDUM OCR) birebir; toplam=48.
+  // Kitap: "usulun bunyesinde zaten velvele mevcuttur" -> darp-only.
+  makeUsul("sakil", "Sakîl", "Sakil", 48, "4", [
+    [1, "dum", 2], [3, "tek", 1], [4, "ka", 1], [5, "dum", 2], [7, "tek", 1], [8, "ka", 1],
+    [9, "tek", 1], [10, "ka", 1], [11, "dum", 2], [13, "tek", 1], [14, "ka", 1], [15, "dum", 1],
+    [16, "tek", 2], [18, "tek", 2], [20, "dum", 2], [22, "dum", 2], [24, "dum", 2],
+    [26, "tek", 2], [28, "dum", 2], [30, "tek", 2], [32, "tek", 2], [34, "tek", 2],
+    [36, "dum", 2], [38, "tek", 1], [39, "ka", 1], [40, "dum", 1], [41, "dum", 1], [42, "tek", 1],
+    [43, "dum", 1], [44, "tek", 1], [45, "ke", 1], [46, "dum", 1], [47, "ta", 1], [48, "hek", 1],
+  ]), // Heper "Turk Musikisinde Usuller ve Kudum" (repo symb/) Sakil ZAMAN VE VURGULARI
   // Darbeyn = iki buyuk usulun ardarda vurulusu (mürekkep sinif). En yaygin/
   // standart bicim: Devr-i Kebir (28) + Berefsan (32) = 60 (TDV Darbeyn maddesi;
   // ITU tezi 22 eser incelemesi). Zincir gibi bilesenlerin darbindan kurulur.

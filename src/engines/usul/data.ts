@@ -142,6 +142,7 @@ const EVFER_VELVELE: Stroke[] = [
   [1, "dum", 1], [2, "te", 0.5], [2.5, "ke", 0.5], [3, "tek", 1], [4, "ka", 1],
   DU(5), ME(5.5), [6, "dum", 1], [7, "hek", 1], [8, "hek", 2],
 ]; // s.53
+const MUSEMMEN: Stroke[] = [[1, "dum", 3], [4, "tek", 2], [6, "tek", 3]]; // s.44 (3+2+3 = Düüüm Teek Teeek)
 const MUSEMMEN_VELVELE: Stroke[] = [
   [1, "dum", 1], [2, "dum", 1], [3, "te", 0.5], [3.5, "ke", 0.5], [4, "tek", 1], [5, "ka", 1],
   DU(6), ME(6.5), [7, "tek", 0.5], [7.5, "ka", 1.5],
@@ -306,6 +307,12 @@ const DEVRI_REVAN_VELVELE: Stroke[] = [
   DU(8), ME(8.5), DU(9, 1), ME(10, 1),
   [11, "tek", 1], [12, "ka", 1], [13, "tek", 1], [14, "ka", 1],
 ]; // Gonul s.104
+const DARBITURKI: Stroke[] = [
+  // 6+4+4+4 (Gonul s.105): Teek Tek Kâ Tek Kâ | Düüm Düüm | Teek Tek Kâ | Düüm Düm Düm
+  [1, "tek", 2], [3, "tek", 1], [4, "ka", 1], [5, "tek", 1], [6, "ka", 1],
+  [7, "dum", 2], [9, "dum", 2], [11, "tek", 2], [13, "tek", 1], [14, "ka", 1],
+  [15, "dum", 2], [17, "dum", 1], [18, "dum", 1],
+]; // Gonul s.105
 const TURKI_DARB_VELVELE: Stroke[] = [
   // 6+4+4+4 (18/4): Tek te ke Tek Kâ Tek Kâ | Düm dü me Düm te ke | Düm te ke Tek Kâ | Düm dü me Düm Düm
   [1, "tek", 1], [2, "te", 0.5], [2.5, "ke", 0.5], [3, "tek", 1], [4, "ka", 1], [5, "tek", 1], [6, "ka", 1],
@@ -499,7 +506,9 @@ export const USUL_DATA: Usul[] = [
   ], DEVRI_TURAN_VELVELE), // s.37 (yaygin mertebesi 7/16; 7/8 de gosterilir)
   makeUsul("duyek", "Düyek", "Duyek", 8, "8", DUYEK, DUYEK_VELVELE), // s.40 (birinci mertebe 8/8)
   makeUsul("agirduyek", "Ağırdüyek", "Agir Duyek", 8, "4", DUYEK, DUYEK_VELVELE), // s.40: duyek 2. mertebesi
-  makeUsul("musemmen", "Müsemmen", "Musemmen", 8, "8", [[1, "dum", 3], [4, "tek", 2], [6, "tek", 3]], MUSEMMEN_VELVELE), // s.44
+  makeUsul("musemmen", "Müsemmen", "Musemmen", 8, "8", MUSEMMEN, MUSEMMEN_VELVELE), // s.44
+  makeUsul("musemmenii", "Müsemmen II", "Musemmen II", 8, "8", MUSEMMEN, MUSEMMEN_VELVELE), // TDV: Musemmen kanonik 8/8; 2. mertebe etiketi ayni darp
+  makeUsul("katikofti", "Katıkofti", "Katikofti", 8, "8", MUSEMMEN, MUSEMMEN_VELVELE), // Adana Musiki Dernegi ?pnum=363: "Müsemmen (Katakofti)" = ayni usul
   makeUsul("aksak", "Aksak", "Aksak", 9, "8", AKSAK, AKSAK_VELVELE), // s.47
   makeUsul("ciftesofyan", "Çiftesofyan", "Cifte Sofyan", 9, "8", AKSAK, AKSAK_VELVELE), // s.46: aksagin yurukce vurulusu
   makeUsul("agiraksak", "Ağır Aksak", "Agir Aksak", 9, "4", AKSAK, AKSAK_VELVELE), // s.46-47: aksak 2. mertebesi
@@ -557,12 +566,8 @@ export const USUL_DATA: Usul[] = [
     [9, "dum", 1], [10, "tek", 1], [11, "dum", 1], [12, "dum", 1],
     [13, "ta", 1], [14, "hek", 1], [15, "te", 0.5], [15.5, "ke", 0.5], [16, "te", 0.5], [16.5, "ke", 0.5],
   ], NIM_HAFIF_VELVELE), // s.227 (darp) + Gonul s.107 (velvele)
-  makeUsul("darbiturki", "Darb-ı Türkı", "Darb-i Turki", 18, "4", [
-    // 6+4+4+4 (Gonul s.105): Teek Tek Kâ Tek Kâ | Düüm Düüm | Teek Tek Kâ | Düüm Düm Düm
-    [1, "tek", 2], [3, "tek", 1], [4, "ka", 1], [5, "tek", 1], [6, "ka", 1],
-    [7, "dum", 2], [9, "dum", 2], [11, "tek", 2], [13, "tek", 1], [14, "ka", 1],
-    [15, "dum", 2], [17, "dum", 1], [18, "dum", 1],
-  ], TURKI_DARB_VELVELE), // Gonul s.105 (darp 6+4+4+4, ON SEKIZ zamanli) + s.106 (velvele)
+  makeUsul("darbiturki", "Darb-ı Türkı", "Darb-i Turki", 18, "4", DARBITURKI, TURKI_DARB_VELVELE), // Gonul s.105 (darp 6+4+4+4) + s.106 (velvele)
+  makeUsul("turkdarbi", "Türk Darbı", "Turk Darbi", 18, "4", DARBITURKI, TURKI_DARB_VELVELE), // Türk Darbı = Darb-ı Türkî (ayni usul, kelime sirasi)
   makeUsul("cifteduyek", "Çifte Düyek", "Cifte Duyek", 16, "4", CIFTE_DUYEK_16, CIFTE_DUYEK_VELVELE), // Gonul s.105 (8+8); korpusta repertuvari var
   makeUsul("ferimuhammes", "Fer'î Muhammes", "Feri Muhammes", 16, "4", FERI_MUHAMMES, FERI_MUHAMMES_VELVELE), // Gonul s.104 (4+4+4+4)
   makeUsul("fer", "Fer", "Fer", 16, "4", FERI_MUHAMMES, FERI_MUHAMMES_VELVELE), // Gonul s.104: Fer = Fer'î Muhammes (ayni desen)

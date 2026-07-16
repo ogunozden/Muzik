@@ -14,8 +14,6 @@ export {
   typography,
 } from "@/lib/design-system";
 
-export * as componentTokens from "@/lib/design-system/components";
-
 export const tokens = {
   colors: {
     primary: {

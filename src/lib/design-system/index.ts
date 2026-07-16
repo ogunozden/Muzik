@@ -13,9 +13,6 @@ export { typography } from "./typography";
 export { spacing, borderRadius, shadows, transitions, zIndex, spacingClasses } from "./spacing";
 export { radius } from "./radius";
 
-// Component utilities
-export * from "./components";
-
 // ============================================
 // EXTENDED TOKENS
 // ============================================

@@ -397,6 +397,22 @@ const NIM_SAKIL_VELVELE: Stroke[] = [
   [17, "tek", 1], [18, "te", 0.5], [18.5, "ke", 0.5], [19, "tek", 1], [20, "ka", 1],
   [21, "tek", 1], [22, "ka", 1], [23, "tek", 1], [24, "ka", 1],
 ]; // Gonul s.107 (Velvele 1)
+const EVSAT: Stroke[] = [
+  // 5+4+4+5+4+4 (26/4): Tek Kâ Tek Kââ | Düüm Teek | Düüm Düüm | Teek Tek Kââ | Düüüüm | Düüüüm
+  [1, "tek", 1], [2, "ka", 1], [3, "tek", 1], [4, "ka", 2], [6, "dum", 2], [8, "tek", 2],
+  [10, "dum", 2], [12, "dum", 2], [14, "tek", 2], [16, "tek", 1], [17, "ka", 2],
+  [19, "dum", 4], [23, "dum", 4],
+]; // Gonul s.107
+const EVSAT_VELVELE: Stroke[] = [
+  // 5+4+4+5+4+4 (26/4): Düm Düm te ke Tek Kâ | dü me dü me te ke te ke | Tek Kâ Tek Kâ |
+  //                     Tek Kâ dü me dü me dü me | Tek Kâ Tek Kâ | Tek Kâ Tek Kâ
+  [1, "dum", 1], [2, "dum", 1], [3, "te", 0.5], [3.5, "ke", 0.5], [4, "tek", 1], [5, "ka", 1],
+  DU(6), ME(6.5), DU(7), ME(7.5), [8, "te", 0.5], [8.5, "ke", 0.5], [9, "te", 0.5], [9.5, "ke", 0.5],
+  [10, "tek", 1], [11, "ka", 1], [12, "tek", 1], [13, "ka", 1],
+  [14, "tek", 1], [15, "ka", 1], DU(16), ME(16.5), DU(17), ME(17.5), DU(18), ME(18.5),
+  [19, "tek", 1], [20, "ka", 1], [21, "tek", 1], [22, "ka", 1],
+  [23, "tek", 1], [24, "ka", 1], [25, "tek", 1], [26, "ka", 1],
+]; // Gonul s.107
 
 export const USUL_DATA: Usul[] = [
   // --- Kucuk usuller ---
@@ -488,6 +504,7 @@ export const USUL_DATA: Usul[] = [
   makeUsul("fahte", "Fahte", "Fahte", 20, "4", FAHTE, FAHTE_VELVELE), // s.139 (darp) + Gonul s.105
   makeUsul("cember", "Çember", "Cember", 24, "4", CEMBER, CEMBER_VELVELE), // s.157
   makeUsul("nimsakil", "Nim Sakîl", "Nim Sakil", 24, "4", NIM_SAKIL, NIM_SAKIL_VELVELE), // Gonul s.107 (4+6+6+4+4); korpusta repertuvari var
+  makeUsul("evsat", "Evsat", "Evsat", 26, "4", EVSAT, EVSAT_VELVELE), // Gonul s.107 (5+4+4+5+4+4); korpusta repertuvari var
   makeUsul("devrikebir", "Devr-i Kebir", "Devr-i Kebir", 28, "4", DEVRI_KEBIR, DEVRI_KEBIR_VELVELE), // s.181
   makeUsul("hafif", "Hafif", "Hafif", 32, "4", [
     [1, "dum", 1], [2, "tek", 1], [3, "tek", 2], [5, "dum", 1], [6, "tek", 1], [7, "tek", 2],

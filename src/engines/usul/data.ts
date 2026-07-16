@@ -599,6 +599,26 @@ export const USUL_DATA: Usul[] = [
     [36, "dum", 2], [38, "tek", 1], [39, "ka", 1], [40, "dum", 1], [41, "dum", 1], [42, "tek", 1],
     [43, "dum", 1], [44, "tek", 1], [45, "ke", 1], [46, "dum", 1], [47, "ta", 1], [48, "hek", 1],
   ]), // Heper "Turk Musikisinde Usuller ve Kudum" (repo symb/) Sakil ZAMAN VE VURGULARI
+  // Havi = 64 zamanli. Heper kitabi s.220 "ZAMAN VE VURGULARI" 1.sekil (8 satir
+  // x 8 zaman); te-ke onaltilik (0.25) veya sekizlik (0.5). Toplam=64.
+  makeUsul("havi", "Hâvî", "Havi", 64, "4", [
+    // s1: Düm2 Tek Kâ | düm te ke dü(0.5) tek te ke dü | Tek2
+    [1, "dum", 2], [3, "tek", 1], [4, "ka", 1], [5, "dum", 0.5], [5.5, "tek", 0.5], [6, "te", 0.25], [6.25, "ke", 0.25], [6.5, "dum", 0.5], [7, "tek", 2],
+    // s2
+    [9, "dum", 2], [11, "tek", 1], [12, "ka", 1], [13, "tek", 1], [14, "ka", 1], [15, "dum", 2],
+    // s3
+    [17, "tek", 1], [18, "ka", 1], [19, "tek", 1], [20, "ka", 1], [21, "dum", 0.5], [21.5, "tek", 0.5], [22, "te", 0.25], [22.25, "ke", 0.25], [22.5, "dum", 0.5], [23, "tek", 2],
+    // s4
+    [25, "dum", 2], [27, "dum", 2], [29, "tek", 1], [30, "ka", 1], [31, "tek", 1], [32, "ka", 1],
+    // s5
+    [33, "dum", 2], [35, "tek", 1], [36, "ka", 1], [37, "dum", 1], [38, "dum", 1], [39, "tek", 1], [40, "te", 0.5], [40.5, "ke", 0.5],
+    // s6
+    [41, "dum", 1], [42, "tek", 1], [43, "te", 0.5], [43.5, "ke", 0.5], [44, "dum", 1], [45, "ta", 1], [46, "hek", 1], [47, "te", 0.5], [47.5, "ke", 0.5], [48, "te", 0.5], [48.5, "ke", 0.5],
+    // s7
+    [49, "dum", 1], [50, "tek", 1], [51, "tek", 2], [53, "dum", 1], [54, "tek", 1], [55, "tek", 2],
+    // s8
+    [57, "dum", 1], [58, "tek", 1], [59, "dum", 1], [60, "dum", 1], [61, "ta", 1], [62, "hek", 1], [63, "te", 0.5], [63.5, "ke", 0.5], [64, "te", 0.5], [64.5, "ke", 0.5],
+  ]), // Heper s.220 (1.sekil); tam=64
   // Darbeyn = iki buyuk usulun ardarda vurulusu (mürekkep sinif). En yaygin/
   // standart bicim: Devr-i Kebir (28) + Berefsan (32) = 60 (TDV Darbeyn maddesi;
   // ITU tezi 22 eser incelemesi). Zincir gibi bilesenlerin darbindan kurulur.

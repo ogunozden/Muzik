@@ -619,6 +619,65 @@ const MAKAM_BASE: Makam[] = [
     characteristic: "Arazbar perdesi",
     description: "Acı ve hüzünlü bir makam. Hicaz ailesiyle bağlantılıdır.",
   },
+  // --- Korpus-destekli ek makamlar (E9, 2026-07-16) ---
+  // Bunlar app'te eksikti; koma dizisi + intervals SymbTr korpusundan (attach-
+  // CorpusData ile otomatik baglanir), karar/guclu korpus kararPerde/gucluPerde
+  // ile HIZALI (teori-uyumlu, uydurma yok). Yalniz isim + kisa aile-notu editoryal.
+  {
+    id: "huzzam",
+    name: "Hüzzam",
+    nameTr: "Hüzzam",
+    nameEn: "Huzzam",
+    tonic: "C",
+    intervals: [1, 2, 2, 2, 1, 2, 2],
+    dominant: "F",
+    characteristic: "Segâh perdesi",
+    description: "Segâh ailesinden, içli karakteriyle çok sevilen makam; sanat müziğinde geniş kullanım.",
+  },
+  {
+    id: "hicazkar",
+    name: "Hicazkâr",
+    nameTr: "Hicazkâr",
+    nameEn: "Hicazkar",
+    tonic: "C",
+    intervals: [2, 1, 3, 1, 1, 3, 1],
+    dominant: "G",
+    characteristic: "Rast perdesi",
+    description: "Hicaz ailesinden, rast perdesinde karar kılan mürekkep makam.",
+  },
+  {
+    id: "karcigar",
+    name: "Karcığar",
+    nameTr: "Karcığar",
+    nameEn: "Karcigar",
+    tonic: "C",
+    intervals: [2, 1, 2, 1, 3, 1, 2],
+    dominant: "F",
+    characteristic: "Dügâh perdesi",
+    description: "Uşşak ve hicaz renklerini birleştiren canlı, oynak makam.",
+  },
+  {
+    id: "kurdi",
+    name: "Kürdi",
+    nameTr: "Kürdi",
+    nameEn: "Kurdi",
+    tonic: "C",
+    intervals: [1, 2, 2, 2, 1, 2, 2],
+    dominant: "F",
+    characteristic: "Dügâh perdesi",
+    description: "Sade ve yaygın makam; kürdi dizisiyle inici-çıkıcı seyreder.",
+  },
+  {
+    id: "ferahfeza",
+    name: "Ferahfezâ",
+    nameTr: "Ferahfezâ",
+    nameEn: "Ferahfeza",
+    tonic: "C",
+    intervals: [2, 1, 2, 2, 1, 2, 2],
+    dominant: "G",
+    characteristic: "Yegâh perdesi",
+    description: "Nihavend ailesinden, geniş ve ferah seyirli mürekkep makam.",
+  },
 ];
 
 // Otantik ariza + koma dizisi korpustan baglanir (otonom); editoryal metin

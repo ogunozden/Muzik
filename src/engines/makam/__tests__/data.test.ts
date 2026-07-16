@@ -76,4 +76,19 @@ describe("makam/data", () => {
       expect(getMakamById("rast")?.seyir?.metin).toContain("Rast");
     });
   });
+
+  describe("korpus-destekli ek makamlar (E9)", () => {
+    // Yeni makamlar korpus koma dizisini (SymbTr) attachCorpusData ile alir;
+    // intervals otonom turetilir, otantik mikrotonal frekanslar hesaplanabilir.
+    it.each(["huzzam", "hicazkar", "karcigar", "kurdi", "ferahfeza"])(
+      "%s korpus koma dizisi + gecerli oktav tasir",
+      (id) => {
+        const makam = getMakamById(id);
+        expect(makam, id).toBeDefined();
+        expect(makam?.komaScale, `${id} komaScale`).toBeDefined();
+        expect(makam?.intervals).toHaveLength(7);
+        expect(makam?.intervals.reduce((a, b) => a + b, 0)).toBe(12);
+      },
+    );
+  });
 });

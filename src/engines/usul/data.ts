@@ -438,6 +438,18 @@ const REMEL_VELVELE: Stroke[] = [
   DU(9), ME(9.5), DU(10), ME(10.5), [11, "te", 0.5], [11.5, "ke", 0.5], [12, "te", 0.5], [12.5, "ke", 0.5], [13, "tek", 1], [14, "ka", 1], [15, "tek", 1], [16, "ka", 1],
   [17, "hek", 2], [19, "hek", 2], [21, "hek", 1], [22, "te", 0.5], [22.5, "ke", 0.5], [23, "tek", 1], [24, "ka", 1], [25, "tek", 1], [26, "ka", 1], [27, "tek", 1], [28, "ka", 1],
 ]; // Gonul s.109
+const FRENGIFER: Stroke[] = [
+  // 6+6+4+4+4+4 (28/4): Düm Düüüüm | Düüm Düüüüm | Düüm Teek | Düüm Düüm | Taa Heek | Tek Kâ Tek Kâ
+  [1, "dum", 2], [3, "dum", 4], [7, "dum", 2], [9, "dum", 4], [13, "dum", 2], [15, "tek", 2],
+  [17, "dum", 2], [19, "dum", 2], [21, "ta", 2], [23, "hek", 2], [25, "tek", 1], [26, "ka", 1], [27, "tek", 1], [28, "ka", 1],
+]; // Gonul s.109
+const FRENGIFER_VELVELE: Stroke[] = [
+  // 6+6+4+4+4+4 (28/4): G1/G2 Düüm Düm te ke Tek Kâ; G3+G4 ve G5+G6 = Dü Me dü me dü me Tek Kâ Tek Kâ
+  [1, "dum", 2], [3, "dum", 1], [4, "te", 0.5], [4.5, "ke", 0.5], [5, "tek", 1], [6, "ka", 1],
+  [7, "dum", 2], [9, "dum", 1], [10, "te", 0.5], [10.5, "ke", 0.5], [11, "tek", 1], [12, "ka", 1],
+  DU(13, 1), ME(14, 1), DU(15), ME(15.5), DU(16), ME(16.5), [17, "tek", 1], [18, "ka", 1], [19, "tek", 1], [20, "ka", 1],
+  DU(21, 1), ME(22, 1), DU(23), ME(23.5), DU(24), ME(24.5), [25, "tek", 1], [26, "ka", 1], [27, "tek", 1], [28, "ka", 1],
+]; // Gonul s.109
 
 export const USUL_DATA: Usul[] = [
   // --- Kucuk usuller ---
@@ -533,6 +545,7 @@ export const USUL_DATA: Usul[] = [
   makeUsul("bestedevrirevani", "Beste Devr-i Revânî", "Beste Devr-i Revani", 26, "4", BESTE_DEVRI_REVAN, BESTE_DEVRI_REVAN_VELVELE), // Gonul s.108 (5+4+4+5+4+4); korpusta repertuvari var
   makeUsul("devrikebir", "Devr-i Kebir", "Devr-i Kebir", 28, "4", DEVRI_KEBIR, DEVRI_KEBIR_VELVELE), // s.181
   makeUsul("remel", "Remel", "Remel", 28, "4", REMEL, REMEL_VELVELE), // Gonul s.109 (4+6+4+6+2+4+2); korpusta repertuvari var
+  makeUsul("firengifer", "Frengifer", "Frengifer", 28, "4", FRENGIFER, FRENGIFER_VELVELE), // Gonul s.109 (6+6+4+4+4+4); korpusta repertuvari var
   makeUsul("hafif", "Hafif", "Hafif", 32, "4", [
     [1, "dum", 1], [2, "tek", 1], [3, "tek", 2], [5, "dum", 1], [6, "tek", 1], [7, "tek", 2],
     [9, "dum", 2], [11, "tek", 1], [12, "ka", 1], [13, "dum", 1], [14, "tek", 1], [15, "tek", 2],

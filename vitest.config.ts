@@ -25,17 +25,24 @@ export default defineConfig({
         'src/data/symbtr/parser.ts',
         'src/shared/api/**/*.ts',
         'src/shared/hooks/**/*.ts',
+        'src/shared/security/**/*.ts',
         'src/app/studio/follow/parts/follow-helpers.ts',
         'src/features/references/curation-helpers.ts',
+        // Rehberli ogrenme: test-edilen saf/veri modulleri (playback rAF hook'u
+        // ve JSX stepper davranis-testli ama satir-coverage disi).
+        'src/features/learn/curriculum.ts',
+        'src/features/learn/makam-curriculum.ts',
+        'src/features/learn/useLearningProgress.ts',
+        'src/features/learn/useMakamPlayback.ts',
       ],
       exclude: ['**/__tests__/**', '**/*.test.*', '**/*.generated.*'],
       // Mevcut olculen seviyenin hemen altinda ratchet; regresyonu yakalar,
       // yeni test eklendikce yukari cekilir (F6.1).
       thresholds: {
-        statements: 55,
-        branches: 55,
-        functions: 65,
-        lines: 55,
+        statements: 62,
+        branches: 58,
+        functions: 70,
+        lines: 62,
       },
     },
   },

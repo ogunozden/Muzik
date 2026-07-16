@@ -78,6 +78,12 @@ export interface Makam {
    * calinmasi icin: freq = kararHz × 2^(koma/53). Korpus disinda undefined.
    */
   komaScale?: MakamKomaScale;
+  /**
+   * Otoriter seyir tarifi (Gonul "Turk Muzigi Solfej-Makam-Usul" s.307+):
+   * makamin nasil seyrettigi, karar/guclu, gecikler. Kaynakta bulunan
+   * makamlarda dolu; digerleri `description` (jenerik) ile kalir.
+   */
+  seyir?: {yon: string; metin: string};
 }
 
 export interface Usul {

@@ -406,6 +406,20 @@ function NotaEditorPage() {
                       </div>
                     )}
 
+                    {/* Otoriter seyir tarifi (Gonul s.307+) — makamin nasil
+                        seyrettigi, karar/guclu, gecikler. Uzun oldugu icin katlanabilir. */}
+                    {selectedMakamObj?.seyir && (
+                      <details className="rounded-lg border border-[var(--color-border-subtle)] p-3">
+                        <summary className={`cursor-pointer text-sm font-semibold text-[var(--color-text-primary)]`}>
+                          Seyir <span className="font-normal capitalize opacity-70">({selectedMakamObj.seyir.yon})</span>
+                          <span className="ml-1 text-xs font-normal opacity-50">— Gönül</span>
+                        </summary>
+                        <p className={`mt-2 text-sm leading-relaxed ${tokens.colors.text.secondary}`}>
+                          {selectedMakamObj.seyir.metin}
+                        </p>
+                      </details>
+                    )}
+
                     <label className="grid gap-2">
                       <span className={`text-xs font-semibold ${tokens.colors.text.secondary}`}>{t("usul.usul")}</span>
                       <Select

@@ -2,6 +2,7 @@ import {Makam, MakamKeyAccidental, MakamKomaScale} from "@/types";
 import {NOTE_NAMES} from "@/lib/app-constants";
 import {midiToFrequency, noteNameToMidi} from "@/engines/nota/data";
 import makamCorpus from "./__generated__/makam-corpus.json";
+import makamSeyir from "./__generated__/makam-seyir.generated.json";
 
 /**
  * Makamin OTANTIK koma arizasi + 53-EDO koma dizisi elle yazilmaz; SymbTr
@@ -12,6 +13,9 @@ import makamCorpus from "./__generated__/makam-corpus.json";
 type MakamCorpusEntry = {display: string; total: number; consensus: number; keySignature: MakamKeyAccidental[]};
 const CORPUS_MAKAMS = makamCorpus.makams as Record<string, MakamCorpusEntry>;
 const CORPUS_KOMA_SCALES = (makamCorpus.komaScales ?? {}) as Record<string, MakamKomaScale>;
+// Otoriter seyir tarifleri (Gonul s.307+; pdftotext ile cikarildi). Makam
+// id'siyle eslenir; editoryal `description`in aksine kaynakli/tam seyirdir.
+const SEYIR_METINLERI = (makamSeyir.seyir ?? {}) as Record<string, {yon: string; metin: string}>;
 const KOMA_PER_OCTAVE = makamCorpus.komaPerOctave ?? 53;
 
 function normalizeMakamName(name: string): string {
@@ -61,8 +65,10 @@ function resolveCorpusKey(makam: Makam): string | undefined {
 }
 
 function attachCorpusData(makam: Makam): Makam {
+  const seyir = SEYIR_METINLERI[makam.id];
+  const base = seyir ? {...makam, seyir} : makam;
   const key = resolveCorpusKey(makam);
-  if (!key) return makam;
+  if (!key) return base;
   const entry = CORPUS_MAKAMS[key];
   const komaScale = CORPUS_KOMA_SCALES[key];
   // 12-TET `intervals` artik korpus koma dizisinden OTONOM turetilir (elle
@@ -70,11 +76,12 @@ function attachCorpusData(makam: Makam): Makam {
   // komaScale'de; bu, 12-TET notasyon izdusumu.
   const intervals = komaScale?.intervals12 ?? makam.intervals;
   return {
-    ...makam,
+    ...base,
     intervals,
     keySignature: entry.keySignature,
     keySignatureConsensus: entry.consensus,
     ...(komaScale ? {komaScale} : {}),
+    ...(seyir ? {seyir} : {}),
   };
 }
 

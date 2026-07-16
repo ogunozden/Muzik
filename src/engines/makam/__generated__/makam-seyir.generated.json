@@ -1,0 +1,101 @@
+{
+ "_source": "Mehmet Gonul, Turk Muzigi Solfej-Makam-Usul-Dikte Alistirmalari, s.307+ (makam seyir tarifleri; pdftotext ile cikarildi)",
+ "seyir": {
+  "rast": {
+   "yon": "Çıkıcı",
+   "metin": "Pek çok nazarî yaklaşımda ve bizim de kuvvetle iştirâk ettiğimiz üzere ümmü'l makâm (makamların anası) olarak da anılan Rast makamı dizisi Türk Mûsikîsinde doğal dizi olarak kabul edilmiştir. Dizinin perdeleri üzerinde yine doğal perdeleri hâiz başka makamlar kendilerine has seyir özellikleri ile kolaylıkla duyurulabilmekte, genişlemeler yapılabilmektedir. Rast makamı, kararı olan Rast perdesi odağında seyrine başlar. Rast’tan çargâh perdesine ve yine rast’tan yegâh perdesine kadar alanda ilk seyirlerini doyurucu yapar. Seyirde Segâh kalışlar sebebi ile segâh perdesi, dügâhta Uşşak kalışlar sebebi ile dügâh perdesi Rast makâmı için önemli asma karar perdeleridir. Yine seyirde, nevâ perdesinin tutulması ve nevâ perdesinden karara yürüyüşlerde Sûzinâk, Nikrîz, Pençgâh, Nihâvend, Rehâvî; Gerdâniye perdesinin tutulması ile ise Mâhur makamlarına geçkiler sıklıkla tercih edilen geçkilerdir. Rast makâmı dizisi pek çok makam içerisinde farklı bileşikler ile kendine yer bulur. Rast makâmı dizisine ait diğer perdelerin tutulması ile de Uşşak, Çargâh, Sabâ, Hüseynî, Eviç, Gerdâniye ve diğer pek çok makâma kolaylıkla geçkiler yapılabilmektedir. Bu sebeple Rast makâmı nazariyat ve solfej eğitimi temelinde kuvvetle yer bulmaktadır/bulmalıdır. Seyirde, eskiden Rehâvî etkisine girer endişesiyle yegâh perdesine inilmekten imtinâ edilirken günümüzde, Rehâvî makâmının az kullanımı ve/veya unutulması sebebi ile Rast makâmı seyrinde, yegâh perdesine kadar inerek yedenli (ırak) karar vermeler icrâcılar ve bestekârlarca benimsenmiştir."
+  },
+  "huseyni": {
+   "yon": "İnici-Çıkıcı",
+   "metin": "Hüseynî perdesi odağında seyre başlanır. Hüseynî üzerinde Uşşak, gerdâniye'den inişlerle doyurucu bir şekilde işlenir. Muhayyer üzerinde de Uşşak, hüseynî'de Hüseynî ve makam seslerinde çargâh'ta kalışlar yapılır. Hüseynî makamında eviç perdesi yerine acem kullanılması ile Necîd Hüseynî makamı oluşur. Mehmet GÖNÜL"
+  },
+  "nihavend": {
+   "yon": "İnici-Çıkıcı",
+   "metin": "Rast’tan veya güçlüsü olan nevâ'dan seyre başlar. Nevâ üzerinde Uşşak, Hicaz, Nihâvend, çargâh üzerinde Nikrîz, yerinde Hicaz, Neveser, Acemaşîrân geçkileri tercih edilen geçkilerdendir. Tiz kararı olan gerdâniye üzerinde Nihâvend seslerle genişlemeler gösterir. Yegâh’a kadar Hicaz seslerle genişleyerek ya da yegâh’tan rast’a atlayarak karar verir. Mehmet GÖNÜL 20. Hicaz Âilesi Hicaz âilesi olarak tarif edilen bu makamlar genellikle eserlerde girift olarak işlenmektedir/işlenebilir. Yani künyesinde makâmı Hicaz yazılı olan bir eserde sıklıkla Hümâyun, Uzzâl veya Zirgüle makamlarına ait seyir kalış ve duyumlar gözlenmektedir. Biz bu başlık altında genel nazariyat tasnîfine uygun olarak Hicaz makâmını irdelesek de, kanaatimizce, bu makamların tümüyle farklı makamlar gibi anlaşılmasına ve her birinin sadece kendi dizileri içerisinde seyir yaptıkları düşüncesinde olunmasına gerek yoktur."
+  },
+  "hicaz": {
+   "yon": "Çıkıcı",
+   "metin": "Dügâh ve nevâ arasında yer alan makâma özgü hicaz aralığının (dik kürdî - nim hicaz) gösterilmesi odağında ilk seyrini gerçekleştirir. Karar-güçlü bölgesinde seyirde dizi seslerinde asma kalışlar yapılır. Genişleme güçlüsü olan nevâ üzerinde seyir cazibesince çıkışlarda eviç, inişlerde acem perdeleri kullanılarak (Arel’e göre Rast) seyre devam edilir. Tiz karar bölgesinde Şehnâz, Hicaz, yerinde Uşşak, yerinde Nikrîz, eviçte Segâh gibi geçkiler sıklıkla tercih edilir. Muhayyer üzerinde Bûselik gibi makamlara geçkiler yapılması da Hicaz makâmı seyrinde sıklıkla görülür. Yegâh’a kadar genişleyerek ya da genişlemeden dügâh’ta karar eder."
+  },
+  "ussak": {
+   "yon": "Çıkıcı",
+   "metin": "İlk doyurucu seyrini dügâh odağında yegâh-çargâh arasında yapar. Genişleme güçlüsü olan nevâ odağında yine yerinde uşşak seslerde seyrine devam eder. Muhayyer üzerinde uşşak seslerle seyir tiz karar üzerine genişletilebilir. Seyir esnâsında sıklıkla uşşak (Donanımda segâh perdesi ârızası ile gösterilmesine rağmen, segâh'tan pest uşşak bölgesi içerisinde makâmın gereğince basılır.) perdesinde asma kalışlar yapılır. Karara gelişlerde yegâh'a kadar inişlerle rast perdesini de vurgulayarak dügâh’ta karar eder."
+  },
+  "saba": {
+   "yon": "Çıkıcı-İnici",
+   "metin": "Dügâh perdesi duyurularak çargâh odağında Sabâ’lı (hicaz (re bakiye bemol)) seyredip çargâh gösterildikten sonra dügâh’ta Uşşak’lı karar verilir. Seyirde Muhayyer üzerinde kürdî, Gerdâniye üzerinde Nihâvend, acem üzerinde Nikrîz, çârgâh üzerinde ve yerinde Hicaz gibi geçkiler eserlerde gözlemlenmiştir. Makam seyrinde sabâ perdesinin, (hicaz) sabâ makâmının karakterine ve seyir gereklerine uygun olarak donanımında gösterilen ârıza değerinden daha tiz basılmasına özen gösterilmelidir. Mehmet GÖNÜL"
+  },
+  "segah": {
+   "yon": "Çıkıcı",
+   "metin": "Rast dizisi seslerinde doğal olarak işlenen bu makamda ilk seyirlerde segâh odağında -rast perdesi de duyurularak- genellikle yedenli (kürdî (la# perdesiyle)) doyurucu seyreder. Rast’a kadar inilerek Rast makâmı, dügâh’ta kalınarak Dügâh Mâye seyire dâhil edilebilir. Nevâ'da Rast sesleri üzerinde yer alan eviç üzerinde Segâh, gerdâniye'de Rast sesleri üzerinde yer alan tiz segâh perdesi üzerinde de Segâh geçkiler makâmın sıklıkla yaptığı geçkilerdir. Seyir sonunda eviç perdesi aceme dönüştürülerek segâh’ta yedenli tam karar verilir. Mehmet GÖNÜL"
+  },
+  "bayati": {
+   "yon": "İnici-Çıkıcı",
+   "metin": "Nevâ odağında yerinde uşşak seslerde seyrederek başlar. Bu sırada çargâh ve acem perdeleri de güçlendirilir. Yerinde Karciğar seslerde kalışlar (neva'da, çargah'ta) ve geçkiler sıklıkla tercih edilir. Uşşak makamına benzememek için dügâh bölgesini ve rast perdesini kuvvetlendirmeden ve rast altına genişlemeksizin dügâh’ta karar verilir."
+  },
+  "gerdaniye": {
+   "yon": "İnici",
+   "metin": "Nevâ üzerinde kurulu, gerdâniyeden başlayan İnici Rast seyredip yerinde Hüseynî veya Uşşak karar verir. Seyirde eviçte Segâh, yerinde Rast, yerinde Karcığar gibi geçkiler sıklıkla kullanılır."
+  },
+  "hisar": {
+   "yon": "Çıkıcı-İnici",
+   "metin": "Hüseynî’de Hümâyun (Eski) ya da Zirgüleli Hicaz (Yeni) yapıp yerinde Hüseynî karar verir. Bazı eserlerde donanımda sadece Segâh kullanılmaktadır."
+  },
+  "buselik": {
+   "yon": "İnici-çıkıcı",
+   "metin": "Güçlüsü olan hüseynî perdesinden ya da rast-çargâh bölgesi içerisinde dolaşarak seyre başlar. Hüseynî perdesinin etkisiyle Hüseynî (eviç perdesini Hüseynî makâmındaki gibi pestleştirmeden), hüseynî üzerinde Hicaz, Kürdî ve çargâh üzerinde Nikrîz geçkiler yapılır. Makâma ait seslerle dügâh’ta genellikle yedenli (sol#) tam karar verilir. Klâsik icrâ üslûbu, Seyir karakteristiği ve perde kullanımları açısından Nihâvend makâmı Bûselik makâmının şeddi olarak görülemez. Bûselik makâmı dizisinde karar altında yer alan perde, hem rast, hem de nim zirgüle olarak seyirde kullanılır. Bûselik makâmında yapılan rast-çargâh atlamaları ve rastta kalışlar çok yakın olarak konumlandırılan Nihâvend makâmında görülmez."
+  },
+  "acemasiran": {
+   "yon": "İnici",
+   "metin": "Giray Han (?) Gereğince Acem makâmında seyredilir. Beyâti de bu arada kısaca hissettirilir. Çargâh, segâh, kürdî’de asma kalışlar, yerinde Çargâh, Sabâ geçkiler seyirde sıklıkla tercih edilir. Nigâr sesleri ile acemaşîran’da karar verilir. 56. Şevk û Tarâb (İnici) (Segâh, Hicaz (re bakiye bemol)) / III. Selim Han Doyurucu bir şekilde Çargâh ve/veya Sabâ makâmı işlendikten sonra hicaz perdesi (re bakiye bemol) kaldırılıp kürdî perdesi tutularak âcemaşîran tam karar verilir."
+  },
+  "acembuselik": {
+   "yon": "İnici",
+   "metin": "Acem makâmı doyurucu işlenip Bûselik karar eder. 116. Acem Kürdî (inici) (Kürdî) Acem makâmı doyurucu işlenip Kürdî karar eder. Karâra gelişlerde hüseynî perdesi hisâr'a dönüştürülerek yeden yürüyüşü ve karar hissi güçlendirildiği görülmektedir."
+  },
+  "uzzal": {
+   "yon": "İnici-Çıkıcı",
+   "metin": "Hüseynî’de Uşşak gösterilerek Hüseynî odağında seyre başlar. Dizi seslerinde güçlüden karara seyreder. Muhayyer üzerinde Bûselik geçki sıklıkla duyulur. Karar altına genişlemeden dügâh’ta yedensiz karar eder. Seyirde âilenin diğer fertlerine geçkiler yapıldığı da sıklıkla görülür. 20.d. Zirgüle (Zengûle) (Çıkcı) (Dik Kürdî, Nim Hicaz, Nim Zirgüle) Zirgüle perdesini duyurarak yâni, hüseynîaşîrân üzerinde Hicaz ile dügâh üzerindeki Hicaz aralıkları işleyerek hüseynîaşîrân-hüseynî arasında seyrederek başlar. Makâmın seslerinde asma kalışlar yapılır. Tiz karar bölgelerinde fazla seyretmez. Dügâh’ta yedenli karar eder."
+  },
+  "zirefkend": {
+   "yon": "İnici",
+   "metin": "Sırası ile muhayyer’de Bûselik, gerdâniyede Mâhur, hüseynî’de Bûselik (Ruhnevâz) makamları gösterilir. Sonra acem tutularak çargâh’a gelinir ve çargâh’ta Nikrîz gösterilir. Çargâh tutulurken Sabâ işlenmez. Sonra dik zirgüle perdesi (lâ bakiye bemol) tutularak aşîrân’da Sabâ makâmına geçilir ve karar verilir. 43. Sabâ Aşîrân (İnici Çıkıcı) (Segâh, Hicaz) Yerinde doyurucu Sabâ yapılıp, aşîrân’da yegâh perdesi ile yedenli olarak Uşşak’lı karar verilir."
+  },
+  "tahir": {
+   "yon": "İnici",
+   "metin": "Muhayyer üzerinde Uşşak’lı seyre başlar. Daha sonra Nevâ gibi seyredip, kısaca yerinde pençgâh duyurularak dügâh’ta karara eder."
+  },
+  "nikriz": {
+   "yon": "Çıkıcı-İnici",
+   "metin": "Karar ve güçlüsü nevâ perdesi arasında her iki yönde de nikriz makâmına has senkoplu tartımlarla, karakteristik yürüyüşlerle ve acem perdesi kullanılarak seyre başlanır. Seyirde yerinde Segâh, Nişabur, Neveser ve Rast geçkiler sıklıkla duyurulur. Doyurucu Nikriz ezgilerle rast’ta karar verilir."
+  },
+  "sultaniyegah": {
+   "yon": "İnici",
+   "metin": "Dede Efendi Tiz durağı olan nevâ üzerinde Nihâvend seyrederek başlar. Donanımda hicaz perdesi daha ziyâde nevâ’da Nihavend’in yedeni olarak düşünülmelidir. Nihâvend’in karar altındaki sesleri ile (Hicaz ve dik kürdî) dügâh’ta asma kalış göstererek ya da göstermeyerek (maksat hicaz makâmı yapmak değildir) seyrine devâm eder. Donanımda da yer alan hicaz ârızaları kaldırılarak ve çargâh perdesi tutularak yegâh’ta Nihâvend’le karar verir. Seyirde nevâ’da Sabâ ve Şedaraban, yerinde Nihâvend, Şevkefzâ geçkileri görülür. Muhayyer üzerinde Hümâyun ve Kürdî seslerde genişlemeler yapar. Karar altına genişlemesi yoktur. Not: Karâra giderken Ferahfezâ makâmı duygusu hissedilmemesi için Acemaşîrân kalışlar yapmamaya özen gösterilmelidir."
+  },
+  "yegah": {
+   "yon": "İnici",
+   "metin": "İnici nevâ makâmına Yegâh’ta rast eklenmesinden mütevellittir. Nevâ yerine Isfahan seyir de gösterebilir (ısfahan seyirde hicaz (do #) alır)."
+  },
+  "mahur": {
+   "yon": "İnici",
+   "metin": "Gerdâniye açılarak seyre başlanır. Gerdâniye odağında Rast sesler işlendikten sonra hüseynî perdesinde Nişâbur’lu, Uşşak’lı ve/veya nevâ üzerinde Rast'lı kalışlar yapılır. Karar altına aşîrânda Nişâbur gösterilerek ve daha aşağıya genişlemeden rast perdesinde yedenli karar verilir. Mehmet GÖNÜL"
+  },
+  "bestenigar": {
+   "yon": "İnici-Çıkıcı",
+   "metin": "Yerinde Çargâh veya Sabâ yapıp Irak’ta Segâh’lı karar verir. Karâra gelişlerde hicaz ve uşşak perdelerinin daha dik basılmalarına dikkat edilmelidir."
+  },
+  "muhayyer": {
+   "yon": "İnici",
+   "metin": "Muhayyer üzerinde Uşşak’lı seyre başlar. Daha sonra Hüseynî gibi seyredip, dügâh’ta Uşşak seslerle karar eder."
+  },
+  "isfahan": {
+   "yon": "Çıkıcı-İnici",
+   "metin": "Genellikle Nişâbur göstererek seyrine başlar. Beyâtî seyrederek karar eder. Muhayyer üzerinde Genellikle Uşşak, nâdiren Kürdî genişlemeler yapıldığı görülür. Peste genişlemeden yedensiz Beyâti karar eder."
+  },
+  "arazbar": {
+   "yon": "İnici",
+   "metin": "Sırasıyla nevâ’da Beyâti (bu esnada muhayyer perdesi, nevadaki uşşak (dik hisâr) perdesi ve iniş câzibesi ile muhayyerden pest düşünülmelidir), bâzen Nikrîz’li bâzen doğrudan inerek çargâh’ta Rast yapar ve yerinde Uşşak karar verir."
+  }
+ }
+}

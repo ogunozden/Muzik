@@ -62,4 +62,18 @@ describe("makam/data", () => {
       expect(scale[0]).toBe(segah.tonic);
     });
   });
+
+  describe("otoriter seyir tarifi (Gonul s.307+)", () => {
+    it("attaches seyir text to main makams", () => {
+      for (const id of ["rast", "huseyni", "hicaz", "ussak", "segah", "nihavend", "saba"]) {
+        const seyir = getMakamById(id)?.seyir;
+        expect(seyir?.metin.length, `${id} seyir`).toBeGreaterThan(50);
+        expect(seyir?.yon, `${id} yon`).toMatch(/Çıkıcı|İnici/);
+      }
+    });
+
+    it("rast seyir mentions its karar perde", () => {
+      expect(getMakamById("rast")?.seyir?.metin).toContain("Rast");
+    });
+  });
 });

@@ -700,7 +700,9 @@ export const USUL_DATA: Usul[] = [
   // kesin, kalan tek yapisal; geleneksel nota geldiginde duzeltilecek.
   makeUsul("azeriyuruksemai", "Âzerî Yürüksemâî", "Azeri Yuruksemai", 6, "8", [[1, "dum", 2], [3, "tek", 1], [4, "tek", 1], [5, "tek", 2]]),
   makeUsul("bektasiraksani", "Bektâşî Raksânı", "Bektasi Raksani", 15, "8", [[1, "dum", 2], [3, "tek", 1], [4, "tek", 2], [6, "tek", 2], [8, "tek", 1], [9, "tek", 2], [11, "tek", 2], [13, "tek", 2], [15, "tek", 1]]),
-  makeUsul("bulgardarbi", "Bulgar Darbı", "Bulgar Darbi", 8, "8", [[1, "dum", 1], [2, "tek", 1], [3, "tek", 1], [4, "tek", 2], [6, "tek", 1], [7, "tek", 1], [8, "tek", 1]]),
+  // Darp: Heper "Türk Musikisinde Usuller ve Kudüm" s.267 (nota) + SymbTr-extras
+  // clustering [1,1,1,2,1,1,1]. Iki otoriter kaynak birebir hizali (7 vurus, 8 zaman).
+  makeUsul("bulgardarbi", "Bulgar Darbı", "Bulgar Darbi", 8, "8", [[1, "dum", 1], [2, "tek", 1], [3, "dum", 1], [4, "tek", 2], [6, "dum", 1], [7, "tek", 1], [8, "tek", 1]]),
   makeUsul("devriaryan", "Devr-i Âryân", "Devr-i Aryan", 14, "8", [[1, "dum", 4], [5, "tek", 6], [11, "tek", 4]]),
   makeUsul("devrihindiii", "Devr-i Hindî II", "Devr-i Hindi II", 7, "8", [[1, "dum", 3], [4, "tek", 2], [6, "tek", 2]]),
   makeUsul("devrisureyya", "Devr-i Süreyyâ", "Devr-i Sureyya", 10, "8", [[1, "dum", 2], [3, "tek", 1], [4, "tek", 1], [5, "tek", 2], [7, "tek", 2], [9, "tek", 2]]),
@@ -715,7 +717,10 @@ export const USUL_DATA: Usul[] = [
   makeUsul("dolap", "Dolap", "Dolap", 12, "8", [[1, "dum", 1], [2, "tek", 1], [3, "tek", 1], [4, "tek", 2], [6, "tek", 1], [7, "tek", 2], [9, "tek", 2], [11, "tek", 2]]),
   makeUsul("gulsen", "Gülşen", "Gulsen", 6, "8", [[1, "dum", 3], [4, "tek", 1], [5, "tek", 1], [6, "tek", 1]]),
   makeUsul("cevher", "Cevher", "Cevher", 10, "8", [[1, "dum", 2], [3, "tek", 1], [4, "tek", 2], [6, "tek", 2], [8, "tek", 1], [9, "tek", 2]]),
-  makeUsul("bektasiraksi", "Bektâşî Raksı", "Bektasi Raksi", 8, "8", [[1, "dum", 2], [3, "tek", 1], [4, "tek", 2], [6, "tek", 2], [8, "tek", 1]]),
+  // Darp: Heper "Türk Musikisinde Usuller ve Kudüm" s.269 (nota), "Bektâşî Raksânî"
+  // basligiyla 16/8: DÜM DÜM TEK DÜM TEK DÜM TEK / 3 2 2 2 2 3 2. DUNYA/SymbTr bu
+  // 16-zaman usulu "Raksı" olarak listeler; 15-zaman "Raksânî" (bektasiraksani) ayridir.
+  makeUsul("bektasiraksi", "Bektâşî Raksı", "Bektasi Raksi", 16, "8", [[1, "dum", 3], [4, "dum", 2], [6, "tek", 2], [8, "dum", 2], [10, "tek", 2], [12, "dum", 3], [15, "tek", 2]]),
   makeUsul("bektasiraksievferi", "Bektâşî Raksı Evferi", "Bektasi Raksi Evferi", 16, "8", [[1, "dum", 2], [3, "tek", 1], [4, "tek", 2], [6, "tek", 2], [8, "tek", 2], [10, "tek", 2], [12, "tek", 2], [14, "tek", 1], [15, "tek", 2]]),
   makeUsul("murekkepsofyan", "Mürekkep Sofyan", "Murekkep Sofyan", 12, "8", [[1, "dum", 1], [2, "tek", 2], [4, "tek", 1], [5, "tek", 2], [7, "tek", 2], [9, "tek", 1], [10, "tek", 2], [12, "tek", 1]]),
   makeUsul("turkmen", "Türkmen", "Turkmen", 18, "8", [[1, "dum", 2], [3, "tek", 2], [5, "tek", 2], [7, "tek", 2], [9, "tek", 2], [11, "tek", 2], [13, "tek", 2], [15, "tek", 2], [17, "tek", 2]]),
@@ -726,9 +731,10 @@ export const USUL_DATA: Usul[] = [
 // usuller: sure/ritim otoriter (SymbTr), 1. dum kesin, kalan tek yapisal
 // varsayilan. Gelenksel nota (Heper/Ozkan) ile dogrulanmali. UI bunlari isaretler.
 export const PROVISIONAL_USUL_IDS: ReadonlySet<string> = new Set([
-  "azeriyuruksemai", "bektasiraksani", "bulgardarbi", "devriaryan", "devrihindiii",
+  // bulgardarbi + bektasiraksi: Heper s.267/s.269 nota ile dogrulandi, listeden cikti.
+  "azeriyuruksemai", "bektasiraksani", "devriaryan", "devrihindiii",
   "devrisureyya", "devrituranii", "iraksak", "muasser", "nazliduyek", "raksaksagiii",
-  "sturkaksagi", "yuruksemaiii", "dolap", "gulsen", "cevher", "bektasiraksi",
+  "sturkaksagi", "yuruksemaiii", "dolap", "gulsen", "cevher",
   "bektasiraksievferi", "murekkepsofyan", "turkmen", "kcurcuna", "devrisureyyasofyani",
 ]);
 

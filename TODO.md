@@ -518,10 +518,25 @@ dosum testi (toplam=beats) + iki-kitap capraz-kontrol. Fabrikasyon YOK.
       darbifeth/darbifetih, nimberafsan/nimberefsan, frengifer/firengifer).
       NOT: devirhindi/devirituran ZATEN eslesir (isim normalize -> devrihindi/
       devrituran, korpus anahtariyla ayni). agirsemai korpusta yok, tempsuz.
-- [ ] F14.1d Gonul tablosunda OLMAYAN korpus usulleri (baska kaynak/sayfa
-      gerekir): sakil(tam), havi, muasser, darbeyn, cevher, dolap, gulsen,
-      aydin, turkmen, katikofti, bulgardarbi, devrisureyya + mertebe
-      varyantlari (agircenber, agirevfer, agirsenginsemai, aksaksemaievferi...)
+- [~] F14.1d Gonul tablosunda OLMAYAN korpus usulleri — INTERNET ARASTIRMASI
+      (4 paralel ajan; TDV Islam Ansiklopedisi, dergipark, usuller.com, ITU tezi,
+      salihbora, tarihi edvarlar). Kural: kaynakli darp -> eklendi, kaynaksiz ->
+      eklenmedi (uydurma yok).
+  - [x] EKLENDI (11): ayindevrirevani(14/8=Mevlevi DR), agirevfer(9/4),
+        mevlevievferi(9/4) [Evfer 2.mertebe], raksaksagi(9/8, 2+3+2+2),
+        aydin(9/8, 2+2+2+3), agircenber(24/2=Cenber 2.mertebe),
+        darbeyn(60/4=DevriKebir+Berefsan), yuruksofyan(2/4=NimSofyan),
+        devrisureyyasofyani(10/16=tarihi Curcuna),
+        sakil(48), havi(64) — repo'daki Heper "Turk Musikisinde Usuller ve
+        Kudum" kitabindan (OCR tablosu + PDF s.220 render); MODERN kanonik.
+  - [ ] DARP KAMUYA ACIK KAYNAKTA YOK (yalniz mus2/SymbTr ic DB): dolap(12/8),
+        gulsen(6/8), turkmen(18/8), bulgardarbi(8/8). Tek yol: repo'daki
+        symb/SymbTr-3.0/mu2/ .mu2 dosyalarindan usul satirini cikarmak.
+  - [x] GERCEK USUL DEGIL / eklenmedi: muasser, cevher (usul degil),
+        iraksak, nazliduyek, ikibir (nadir/artefakt, darp yok), serbest
+        (olcusuz), devrisureyya (modern, darp 403), devrirevanihindi
+        (bagimsiz darp kaynagi yok), devriaryan (modern tek-kaynak),
+        katikofti (arastirilmadi/supheli).
 - [ ] F14.2 Usul Ansiklopedisi UI (/references/usul): darp<->velvele toggle +
       calim (UsulPanel/UsulNotation hazir, syllable tasiyor)
 - [ ] F14.3 Makam Rehberi: studio panelini genislet (koma+perde+seyir)

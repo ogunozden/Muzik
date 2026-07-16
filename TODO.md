@@ -518,7 +518,7 @@ dosum testi (toplam=beats) + iki-kitap capraz-kontrol. Fabrikasyon YOK.
       darbifeth/darbifetih, nimberafsan/nimberefsan, frengifer/firengifer).
       NOT: devirhindi/devirituran ZATEN eslesir (isim normalize -> devrihindi/
       devrituran, korpus anahtariyla ayni). agirsemai korpusta yok, tempsuz.
-- [~] F14.1d Gonul tablosunda OLMAYAN korpus usulleri — INTERNET ARASTIRMASI
+- [x] F14.1d Gonul tablosunda OLMAYAN korpus usulleri — INTERNET ARASTIRMASI
       (4 paralel ajan; TDV Islam Ansiklopedisi, dergipark, usuller.com, ITU tezi,
       salihbora, tarihi edvarlar). Kural: kaynakli darp -> eklendi, kaynaksiz ->
       eklenmedi (uydurma yok).
@@ -531,17 +531,20 @@ dosum testi (toplam=beats) + iki-kitap capraz-kontrol. Fabrikasyon YOK.
         Kudum" kitabindan (OCR tablosu + PDF s.220 render); MODERN kanonik.
         + Adana Musiki Dernegi/TDV taramasi: katikofti(=musemmen), musemmenii,
         turkdarbi(=darbiturki), agiraksaksemai(10/4), agirsenginsemai(6/2).
-  - [ ] DARP YOK (TDV yalniz zaman veriyor, Adana'da yok, hece darp gerekli
-        3. kaynak I.H.Ozkan kitabi): durakevferi(21), bektasiraksi(15),
-        bektasiraksani(15). Zaman biliniyor, darp dizisi BULUNAMADI.
-  - [ ] DARP KAMUYA ACIK KAYNAKTA YOK (yalniz mus2/SymbTr ic DB): dolap(12/8),
-        gulsen(6/8), turkmen(18/8), bulgardarbi(8/8). Tek yol: repo'daki
-        symb/SymbTr-3.0/mu2/ .mu2 dosyalarindan usul satirini cikarmak.
-  - [x] GERCEK USUL DEGIL / eklenmedi: muasser, cevher (usul degil),
-        iraksak, nazliduyek, ikibir (nadir/artefakt, darp yok), serbest
-        (olcusuz), devrisureyya (modern, darp 403), devrirevanihindi
-        (bagimsiz darp kaynagi yok), devriaryan (modern tek-kaynak),
-        katikofti (arastirilmadi/supheli).
+  - [x] ATILIM: SymbTr-extras `usul_extended.json` (MTG/SymbTr GitHub) bulundu —
+        Karaosmanoglu'nun otoriter usul DB'si. clustering = darp SURE dizisi
+        (bildigim 71 usulle birebir dogrulandi). Bununla + .mu2 code-14 duzum ile
+        ~22 usul daha eklendi: durakevferi(21=TA+4Sofyan, gercek darp), aksaksemaiii,
+        + YAPISAL (onaylanmamis) bolum: azeriyuruksemai, bektasiraksi(+ani/evferi),
+        bulgardarbi, cevher, devriaryan, devrihindiii, devrisureyya, devrituranii,
+        dolap, gulsen, iraksak, kcurcuna, muasser, murekkepsofyan, nazliduyek,
+        raksaksagiii, sturkaksagi, turkmen, yuruksemaiii.
+        NOT: dum/tek stroke tipi HICBIR makine-okunur kaynakta yok (kanit: sureden
+        turetme duyek/aksaksemai/yuruksemai'de yanlis). Yapisal darplar: sure
+        otoriter, 1. dum kesin, kalan tek; nota geldiginde duzeltilir.
+  - [x] EKLENMEDI (gercek usul degil / veri yok): serbest (olcusuz), ikibir
+        (standart degil), murekkepnimsofyan (bogus meter). => 93+ usul tanimli,
+        korpusta yalniz bu 3 etiket eslesmiyor. USUL VERI KATMANI TAMAM (37->94).
 - [ ] F14.2 Usul Ansiklopedisi UI (/references/usul): darp<->velvele toggle +
       calim (UsulPanel/UsulNotation hazir, syllable tasiyor)
 - [ ] F14.3 Makam Rehberi: studio panelini genislet (koma+perde+seyir)

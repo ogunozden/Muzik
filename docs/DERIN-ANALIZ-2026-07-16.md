@@ -1,5 +1,26 @@
 # Derin Analiz — Yapılacaklar Tespiti (2026-07-16)
 
+## İCRA DURUMU (2026-07-16, /goal "yapılacakları tamamla")
+
+**Tamamlandı (commit'li, testli):**
+- ✅ P0.1 makam duplicate + P0.2 çargah id (bug)
+- ✅ P0.3 SSRF redirect re-validation + P0.4 CSRF Sec-Fetch-Site + P0.5 samples cache retry (güvenlik, +7 test)
+- ✅ P1.1 Gönül seyir parser (24→33 makam) + P1.2 6 yaygın makam (koma+seyir tam kaynaklı, 46→52, seyir 33→39)
+- ✅ P2.3 score-payload validator (16 test) + P2.5 fetch-json (4) + P2.4 makam playback (3) + P2.1 coverage include + ratchet (55→62/58/70/62) + P2.6 gövde-boyut sınırları
+- ✅ P3.1 ölü mükerrer dosya (~737 satır)
+- Sonuç: **679 test** (656→679), coverage statements 61.9→65.1%, tsc 0, lint temiz, guardrails PASS.
+
+**Gerekçeli ertelendi (düşük değer / yüksek risk / opsiyonel / dış-girdi):**
+- P2.2 samples playbackRate testi — karmaşık AudioContext mock; P0.5 fix zaten testli dolaylı.
+- P3.2 external-references fetch DRY — orta refactor, çekirdek-dışı curation alanı.
+- P3.3 tekil ölü export — score-engine V2 alias'ları AKTİF WIP (git-modified), dokunma riski.
+- P3.4 god-component (ReferencesCurationDashboard) — L efor, yüksek regresyon riski, düşük-değer alan.
+- P1.3 ~25 ek makam — opsiyonel ürün-kapsamı kararı (kullanıcı onayı).
+- Güvenlik MEDIUM #3 (scores/corrections erişim kapısı) — local-first tek-kullanıcı tasarım kararı (auth bilinçli yok, ADR); size-cap (P2.6) yapıldı.
+
+---
+
+
 5 bağımsız paralel ajan (teknik borç, güvenlik, test kapsamı, çekirdek doğruluk,
 domain veri) + koordinatör sentezi. Her madde: **etki · efor (S/M/L) · risk ·
 kaynak-güveni**. İlke: uydurma yok — "yapılabilir" olan her veri kaynak-kanıtlı.

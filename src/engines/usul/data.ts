@@ -292,6 +292,10 @@ const MUHAMMES_VELVELE: Stroke[] = [
   [27, "te", 0.5], [27.5, "ke", 0.5], [28, "te", 0.5], [28.5, "ke", 0.5],
   [29, "tek", 1], [30, "ka", 1], [31, "tek", 1], [32, "ka", 1],
 ]; // Gonul s.110
+const DEVRI_REVAN: Stroke[] = [
+  // 3+4+3+4 (14/8, Mevlevi): Düüüm Düüm Teek | Düüüm Teek Teek
+  [1, "dum", 3], [4, "dum", 2], [6, "tek", 2], [8, "dum", 3], [11, "tek", 2], [13, "tek", 2],
+]; // s.101 (Kudum) + Gonul s.104
 const DEVRI_REVAN_VELVELE: Stroke[] = [
   // 3+4+3+4 (14/8, birim sekizlik): Düm Tek Kâ | Dü Me Tek Kâ | dü me Dü Me | Tek Kâ Tek Kâ
   [1, "dum", 1, "Düm"], [2, "tek", 1], [3, "ka", 1],
@@ -524,9 +528,8 @@ export const USUL_DATA: Usul[] = [
   makeUsul("nimevsat", "Nim Evsat", "Nim Evsat", 13, "8", NIM_EVSAT, NIM_EVSAT_VELVELE), // Gonul s.104 (5+4+4); korpusta repertuvari var
   makeUsul("sarkidevrirevani", "Şarkı Devr-i Revânî", "Sarki Devr-i Revani", 13, "8", SARKI_DEVRI_REVAN, SARKI_DEVRI_REVAN_VELVELE), // Gonul s.104 (3+4+4+2)
   makeUsul("bektasidevrirevani", "Bektâşî Devr-i Revânî", "Bektasi Devr-i Revani", 13, "8", BEKTASI_DEVRI_REVAN, BEKTASI_DEVRI_REVAN_VELVELE), // Gonul s.104 (4+5+4)
-  makeUsul("devrirevan", "Devrirevan", "Devr-i Revan", 14, "8", [
-    [1, "dum", 3], [4, "dum", 2], [6, "tek", 2], [8, "dum", 3], [11, "tek", 2], [13, "tek", 2],
-  ], DEVRI_REVAN_VELVELE), // s.101 (darp, Mevlevi) + Gonul s.104 (velvele)
+  makeUsul("devrirevan", "Devrirevan", "Devr-i Revan", 14, "8", DEVRI_REVAN, DEVRI_REVAN_VELVELE), // s.101 (darp, Mevlevi) + Gonul s.104 (velvele)
+  makeUsul("ayindevrirevani", "Âyin Devr-i Revânî", "Ayin Devr-i Revani", 14, "8", DEVRI_REVAN, DEVRI_REVAN_VELVELE), // Mevlevi ayinlerinde ayni devr-i revan; korpusta ayri repertuvar
   makeUsul("raksan", "Raksan", "Raksan", 15, "8", [
     [1, "dum", 1], [2, "tek", 1], [3, "tek", 1], [4, "dum", 2], [6, "te", 1], [7, "ka", 2],
     [9, "dum", 2], [11, "tek", 2], [13, "te", 1], [14, "ka", 2],

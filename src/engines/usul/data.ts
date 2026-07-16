@@ -135,6 +135,9 @@ const AKSAK_VELVELE: Stroke[] = [
   [1, "dum", 1], [2, "te", 0.5], [2.5, "ke", 0.5], [3, "tek", 1], [4, "ka", 1],
   DU(5), ME(5.5), [6, "dum", 1], [7, "hek", 1], [8, "tek", 2],
 ]; // s.47
+const EVFER: Stroke[] = [
+  [1, "dum", 2], [3, "te", 1], [4, "ke", 1], [5, "dum", 2], [7, "tek", 1], [8, "tek", 2],
+]; // s.53: aksaktan farki son iki tek'in deger degisimi
 const EVFER_VELVELE: Stroke[] = [
   [1, "dum", 1], [2, "te", 0.5], [2.5, "ke", 0.5], [3, "tek", 1], [4, "ka", 1],
   DU(5), ME(5.5), [6, "dum", 1], [7, "hek", 1], [8, "hek", 2],
@@ -498,9 +501,15 @@ export const USUL_DATA: Usul[] = [
   makeUsul("aksak", "Aksak", "Aksak", 9, "8", AKSAK, AKSAK_VELVELE), // s.47
   makeUsul("ciftesofyan", "Çiftesofyan", "Cifte Sofyan", 9, "8", AKSAK, AKSAK_VELVELE), // s.46: aksagin yurukce vurulusu
   makeUsul("agiraksak", "Ağır Aksak", "Agir Aksak", 9, "4", AKSAK, AKSAK_VELVELE), // s.46-47: aksak 2. mertebesi
-  makeUsul("evfer", "Evfer", "Evfer", 9, "8", [
-    [1, "dum", 2], [3, "te", 1], [4, "ke", 1], [5, "dum", 2], [7, "tek", 1], [8, "tek", 2],
-  ], EVFER_VELVELE), // s.53: aksaktan farki son iki tek'in deger degisimi
+  makeUsul("evfer", "Evfer", "Evfer", 9, "8", EVFER, EVFER_VELVELE), // s.53: aksaktan farki son iki tek'in deger degisimi
+  makeUsul("agirevfer", "Ağır Evfer", "Agir Evfer", 9, "4", EVFER, EVFER_VELVELE), // TDV evfer: 2. mertebe 9/4 (= Mevlevi evferi)
+  makeUsul("mevlevievferi", "Mevlevî Evferi", "Mevlevi Evferi", 9, "4", EVFER, EVFER_VELVELE), // TDV: 2. mertebeye agir evfer/Mevlevi evferi denir; Mevlevi ayini 2./4. selam
+  makeUsul("raksaksagi", "Raks Aksağı", "Raks Aksagi", 9, "8", [
+    [1, "dum", 2], [3, "tek", 3], [6, "dum", 2], [8, "tek", 2], // Düüm Teeek Düüm Teek (2+3+2+2)
+  ]), // TDV raks-aksagi + dergipark: 2+3+2+2; velvele kaynakta net cikarilamadi -> darp-only
+  makeUsul("aydin", "Aydın", "Aydin", 9, "8", [
+    [1, "dum", 2], [3, "tek", 2], [5, "dum", 2], [7, "tek", 3], // Düüm Teek Düüm Teeek (2+2+2+3)
+  ]), // usuller.com (Devr-i Bendir) nota gorseli + SymbTr 9/8; velvele net degerlenmedi -> darp-only
   makeUsul("oynak", "Oynak", "Oynak", 9, "8", [
     [1, "dum", 1], [2, "tek", 1], [3, "tek", 1], [4, "dum", 2], [6, "tek", 2], [8, "tek", 2],
   ], OYNAK_VELVELE), // s.63 (darp) + Gonul s.102 (velvele)

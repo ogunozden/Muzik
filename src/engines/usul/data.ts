@@ -539,6 +539,7 @@ export const USUL_DATA: Usul[] = [
   ], OYNAK_VELVELE), // s.63 (darp) + Gonul s.102 (velvele)
   makeUsul("aksaksemai", "Aksaksemâî", "Aksak Semai", 10, "8", AKSAK_SEMAI, AKSAK_SEMAI_VELVELE), // s.67
   makeUsul("agiraksaksemai", "Ağır Aksak Semâî", "Agir Aksak Semai", 10, "4", AKSAK_SEMAI, AKSAK_SEMAI_VELVELE), // Adana ?pnum=369: Aksak Semai'nin 10/4 agir mertebesi, ayni darp
+  makeUsul("aksaksemaievferi", "Aksaksemâî Evferi", "Aksak Semai Evferi", 10, "8", AKSAK_SEMAI, AKSAK_SEMAI_VELVELE), // SymbTr .mu2 duzum=212221 = Aksak Semai darpi birebir; ayni darp
   // Curcuna = 10/8 (gercek notasyon). Kitap (s.66) onu Aksak Semai'nin 10/16
   // mertebesi sayar ama SymbTr v3 korpusundaki curcuna eserlerinin TAMAMI 10/8
   // notalidir; pedagoji de 10/8 der (darp: 3+2+2+3 = Düm2 Te1 Kâ2 Düm2 Tek2
@@ -565,6 +566,7 @@ export const USUL_DATA: Usul[] = [
   makeUsul("bektasidevrirevani", "Bektâşî Devr-i Revânî", "Bektasi Devr-i Revani", 13, "8", BEKTASI_DEVRI_REVAN, BEKTASI_DEVRI_REVAN_VELVELE), // Gonul s.104 (4+5+4)
   makeUsul("devrirevan", "Devrirevan", "Devr-i Revan", 14, "8", DEVRI_REVAN, DEVRI_REVAN_VELVELE), // s.101 (darp, Mevlevi) + Gonul s.104 (velvele)
   makeUsul("ayindevrirevani", "Âyin Devr-i Revânî", "Ayin Devr-i Revani", 14, "8", DEVRI_REVAN, DEVRI_REVAN_VELVELE), // Mevlevi ayinlerinde ayni devr-i revan; korpusta ayri repertuvar
+  makeUsul("devrirevanihindi", "Devr-i Revân-ı Hindî", "Devr-i Revan-i Hindi", 14, "8", DEVRI_REVAN, DEVRI_REVAN_VELVELE), // Devr-i Revan'in Hindi alt-turu (14/8, 12 eser); ayni Devr-i Revan darpi
   makeUsul("raksan", "Raksan", "Raksan", 15, "8", [
     [1, "dum", 1], [2, "tek", 1], [3, "tek", 1], [4, "dum", 2], [6, "te", 1], [7, "ka", 2],
     [9, "dum", 2], [11, "tek", 2], [13, "te", 1], [14, "ka", 2],

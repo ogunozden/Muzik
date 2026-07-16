@@ -31,5 +31,5 @@ test("ogren sayfasi navigasyondan ulasilir", async ({page}) => {
   await page.goto("/rhythm");
   // Calisma hub'inda 'Usul Ogren' baglantisi /ogren'e goturur.
   await page.goto("/ogren");
-  await expect(page.getByRole("heading", {name: "Usul ogren"})).toBeVisible();
+  await expect(page.getByRole("heading", {name: "Usul ve makam ogren"})).toBeVisible();
 });

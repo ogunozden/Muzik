@@ -50,3 +50,32 @@ test.describe("Rehberli ogrenme akisi", () => {
     await expect(page.getByText(/1 \/ 26 ogrenildi/)).toBeVisible();
   });
 });
+
+test.describe("Rehberli ogrenme akisi — makam ekseni", () => {
+  test.beforeEach(async ({page}) => {
+    await page.goto("/ogren");
+    await page.getByRole("tab", {name: "Makam"}).click();
+  });
+
+  test("makam sekmesi ilk temel makami (Rast) + koma dizisi + seyir gosterir", async ({page}) => {
+    await expect(page.getByRole("heading", {name: "Rast"})).toBeVisible();
+    await expect(page.getByText(/0 \/ 24 ogrenildi/)).toBeVisible();
+    await expect(page.getByText("C  D  E  F  G  A  B  C")).toBeVisible();
+    await expect(page.getByText(/Seyir tarifi/)).toBeVisible();
+  });
+
+  test("makam 'Sonraki' ilerletir ve tamamlandi sayar", async ({page}) => {
+    await page.getByRole("button", {name: "Sonraki makam"}).click();
+    await expect(page.getByRole("heading", {name: "Uşşak"})).toBeVisible();
+    await expect(page.getByText(/1 \/ 24 ogrenildi/)).toBeVisible();
+  });
+
+  test("usul ve makam ilerlemeleri birbirinden bagimsiz", async ({page}) => {
+    // Makam'da bir adim tamamla.
+    await page.getByRole("button", {name: "Ogrendim olarak isaretle"}).click();
+    await expect(page.getByText(/1 \/ 24 ogrenildi/)).toBeVisible();
+    // Usul eksenine gec: ilerleme hala 0/26 (ayri anahtar).
+    await page.getByRole("tab", {name: "Usul"}).click();
+    await expect(page.getByText(/0 \/ 26 ogrenildi/)).toBeVisible();
+  });
+});

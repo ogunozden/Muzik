@@ -9,11 +9,13 @@
 
 import {useCallback, useEffect, useState} from "react";
 
-const PROGRESS_KEY = "muzik.learn.completed";
+// Varsayilan: usul ekseni. Makam ekseni ayri anahtar gecirir (ilerlemeler
+// birbirinden bagimsiz sayilir).
+const DEFAULT_PROGRESS_KEY = "muzik.learn.completed";
 
-function readStored(): string[] {
+function readStored(key: string): string[] {
   try {
-    const raw = window.localStorage?.getItem(PROGRESS_KEY);
+    const raw = window.localStorage?.getItem(key);
     if (!raw) return [];
     const parsed: unknown = JSON.parse(raw);
     return Array.isArray(parsed) ? parsed.filter((x): x is string => typeof x === "string") : [];
@@ -22,9 +24,9 @@ function readStored(): string[] {
   }
 }
 
-function persist(ids: string[]): void {
+function persist(key: string, ids: string[]): void {
   try {
-    window.localStorage?.setItem(PROGRESS_KEY, JSON.stringify(ids));
+    window.localStorage?.setItem(key, JSON.stringify(ids));
   } catch {
     // localStorage kullanilamiyor (gizli mod) — sessizce gec.
   }
@@ -40,27 +42,28 @@ export interface LearningProgress {
   completedCount: number;
 }
 
-export function useLearningProgress(): LearningProgress {
+export function useLearningProgress(storageKey: string = DEFAULT_PROGRESS_KEY): LearningProgress {
   const [completed, setCompleted] = useState<ReadonlySet<string>>(() => new Set());
 
   useEffect(() => {
-    const stored = readStored();
-    if (stored.length > 0) {
-      // eslint-disable-next-line react-hooks/set-state-in-effect
-      setCompleted(new Set(stored));
-    }
-  }, []);
+    const stored = readStored(storageKey);
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setCompleted(stored.length > 0 ? new Set(stored) : new Set());
+  }, [storageKey]);
 
   // Fonksiyonel updater: ardisik cagrilar stale closure yuzunden birbirini
   // ezmesin (ayni render'da iki isaretleme). Persist, hesaplanan yeni degerle
   // yapilir (idempotent — StrictMode cift cagrida ayni degeri yazar).
-  const mutate = useCallback((fn: (prev: ReadonlySet<string>) => Set<string>) => {
-    setCompleted((prev) => {
-      const next = fn(prev);
-      persist([...next]);
-      return next;
-    });
-  }, []);
+  const mutate = useCallback(
+    (fn: (prev: ReadonlySet<string>) => Set<string>) => {
+      setCompleted((prev) => {
+        const next = fn(prev);
+        persist(storageKey, [...next]);
+        return next;
+      });
+    },
+    [storageKey],
+  );
 
   const markCompleted = useCallback(
     (usulId: string) => mutate((prev) => new Set(prev).add(usulId)),

@@ -39,10 +39,10 @@ export default defineConfig({
       // Mevcut olculen seviyenin hemen altinda ratchet; regresyonu yakalar,
       // yeni test eklendikce yukari cekilir (F6.1).
       thresholds: {
-        statements: 62,
-        branches: 58,
-        functions: 70,
-        lines: 62,
+        statements: 67,
+        branches: 62,
+        functions: 76,
+        lines: 68,
       },
     },
   },

@@ -51,9 +51,8 @@ düm/tek darplarını içeriyor — provisional blokajının gerçek çözümü.
       - **bektasiraksi** (s.269): `16/8, DÜM DÜM TEK DÜM TEK DÜM TEK / 3 2 2 2 2 3 2`.
         Önceki 8-zaman kodlama hataydı; SymbTr pulses=16 doğruladı. ✅ de-provisioned.
         ⚠️ İsim kaviyatı: Heper "Raksânî" der, DUNYA "Raksı" — uzman onayı bekliyor.
-- Sonuç: provisional 22 → **20**. Kalan 20 usûlün düm/tek'i Heper/SymbTr/Gönül'de YOK
-  (Mazmûrî vb. app'te değil; diğerleri hiçbir makine-okunur kaynakta değil) → dürüstçe
-  provisional kalır. Özkan tam kitabı temin edilirse tekrar bakılır.
+- Sonuç: provisional 22 → **20**. Kalan 20 usûlün darpı doğrulanamadı → **2026-07-16'da
+  UI'dan çıkarıldı** (bkz. `docs/BEKLEYEN-USULLER.md`, re-add kurgulu). Aktif usûl 94 → **74**.
 
 ### E3. Makam seyir kapsamını tamamla *(veri)*
 Şu an 24/34 app makamı Gönül seyir metnine bağlı. Kalan 10: nevaber, nevadur, ureyş,

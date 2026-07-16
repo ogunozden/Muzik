@@ -117,13 +117,11 @@ kaynak-güveni**. İlke: uydurma yok — "yapılabilir" olan her veri kaynak-kan
 
 ## P4 — Bekleyen / dış-girdi / kullanıcı kararı
 
-- **Özkan tam usûl bölümü** (s.687, s.704) temin edilirse → `murekkepsofyan` (Bileşik Sofyan)
-  + `bektasiraksani` (15z) de-provision. Şu an `ozkan.pdf` yalnız 82-sayfa kısmi alıntı
-  (usûl gövdesi yok). **[TOC-GÖRDÜM] — kaynak var, transkript elimizde yok.**
-- **15 provisional usûl** (azeriyuruksemai, devrisureyya, iraksak, muasser, nazliduyek,
-  dolap, gulsen, cevher, turkmen, bektasiraksievferi, devrihindiii, yuruksemaiii, kcurcuna,
-  devrisureyyasofyani, devriaryan) → **hiçbir sağlanan kaynakta düm/tek yok. DOKUNMA**
-  (Gönül eşleşmeleri güfte/kişi-adı false-positive; korpus yalnız süre verir). [KAYNAK YOK]
+- **Kaynak-bekleyen usûller** (darpı doğrulanamayan 20 usûl) → **UI'dan çıkarıldı**
+  (2026-07-16 kullanıcı kararı: doğrulanmamış darp gösterilmez). Kayıtları ve re-add
+  kurgusu **`docs/BEKLEYEN-USULLER.md`**'de; kaynak bulununca `PENDING_USUL_IDS`'ten
+  çıkarmak yeterli. Tek somut re-add adayı: `bektasiraksani` → Özkan s.704 (TOC-teyitli,
+  o sayfa OCR bekliyor). Kalan 19'unda bilinen kaynak yok.
 - **Mertebe-mirası** (sturkaksagi=Türk Aksağı×2, devrituranii=Devr-i Turan×2, raksaksagiii=
   Raks Aksağı×2): süre-dizisi birebir eşleşiyor ama "II/S. = base'in mertebe-varyantı"
   diyen kaynak yok (SymbTr makine-etiketi). **Kaynak-eşdeğerlik zayıf → kullanıcı kararı.**

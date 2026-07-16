@@ -1,5 +1,5 @@
 import {describe, expect, it} from "vitest";
-import {getUsulById, getUsulBeatDuration, getUsulGrouping, PROVISIONAL_USUL_IDS, USUL_DATA} from "../data";
+import {getUsulById, getUsulBeatDuration, getUsulGrouping, PENDING_USULS, PENDING_USUL_IDS, USUL_DATA} from "../data";
 
 /**
  * Usul verisi sozlesme testleri (2026-07-14 kaynakli yeniden yazim).
@@ -208,9 +208,18 @@ describe("usul/data", () => {
       }
     });
 
-    it("provisional usuls have a single (unverified) accent group", () => {
-      for (const id of PROVISIONAL_USUL_IDS) {
-        expect(getUsulGrouping(getUsulById(id)!).length, `${id}`).toBe(1);
+    it("kaynak-bekleyen usuller UI'da GOSTERILMEZ (USUL_DATA'da yok)", () => {
+      // Bekleyen usuller darpi dogrulanmadigi icin aktif listede olmamali.
+      for (const id of PENDING_USUL_IDS) {
+        expect(getUsulById(id), `${id} UI'da gorunmemeli`).toBeUndefined();
+      }
+      // Ama kayitlari (re-add kurgusu) PENDING_USULS'te korunur.
+      expect(PENDING_USULS.length).toBe(PENDING_USUL_IDS.size);
+    });
+
+    it("bekleyen usuller tek (dogrulanmamis) vurgu grubuna sahip (yapisal)", () => {
+      for (const usul of PENDING_USULS) {
+        expect(getUsulGrouping(usul).length, `${usul.id}`).toBe(1);
       }
     });
   });

@@ -494,7 +494,9 @@ const HEZEC_VELVELE: Stroke[] = [
   [17, "tek", 1], [18, "ka", 1], [19, "tek", 1], [20, "ka", 1], [21, "tek", 1], [22, "ka", 1],
 ]; // Gonul s.106
 
-export const USUL_DATA: Usul[] = [
+// Tum usul tanimlari (dogrulanmis + kaynak-bekleyen). Bu ham liste dogrudan
+// UI'ya GITMEZ; USUL_DATA asagida PENDING_USUL_IDS haric filtrelenir.
+const ALL_USULS: Usul[] = [
   // --- Kucuk usuller ---
   makeUsul("nimsofyan", "Nimsofyan", "Nimsofyan", 2, "4", [[1, "dum", 1], [2, "tek", 1]],
     [[1, "dum", 1], [2, "te", 0.5], [2.5, "ke", 0.5]]), // s.11
@@ -730,16 +732,26 @@ export const USUL_DATA: Usul[] = [
   makeUsul("kcurcuna", "K. Curcuna", "K. Curcuna", 10, "8", [[1, "dum", 5], [6, "tek", 2], [8, "tek", 3]]),
 ];
 
-// Darp'i SymbTr clustering'inden turetilen, dum/tek stroke tipi ONAYLANMAMIS
-// usuller: sure/ritim otoriter (SymbTr), 1. dum kesin, kalan tek yapisal
-// varsayilan. Gelenksel nota (Heper/Ozkan) ile dogrulanmali. UI bunlari isaretler.
-export const PROVISIONAL_USUL_IDS: ReadonlySet<string> = new Set([
-  // bulgardarbi + bektasiraksi: Heper s.267/s.269 nota ile dogrulandi, listeden cikti.
+// KAYNAK BEKLEYEN usuller: dum/tek darpi hicbir otoriter kaynakta (Heper/Gonul/
+// Ozkan-elde) DOGRULANAMADI. Sure/ritim SymbTr'den bilinir ama darp uydurulamaz,
+// bu yuzden UI'da GOSTERILMEZLER (USUL_DATA'dan otomatik cikarilir). Kaynak
+// bulununca (or. bektasiraksani -> Ozkan s.704) RE-ADD: (1) yukaridaki makeUsul
+// darpini gercek dum/tek ile guncelle, (2) id'yi bu listeden cikar -> otomatik
+// USUL_DATA'ya girer, UI'da gorunur. Bkz. docs/BEKLEYEN-USULLER.md.
+export const PENDING_USUL_IDS: ReadonlySet<string> = new Set([
+  // bulgardarbi + bektasiraksi: Heper s.267/s.269 nota ile dogrulandi, aktif oldu.
   "azeriyuruksemai", "bektasiraksani", "devriaryan", "devrihindiii",
   "devrisureyya", "devrituranii", "iraksak", "muasser", "nazliduyek", "raksaksagiii",
   "sturkaksagi", "yuruksemaiii", "dolap", "gulsen", "cevher",
   "bektasiraksievferi", "murekkepsofyan", "turkmen", "kcurcuna", "devrisureyyasofyani",
 ]);
+
+// UI'da gosterilen AKTIF usuller: yalniz darpi kaynak-dogrulanmis olanlar.
+export const USUL_DATA: Usul[] = ALL_USULS.filter((usul) => !PENDING_USUL_IDS.has(usul.id));
+
+// Kaynak bekleyen usuller (UI'da YOK) — re-add kurgusu icin kayit. Meta veri
+// (zaman/olcu/isim/SymbTr sureleri) korunur; kaynak gelince aktive edilir.
+export const PENDING_USULS: Usul[] = ALL_USULS.filter((usul) => PENDING_USUL_IDS.has(usul.id));
 
 export function getUsulById(id: string): Usul | undefined {
   return USUL_DATA.find((usul) => usul.id === id);

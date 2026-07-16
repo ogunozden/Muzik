@@ -14,7 +14,7 @@
 import {useCallback, useEffect, useMemo, useRef, useState} from "react";
 import {Badge, Button, PageSurface} from "@/shared/ui";
 import {UsulNotation} from "@/shared/ui/organisms/UsulNotation";
-import {getUsulById, getUsulGrouping, PROVISIONAL_USUL_IDS} from "@/engines/usul/data";
+import {getUsulById, getUsulGrouping} from "@/engines/usul/data";
 import {CURRICULUM, CURRICULUM_STEPS, TOTAL_STEPS} from "./curriculum";
 import {useUsulPlayback} from "./useUsulPlayback";
 import {useLearningProgress} from "./useLearningProgress";
@@ -35,7 +35,6 @@ export function LearningStepper() {
   const hasVelvele = Boolean(usul?.velvele?.length);
   const symbols = isVelvele && usul?.velvele?.length ? usul.velvele : usul?.symbols;
   const grouping = usul ? getUsulGrouping(usul).join("+") : "";
-  const isProvisional = usul ? PROVISIONAL_USUL_IDS.has(usul.id) : false;
   const isDone = usul ? progress.isCompleted(usul.id) : false;
 
   // Adim degisince: calmayi durdur ve velveleyi sifirla (yeni usulun kendi
@@ -163,13 +162,6 @@ export function LearningStepper() {
             size="md"
           />
         </section>
-
-        {isProvisional && (
-          <p role="status" className="mb-4 rounded-md border border-[var(--color-amber-300,#fcd34d)] bg-[var(--color-amber-50,#fffbeb)] px-3 py-2 text-xs text-[var(--color-amber-800,#92400e)]">
-            ⚠ Bu usulun suresi/ritmi otoriter, ancak dum/tek vurgu dizisi henuz
-            geleneksel nota kaynagiyla dogrulanmamistir.
-          </p>
-        )}
 
         {/* Calma denetimleri */}
         <div className="flex flex-wrap items-center gap-3">

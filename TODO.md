@@ -541,6 +541,9 @@ dosum testi (toplam=beats) + iki-kitap capraz-kontrol. Fabrikasyon YOK.
   - [x] EKLENMEDI (gercek usul degil / veri yok): serbest (olcusuz), ikibir
         (standart degil), murekkepnimsofyan (bogus meter). => 93+ usul tanimli,
         korpusta yalniz bu 3 etiket eslesmiyor. USUL VERI KATMANI TAMAM (37->94).
+      // GUNCELLEME (2026-07-16): kaynak-bekleyen 20 usul UI'dan CIKARILDI (darp
+      // dogrulanamadi -> gosterilmez); aktif usul 94 -> 74. Rozet kaldirildi.
+      // Re-add kurgusu: docs/BEKLEYEN-USULLER.md + PENDING_USUL_IDS.
 - [x] F14.2 Usul Ansiklopedisi UI: /rhythm sayfasi tum 94 usulu + UsulNotation +
       darp<->velvele toggle + calim + korpus temposu. EKLENDI: (1) yapisal usul
       ROZETI (PROVISIONAL_USUL_IDS — dum/tek onaylanmamis usullerde uyari),

@@ -46,15 +46,23 @@ tick ekseninde olsun.
       tam ölçüye oturma **hariç** %75,8 / dâhil %21,0 → iki eksen de gerekli
       · eşleşmeyen 12 eser sabitlendi (11'i donmuş `Offset`, 1'i tek mu2/TXT
       çelişkisi: `hicaz_uzzal--zeybek` mu2 9/4 der, Offset 9/8 ile yazılmış)
-- [ ] **G4** · Keşif koşusu: geçici v2, testleri koş, kırılanları listele,
-      geri al, **commit etme** · *risk sıfır, pivot kararı bu listeyle verilir*
+- [x] **G4** · Keşif koşusu · **G6'yı ÇÜRÜTTÜ.** 2987 eser / 1.157.450 nota:
+      mevcut `ceil(offset)` %86,39 · planlanan `floor(offset)+1` **%76,23**
+      (10 puan daha kötü). Kohorta ayırınca sebep çıktı: tempo işareti
+      **olmayan** eserlerde `ceil(offset)` zaten **%98,58** doğru, olanlarda
+      %83,56. **Sorun formül değil eksen** — `Offset` kod-52'nin hayalet
+      süresini taşıyor. → ölçü artık `Offset`ten değil `MeterMap` yürünerek
+      · yan ölçüm: doğru ızgarayla ölçülerin **%93,13'ü tam dolu**
+      (TODO'daki %64,9 bozuk ızgaradandı); bar-aşan nota yalnız **%0,50**
 - [ ] **G5** · PDF `measureIndexBasis` alanı — **G6'dan ÖNCE**
-      *(18.334 doğrulanmış kutu `ceil-end` formülüne bağlı; alan olmadan
-      sessizce kayarlar)*
-- [ ] **G6** · **PIVOT** · `measureIndex = floor(başlangıç)+1`, dört kopya
-      tek kaynağa · *73.470 nota (%6,3) kayar — commit mesajında raporlanır*
-- [ ] **G7** · L1: bar-aşan nota bölme + bağ · **kapı:** ölçü doluluğu
-      %64,9 → ~%86; çalma nota sayısı ve toplam süresi DEĞİŞMEMELİ
+      *(18.334 doğrulanmış kutu `ceil(offset)` tabanına bağlı; G4 ölçtü:
+      geçişte notaların **%13,61'i** başka ölçüye taşınıyor)*
+- [ ] **G6** · **PIVOT** · `measureIndex = measureAt(kanonikBaşlangıç)`
+      (~~`floor(offset)+1`~~ çürütüldü), dört kopya tek kaynağa
+      · *157.491 nota (%13,61) kayar — commit mesajında raporlanır*
+- [ ] **G7** · L1: bar-aşan nota bölme + bağ · **gerçek kapsam G4'te ölçüldü:
+      5.787 nota (%0,50)**; ölçü doluluğu %93,13 → ~%99. Çalma nota sayısı ve
+      toplam süresi DEĞİŞMEMELİ
 - [ ] **G8** · Doğrulamayı totolojiden çıkar
       *(`validator.ts:64-72` bugün hiç tetiklenemiyor; `quality.ts:36-44`
       yanlış mertebeyle karşılaştırıyor)*

@@ -1,6 +1,8 @@
 import {type Ticks, ZERO_TICKS, addTicks, wholeNotesOf} from "@/core/time/ticks";
 import {meterToTicks} from "./meter-map";
-import {type DurationFraction, METER_CHANGE_CODE, type SymbtrRow, TEMPO_MARK_CODE} from "./rows";
+import {type DurationFraction, type RowAdvance, type SymbtrRow, rowAdvance} from "./rows";
+
+export {type RowAdvance, rowAdvance};
 
 /**
  * OFFSET YENIDEN URETIM KAPISI (PLAN.md §2.3 / §3 G3).
@@ -30,32 +32,6 @@ import {type DurationFraction, METER_CHANGE_CODE, type SymbtrRow, TEMPO_MARK_COD
  *   TXT'nin celistigi tek dosya: mu2 `9/4` diyor, `Offset` sutunu `9/8` ile
  *   yazilmis. Ikisi de KAYNAK verinin ozelligi, duzeltilmiyor.
  */
-
-/** Bir satirin iki eksende ne kadar ilerlettigi. */
-export interface RowAdvance {
-  /** Muzikal zaman — tempo isareti (kod 52) KATILMAZ. */
-  readonly canonical: Ticks;
-  /** TXT `Offset` sutunu yeniden uretimi — tempo isareti KATILIR. */
-  readonly offsetReplay: Ticks;
-}
-
-const NO_ADVANCE: RowAdvance = {canonical: ZERO_TICKS, offsetReplay: ZERO_TICKS};
-
-/**
- * Tek fonksiyon, iki sayi (PLAN §2.3). Kalici mod yok, dallanma yok.
- *
- * Kod-51 satiri `rows.ts` tarafindan zaten `meter-change` olarak tiplendigi
- * icin buraya `timed` olarak gelmez; yine de savunmaci kontrol duruyor.
- */
-export function rowAdvance(row: SymbtrRow): RowAdvance {
-  if (row.kind !== "timed") return NO_ADVANCE;
-  if (row.code === METER_CHANGE_CODE) return NO_ADVANCE;
-
-  if (row.code === TEMPO_MARK_CODE) {
-    return {canonical: ZERO_TICKS, offsetReplay: row.duration};
-  }
-  return {canonical: row.duration, offsetReplay: row.duration};
-}
 
 export interface ReplayedRow {
   readonly rowIndex: number;

@@ -104,15 +104,16 @@ describe("MeterMap (G2) — olcu izgarasi tahminle DEGIL, mertebeyle kurulur", (
     expect(meterToTicks({numerator: 1, denominator: 11})).toBeNull();
   });
 
-  it("kod-52 tempo satiri olcu izgarasini KIRMAZ ise tuketici karari", () => {
-    // Bu modul kod-52'yi `timed` gorur (rows.ts sozlesmesi). Kanonik eksende
-    // KATILMAMASI gerektigi olculdu (rows.ts §5); karari tuketici verir.
-    // Burada sadece davranisin belirli oldugunu sabitliyoruz.
-    const raw = [HEADER, note(1, 1), line({Sira: 2, Kod: 52, Pay: 1, Payda: 8, LNS: 127})].join("\n");
+  it("kod-52 tempo isareti olcu izgarasini KAYDIRMAZ", () => {
+    // G3 olcumu: kod-52 kanonik zamana katilirsa eserlerin yalniz %21'i tam
+    // olcuye oturuyor; katilmazsa %75,8. Izgara KANONIK eksende yurunur.
+    const raw = [HEADER, note(1, 1), line({Sira: 2, Kod: 52, Pay: 1, Payda: 8, LNS: 127}), note(1, 1)].join("\n");
     const map = buildMeterMap(readSymbtrRows(raw).rows, {numerator: 4, denominator: 4});
 
-    expect(map?.totalTicks).toBe(ticksFromFraction(9, 8));
-    expect(map?.segments[0].endsMidMeasure).toBe(true);
+    expect(map?.totalTicks).toBe(ticksFromFraction(2, 1)); // 1/8 tempo satiri KATILMADI
+    expect(map?.segments[0].endsMidMeasure).toBe(false);
+    // Tempo satiri katilsaydi bu nota 3. olcuye kayardi.
+    expect(measureAt(map!, ticksFromFraction(1, 1)!)?.measure).toBe(2);
   });
 });
 

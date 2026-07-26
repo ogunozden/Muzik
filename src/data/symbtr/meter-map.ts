@@ -8,7 +8,7 @@ import {
   subTicks,
   ticksFromFraction,
 } from "@/core/time/ticks";
-import {type DurationFraction, type SymbtrRow} from "./rows";
+import {type DurationFraction, type SymbtrRow, rowAdvance} from "./rows";
 
 /**
  * MERTEBE HARITASI (PLAN.md §2.2 / §3 G2).
@@ -130,7 +130,10 @@ export function buildMeterMap(rows: readonly SymbtrRow[], initialMeter: Duration
     const row = rows[index];
 
     if (row.kind === "timed") {
-      position = addTicks(position, row.duration);
+      // KANONIK eksen: tempo isareti (kod 52) olcu izgarasini KAYDIRMAZ.
+      // G3 bunu 2999 eserde olctu — kod-52 katilirsa eserlerin yalniz %21'i
+      // tam olcuye oturuyor, katilmazsa %75,8.
+      position = addTicks(position, rowAdvance(row).canonical);
       continue;
     }
 

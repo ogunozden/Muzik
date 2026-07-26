@@ -1,5 +1,5 @@
 import {type Ticks, ZERO_TICKS, addTicks} from "@/core/time/ticks";
-import {type DurationFraction, type SymbtrRow} from "./rows";
+import {type DurationFraction, type SymbtrRow, rowAdvance} from "./rows";
 
 /**
  * USUL HARITASI (PLAN.md §2.2 / §3 G2).
@@ -105,7 +105,8 @@ export function buildUsulMap(
   for (let index = 0; index < rows.length; index++) {
     const row = rows[index];
     if (row.kind === "timed") {
-      position = addTicks(position, row.duration);
+      // `MeterMap` ile AYNI eksen (kanonik) — iki harita ayni zamani gormeli.
+      position = addTicks(position, rowAdvance(row).canonical);
       continue;
     }
     if (row.kind === "meter-change") {

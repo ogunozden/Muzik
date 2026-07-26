@@ -1,4 +1,4 @@
-import {type Ticks, ticksFromFraction} from "@/core/time/ticks";
+import {type Ticks, ZERO_TICKS, ticksFromFraction} from "@/core/time/ticks";
 
 /**
  * SymbTr TXT SATIR OKUYUCUSU (PLAN.md §3/G2).
@@ -181,6 +181,36 @@ export interface SymbtrRowReadResult {
   };
   /** Kod bazinda satir sayisi — hangi kodun kac kez gectigi gorunur kalsin. */
   readonly countsByCode: ReadonlyMap<number, number>;
+}
+
+/**
+ * Bir satirin IKI eksende ne kadar ilerlettigi (PLAN.md §2.3).
+ *
+ * Kalici bir "mod" enum'u YOK: tek fonksiyon, iki sayi. Hangi eksenin
+ * kullanilacagini cagiran secer.
+ */
+export interface RowAdvance {
+  /** Muzikal zaman — tempo isareti (kod 52) KATILMAZ. */
+  readonly canonical: Ticks;
+  /** TXT `Offset` sutunu yeniden uretimi — tempo isareti KATILIR. */
+  readonly offsetReplay: Ticks;
+}
+
+const NO_ADVANCE: RowAdvance = {canonical: ZERO_TICKS, offsetReplay: ZERO_TICKS};
+
+/**
+ * Satirin zaman katkisi. Bu, satirin KENDI ozelligidir — bu yuzden burada
+ * durur; `meter-map`, `usul-map` ve `offset-replay` ucu de bunu kullanir ve
+ * boylece uc modul ayni zamani gorur.
+ */
+export function rowAdvance(row: SymbtrRow): RowAdvance {
+  if (row.kind !== "timed") return NO_ADVANCE;
+  if (row.code === METER_CHANGE_CODE) return NO_ADVANCE;
+
+  if (row.code === TEMPO_MARK_CODE) {
+    return {canonical: ZERO_TICKS, offsetReplay: row.duration};
+  }
+  return {canonical: row.duration, offsetReplay: row.duration};
 }
 
 function toFiniteNumber(value: string | undefined): number | null {

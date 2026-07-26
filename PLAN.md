@@ -311,44 +311,71 @@ fixture'ı olmadan hiçbir baseline kurulamaz.
   `hicaz_uzzal--zeybek--aksak----izmir` ise korpustaki **tek mu2/TXT
   çelişkisi** — mu2 `9/4` diyor, `Offset` sütunu `9/8` ile yazılmış.
 - **Risk:** sıfır (tüketicisiz). 93 symbtr testi yeşil.
-- **Risk:** düşük.
 
-### G4 · Keşif koşusu (commit YOK)
+### G4 · Keşif koşusu (commit YOK) — ✅ TAMAM · **G6'yı ÇÜRÜTTÜ**
 
-- Yeni `measureIndex` hesabını **geçici** varsayılan yap, `npm run test:run`
-  koş, kırılan testleri listele, geri al, **commit etme**.
-- **Çıktı:** "768 testin kaçı v1 ölçü numarasına bağlı" — pivot kararı bu
-  listeyle verilir.
-- **Risk:** sıfır (commit yok). Bu adım bir *ölçüm*, değişiklik değil.
+Ölçüm: 2987 eser / 1.157.450 kod-9 nota. Karşılaştırma tabanı, `MeterMap`
+**yürünerek** bulunan gerçek ölçü numarası.
 
-### G5 · PDF taban alanı (pivottan ÖNCE)
+| formül | doğru |
+|---|---|
+| **MEVCUT** `ceil(offset)` | 999.959 (**%86,39**) |
+| **PLANLI (G6)** `floor(offset)+1` | 882.363 (**%76,23**) |
+
+**Planlanan pivot, mevcut halden 10 puan DAHA KÖTÜ.** Neden olduğu da bulundu
+— kohortlara ayırınca ortaya çıkıyor:
+
+| kohort | `ceil(offset)` | `floor(offset)+1` |
+|---|---|---|
+| tempo işareti **YOK** (218.564 nota) | **%98,58** | %87,49 |
+| tempo işareti **VAR** (938.886 nota) | %83,56 | — |
+
+**Sorun formül değil, EKSEN.** `Offset` sütunu kod-52'nin hayalet süresini
+içeriyor (G3), kanonik müzikal zaman içermiyor. Tempo işareti olmayan
+eserlerde `ceil(offset)` zaten **%98,58** doğru; olanlarda %83,56'ya düşüyor.
+Sapma dağılımı da bunu söylüyor: **+1: 155.876** (eserdeki tempo işareti
+sayısı kadar kayma), +2: 1.131, +3: 122.
+
+> **KARAR — plan değişti:** ölçü numarası `Offset` sütunundan **hiç**
+> türetilmeyecek. `measureAt(kanonikBaşlangıç)` ile `MeterMap` yürünecek.
+> Bu, G2/G3'ün zaten inşa ettiği şey. Formül değişimi değil, **kaynak
+> değişimi**.
+
+Yan ölçüm: doğru ızgarayla **ölçülerin %93,13'ü tam dolu** (159.560 ölçüde
+148.606). TODO'daki %64,9 rakamı bozuk ızgarayla hesaplanmıştı. Bar-aşan nota
+yalnız **%0,50** (5.787 nota) — G7'nin gerçek kapsamı bu.
+
+- **Risk:** sıfır (commit yok, geçici test dosyası silindi).
+
+### G5 · PDF taban alanı (pivottan ÖNCE) — G4'ten sonra DAHA gerekli
 
 - `layout.ts:77` `SymbTrPdfLayoutVerificationEntry`'ye
-  `measureIndexBasis: "ceil-end-v1" | "floor-start-v2"` alanı.
+  `measureIndexBasis: "offset-ceil-v1" | "meter-walk-v2"` alanı.
 - `isVerificationCurrent` (`layout.ts:112`) bu alanı kontrol etsin.
-- **Neden önce:** 18.334 doğrulanmış kutu `ceil-end` formülüne bağlı; bu alan
-  olmadan pivot onları **sessizce** yanlış ölçülere kaydırır ve staleness
-  kontrolü bildirmez.
+- **Neden önce:** 18.334 doğrulanmış kutu `ceil(offset)` tabanına bağlı. G4
+  ölçtü: yürünmüş ızgaraya geçiş notaların **%13,61'ini** (157.491 nota)
+  başka ölçüye taşıyor. Alan olmadan bunlar **sessizce** kayar.
 - **Kabul kriteri:** yeniden doğrulama bitene kadar **0 verified box** dönmesi
   ve bunun `layout.test.ts`te doğrulanması. *Görünür kayıp, sessiz yanlıştan
   iyidir.*
 - **Risk:** orta. **Geri alma:** alan opsiyonel; eski girdiler `v1` sayılır.
 
-### G6 · Pivot
+### G6 · Pivot — hedef DEĞİŞTİ (G4 ölçümü)
 
-- `measureIndex` = `floor(başlangıçOffset)+1`; `MeterMap`ten türetilir.
+- ~~`measureIndex = floor(başlangıçOffset)+1`~~ **ÇÜRÜTÜLDÜ** (G4: %76,23).
+- **Yeni hedef:** `measureIndex = measureAt(kanonikBaşlangıç).measure`
+  — `MeterMap` yürünür, `Offset` sütunu ölçü için **hiç kullanılmaz**.
+  `Offset` yalnız G3 kapısında (kaynak doğrulama) kalır.
 - Dört kopya (§1.7) **tek kaynağa** indirgenir.
   - `scripts/lib/symbtr-score-measures.mjs` için: projede **TS runner yok**
     (`tsx`/`ts-node`/`jiti` yok — `package.json`daki `tsx` eşleşmesi
     lint-staged'ın `*.{ts,tsx}` kalıbı, yanlış pozitif *(doğrulandı)*).
     Bu yüzden ya script `.mjs` olarak formülü **tek yerden** okuyacak şekilde
-    yeniden yazılır ya da build adımı eklenir. **Karar G6'da verilecek, plana
-    varsayım yazılmadı.**
-- **Kapı:** G4'te listelenen testler bilinçli güncellenir; commit mesajında
-  kayan nota sayısı (**73.470 / %6,3**) raporlanır.
+    yeniden yazılır ya da build adımı eklenir.
+- **Kapı:** commit mesajında kayan nota sayısı (**157.491 / %13,61**)
+  raporlanır. Tempo işareti olmayan eserlerde kayma **%1,42** olmalı.
 - **Pivot öncesi tarama:** `grep -rn "toBe([0-9]*\.[0-9]{6,})" src` ile
-  float-pinlenmiş assertion'ları çıkar (`0.5999999999999999` gibi değerler
-  artık `0.6` olacak).
+  float-pinlenmiş assertion'ları çıkar.
 - **Risk:** YÜKSEK. **Geri alma:** tek commit, `git revert`.
 
 ### G7 · L1 — bar-aşan nota bölme + bağ

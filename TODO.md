@@ -77,8 +77,8 @@ verisine sahip, seyir için Gönül veya eşdeğer kaynak bekliyor.
 
 ## C — Bilinçli ertelenmiş (tasarım kararı; tetikleyici olmadan açılmaz)
 
-- [ ] **C1 · Alıştırma dizini** — Gönül s.114-154 alıştırmaları notasyon (solfej
-      skoru); her alıştırma nota-sayfası okunmalı (büyük OCR). Ertelendi. *(eski: F14.5)*
+- [x] **C1 · Alıştırma dizini** ✅ — `/exercises`: 280 sayfa PDF render + OCR dizin (8 makam).
+      `scripts/extract-exercise-index.py` ile otomatik çıkarım. *(eski: F14.5)*
 
 ---
 

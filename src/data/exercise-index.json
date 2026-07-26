@@ -1,0 +1,69 @@
+{
+  "source": "Gönül, Türk Musikisinde Usuller ve Kudüm",
+  "exercises": [
+    {
+      "type": "piece",
+      "makam": "SULTANI-YEGAH",
+      "form": "Sarkr",
+      "title": "SULTANI-YEGAH (Sarkr)",
+      "ocr_page": 12,
+      "usul": "KUDUM"
+    },
+    {
+      "type": "piece",
+      "makam": "SUZ NAK",
+      "form": "Sarki",
+      "title": "SUZ NAK (Sarki)",
+      "ocr_page": 24,
+      "usul": "TÜRK AKSAĞI USÜLÜ"
+    },
+    {
+      "type": "piece",
+      "makam": "HÜSEYNI",
+      "form": "Nakış Yürük Semâi",
+      "title": "HÜSEYNI (Nakış Yürük Semâi)",
+      "ocr_page": 36,
+      "usul": "MERTEBELERINE GORE USUL NOTALARI : VELVELESI :"
+    },
+    {
+      "type": "piece",
+      "makam": "SEGÂH",
+      "form": "Sarkı",
+      "title": "SEGÂH (Sarkı)",
+      "ocr_page": 68,
+      "usul": "AKSAK USÜLÜ"
+    },
+    {
+      "type": "piece",
+      "makam": "HÜSEYNI",
+      "form": "Nakış Ağır Semâi",
+      "title": "HÜSEYNI (Nakış Ağır Semâi)",
+      "ocr_page": 91,
+      "usul": "ZAMAN VE VURGULARI:"
+    },
+    {
+      "type": "piece",
+      "makam": "CARGA H",
+      "form": "Türkü",
+      "title": "CARGA H (Türkü)",
+      "ocr_page": 143,
+      "usul": "RAKSAN USÜLÜ"
+    },
+    {
+      "type": "piece",
+      "makam": "SEHNÂZ-BUŞELIK",
+      "form": "Bestp",
+      "title": "SEHNÂZ-BUŞELIK (Bestp)",
+      "ocr_page": 358,
+      "usul": "DARBEYN USULLER"
+    },
+    {
+      "type": "piece",
+      "makam": "DÜGAH BÜSELİK",
+      "form": "tevşih",
+      "title": "DÜGAH BÜSELİK (tevşih)",
+      "ocr_page": 364,
+      "usul": "DARBEYN USULLER"
+    }
+  ]
+}

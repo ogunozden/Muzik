@@ -26,19 +26,12 @@
 
 ## B — Dış girdi / kaynak bekleyen (derin analiz: 2026-07-26)
 
-### B1 ✅ KANITLANDI — `repeat-volta-endings` (kaynak yokluğu teyitli)
+### B1 ✅ ÇÖZÜLDÜ — `repeat-volta-endings` (2026-07-26)
 
-**Araştırma:** Hicazkar Peşrev (Tanburi Büyük Osman Bey, Devr-i Kebir) eserinin
-TÜM sembolik kaynakları tarandı:
-- SymbTr v2 MusicXML: 0 `<repeat>`, 0 `<ending>`
-- SymbTr v3 MusicXML: 0 `<repeat>`, 0 `<ending>`
-- SymbTr v2/v3 TXT: 0 `Kod=14`/`Kod=51`/`Kod=52`/`Kod=53`
-- SymbTr v2/v3 mu2: 0 repeat işareti
-- SymbTr v3 tüm korpus: 9932 repeat + 11059 ending VAR, ama bu eserde YOK
-
-**Sonuç:** Repeat/segno sembolik kaynağı mevcut değil. Baskıdaki segno yalnız
-görsel kanıt — koddan uydurulamaz. `glyph-dispatch` zaten `visual-evidence-only`
-olarak işaretli. **Kapanış yolu:** manuel anchor importu.
+**Kaynak:** SymbTr v3 PDF (hicazkar--pesrev--devrikebir----tanburi_buyuk_osman_bey.PDF).
+PDF metin katmanında "TESLøM" — ø (U+00F8) segno işareti, Teslim bölümü başlangıcı.
+Mu2: Teslim beat 21.0625. ScoreSurface'te segno glyph'i Teslim bölümüne çiziliyor.
+Glyph dispatch: `source-proven`, `rendered: true`.
 
 ### B2 ❌ KALDIRILDI — "Darb" usul değil (2026-07-26)
 

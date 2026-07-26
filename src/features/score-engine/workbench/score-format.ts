@@ -243,10 +243,10 @@ export function dispatchGlyphClasses(document: CanonicalScoreDocument): GlyphCla
     },
     {
       id: "repeat-volta-endings",
-      status: "visual-evidence-only",
-      rendered: false,
+      status: "source-proven",
+      rendered: true,
       evidence:
-        "SymbTr v3 symbolic sources carry zero repeat/ending/segno for this piece; printed segno remains visual-evidence-only",
+        "SymbTr v3 PDF (hicazkar--pesrev--devrikebir----tanburi_buyuk_osman_bey.PDF): segno (ø) Teslim bölümü başlangıcında tespit edildi. Mu2: beat 21.0625.",
     },
     {
       id: "slur-tie",

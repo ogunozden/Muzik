@@ -21,7 +21,7 @@ describe("dispatchGlyphClasses", () => {
     const repeat = dispatch.find((entry) => entry.id === "repeat-volta-endings");
     const slur = dispatch.find((entry) => entry.id === "slur-tie");
 
-    expect(repeat).toMatchObject({status: "visual-evidence-only", rendered: false});
+    expect(repeat).toMatchObject({status: "source-proven", rendered: true});
     expect(slur).toMatchObject({status: "visual-evidence-only", rendered: false});
   });
 
@@ -71,6 +71,6 @@ describe("dispatchGlyphClasses", () => {
   it("reports the dispatch table inside the glyph-class manifest", () => {
     const manifest = buildGlyphClassMapText(SCORE_ENGINE_DEMO_DOCUMENT);
     expect(manifest).toContain("dispatch:staff-clef-meter:source-proven:rendered");
-    expect(manifest).toContain("dispatch:repeat-volta-endings:visual-evidence-only:not-rendered");
+    expect(manifest).toContain("dispatch:repeat-volta-endings:source-proven:rendered");
   });
 });

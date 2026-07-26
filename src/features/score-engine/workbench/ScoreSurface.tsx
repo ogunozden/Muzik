@@ -300,6 +300,33 @@ export function ScoreSurface({
           new StaveTie({lastNote: toEntry.note}).setContext(context).draw();
         }
 
+        // Segno glyph: Teslim bolumu baslangici (SymbTr v3 PDF kaynakli)
+        const teslimSection = document.sections.find(
+          (s) => s.label.toLocaleLowerCase("tr").includes("teslim"),
+        );
+        if (teslimSection) {
+          const firstTeslimEventId = teslimSection.eventIds[0];
+          for (const sl of systemLayouts) {
+            if (sl.eventIds.includes(firstTeslimEventId!)) {
+              const st = sl.y + STAVE_TOP_IN_SYSTEM;
+              const sx = sl.x - 12;
+              const sy = st - 18;
+              try {
+                const VF: {Glyphs: Record<string, string>} = await import("vexflow") as unknown as {Glyphs: Record<string, string>};
+                const ch = VF.Glyphs.segno;
+                if (ch) {
+                  context.save();
+                  context.setFillStyle("#1e40af");
+                  context.setFont("Arial", 14);
+                  context.fillText(ch, sx, sy + 12);
+                  context.restore();
+                }
+              } catch { /* sessiz */ }
+              break;
+            }
+          }
+        }
+
         const svg = container.querySelector("svg");
         svg?.setAttribute("data-renderer", "vexflow");
         if (!cancelled) setNotePositions(renderedPositions);

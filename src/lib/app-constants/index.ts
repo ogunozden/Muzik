@@ -10,8 +10,7 @@
 // ENSTRÜMANLAR - Instruments
 // ============================================
 
-import type { InstrumentType, PercussionSymbol } from "../../engines/ses/instruments";
-import type { Enstruman } from "../../types";
+import type { InstrumentType } from "../../engines/ses/instruments";
 
 /**
  * Enstrüman listesi
@@ -72,75 +71,9 @@ export const PERCUSSION_INSTRUMENTS: readonly InstrumentType[] = [
 ] as const;
 
 /**
- * Enstrüman verileri
- */
-export const ENSTRUMAN_DATA: readonly Enstruman[] = [
-  { id: "ud", name: "Ud", nameTr: "Ud", soundType: "plucked_string" },
-  { id: "kemençe", name: "Kemençe", nameTr: "Kemençe", soundType: "bowed_string" },
-  { id: "ney", name: "Ney", nameTr: "Ney", soundType: "wind" },
-  { id: "tanpura", name: "Tanpura", nameTr: "Tanpura", soundType: "plucked_string" },
-  { id: "kanun", name: "Kanun", nameTr: "Kanun", soundType: "plucked_zither" },
-  { id: "bağlama", name: "Baglama", nameTr: "Bağlama", soundType: "plucked_string" },
-  { id: "tambur", name: "Tambur", nameTr: "Tambur", soundType: "plucked_string" },
-  { id: "santur", name: "Santur", nameTr: "Santur", soundType: "hammered_zither" },
-  { id: "lavta", name: "Lavta", nameTr: "Lavta", soundType: "plucked_string" },
-  { id: "rebab", name: "Rebab", nameTr: "Rebab", soundType: "bowed_string" },
-  { id: "miskal", name: "Miskal", nameTr: "Miskal", soundType: "wind" },
-  { id: "davul", name: "Davul", nameTr: "Davul", soundType: "percussion" },
-  { id: "def", name: "Def", nameTr: "Def", soundType: "percussion" },
-  { id: "bendir", name: "Bendir", nameTr: "Bendir", soundType: "percussion" },
-  { id: "kudum", name: "Kudüm", nameTr: "Kudüm", soundType: "percussion" },
-  { id: "darbuka", name: "Darbuka", nameTr: "Darbuka", soundType: "percussion" },
-  { id: "zilli_def", name: "Zilli Def", nameTr: "Zilli Def", soundType: "percussion" },
-  { id: "kaşık", name: "Kasik", nameTr: "Kaşık", soundType: "percussion" },
-  { id: "zil", name: "Zil", nameTr: "Zil", soundType: "percussion" },
-  { id: "nakkare", name: "Nakkare", nameTr: "Nakkare", soundType: "percussion" },
-] as const;
-
-/**
  * Eski isim - geriye uyumlu
  */
 export const ENSTRUMAN_LIST = INSTRUMENTS;
-
-/**
- * Kayıt süreleri (saniye)
- */
-export const RECORDING_DURATIONS = [3, 5, 10, 15] as const;
-
-/**
- * Usül sembol gösterimleri
- */
-export const USUL_SYMBOL_DISPLAY: Record<PercussionSymbol | "", string> = {
-  dum: "●",
-  tek: "○",
-  ke: "◐",
-  "": "",
-} as const;
-
-/**
- * Enstrüman tiplerini filtrele
- */
-export function getInstrumentsByCategory(category: "melodic" | "percussion") {
-  const filtered = category === "melodic" 
-    ? MELODIC_INSTRUMENTS 
-    : PERCUSSION_INSTRUMENTS;
-  
-  return INSTRUMENTS.filter((inst) => (filtered as readonly string[]).includes(inst.id));
-}
-
-/**
- * ID'ye göre enstrüman bul
- */
-export function getInstrumentById(id: string) {
-  return INSTRUMENTS.find((inst) => inst.id === id);
-}
-
-/**
- * Usül sembol display değerini getir
- */
-export function getUsulSymbolDisplay(symbol: PercussionSymbol | ""): string {
-  return USUL_SYMBOL_DISPLAY[symbol] ?? "";
-}
 
 // ============================================
 // PİYANO - Piano
@@ -167,16 +100,6 @@ export const NOTE_NAMES = [
 ] as const;
 
 /**
- * Beyaz tuşlar
- */
-export const WHITE_KEYS = ["C", "D", "E", "F", "G", "A", "B"] as const;
-
-/**
- * Siyah tuşlar
- */
-export const BLACK_KEYS = ["C#", "D#", "F#", "G#", "A#"] as const;
-
-/**
  * MIDI numarasından nota bilgisi
  */
 export interface NoteLabel {
@@ -188,9 +111,9 @@ export interface NoteLabel {
 }
 
 /**
- * Tüm nota etiketlerini oluştur
+ * Tüm nota etiketlerini oluştur (midiToNoteName tarafından iç kullanım)
  */
-export const NOTE_LABELS: Record<number, NoteLabel> = {};
+const NOTE_LABELS: Record<number, NoteLabel> = {};
 
 let midiNumber = (PIANO_CONFIG.startOctave + 1) * 12;
 for (let octave = PIANO_CONFIG.startOctave; octave <= PIANO_CONFIG.endOctave; octave++) {
@@ -243,25 +166,3 @@ export function noteNameToMidi(noteName: string, octave: number): number {
   const baseOctave = PIANO_CONFIG.startOctave + 1;
   return (baseOctave * 12) + ((octave - PIANO_CONFIG.startOctave) * 12) + noteIndex;
 }
-
-/**
- * Pitch class hesapla
- */
-export function midiToPitchClass(midiNumber: number): typeof NOTE_NAMES[number] {
-  return PITCH_CLASS[midiNumber % 12];
-}
-
-/**
- * Octave hesapla
- */
-export function midiToOctave(midiNumber: number): number {
-  const baseOctave = PIANO_CONFIG.startOctave + 1;
-  return Math.floor(midiNumber / 12) - baseOctave;
-}
-
-// ============================================
-// TİPLER - Types
-// ============================================
-
-export type InstrumentsConstants = typeof INSTRUMENTS;
-export type PianoConstants = typeof PIANO_CONFIG;

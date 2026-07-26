@@ -23,10 +23,10 @@
 - [ ] **A3 · Responsive manuel polish** — `guardrails:layout` 16 rota × mobil(390)
       + desktop'ta taşmasız; workbench ve curation panellerinde manuel görsel
       ince ayar kaldı. *(eski: F5.6 / M5.5)*
-- [ ] **A4 · Ölü export temizliği** — `src/lib/app-constants/index.ts`'te knip'in
+- [x] **A4 · Ölü export temizliği** — `src/lib/app-constants/index.ts`'te knip'in
       doğruladığı kullanılmayan export'lar (ENSTRUMAN_DATA, RECORDING_DURATIONS,
-      USUL_SYMBOL_DISPLAY, getInstrumentsByCategory, getInstrumentById, …).
-      Sıfır-risk sadeleştirme. *(eski: P3.3)*
+      USUL_SYMBOL_DISPLAY, getInstrumentsByCategory, getInstrumentById, …)
+      temizlendi (2026-07-26). 267 → 165 satir, 14 ölü export kaldırıldı.
 
 ## B — Dış girdi / kaynak bekleyen (kaynak gelmeden kapanmaz; uydurma yok)
 

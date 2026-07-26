@@ -18,11 +18,56 @@ describe("dispatchGlyphClasses", () => {
   });
 
   it("keeps zero-source classes as visual-evidence-only and not rendered", () => {
-    const repeat = dispatch.find((entry) => entry.id === "repeat-volta-endings");
     const slur = dispatch.find((entry) => entry.id === "slur-tie");
 
-    expect(repeat).toMatchObject({status: "source-proven", rendered: true});
     expect(slur).toMatchObject({status: "visual-evidence-only", rendered: false});
+  });
+
+  /**
+   * D2: `repeat-volta-endings` kaydi eskiden BELGEDEN BAGIMSIZ olarak
+   * `source-proven/rendered` yazili geliyordu ve evidence tek bir eserin PDF
+   * adina sabitlenmisti. Oysa `ScoreSurface` segno'yu YALNIZ "teslim" etiketli
+   * bolum varsa cizer. Demo dokumanda Teslim bolumu YOK (`1. HANE`,
+   * `Ana bolum`) — yani manifest cizilmeyen bir sinifi "cizildi" diye ve
+   * BASKA bir eserin kanitiyla raporluyordu. Kayit artik belgeden turetilir.
+   */
+  describe("repeat-volta-endings belgeden turetilir (D2)", () => {
+    function withTeslimSection() {
+      return {
+        ...SCORE_ENGINE_DEMO_DOCUMENT,
+        sections: [
+          ...SCORE_ENGINE_DEMO_DOCUMENT.sections,
+          {
+            id: "score-engine-demo:hicazkar-pesrev:section:teslim",
+            label: "TESLİM",
+            eventIds: [SCORE_ENGINE_DEMO_DOCUMENT.events[3]!.id],
+          },
+        ],
+      };
+    }
+
+    it("Teslim bolumu YOKSA missing ve cizilmemis olarak raporlar", () => {
+      const repeat = dispatch.find((entry) => entry.id === "repeat-volta-endings");
+
+      expect(repeat).toMatchObject({status: "missing", rendered: false});
+    });
+
+    it("Teslim bolumu VARSA source-proven ve cizilmis olarak raporlar", () => {
+      const repeat = dispatchGlyphClasses(withTeslimSection()).find(
+        (entry) => entry.id === "repeat-volta-endings",
+      );
+
+      expect(repeat).toMatchObject({status: "source-proven", rendered: true});
+    });
+
+    it("evidence'i BU belgeden uretir, baska bir eserin PDF adini yazmaz", () => {
+      const repeat = dispatchGlyphClasses(withTeslimSection()).find(
+        (entry) => entry.id === "repeat-volta-endings",
+      );
+
+      expect(repeat?.evidence).toContain("TESLİM");
+      expect(repeat?.evidence).not.toContain("tanburi_buyuk_osman_bey");
+    });
   });
 
   it("renders slur-tie as source-proven when a validated tie feature exists (F8.7 / SymbTr v3)", () => {
@@ -71,6 +116,8 @@ describe("dispatchGlyphClasses", () => {
   it("reports the dispatch table inside the glyph-class manifest", () => {
     const manifest = buildGlyphClassMapText(SCORE_ENGINE_DEMO_DOCUMENT);
     expect(manifest).toContain("dispatch:staff-clef-meter:source-proven:rendered");
-    expect(manifest).toContain("dispatch:repeat-volta-endings:source-proven:rendered");
+    // Demo dokumanda Teslim bolumu yok -> segno cizilmez -> manifest de
+    // "cizildi" DEMEZ (D2; eskiden sabit "source-proven:rendered" yaziyordu).
+    expect(manifest).toContain("dispatch:repeat-volta-endings:missing:not-rendered");
   });
 });

@@ -1,5 +1,11 @@
 import type {CanonicalScoreDocument} from "@/data/score-engine/canonical-score";
-import {computePolicyDerivedNaturals, computeSourceProvenTies} from "@/data/score-engine/notation";
+import {
+  computePolicyDerivedNaturals,
+  computeSourceProvenTies,
+  findSegnoSectionMarker,
+  getTupletContext,
+  mapEventDurationToVex,
+} from "@/data/score-engine/notation";
 import type {CanonicalScoreQualityReport} from "@/data/score-engine/quality";
 import type {InstrumentType} from "@/engines/ses/engine";
 import {ENSTRUMAN_LIST} from "@/lib/app-constants";
@@ -189,8 +195,15 @@ export function dispatchGlyphClasses(document: CanonicalScoreDocument): GlyphCla
   const tupletFeatures = document.sourceFeatures.filter(
     (feature) => feature.kind === "unsupported-symbol" && feature.label.startsWith("tuplet"),
   );
+  // Kaynakta triole olan event'ler (K2) — artik YAZILI degerleriyle ve 3:2
+  // bracket'iyla ciziliyorlar; dispatch bunu source-proven raporlar.
+  const tupletEvents = document.events.filter((event) => getTupletContext(event.durationFraction));
   const policyNaturalCount = computePolicyDerivedNaturals(document.events).size;
   const sourceTies = computeSourceProvenTies(document);
+  const segnoMarker = findSegnoSectionMarker(document);
+  // Standart nota degerleriyle TAM temsil edilemeyen sureler (D5): triole,
+  // >4 vurus, 5/8 gibi. Notalar yine cizilir, ama manifest bunu SAKLAMAZ.
+  const approximatedDurations = document.events.filter((event) => mapEventDurationToVex(event).approximated);
   const hasSourceNatural = document.events.some(
     (event) => event.pitch.source.includes("n") || event.pitch.source.includes("♮"),
   );
@@ -206,7 +219,25 @@ export function dispatchGlyphClasses(document: CanonicalScoreDocument): GlyphCla
       id: "note-heads-durations",
       status: "source-proven",
       rendered: true,
-      evidence: `${document.events.length} canonical events`,
+      evidence:
+        approximatedDurations.length > 0
+          ? `${document.events.length} canonical event; ${approximatedDurations.length} tanesinin süresi standart nota değerleriyle tam temsil edilemiyor (bkz. duration-approximation)`
+          : `${document.events.length} canonical event, tüm süreler tam temsil edildi`,
+    },
+    {
+      // Kaynagin soyledigi sure ile CIZILEN deger arasindaki fark acikca
+      // raporlanir (D5). Eskiden bu fark hic gorunmuyordu: merdiven her esikte
+      // sessizce asagi yuvarliyordu (5 vurusluk nota -> birlik).
+      id: "duration-approximation",
+      status: approximatedDurations.length > 0 ? "unsupported" : "missing",
+      rendered: false,
+      evidence:
+        approximatedDurations.length > 0
+          ? `${approximatedDurations.length} event yaklaşık çizildi (tuplet ve bağ ile bölme desteği gerekiyor): ${approximatedDurations
+              .slice(0, 5)
+              .map((event) => `${event.id}=${event.durationBeats.toFixed(4)} vuruş`)
+              .join(", ")}`
+          : "yaklaşık çizilen süre yok",
     },
     {
       id: "inline-koma-accidentals",
@@ -234,19 +265,26 @@ export function dispatchGlyphClasses(document: CanonicalScoreDocument): GlyphCla
     },
     {
       id: "tuplet-time-modification",
-      status: tupletFeatures.length > 0 ? "unsupported" : "missing",
-      rendered: false,
+      status: tupletEvents.length > 0 ? "source-proven" : tupletFeatures.length > 0 ? "unsupported" : "missing",
+      rendered: tupletEvents.length > 0,
       evidence:
-        tupletFeatures.length > 0
-          ? tupletFeatures.map((feature) => feature.label).join(", ")
-          : "no tuplet source feature",
+        tupletEvents.length > 0
+          ? `${tupletEvents.length} tuplet event (SymbTr pay/payda; payda 3'ün katı) 3:2 bracket ile çizildi` +
+            (tupletFeatures.length > 0 ? ` · MusicXML özellikleri: ${tupletFeatures.map((f) => f.label).join(", ")}` : "")
+          : tupletFeatures.length > 0
+            ? tupletFeatures.map((feature) => feature.label).join(", ")
+            : "no tuplet source feature",
     },
     {
+      // Durum BU belgeden turetilir (D2). `ScoreSurface` segno'yu yalniz
+      // `findSegnoSectionMarker` bir isaretci dondurdugunde cizer; kayit da
+      // ayni fonksiyondan beslendigi icin manifest ile cizim ayrisamaz.
       id: "repeat-volta-endings",
-      status: "source-proven",
-      rendered: true,
-      evidence:
-        "SymbTr v3 PDF (hicazkar--pesrev--devrikebir----tanburi_buyuk_osman_bey.PDF): segno (ø) Teslim bölümü başlangıcında tespit edildi. Mu2: beat 21.0625.",
+      status: segnoMarker ? "source-proven" : "missing",
+      rendered: Boolean(segnoMarker),
+      evidence: segnoMarker
+        ? `segno (SymbTr v3 PDF metin katmanı "TESLøM", ø=U+00F8) → "${segnoMarker.label}" bölümü, ilk event ${segnoMarker.eventId}`
+        : "belgede Teslim bölümü yok — segno çizilmiyor",
     },
     {
       id: "slur-tie",

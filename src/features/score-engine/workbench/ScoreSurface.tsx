@@ -1,7 +1,12 @@
 "use client";
 
 import {useEffect, useMemo, useRef, useState} from "react";
-import {computePolicyDerivedNaturals, computeSourceProvenTies, mapCanonicalEventToVex} from "@/data/score-engine/notation";
+import {
+  computePolicyDerivedNaturals,
+  computeSourceProvenTies,
+  findSegnoSectionMarker,
+  mapCanonicalEventToVex,
+} from "@/data/score-engine/notation";
 import type {CanonicalScoreDocument, CanonicalScoreEvent} from "@/data/score-engine/canonical-score";
 import {tokens} from "@/shared/tokens";
 import {findRenderSystemForEvent} from "../score-layout";
@@ -11,6 +16,7 @@ import {
   STAVE_HEIGHT,
   STAVE_TOP_IN_SYSTEM,
   SURFACE_HEADER_HEIGHT,
+  SYSTEM_HEIGHT,
   buildGlyphClassMapText,
   formatKeySignaturePolicy,
   formatKomaAccidental,
@@ -26,6 +32,28 @@ import {
   type SectionMarkerPosition,
   type VisibleScoreLayers,
 } from "./score-format";
+
+/** Bir frame'de cizilecek sistem sayisi (D12). */
+const SYSTEMS_PER_FRAME = 8;
+
+/**
+ * Bu sayidan AZ sistemi olan belgeler tamamen cizilir — sanallastirma yok (K5).
+ * Olcum (120 gercek eser): medyan 55 sistem / 11.708px, en buyugu 193 sistem /
+ * 40.688px. Kucuk belgelerde pencereleme kazanc getirmez, yalnizca davranisi
+ * degistirir; esik altinda eski (tam) yol korunur.
+ */
+const VIRTUALIZATION_MIN_SYSTEMS = 24;
+/** Viewport disinda, ustte ve altta hazir tutulan sistem sayisi. */
+const RENDER_OVERSCAN_SYSTEMS = 6;
+
+/**
+ * Bir sonraki frame'i bekler. `requestAnimationFrame` yoksa (jsdom/SSR) hemen
+ * cozulur — cizim yine tamamlanir, yalnizca bolunmez.
+ */
+function nextFrame(): Promise<void> {
+  if (typeof requestAnimationFrame !== "function") return Promise.resolve();
+  return new Promise((resolve) => requestAnimationFrame(() => resolve()));
+}
 
 export function StatusPill({label, tone = "success"}: {label: string; tone?: "success" | "warning" | "neutral"}) {
   const toneClass =
@@ -73,8 +101,29 @@ export function ScoreSurface({
   visibleLayers: VisibleScoreLayers;
 }) {
   const containerRef = useRef<HTMLDivElement>(null);
+  const scrollHostRef = useRef<HTMLDivElement>(null);
   const source = document.sources[0];
-  const surfaceWidth = useMemo(() => getSurfaceWidth(), []);
+  /**
+   * Yuzey genisligi (K5). `getSurfaceWidth()` TABAN degeri verir (1180);
+   * kapsayici daha genisse yuzey ONA buyur — daralmaz, cunku porte icin bir
+   * asgari genislik gerekir ve dar ekranda zaten yatay kaydirma var. Eskiden
+   * deger sabitti ve genis ekranlarda sagda bos alan kaliyordu.
+   */
+  const [measuredWidth, setMeasuredWidth] = useState(0);
+  const surfaceWidth = useMemo(() => Math.max(getSurfaceWidth(), measuredWidth), [measuredWidth]);
+
+  useEffect(() => {
+    const measure = () => {
+      const host = scrollHostRef.current;
+      if (host) setMeasuredWidth(host.clientWidth);
+    };
+    const initial = requestAnimationFrame(measure);
+    window.addEventListener("resize", measure);
+    return () => {
+      cancelAnimationFrame(initial);
+      window.removeEventListener("resize", measure);
+    };
+  }, []);
   const systemLayouts = useMemo(() => getSystemLayouts(document, surfaceWidth), [document, surfaceWidth]);
   const surfaceHeight = useMemo(() => getSurfaceHeight(systemLayouts.length), [systemLayouts.length]);
   const mappedEvents = useMemo(() => document.events.map(mapCanonicalEventToVex), [document]);
@@ -102,6 +151,43 @@ export function ScoreSurface({
   const policyNaturals = useMemo(() => computePolicyDerivedNaturals(document.events), [document]);
   const [notePositions, setNotePositions] = useState<NoteRenderPosition[]>([]);
   const [renderError, setRenderError] = useState<string | null>(null);
+  /**
+   * Cizilecek sistem araligi (K5). Buyuk belgelerde tum porteleri DOM'a koymak
+   * yerine yalnizca viewport civarindakiler cizilir; SVG yuksekligi degismez,
+   * bu yuzden kaydirma cubugu ve konumlar bozulmaz.
+   */
+  const [renderRange, setRenderRange] = useState<{start: number; end: number}>({start: 0, end: Number.MAX_SAFE_INTEGER});
+
+  useEffect(() => {
+    // Esik altinda sanallastirma yok: varsayilan aralik zaten "hepsi".
+    if (systemLayouts.length < VIRTUALIZATION_MIN_SYSTEMS) return;
+
+    const update = () => {
+      const host = scrollHostRef.current;
+      if (!host) return;
+      const rect = host.getBoundingClientRect();
+      // Yuzeyin ustunden viewport'a olan mesafe (yuzey koordinatinda).
+      const top = Math.max(0, -rect.top);
+      const bottom = top + window.innerHeight;
+      const first = Math.floor((top - SURFACE_HEADER_HEIGHT) / SYSTEM_HEIGHT) - RENDER_OVERSCAN_SYSTEMS;
+      const last = Math.ceil((bottom - SURFACE_HEADER_HEIGHT) / SYSTEM_HEIGHT) + RENDER_OVERSCAN_SYSTEMS;
+      setRenderRange((current) => {
+        const next = {start: Math.max(0, first), end: Math.min(systemLayouts.length, Math.max(0, last))};
+        return current.start === next.start && current.end === next.end ? current : next;
+      });
+    };
+
+    // Ilk olcum bir frame ERTELENIR: effect govdesinde senkron setState
+    // cagirmak React Compiler'da zincirleme render uyarisi uretir.
+    const initial = requestAnimationFrame(update);
+    window.addEventListener("scroll", update, {passive: true});
+    window.addEventListener("resize", update);
+    return () => {
+      cancelAnimationFrame(initial);
+      window.removeEventListener("scroll", update);
+      window.removeEventListener("resize", update);
+    };
+  }, [systemLayouts.length]);
   const activeSystem = findRenderSystemForEvent(systemLayouts, activeEvent?.id);
   const activeSystemLayout = activeSystem
     ? systemLayouts.find((layout) => layout.id === activeSystem.id) ?? null
@@ -153,7 +239,8 @@ export function ScoreSurface({
     void (async () => {
       try {
         const vexflow = await import("vexflow");
-        const {Accidental, Annotation, Beam, Dot, Formatter, Renderer, Stave, StaveNote, StaveTie, Voice} = vexflow;
+        const {Accidental, Annotation, Beam, Dot, Formatter, Renderer, Stave, StaveNote, StaveTie, Tuplet, Voice} =
+          vexflow;
         // `Glyphs` enum runtime'da var ama entry type'inda re-export edilmemis
         // (glyphs.d.ts). Koma arizasi codepoint'leri icin cast ile erisilir.
         const GLYPHS = (vexflow as unknown as {Glyphs: Record<string, string>}).Glyphs;
@@ -167,9 +254,24 @@ export function ScoreSurface({
         const renderedPositions: NoteRenderPosition[] = [];
         const scoreMeter = parseMeter(document.meter);
         const eventsById = new Map(document.events.map((event) => [event.id, event]));
-        const vfNotesByEventId = new Map<string, {note: InstanceType<typeof StaveNote>; systemId: string}>();
+        const vfNotesByEventId = new Map<
+          string,
+          {note: InstanceType<typeof StaveNote>; lastNote: InstanceType<typeof StaveNote>; systemId: string}
+        >();
 
-        for (const systemLayout of systemLayouts) {
+        // Sistemler PARCALI cizilir (D12). Olcum (120 gercek eser): medyan 55
+        // sistem = 11.708px SVG, en buyugu 193 sistem = 40.688px. Hepsi tek
+        // senkron dongude cizilince (her biri kendi `Formatter().format()`
+        // pasiyla) ana thread bloke oluyor ve `accidentals` toggle'i tum yapiyi
+        // bastan kuruyordu. Cizim BOLUNMEZ (kesme/kirpma yok) — yalniz her
+        // parcadan sonra bir frame'e yer aciyoruz.
+        const drawnLayouts = systemLayouts.slice(renderRange.start, renderRange.end);
+        for (let chunkStart = 0; chunkStart < drawnLayouts.length; chunkStart += SYSTEMS_PER_FRAME) {
+          if (cancelled) return;
+          if (chunkStart > 0) await nextFrame();
+          if (cancelled) return;
+
+          for (const systemLayout of drawnLayouts.slice(chunkStart, chunkStart + SYSTEMS_PER_FRAME)) {
           const staveTop = systemLayout.y + STAVE_TOP_IN_SYSTEM;
           const staveBottom = staveTop + STAVE_HEIGHT;
           const stave = new Stave(systemLayout.x, staveTop, systemLayout.width);
@@ -182,17 +284,28 @@ export function ScoreSurface({
           const systemEvents = systemLayout.eventIds
             .map((eventId) => eventsById.get(eventId))
             .filter((event): event is CanonicalScoreEvent => Boolean(event));
-          const staveNotes = systemEvents.map((event) => {
+          // Bir event BIRDEN FAZLA notaya bolunebilir (K3): tek standart
+          // degerle yazilamayan sureler (5/8, 7/8, 5/4...) bag ile bagli
+          // parcalara ayrilir. Ariza/annotation YALNIZ ilk parcaya konur —
+          // bagli nota arizayi tekrar etmez.
+          const notesByEvent = systemEvents.map((event) => {
             const mappedEvent = mappedEventsById.get(event.id) ?? mapCanonicalEventToVex(event);
+            const parts = mappedEvent.duration.tiedParts ?? [
+              {duration: mappedEvent.duration.duration, dotted: mappedEvent.duration.dotted},
+            ];
+
+            const notes = parts.map((part, partIndex) => {
             const vfNote = new StaveNote({
               clef: "treble",
-              duration: mappedEvent.duration.duration,
+              duration: part.duration,
               keys: [mappedEvent.pitch.key],
             });
 
-            if (mappedEvent.duration.dotted) {
+            if (part.dotted) {
               Dot.buildAndAttach([vfNote], {all: true});
             }
+
+            if (partIndex > 0) return vfNote;
 
             // Otantik koma arizasi (F13.3): kaynak SymbTr koma tasiyorsa,
             // standart # / b YERINE gercek AEU glyph'i cizilir (bakiye, kucuk/
@@ -234,8 +347,12 @@ export function ScoreSurface({
             }
 
             return vfNote;
+            });
+
+            return {event, mappedEvent, notes};
           });
 
+          const staveNotes = notesByEvent.flatMap((entry) => entry.notes);
           if (staveNotes.length === 0) continue;
 
           const systemBeatSpan = Math.max(1, Math.ceil(systemLayout.endBeat - systemLayout.startBeat));
@@ -250,17 +367,19 @@ export function ScoreSurface({
 
           const beamGroups: Array<typeof staveNotes> = [];
           let currentBeamGroup: typeof staveNotes = [];
-          systemEvents.forEach((event, index) => {
-            const mappedEvent = mappedEventsById.get(event.id) ?? mapCanonicalEventToVex(event);
-            const baseDuration = mappedEvent.duration.duration.replace("r", "");
-            const beamable = !event.isRest && (baseDuration === "8" || baseDuration === "16" || baseDuration === "32");
+          for (const entry of notesByEvent) {
+            const baseDuration = entry.mappedEvent.duration.duration.replace("r", "");
+            const beamable =
+              !entry.event.isRest &&
+              !entry.mappedEvent.duration.tiedParts && // bagli parcalar ayri kuyruk tasir
+              (baseDuration === "8" || baseDuration === "16" || baseDuration === "32");
             if (beamable) {
-              currentBeamGroup.push(staveNotes[index]);
-              return;
+              currentBeamGroup.push(...entry.notes);
+              continue;
             }
             if (currentBeamGroup.length > 1) beamGroups.push(currentBeamGroup);
             currentBeamGroup = [];
-          });
+          }
           if (currentBeamGroup.length > 1) beamGroups.push(currentBeamGroup);
 
           for (const beamGroup of beamGroups) {
@@ -269,19 +388,56 @@ export function ScoreSurface({
             }
           }
 
-          systemEvents.forEach((event, index) => {
-            const vfNote = staveNotes[index];
-            vfNotesByEventId.set(event.id, {note: vfNote, systemId: systemLayout.id});
-            const ys = vfNote.getYs();
+          // Tuplet bracket'leri (K2): ardisik AYNI paydali triole notalari
+          // gruplanip 3:2 bracket'iyla cizilir. Yazili deger zaten sekizlik/
+          // onaltilik olarak esleniyor (mapEventDurationToVex); bracket gercek
+          // sureyi anlatir. Eskiden bu notalar en yakin dyadic degere
+          // yuvarlanip bracket'siz ciziliyordu (2.173 event, 83 eser).
+          let tupletRun: Array<InstanceType<typeof StaveNote>> = [];
+          let tupletDenominator: number | null = null;
+          const flushTupletRun = () => {
+            const context7 = tupletRun;
+            tupletRun = [];
+            if (!tupletDenominator || context7.length === 0) return;
+            const groupSize = 3;
+            for (let at = 0; at + groupSize <= context7.length; at += groupSize) {
+              new Tuplet(context7.slice(at, at + groupSize), {numNotes: groupSize, notesOccupied: 2})
+                .setContext(context)
+                .draw();
+            }
+          };
+
+          for (const entry of notesByEvent) {
+            const denominator = entry.mappedEvent.duration.tuplet?.sourceDenominator ?? null;
+            if (denominator !== tupletDenominator) {
+              flushTupletRun();
+              tupletDenominator = denominator;
+            }
+            if (denominator) tupletRun.push(...entry.notes);
+          }
+          flushTupletRun();
+
+          for (const entry of notesByEvent) {
+            const firstNote = entry.notes[0];
+            const lastNote = entry.notes[entry.notes.length - 1];
+            vfNotesByEventId.set(entry.event.id, {note: firstNote, lastNote, systemId: systemLayout.id});
+
+            // Event ICI baglar (K3): bolunmus parcalari birbirine bagla.
+            for (let at = 0; at + 1 < entry.notes.length; at += 1) {
+              new StaveTie({firstNote: entry.notes[at], lastNote: entry.notes[at + 1]}).setContext(context).draw();
+            }
+
+            const ys = firstNote.getYs();
             renderedPositions.push({
-              id: event.id,
+              id: entry.event.id,
               labelY: staveBottom + 42,
-              measureId: event.measureId,
+              measureId: entry.event.measureId,
               systemId: systemLayout.id,
-              x: vfNote.getAbsoluteX(),
+              x: firstNote.getAbsoluteX(),
               y: ys[0] ?? staveTop + 40,
             });
-          });
+          }
+          }
         }
 
         // Kaynak-kanitli tie'lar (F8.7; SymbTr v3 <tied> + mu2 caret):
@@ -293,37 +449,27 @@ export function ScoreSurface({
           const toEntry = vfNotesByEventId.get(tie.toEventId);
           if (!fromEntry || !toEntry) continue;
           if (fromEntry.systemId === toEntry.systemId) {
-            new StaveTie({firstNote: fromEntry.note, lastNote: toEntry.note}).setContext(context).draw();
+            new StaveTie({firstNote: fromEntry.lastNote, lastNote: toEntry.note}).setContext(context).draw();
             continue;
           }
-          new StaveTie({firstNote: fromEntry.note}).setContext(context).draw();
+          new StaveTie({firstNote: fromEntry.lastNote}).setContext(context).draw();
           new StaveTie({lastNote: toEntry.note}).setContext(context).draw();
         }
 
-        // Segno glyph: Teslim bolumu baslangici (SymbTr v3 PDF kaynakli)
-        const teslimSection = document.sections.find(
-          (s) => s.label.toLocaleLowerCase("tr").includes("teslim"),
-        );
-        if (teslimSection) {
-          const firstTeslimEventId = teslimSection.eventIds[0];
-          for (const sl of systemLayouts) {
-            if (sl.eventIds.includes(firstTeslimEventId!)) {
-              const st = sl.y + STAVE_TOP_IN_SYSTEM;
-              const sx = sl.x - 12;
-              const sy = st - 18;
-              try {
-                const VF: {Glyphs: Record<string, string>} = await import("vexflow") as unknown as {Glyphs: Record<string, string>};
-                const ch = VF.Glyphs.segno;
-                if (ch) {
-                  context.save();
-                  context.setFillStyle("#1e40af");
-                  context.setFont("Arial", 14);
-                  context.fillText(ch, sx, sy + 12);
-                  context.restore();
-                }
-              } catch { /* sessiz */ }
-              break;
-            }
+        // Segno glyph: Teslim bolumu baslangici (SymbTr v3 PDF kaynakli).
+        // Isaretci, dispatch tablosuyla ORTAK olan `findSegnoSectionMarker`tan
+        // gelir (D2) — cizim ile manifest artik ayrisamaz. `GLYPHS` yukarida
+        // zaten cozuldu; buradaki ikinci `await import("vexflow")` gereksizdi.
+        const segnoMarker = findSegnoSectionMarker(document);
+        const segnoGlyph = segnoMarker ? GLYPHS.segno : null;
+        if (segnoMarker && segnoGlyph) {
+          const segnoSystem = systemLayouts.find((layout) => layout.eventIds.includes(segnoMarker.eventId));
+          if (segnoSystem) {
+            context.save();
+            context.setFillStyle("#1e40af");
+            context.setFont("Arial", 14);
+            context.fillText(segnoGlyph, segnoSystem.x - 12, segnoSystem.y + STAVE_TOP_IN_SYSTEM - 6);
+            context.restore();
           }
         }
 
@@ -342,10 +488,23 @@ export function ScoreSurface({
       cancelled = true;
       container.innerHTML = "";
     };
-  }, [document, mappedEventsById, policyNaturals, sourceTies, surfaceHeight, surfaceWidth, systemLayouts, visibleLayers.accidentals]);
+  }, [
+    document,
+    mappedEventsById,
+    policyNaturals,
+    renderRange,
+    sourceTies,
+    surfaceHeight,
+    surfaceWidth,
+    systemLayouts,
+    visibleLayers.accidentals,
+  ]);
 
   return (
-    <div className="overflow-x-auto rounded-md border border-[var(--color-border-default)] bg-white shadow-sm">
+    <div
+      ref={scrollHostRef}
+      className="overflow-x-auto rounded-md border border-[var(--color-border-default)] bg-white shadow-sm"
+    >
       <div
         className="relative"
         style={{

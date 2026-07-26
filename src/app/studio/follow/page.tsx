@@ -17,7 +17,7 @@ import {
   getVisualBeatPosition,
   isExactVisualMap,
 } from "@/data/pieces/visual-map";
-import {normalizePercussionSymbol, playArrangement, stopAll, type InstrumentType, type PercussionSymbol} from "@/engines/ses/engine";
+import {getHeardPlaybackPosition, normalizePercussionSymbol, playArrangement, stopAll, type InstrumentType, type PercussionSymbol} from "@/engines/ses/engine";
 import {USUL_DATA, getUsulBeatDuration} from "@/engines/usul/data";
 import {ENSTRUMAN_LIST, MELODIC_INSTRUMENTS, PERCUSSION_INSTRUMENTS} from "@/lib/app-constants";
 import {tokens} from "@/shared/tokens";
@@ -522,21 +522,24 @@ export default function EserTakipPage() {
       ),
     );
 
-    const scheduledDuration = await playArrangement(notes, percussionHits, melodicLayers[0].instrument);
+    const {durationSeconds, baseTime} = await playArrangement(notes, percussionHits, melodicLayers[0].instrument);
 
-    if (scheduledDuration <= 0) {
+    if (durationSeconds <= 0) {
       stopPlayback();
       return;
     }
 
-    const startAt = performance.now();
+    // Imlec SES SAATINDEN okunur (D6): `performance.now()` duvar saatidir, ses
+    // ise `context.currentTime` uzerinden planlanir; ikisi ayristikca imlec
+    // kayiyor ve cikis gecikmesi (~53 ms) hic dusulmuyordu. Ritim motorundaki
+    // `heardContextTime` deseni burada da kullanilir.
     const animate = () => {
-      setPlaybackPosition((performance.now() - startAt) / 1000);
+      setPlaybackPosition(getHeardPlaybackPosition(baseTime));
       animationRef.current = requestAnimationFrame(animate);
     };
 
     animationRef.current = requestAnimationFrame(animate);
-    stopTimerRef.current = window.setTimeout(stopPlayback, (scheduledDuration + 0.4) * 1000);
+    stopTimerRef.current = window.setTimeout(stopPlayback, (durationSeconds + 0.4) * 1000);
   }, [
     beatDuration,
     events,

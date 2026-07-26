@@ -2,11 +2,26 @@ import {fireEvent, render, screen, waitFor} from "@testing-library/react";
 import {afterEach, beforeEach, describe, expect, it, vi} from "vitest";
 import {CanonicalScorePrototype} from "../CanonicalScorePrototype";
 
-const playArrangementMock = vi.hoisted(() => vi.fn(async () => 1));
+const playArrangementMock = vi.hoisted(() => vi.fn(async () => ({durationSeconds: 1, baseTime: 0})));
 const stopAllMock = vi.hoisted(() => vi.fn());
+/**
+ * Ses saati sahtesi (D6). Uretimde konum `heardContextTime` uzerinden
+ * AudioContext'ten okunur (getOutputTimestamp / outputLatency); jsdom'da
+ * AudioContext yok.
+ *
+ * DUVAR SAATI kullanmiyoruz: tam suite yuku altinda rAF frame'leri aclik
+ * cekince test flaky oluyordu. Her cagride sabit bir adim ilerleten sayac,
+ * imlecin ilerledigini planlayiciya bagimli olmadan dogrular.
+ */
+const HEARD_STEP_SECONDS = 0.25;
+const heardClock = vi.hoisted(() => ({calls: 0}));
 
 vi.mock("@/engines/ses/engine", () => ({
   playArrangement: playArrangementMock,
+  getHeardPlaybackPosition: () => {
+    heardClock.calls += 1;
+    return heardClock.calls * HEARD_STEP_SECONDS;
+  },
   stopAll: stopAllMock,
 }));
 
@@ -14,6 +29,7 @@ describe("CanonicalScorePrototype", () => {
   beforeEach(() => {
     playArrangementMock.mockClear();
     stopAllMock.mockClear();
+    heardClock.calls = 0;
   });
 
   afterEach(() => {
@@ -82,7 +98,7 @@ describe("CanonicalScorePrototype", () => {
   });
 
   it("advances the active note id while playback is running", async () => {
-    playArrangementMock.mockResolvedValueOnce(3);
+    playArrangementMock.mockResolvedValueOnce({durationSeconds: 3, baseTime: 0});
 
     render(<CanonicalScorePrototype />);
 

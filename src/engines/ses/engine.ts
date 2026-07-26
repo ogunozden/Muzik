@@ -15,6 +15,7 @@ import {
   initAudio as initAudioBase,
   stopAll as stopAllBase,
   getAudioContext,
+  heardContextTime,
   type RhythmLoopController,
 } from "./instruments";
 import {isPercussionSymbol} from "./profiles";
@@ -42,6 +43,8 @@ export type RhythmSymbolInput = {
   symbol: string;
   isAccent: boolean;
   timeValue?: number;
+  /** Velvele dolgu vurusu (ana darba denk gelmeyen) — susleme kismasi icin. */
+  isOrnament?: boolean;
 };
 
 export async function initAudio(): Promise<boolean> {
@@ -90,12 +93,20 @@ export async function playScaleAtFrequencies(
   await playScaleFrequencies(frequencies, instrument, duration);
 }
 
-// Nazariyat darplarinin vurmali sample kanallarina eslenmesi: te/hek sol-el
-// hafif vurus ailesinden (tek), ka ke ailesinden, ta sag-el kuvvetli vurus
-// (dum) ailesindendir ("Turk Musikisinde Usuller ve Kudum", s.14).
+// Nazariyat darplarinin vurmali sample kanallarina eslenmesi
+// ("Turk Musikisinde Usuller ve Kudum", s.14 "OLCULERIN VURULMASI"):
+//   dum/ta -> sag el, KUVVETLI vurus            -> `dum` ailesi
+//   tek/te -> sol el, hafif vurus               -> `tek` ailesi
+//   ke/ka  -> sol el, hafif/uzun                -> `ke` ailesi
+//   hek    -> IKI ELIN BIRLIKTE vurusu          -> KENDI kanali (K4)
+//
+// `hek` once `tek`e (en hafif aile), sonra `dum`a esleniyordu; ikisi de
+// yaklasimdi. Artik kendi sample slotu var: dosyalar `dum + tek` toplamindan
+// TURETILIR (`scripts/derive-hek-samples.mjs`) — bu, kaynagin "iki elin
+// birlikte vurusu" tanimini birebir gercekler, ses uydurmaz. Korpusta 36
+// `hek` darbi var (Berefsan / Muhammes / Remel velveleleri).
 const PERCUSSION_SYMBOL_ALIASES: Record<string, string> = {
   te: "tek",
-  hek: "tek",
   ka: "ke",
   ta: "dum",
 };
@@ -119,6 +130,7 @@ export async function playRhythm(
       symbol: PERCUSSION_SYMBOL_ALIASES[s.symbol] ?? s.symbol,
       isAccent: s.isAccent,
       timeValue: s.timeValue,
+      isOrnament: s.isOrnament,
     })
   );
   await playRhythmWithPercussion(beats, percussionSymbols, bpm, percussionInstrument, unit);
@@ -143,6 +155,7 @@ export async function startRhythmLoop(
     symbol: PERCUSSION_SYMBOL_ALIASES[s.symbol] ?? s.symbol,
     isAccent: s.isAccent,
     timeValue: s.timeValue,
+    isOrnament: s.isOrnament,
   }));
   return startRhythmLoopBase(beats, normalized, bpm, percussionInstrument, unit, loop);
 }
@@ -194,16 +207,44 @@ export async function playSequence(
   return notes.reduce((maxDuration, note) => Math.max(maxDuration, note.startTime + note.duration), 0);
 }
 
+export type ArrangementPlayback = {
+  /** Planlanan toplam sure (saniye). 0 ise hicbir sey planlanmadi. */
+  durationSeconds: number;
+  /**
+   * Sesin planlandigi MUTLAK AudioContext zamani. Gorsel imlec bunu
+   * `getHeardPlaybackPosition` ile birlikte kullanmali — duvar saati
+   * (`performance.now`) ses saatinden ayrisir ve cikis gecikmesini bilmez.
+   */
+  baseTime: number;
+};
+
+const NO_PLAYBACK: ArrangementPlayback = {durationSeconds: 0, baseTime: 0};
+
+/**
+ * Su an DUYULAN calma konumu (saniye), `playArrangement`in dondurdugu
+ * `baseTime`e gore (D6).
+ *
+ * Ritim motorunda bu problem cozulmustu (`heardContextTime`: getOutputTimestamp,
+ * yoksa currentTime - outputLatency; bu sistemde olculen fark ~53 ms) ama nota
+ * motoru ile eser-takip sayfasi duvar saatinde kalmisti: imlec sesin onunde
+ * gidiyor, iki saat ayristikca sapma buyuyordu.
+ */
+export function getHeardPlaybackPosition(baseTime: number): number {
+  const context = getAudioContext();
+  if (!context) return 0;
+  return Math.max(0, heardContextTime(context) - baseTime);
+}
+
 export async function playArrangement(
   notes: ScheduledNote[],
   percussionHits: ScheduledPercussionHit[] = [],
   fallbackInstrument: InstrumentType = "ud",
-): Promise<number> {
+): Promise<ArrangementPlayback> {
   const ok = await initAudio();
-  if (!ok) return 0;
+  if (!ok) return NO_PLAYBACK;
 
   const context = getAudioContext();
-  if (!context) return 0;
+  if (!context) return NO_PLAYBACK;
 
   const instruments = Array.from(new Set(notes.map((note) => note.instrument ?? fallbackInstrument)));
   await Promise.all(instruments.map((noteInstrument) => preloadInstrumentSamples(noteInstrument)));
@@ -254,7 +295,7 @@ export async function playArrangement(
     0,
   );
 
-  return Math.max(melodyDuration, rhythmDuration);
+  return {durationSeconds: Math.max(melodyDuration, rhythmDuration), baseTime};
 }
 
 function playInstrumentNoteAtTime(

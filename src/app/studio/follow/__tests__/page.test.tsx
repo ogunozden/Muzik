@@ -16,7 +16,7 @@ import {
 import {getPieceExternalReferences} from "@/data/references/piece-external-references";
 import EserTakipPage from "../page";
 
-const playArrangementMock = vi.hoisted(() => vi.fn(async () => 1));
+const playArrangementMock = vi.hoisted(() => vi.fn(async () => ({durationSeconds: 1, baseTime: 0})));
 const stopAllMock = vi.hoisted(() => vi.fn());
 const layoutMockState = vi.hoisted(() => ({
   verifiedBoxes: [] as Array<{
@@ -50,6 +50,7 @@ vi.mock("@/engines/ses/engine", async (importOriginal) => {
   return {
     ...actual,
     playArrangement: playArrangementMock,
+    getHeardPlaybackPosition: () => 0,
     stopAll: stopAllMock,
   };
 });

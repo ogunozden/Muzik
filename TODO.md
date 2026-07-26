@@ -56,49 +56,24 @@ olarak işaretli. **Kapanış yolu:** manuel anchor importu.
 dum/tek dağılımı için Özkan s.704 ile teyit opsiyonel (mevcut darp yapısal
 olarak doğru, yalnız ilk vuruş "dum" — geleneksel notayla düzeltilebilir).
 
-### B4 — Makam TIER-2: 12 Gönül-dışı, korpus-verisiz makam
+### B4 ✅ ÇÖZÜLDÜ — 9 uydurma/kopya makam kaldırıldı (2026-07-26)
 
-**Araştırma:** 57 app makamı × 44 Gönül makamı çaprazlaması:
+**Kaldırılanlar (9):** nevaber, nevadur, uerite (Ureyş), güldeste, dilçin (buselik kopyası),
+segahira, hincin (hicaz kopyası), tarzannef, zengule (buselik kopyası).
+57 → 48 makam.
 
-| Durum | Sayı | Makamlar |
-|-------|------|----------|
-| Gönül'de var + korpus koma/seyir bağlı | 44 | rast, uşşak, hicaz, segah, … |
-| Gönül'de var, korpus seyir yok | 0 | — |
-| Gönül'de YOK, korpus verisi VAR | 1 | hisarbuselik |
-| Gönül'de YOK, korpus verisi YOK | 12 | güldeste, dilçin, hicazkürdi, hincin, irakeyn, müstear, nevaber, nevadur, segahira, tarzannef, uerite, zengule |
+**Korunanlar (3):** müstear (Arel-Ezgi'de Segah+Rast), hicazkürdi (Hicaz+Bûselik),
+irakeyn (Irak varyantı).
 
-**Sonuç:** 12 makamın sıfır korpus verisi var — ne koma dizisi ne seyir
-metni. Tamamen editoryal (elle yazılmış aralıklar). TIER-2 genişlemesi
-için bu makamların önce korpusa eklenmesi gerek.
+### B5 ✅ DOĞRULANDI — Yeni makam domain doğrulaması (2026-07-26)
 
-### B5 — Yeni makam domain doğrulaması
+7/7 makam (Neva, Çârgâh, Kürdilihicazkâr, Sûzinâk, Şehnaz, Acemkürdî, Evç)
+Gönül'de mevcut ve korpus koma verisine sahip.
 
-**Araştırma:** B5'te adı geçen makamların Gönül durumu:
+### B6 ✅ ÇÖZÜLDÜ — Gönül-dışı makamlar temizlendi (2026-07-26)
 
-| Makam | Gönül'de? | Korpus koma? | Durum |
-|-------|-----------|-------------|-------|
-| Neva | ✅ var | ✅ var | **Doğrulandı** |
-| Çârgâh | ✅ var | ✅ var | **Doğrulandı** |
-| Kürdilihicazkâr | ✅ var | ✅ var | **Doğrulandı** |
-| Sûzinâk | ✅ var | ✅ var | **Doğrulandı** |
-| Şehnaz | ✅ var | ✅ var | **Doğrulandı** |
-| Acemkürdî | ✅ var | ✅ var | **Doğrulandı** |
-| Evç | ✅ var | ✅ var | **Doğrulandı** |
-
-Tümü Gönül'de mevcut ve korpus koma verisine sahip. **Domain doğrulaması
-Gönül seyir metniyle otomatik olarak sağlanmış durumda.**
-
-### B6 — Gönül-dışı app makamları kararı
-
-**Araştırma:** 57 app makamından 13'ü Gönül seyir metninde yok.
-Bunlardan 12'si aynı zamanda sıfır korpus verisine sahip (bkz. B4).
-Önerilen karar:
-
-- **Kalsın:** `müstear` — yaygın kullanılan yerleşik makam (Arel-Ezgi'de var)
-- **Kaynak beklensin:** `hisarbuselik` — korpus koma verisi var, seyir yok
-- **Kaldırılsın veya "editorial" işaretlensin:** kalan 11 makam (güldeste,
-  dilçin, hicazkürdi, hincin, irakeyn, nevaber, nevadur, segahira, tarzannef,
-  uerite, zengule) — hiçbir korpus/otorite verisi yok
+9 makam kaldırıldı, 3 makam korundu (bkz. B4). `hisarbuselik` korpus koma
+verisine sahip, seyir için Gönül veya eşdeğer kaynak bekliyor.
 
 ## C — Bilinçli ertelenmiş (tasarım kararı; tetikleyici olmadan açılmaz)
 

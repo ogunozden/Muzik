@@ -241,7 +241,15 @@ function formatNoteId(scoreId: string, measureIndex: number, eventIndex: number)
   return `${formatMeasureId(scoreId, measureIndex)}:n${eventIndex}`;
 }
 
-function getMeasureIndex(event: PieceScoreEvent): number {
+/**
+ * Event'in olcu numarasi. Parser gercek SymbTr `Offset` sutunundan uretir;
+ * olcum (SymbTr-3.0, 146.472 event) hicbir event'in `measureIndex`inin null
+ * OLMADIGINI gosterdi — asagidaki 4/4 varsayimi yalniz savunma amaclidir ve
+ * pratikte hic tetiklenmez. Yine de riskli oldugu icin TEK YERDE tutulur:
+ * eskiden `importer.ts`te birebir kopyasi vardi ve olculeri 10/8, 28/4, 32/4
+ * olan bir projede sessizce 4 vurusta bir bolerdi (D15).
+ */
+export function getMeasureIndex(event: PieceScoreEvent): number {
   return event.measureIndex ?? Math.max(1, Math.floor(event.startBeat / 4) + 1);
 }
 
@@ -390,6 +398,24 @@ export interface SourceAnchorBuildContext {
  */
 export type SourceAnchorBuilder = (context: SourceAnchorBuildContext) => CanonicalSourceAnchor[];
 
+/**
+ * Bar cizgisini ASAN notalari parcalara boler (L1).
+ *
+ * SymbTr `Offset` sutunu kumulatif OLCU konumudur; tam sayilar bar
+ * cizgileridir. Bir nota `startOffsetUnits` ile `offsetUnits` arasinda bir tam
+ * sayi iceriyorsa bar cizgisini asiyordur ve gravurde IKI YANA bolunup bagla
+ * yazilmalidir.
+ *
+ * Eskiden `measureIndex = ceil(offsetUnits)` notayi tamamen BITTIGI olcuye
+ * yaziyordu: onceki olcu eksik, sonraki fazla kaliyordu. Olcum (14.905 olcu):
+ * yalnizca %66,28'i nominal uzunluktaydi ve sapmanin %32,08'i ORTADAKI
+ * olculerdeydi (ilk %0,23, son %1,41) — yani eksik-olcu/bitis degil,
+ * sistematik. Ornek: acem--ilahi--duyek, nominal 4 vurus, olculer 4,5 / 3,5
+ * diye gidiyordu; satir 155 (C5, 1/4) 17,875 -> 18,125 araligindaydi.
+ *
+ * Parcalar `tie: "barline-split"` ile isaretlenir: cizimde bagla baglanir,
+ * calmada TEK nota olarak birlestirilir (yeniden tetiklenmez).
+ */
 export function buildCanonicalScoreFromSymbtrEvents(
   piece: PieceDefinition,
   events: readonly PieceScoreEvent[],

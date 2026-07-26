@@ -4,7 +4,7 @@ import type {PieceDefinition} from "@/data/pieces/hicazkarPesrev";
 import {HICAZKAR_PESREV} from "@/data/pieces/hicazkarPesrev";
 import {parseSymbtrScore, type SymbtrScoreEvent} from "@/data/symbtr/parser";
 import type {CanonicalScoreDocument, CanonicalSourceFeature} from "./canonical-score";
-import {buildCanonicalScoreFromSymbtrEvents} from "./canonical-score";
+import {buildCanonicalScoreFromSymbtrEvents, getMeasureIndex} from "./canonical-score";
 import {buildSymbtrPdfSourceAnchors} from "./canonical-score-anchors";
 import {SCORE_ENGINE_DOCUMENT_PIECES} from "./calibration";
 import {evaluateCanonicalScoreQuality, type CanonicalScoreQualityReport} from "./quality";
@@ -339,7 +339,7 @@ export function inferMeterFromSymbtrEvents(
   const measureMap = new Map<number, {start: number; end: number}>();
 
   for (const event of events) {
-    const measureIndex = event.measureIndex ?? Math.max(1, Math.floor(event.startBeat / 4) + 1);
+    const measureIndex = getMeasureIndex(event);
     const current = measureMap.get(measureIndex);
     const end = event.startBeat + event.durationBeats;
     if (!current) {

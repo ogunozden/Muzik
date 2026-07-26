@@ -98,6 +98,7 @@ export default function ExerciseIndexPage() {
               </button>
             </div>
             <div className="overflow-hidden rounded-lg border border-[var(--color-border-default)] bg-white shadow">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src={`/exercises/page_${String(selectedPage).padStart(3, "0")}.png`}
                 alt={`Sayfa ${selectedPage}`}

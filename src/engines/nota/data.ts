@@ -1,26 +1,4 @@
-import {Nota} from "@/types";
 import {PIANO_CONFIG, NOTE_NAMES} from "@/lib/app-constants";
-
-export const NOTE_DATA: Nota[] = [
-  {midinetoName: "C", englishName: "C", frequency: 261.63, octave: 4, midiNumber: 60},
-  {midinetoName: "C#", englishName: "C#", frequency: 277.18, octave: 4, midiNumber: 61},
-  {midinetoName: "D", englishName: "D", frequency: 293.66, octave: 4, midiNumber: 62},
-  {midinetoName: "D#", englishName: "D#", frequency: 311.13, octave: 4, midiNumber: 63},
-  {midinetoName: "E", englishName: "E", frequency: 329.63, octave: 4, midiNumber: 64},
-  {midinetoName: "F", englishName: "F", frequency: 349.23, octave: 4, midiNumber: 65},
-  {midinetoName: "F#", englishName: "F#", frequency: 369.99, octave: 4, midiNumber: 66},
-  {midinetoName: "G", englishName: "G", frequency: 392.0, octave: 4, midiNumber: 67},
-  {midinetoName: "G#", englishName: "G#", frequency: 415.3, octave: 4, midiNumber: 68},
-  {midinetoName: "A", englishName: "A", frequency: 440.0, octave: 4, midiNumber: 69},
-  {midinetoName: "A#", englishName: "A#", frequency: 466.16, octave: 4, midiNumber: 70},
-  {midinetoName: "B", englishName: "B", frequency: 493.88, octave: 4, midiNumber: 71},
-  {midinetoName: "C5", englishName: "C", frequency: 523.25, octave: 5, midiNumber: 72},
-  {midinetoName: "C#5", englishName: "C#", frequency: 554.37, octave: 5, midiNumber: 73},
-  {midinetoName: "D5", englishName: "D", frequency: 587.33, octave: 5, midiNumber: 74},
-  {midinetoName: "D#5", englishName: "D#", frequency: 622.25, octave: 5, midiNumber: 75},
-  {midinetoName: "E5", englishName: "E", frequency: 659.25, octave: 5, midiNumber: 76},
-  {midinetoName: "F5", englishName: "F", frequency: 698.46, octave: 5, midiNumber: 77},
-];
 
 export function midiToFrequency(midiNumber: number): number {
   return 440 * Math.pow(2, (midiNumber - 69) / 12);
@@ -64,20 +42,3 @@ export const PIANO_KEYS: {white: PianoKey[]; black: PianoKey[]} = (() => {
 
   return {white, black};
 })();
-
-export function parseSymbTr(identifier: string): {
-  makam: string;
-  form: string;
-  usul: string;
-  name: string;
-  composer: string;
-} {
-  const parts = identifier.split("--");
-  return {
-    makam: parts[1] || "",
-    form: parts[2] || "",
-    usul: parts[3] || "",
-    name: parts[4] || "",
-    composer: parts[5] || "",
-  };
-}

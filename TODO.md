@@ -77,13 +77,7 @@ verisine sahip, seyir için Gönül veya eşdeğer kaynak bekliyor.
 
 ## C — Bilinçli ertelenmiş (tasarım kararı; tetikleyici olmadan açılmaz)
 
-- [ ] **C1 · Sayılma / count-in** — Batı "1-2-3-4" idyomu usûlün alt-bölüm yapısına
-      temiz oturmaz (usûlde vuruş = alt-bölüm; Zincir 120'de bir tur count-in çok
-      uzun). Yalnız usûle-uygun yeni bir idyom bulunursa. *(eski: F12.3)*
-- [ ] **C2 · AudioWorklet göçü** — mevcut look-ahead planlayıcı yeterli (drift ~0,
-      senkron getOutputTimestamp'e bağlı). Yalnız çok düşük-latency hedefi
-      gerekirse. *(eski: F12.6)*
-- [ ] **C3 · Alıştırma dizini** — Gönül s.114-154 alıştırmaları notasyon (solfej
+- [ ] **C1 · Alıştırma dizini** — Gönül s.114-154 alıştırmaları notasyon (solfej
       skoru); her alıştırma nota-sayfası okunmalı (büyük OCR). Ertelendi. *(eski: F14.5)*
 
 ---

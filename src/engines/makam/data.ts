@@ -625,12 +625,8 @@ const MAKAM_BASE: Makam[] = [
     characteristic: "Arazbar perdesi",
     description: "Acı ve hüzünlü bir makam. Hicaz ailesiyle bağlantılıdır.",
   },
-  // --- Korpus-destekli ek makamlar (E9, 2026-07-16) ---
-  // GERCEKTEN YENI makamlar (app'te yoktu). Koma dizisi + intervals SymbTr
-  // korpusundan attachCorpusData ile otomatik baglanir; karar/guclu korpus
-  // kararPerde/gucluPerde ile HIZALI. NOT: huzzam/kurdi/karcigar app'te ZATEN
-  // vardi (Turkce-karakterli id: "hüzzam"/"kürdi"/"karcığar", normalize-eslesme
-  // ile korpus koma'yi zaten aliyorlar); dubleyi onlemek icin eklenmedi.
+  // E9: Korpus-destekli ek makamlar (koma+intervals SymbTr'den baglanir; karar/guclu hizali).
+  // huzzam/kurdi/karcigar app'te zaten var (normalize-eslesme ile korpus koma aliyor).
   {
     id: "hicazkar",
     name: "Hicazkâr",
@@ -653,9 +649,7 @@ const MAKAM_BASE: Makam[] = [
     characteristic: "Yegâh perdesi",
     description: "Nihavend ailesinden, geniş ve ferah seyirli mürekkep makam.",
   },
-  // --- P1.2: yaygın eksik makamlar (korpus koma + Gönül karar-teyitli) ---
-  // Koma/intervals SymbTr korpusundan (attachCorpusData); karar Gönül s.307+ seyir
-  // nesriyle teyitli; güçlü konvansiyonel 5. derece; seyir Gönül'den otomatik bağlanır.
+  // P1.2: Yaygın eksik makamlar (korpus koma + Gönül karar-teyitli; seyir otomatik).
   {
     id: "neva",
     name: "Nevâ",
@@ -722,8 +716,7 @@ const MAKAM_BASE: Makam[] = [
     characteristic: "Irak perdesi",
     description: "Irak perdesinde karar kılan, segah ailesiyle ilişkili makam.",
   },
-  // --- P1.3: korpus-destekli TIER-1 makamlar (koma korpus + karar Gönül-teyitli) ---
-  // id = korpus anahtarı (koma+seyir otomatik bağlanır). Karar: Gönül s.307+ nesri.
+  // P1.3: TIER-1 makamlar (koma korpus + karar Gönül-teyitli; seyir otomatik).
   {
     id: "ferahnak",
     name: "Ferahnâk",

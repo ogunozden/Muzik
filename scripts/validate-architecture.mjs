@@ -242,6 +242,7 @@ const GRANDFATHERED_LARGE_FILES = new Map([
   ["src/app/references/curation/page.tsx", 855],
   ["src/features/references/ReferencesCurationDetail.tsx", 810],
   ["src/engines/usul/data.ts", 810], // saf veri dosyasi (usul tanimlari)
+  ["src/engines/makam/data.ts", 810], // saf veri dosyasi (makam tanimlari)
   ["src/app/api/external-references/route-state.ts", 685],
 ]);
 

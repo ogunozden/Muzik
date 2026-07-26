@@ -2,6 +2,7 @@
 import {existsSync, mkdirSync, readFileSync, rmSync, writeFileSync} from "node:fs";
 import path from "node:path";
 import {getSymbTrLayoutCandidateFingerprint} from "./lib/symbtr-layout-fingerprint.mjs";
+import {CURRENT_MEASURE_INDEX_BASIS, MEASURE_INDEX_BASES} from "./lib/symbtr-score-measures.mjs";
 
 const root = process.cwd();
 const outputPath = path.join(root, "src", "data", "symbtr", "layout-verification.generated.json");
@@ -111,6 +112,17 @@ function validateIncomingEntries({incomingEntries, layoutData}) {
     });
     if (entry.candidateGeometryFingerprint !== expectedCandidateGeometryFingerprint) {
       errors.push(`${prefix}.candidateGeometryFingerprint must match the generated PDF candidate geometry fingerprint`);
+    }
+
+    // G5: kutular olcu numarasi tabanina bagimli. Alan yoksa eski kayit
+    // sayilir (`offset-ceil-v1`); varsa gecerli tabanla ayni olmali.
+    const entryBasis = entry.measureIndexBasis ?? CURRENT_MEASURE_INDEX_BASIS;
+    if (!MEASURE_INDEX_BASES.includes(entryBasis)) {
+      errors.push(`${prefix}.measureIndexBasis must be one of ${MEASURE_INDEX_BASES.join(", ")}`);
+    } else if (entryBasis !== CURRENT_MEASURE_INDEX_BASIS) {
+      errors.push(
+        `${prefix}.measureIndexBasis is "${entryBasis}" but the engine now uses "${CURRENT_MEASURE_INDEX_BASIS}"; re-verify the measure boxes`,
+      );
     }
 
     if (!allowedMethods.has(entry.method)) {

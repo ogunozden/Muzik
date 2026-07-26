@@ -4,7 +4,11 @@ import {
   SYMBTR_LAYOUT_CANDIDATE_FINGERPRINT_ALGORITHM,
   getSymbTrLayoutCandidateFingerprint,
 } from "./lib/symbtr-layout-fingerprint.mjs";
-import { getSymbTrMeasureIndexSummary } from "./lib/symbtr-score-measures.mjs";
+import {
+  CURRENT_MEASURE_INDEX_BASIS,
+  MEASURE_INDEX_BASES,
+  getSymbTrMeasureIndexSummary,
+} from "./lib/symbtr-score-measures.mjs";
 
 const PROJECT_ROOT = process.cwd();
 const LAYOUT_PATH = path.join(
@@ -188,6 +192,20 @@ function validateVerificationEntry({
   if (verificationEntry.candidateGeometryFingerprint !== expectedCandidateGeometryFingerprint) {
     errors.push(
       `${prefix}.candidateGeometryFingerprint must match the generated PDF candidate geometry fingerprint`,
+    );
+  }
+
+  // G5: dogrulanmis kutular olcu numarasi tabanina bagimli. Taban degisince
+  // bu kontrol kutulari BAYATLATIR — sessizce baska olculere kaymalarindansa.
+  const measureIndexBasis =
+    verificationEntry.measureIndexBasis ?? CURRENT_MEASURE_INDEX_BASIS;
+  if (!MEASURE_INDEX_BASES.includes(measureIndexBasis)) {
+    errors.push(
+      `${prefix}.measureIndexBasis must be one of ${MEASURE_INDEX_BASES.join(", ")}`,
+    );
+  } else if (measureIndexBasis !== CURRENT_MEASURE_INDEX_BASIS) {
+    errors.push(
+      `${prefix}.measureIndexBasis is "${measureIndexBasis}" but the engine now uses "${CURRENT_MEASURE_INDEX_BASIS}"; re-verify the measure boxes`,
     );
   }
 

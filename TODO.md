@@ -54,9 +54,11 @@ tick ekseninde olsun.
       süresini taşıyor. → ölçü artık `Offset`ten değil `MeterMap` yürünerek
       · yan ölçüm: doğru ızgarayla ölçülerin **%93,13'ü tam dolu**
       (TODO'daki %64,9 bozuk ızgaradandı); bar-aşan nota yalnız **%0,50**
-- [ ] **G5** · PDF `measureIndexBasis` alanı — **G6'dan ÖNCE**
-      *(18.334 doğrulanmış kutu `ceil(offset)` tabanına bağlı; G4 ölçtü:
-      geçişte notaların **%13,61'i** başka ölçüye taşınıyor)*
+- [x] **G5** · PDF `measureIndexBasis` alanı — 520 girdi damgalandı
+      (`offset-ceil-v1`), `isVerificationCurrent` tabanı kontrol ediyor,
+      iki doğrulayıcı betiğe kapı eklendi · sabit **tek kaynak**
+      (`scripts/lib/symbtr-score-measures.mjs`) ve TS ile eşitliği test ediliyor
+      · pivotta 18.334 kutu **görünür** düşecek, sessizce kaymayacak
 - [ ] **G6** · **PIVOT** · `measureIndex = measureAt(kanonikBaşlangıç)`
       (~~`floor(offset)+1`~~ çürütüldü), dört kopya tek kaynağa
       · *157.491 nota (%13,61) kayar — commit mesajında raporlanır*

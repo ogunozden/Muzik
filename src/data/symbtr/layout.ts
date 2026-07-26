@@ -74,11 +74,37 @@ export interface SymbTrVerifiedPdfMeasureBox extends Omit<SymbTrPdfMeasureCandid
   sourceCandidateIndexInRow: number;
 }
 
+/**
+ * OLCU NUMARASI TABANI (PLAN.md §3/G5).
+ *
+ * Dogrulanmis PDF olcu kutulari, olcu numarasinin NASIL hesaplandigina
+ * bagimlidir; taban degisirse kutular baska olculere isaret eder.
+ *
+ *   `offset-ceil-v1` — `Math.ceil(Offset)`. G4 olcumu (1.157.450 nota):
+ *      tempo isareti olmayan eserlerde %98,58 dogru, olanlarda %83,56 —
+ *      cunku `Offset` sutunu kod-52'nin hayalet suresini tasiyor.
+ *   `meter-walk-v2` — `MeterMap` KANONIK eksende yurunerek (G6 hedefi).
+ *      Gecis, notalarin %13,61'ini (157.491) baska olcuye tasiyor.
+ *
+ * Alan **opsiyoneldir**: alani olmayan eski kayitlar `offset-ceil-v1` sayilir
+ * (geriye donuk uyum). Taban degistiginde eski kayitlar bayatlar ve kutular
+ * GORUNUR sekilde duser — sessizce yanlis yere kaymaktansa.
+ */
+export type SymbTrMeasureIndexBasis = "offset-ceil-v1" | "meter-walk-v2";
+
+/** `scripts/lib/symbtr-score-measures.mjs` ile ayni deger olmali (test eder). */
+export const CURRENT_MEASURE_INDEX_BASIS: SymbTrMeasureIndexBasis = "offset-ceil-v1";
+
+/** Alani olmayan kayitlarin varsayilan tabani. */
+export const LEGACY_MEASURE_INDEX_BASIS: SymbTrMeasureIndexBasis = "offset-ceil-v1";
+
 export interface SymbTrPdfLayoutVerificationEntry {
   catalogId: string;
   sourceLayoutGeneratedAt: string;
   sourceArchiveMemberPath: string;
   sourceMeasureCandidateCount: number;
+  /** Kutularin dogrulandigi olcu numarasi tabani. Yoksa `offset-ceil-v1`. */
+  measureIndexBasis?: SymbTrMeasureIndexBasis;
   verifiedAt: string;
   reviewer: string;
   method: SymbTrPdfMeasureBoxVerificationMethod;
@@ -116,8 +142,21 @@ function isVerificationCurrent(
   return (
     verification.sourceLayoutGeneratedAt === SYMBTR_PDF_LAYOUT_GENERATED_AT &&
     verification.sourceArchiveMemberPath === layout.source.archiveMemberPath &&
-    verification.sourceMeasureCandidateCount === layout.summary.measureCandidateCount
+    verification.sourceMeasureCandidateCount === layout.summary.measureCandidateCount &&
+    // Olcu numarasi tabani degistiginde kutular BAYATLAR. Bu satir olmadan
+    // G6 pivotu 18.334 kutuyu sessizce baska olculere kaydirirdi (G4: %13,61).
+    isSymbTrVerificationBasisCurrent(verification)
   );
+}
+
+/**
+ * Kaydin olcu numarasi tabani hala gecerli mi? Alani olmayan eski kayitlar
+ * `offset-ceil-v1` sayilir (geriye donuk uyum).
+ */
+export function isSymbTrVerificationBasisCurrent(
+  verification: Pick<SymbTrPdfLayoutVerificationEntry, "measureIndexBasis">,
+): boolean {
+  return (verification.measureIndexBasis ?? LEGACY_MEASURE_INDEX_BASIS) === CURRENT_MEASURE_INDEX_BASIS;
 }
 
 export function getSymbTrVerifiedPdfMeasureBoxes(catalogId: string): readonly SymbTrVerifiedPdfMeasureBox[] {

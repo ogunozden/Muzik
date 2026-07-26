@@ -347,18 +347,24 @@ yalnız **%0,50** (5.787 nota) — G7'nin gerçek kapsamı bu.
 
 - **Risk:** sıfır (commit yok, geçici test dosyası silindi).
 
-### G5 · PDF taban alanı (pivottan ÖNCE) — G4'ten sonra DAHA gerekli
+### G5 · PDF taban alanı (pivottan ÖNCE) — ✅ TAMAM
 
-- `layout.ts:77` `SymbTrPdfLayoutVerificationEntry`'ye
-  `measureIndexBasis: "offset-ceil-v1" | "meter-walk-v2"` alanı.
-- `isVerificationCurrent` (`layout.ts:112`) bu alanı kontrol etsin.
-- **Neden önce:** 18.334 doğrulanmış kutu `ceil(offset)` tabanına bağlı. G4
-  ölçtü: yürünmüş ızgaraya geçiş notaların **%13,61'ini** (157.491 nota)
-  başka ölçüye taşıyor. Alan olmadan bunlar **sessizce** kayar.
-- **Kabul kriteri:** yeniden doğrulama bitene kadar **0 verified box** dönmesi
-  ve bunun `layout.test.ts`te doğrulanması. *Görünür kayıp, sessiz yanlıştan
-  iyidir.*
-- **Risk:** orta. **Geri alma:** alan opsiyonel; eski girdiler `v1` sayılır.
+- `layout.ts`: `SymbTrPdfLayoutVerificationEntry.measureIndexBasis?:
+  "offset-ceil-v1" | "meter-walk-v2"` + `isSymbTrVerificationBasisCurrent()`.
+  `isVerificationCurrent` artık bu dalı da kontrol ediyor.
+- **520 girdinin hepsi damgalandı** (`offset-ceil-v1`) — çıkarım değil, kayıt.
+- **Tek kaynak, iki dil:** sabit `scripts/lib/symbtr-score-measures.mjs`'te
+  (`CURRENT_MEASURE_INDEX_BASIS`) ve `layout.ts`te. `layout.test.ts` ikisinin
+  **eşitliğini test ediyor** → TS ile `.mjs` arasında kayma olamaz.
+- İki doğrulayıcıya kapı eklendi: `import-symbtr-layout-verification.mjs` ve
+  `validate-symbtr-layout-verification.mjs` — taban uyuşmazsa **hata**.
+- **Kabul kriteri karşılandı:** taban değişince kutuların görünür şekilde
+  düştüğü `layout.test.ts`te doğrudan test ediliyor; alanı olmayan eski kayıt
+  geriye dönük `offset-ceil-v1` sayılıyor.
+- **Neden önce:** G4 ölçtü — yürünmüş ızgaraya geçiş notaların **%13,61'ini**
+  (157.491) başka ölçüye taşıyor. Bu alan olmadan 18.334 kutu **sessizce**
+  kayardı. *Görünür kayıp, sessiz yanlıştan iyidir.*
+- **Risk:** düşük çıktı (alan opsiyonel, geriye dönük uyumlu). 904 test yeşil.
 
 ### G6 · Pivot — hedef DEĞİŞTİ (G4 ölçümü)
 

@@ -1,6 +1,27 @@
 import path from "node:path";
 import {readZipEntry} from "./zip-entry-reader.mjs";
 
+/**
+ * OLCU NUMARASI TABANI (PLAN.md §3/G5).
+ *
+ * Dogrulanmis PDF olcu kutulari, olcu numarasinin NASIL hesaplandigina
+ * bagimlidir. Taban degisirse 18.334 kutunun bir kismi baska olcuye isaret
+ * eder. Bu sabit, kutularin hangi tabana gore dogrulandigini KAYDEDER; taban
+ * degistiginde `isVerificationCurrent` eski kayitlari bayatlamis sayar ve
+ * kutular **gorunur sekilde** dusher. Sessiz kayma yerine gorunur kayip.
+ *
+ *   offset-ceil-v1 — `Math.ceil(Offset)`; SymbTr `Offset` sutunundan turetilir.
+ *                    G4 olcumu: tempo isareti olmayan eserlerde %98,58 dogru,
+ *                    olanlarda %83,56 (kod-52'nin hayalet suresi `Offset`
+ *                    eksenini kaydiriyor).
+ *   meter-walk-v2  — `MeterMap` KANONIK eksende yurunerek bulunur (G6 hedefi).
+ *
+ * `src/data/symbtr/layout.ts` ayni sabiti tanimlar; `layout.test.ts` ikisinin
+ * esitligini test eder — TS ile `.mjs` arasinda kayma olamaz.
+ */
+export const MEASURE_INDEX_BASES = ["offset-ceil-v1", "meter-walk-v2"];
+export const CURRENT_MEASURE_INDEX_BASIS = "offset-ceil-v1";
+
 export function getSymbTrTxtArchiveMemberPath(catalogId) {
   return `txt_v3/${catalogId}.txt`;
 }

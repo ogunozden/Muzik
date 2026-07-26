@@ -18,6 +18,10 @@ export interface SymbtrScoreEvent {
   startTime: number;
   duration: number;
   section: string | null;
+  /**
+   * Notanin BITTIGI kumulatif olcu konumu (SymbTr `Offset` sutunu). Ondalik
+   * kismi olcu icindeki yeri verir; tam sayilar bar cizgileridir.
+   */
   offsetUnits: number | null;
   measureIndex: number | null;
   isMeasureEnd: boolean;
@@ -123,6 +127,19 @@ export function parseSymbtrScore(raw: string, bpm: number, koma53Offset: number 
       const measureIndex = offsetUnits && offsetUnits > 0 ? Math.max(1, Math.ceil(offsetUnits)) : null;
       const isMeasureEnd = Boolean(offsetUnits && offsetUnits > 0 && isNearInteger(offsetUnits));
       const durationBeats = (pay / payda) * 4;
+
+      // Korpusta `Kod=9` (nota) olmasina ragmen PERDESIZ ve SURESIZ yer-tutucu
+      // satirlar var: `NotaAE=[] Koma53=-1 Pay=0 Payda=0`. Bunlar nota da es de
+      // degil. Eskiden `(0/0)*4 = NaN` uretiliyor ve asagidaki
+      // `startBeat += durationBeats` yuzunden ESERIN GERI KALANININ TAMAMI NaN
+      // zaman eksenine dusuyordu (olcum, SymbTr-3.0 / 401 dosya / 146.477 event:
+      // 5 bozuk satir -> 124 event cokmus, 4 eser etkilenmis).
+      //
+      // Satiri dusuruyoruz — bos satir ve `Kod !== "9"` satirlariyla ayni
+      // sozlesme. Olculen 5 satirin HEPSI perdesiz oldugu icin gercek nota
+      // kaybi yok; zaman ekseni asla sonsuz/NaN bir degerle ilerlemez. (D1)
+      if (!Number.isFinite(durationBeats) || durationBeats <= 0) return events;
+
       const normalized = normalizePitch(sourcePitch);
       const playbackKoma53 = koma53 + koma53Offset;
       const targetFrequency =

@@ -87,6 +87,20 @@ export function validateCanonicalScore(document: CanonicalScoreDocument): Canoni
       );
     }
 
+    // Zaman ekseni sonluluk kapisi (D1). Yalniz `durationBeats` dogrulamak
+    // yetmiyordu: bozuk tek bir sure `startBeat += durationBeats` zinciriyle
+    // SONRAKI tum event'leri NaN'a cekiyor ve NaN karsilastirmalari hep false
+    // oldugu icin ne bu validator ne de `measure-duration-overflow` uyariyordu
+    // (imlec sessizce oluyordu). Parser artik bozuk satiri dusuruyor; bu kapi
+    // correction event'leri gibi diger yazma yollarina karsi son savunmadir.
+    if (!Number.isFinite(event.startBeat) || !Number.isFinite(event.startTime)) {
+      issues.push(
+        createIssue(issues.length, "event-time-invalid", "Event zaman ekseni geçersiz (sonlu değil).", "error", {
+          eventId: event.id,
+        }),
+      );
+    }
+
     if (!event.isRest && !parsePitch(event.pitch.source)) {
       issues.push(
         createIssue(issues.length, "pitch-unparseable", "Event pitch parse edilemiyor.", "error", {eventId: event.id}),

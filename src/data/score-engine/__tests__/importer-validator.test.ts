@@ -136,4 +136,54 @@ describe("ScoreEngine SymbTr importer and validator", () => {
       ]),
     );
   });
+
+  /**
+   * D1: parser artik NaN sure uretmiyor, ama validator SON kapidir —
+   * correction event'leri (`corrections.ts`) veya ileride eklenecek baska bir
+   * kaynak zaman eksenini bozarsa yakalanmali. Eski surumde yalniz
+   * `durationBeats` kontrol ediliyordu; `startBeat`/`startTime` hic
+   * dogrulanmiyordu ve NaN sessizce gecip imleci olduruyordu
+   * (NaN karsilastirmalari her zaman false).
+   */
+  describe("zaman ekseni sonluluk kapisi (D1)", () => {
+    function buildDocument() {
+      return parseSymbtrToCanonical({
+        raw: SYMBTR_FIXTURE,
+        piece: HICAZKAR_PESREV,
+        scoreId: "score:test-fixture",
+      }).document;
+    }
+
+    it("sonlu olmayan startBeat'i error olarak raporlar", () => {
+      const document = buildDocument();
+      document.events[1].startBeat = Number.NaN;
+
+      expect(validateCanonicalScore(document)).toEqual(
+        expect.arrayContaining([
+          expect.objectContaining({
+            code: "event-time-invalid",
+            severity: "error",
+            eventId: document.events[1].id,
+          }),
+        ]),
+      );
+    });
+
+    it("sonlu olmayan startTime'i error olarak raporlar", () => {
+      const document = buildDocument();
+      document.events[0].startTime = Number.POSITIVE_INFINITY;
+
+      expect(validateCanonicalScore(document)).toEqual(
+        expect.arrayContaining([
+          expect.objectContaining({code: "event-time-invalid", severity: "error"}),
+        ]),
+      );
+    });
+
+    it("saglam belgede zaman-ekseni hatasi uretmez", () => {
+      const issues = validateCanonicalScore(buildDocument());
+
+      expect(issues.filter((issue) => issue.code === "event-time-invalid")).toHaveLength(0);
+    });
+  });
 });

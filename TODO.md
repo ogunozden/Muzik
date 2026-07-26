@@ -11,6 +11,80 @@
 
 ---
 
+## ⏳ AÇIK İŞLER — öncelik sırası (2026-07-27)
+
+> **Nasıl yapılacağı [PLAN.md](PLAN.md)'de.** Bu liste yalnız *ne* ve *hangi
+> sırayla*. Aşağıdaki §A–§L bölümleri tamamlanmış işin kaydıdır.
+>
+> Kök teşhis: **motorun metrik bağlamı yok.** Parser 19 satır kodundan yalnız
+> `9`'u okuyor; atılan **31.605 süreli satır** ve okunmayan yazılı mertebe
+> yüzünden ölçü, tahminle (`ceil(offset)`) kuruluyor. L1 bu yüzden inmedi —
+> yaprak değil, gövde sorunu.
+
+### Öncelik 1 · FAZ A — Ana motor · PLAN §3
+
+Ölçü, tahmin yerine **yazılı mertebeden** türetilsin; zaman tek ve tamsayı
+tick ekseninde olsun.
+
+- [ ] **G0** · 8 temsilci `.txt` fixture'ı commit et + mevcut çıktının fotoğrafı
+      *(fixture dizininde `0` adet `.txt` var — baseline kurulamıyor)*
+- [ ] **G1** · Tick primitifi (`TICKS_PER_WHOLE = 40320`), sıfır bağlantı
+      · **kapı:** korpustaki TÜM paydaları tam bölmeli (payda `120` dâhil)
+- [ ] **G2** · Satır okuyucu (hiçbir satır atılmadan) + `MeterMap` + `UsulMap`,
+      tüketicisiz · `parser.ts` dokunulmaz
+- [ ] **G3** · Offset yeniden üretim kapısı · **kapı:** ≥2.987/3.000 birebir
+- [ ] **G4** · Keşif koşusu: geçici v2, testleri koş, kırılanları listele,
+      geri al, **commit etme** · *risk sıfır, pivot kararı bu listeyle verilir*
+- [ ] **G5** · PDF `measureIndexBasis` alanı — **G6'dan ÖNCE**
+      *(18.334 doğrulanmış kutu `ceil-end` formülüne bağlı; alan olmadan
+      sessizce kayarlar)*
+- [ ] **G6** · **PIVOT** · `measureIndex = floor(başlangıç)+1`, dört kopya
+      tek kaynağa · *73.470 nota (%6,3) kayar — commit mesajında raporlanır*
+- [ ] **G7** · L1: bar-aşan nota bölme + bağ · **kapı:** ölçü doluluğu
+      %64,9 → ~%86; çalma nota sayısı ve toplam süresi DEĞİŞMEMELİ
+- [ ] **G8** · Doğrulamayı totolojiden çıkar
+      *(`validator.ts:64-72` bugün hiç tetiklenemiyor; `quality.ts:36-44`
+      yanlış mertebeyle karşılaştırıyor)*
+
+### Öncelik 2 · FAZ C/C1 — e2e blokajı · PLAN §5 · **kullanıcı eylemi**
+
+- [ ] 3000 portunu boşalt: `taskkill /PID 12356 /F` — takılmış `next dev`
+      HTTP'ye yanıt vermiyor, **23 e2e testi hiç çalışmadı**
+
+### Öncelik 3 · FAZ B — Kaynak zenginliği · PLAN §4 · *FAZ A'ya bağlı*
+
+- [ ] **B1** · Süslemeler: grace (15.984 satır), trill (3.443), tremolo (3.807),
+      mordent (841) — MusicXML çapraz-doğrulamayla kimliklendirildi
+- [ ] **B2** · Çözülemeyen 9 kod (code-1/4/10/11/24/28/32/43/44) — çöz veya
+      `unsupported` olarak dürüstçe raporla
+- [ ] **B3** · mu2 metadata bloğu (makam+karar, usul adı, form, bestekâr,
+      güftekâr, eser adı, tür) — 3000/3000 dosyada var, hiçbiri okunmuyor
+- [ ] **B4** · mu2 code-14 darp gruplaması (46.214 satır) — usul vurgusunu
+      kaynaktan verir, bugün `USUL_DATA`dan geliyor
+- [ ] **B5** · Tekrar işaretleri (TXT açılmış 1,488×, mu2 koruyor)
+- [ ] **B6** · code-51 usul adı v3 regresyonu (382/382 boş; v2'de 319/411 dolu)
+- [ ] **B7** · `TempoMap` — code-52 BPM 7-bit kırpılmış,
+      `(LNS>=127 ? 127+Bas : LNS)` kuralı %87,3
+
+### Öncelik 4 · FAZ C — Doğrulama borcu · PLAN §5
+
+- [ ] **C2** · K5 sanallaştırma/responsive geometrisi tarayıcıda *(C1'e bağlı)*
+- [ ] **C3** · `audit:score-engine-*` browser denetimleri *(C1'e bağlı)*
+- [ ] **C4** · 4 tek-kalan triole notası (%0,18) — G7 sonrası yeniden ölç
+
+### Öncelik 5 · FAZ D — Ses kütüphanesi · PLAN §6 · *stüdyo işi*
+
+- [ ] **D1** · Ney kapsamı 10/36, `D3→B3` arası 9 yarım-ton delik — kayıt gerek
+      *(kırpılacak kusur yok; ses 0 ms'de başlıyor)*
+- [ ] **D2** · `hek` gerçek kaydı *(şu an dum+tek toplamından türetiliyor)*
+
+### Öncelik 6 · FAZ E — Tetikleyici bekleyen · PLAN §7
+
+- [ ] **E1** · Korpus JSON süzme — gzip 3,4 KB kazanç (%0,14). **Tetikleyici:**
+      bundle bütçesi zorlanırsa
+
+---
+
 ## A — Aksiyon alınabilir ✅ TAMAM (2026-07-26)
 
 - [x] **A1 · E2E'yi CI'a bağla** — CI zaten `playwright.config.ts` + `e2e/smoke.spec.ts`
@@ -470,7 +544,17 @@ bölünme değil. Korpusta **5 event yanlış triole işaretlenmişti**.
 - [x] Kesir önce sadeleştiriliyor; tuplet 2178 → **2173** (gerçek triole sayısı),
       bracket'siz kalan 9 → **4**. Regresyon testi eklendi.
 
-### L1 ⛔ BLOKE — ölçü sınırında bölme (kaynak-otoritesi çözülmeden yapılamaz)
+### L1 ➡️ ÇÖZÜLDÜ (teşhis) → PLAN.md §3/G7'ye taşındı
+
+> **Güncelleme 2026-07-27:** aşağıdaki "kaynak-otoritesi çözülmeden yapılamaz"
+> hükmü ARTIK GEÇERLİ DEĞİL. Otorite belirlendi: yazılı mertebe mu2 satır-1
+> alan 0–1'de açıkça yazılı ve Offset formülü 2.987/3.000 dosyada birebir
+> yeniden üretiliyor (`offset += (Pay/Payda) ÷ mertebe`). Sapmanın sebebi de
+> bulundu: **code-52 tempo satırları Offset eksenini ilerletiyor** —
+> 52 hariç tutulunca ölçü doluluğu %64,9 → %86.
+>
+> L1 artık bağımsız bir iş değil; ana motor göçünün **G7 adımı** (bkz.
+> [PLAN.md](PLAN.md) §3). Aşağısı teşhis kaydı olarak durur.
 
 **Önceki gerekçe (demo fixture tutarsız) YETERSİZDİ.** Daha derin ölçüm asıl
 engeli ortaya çıkardı ve bu arada iki hipotezimi çürüttü.

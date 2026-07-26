@@ -9,7 +9,7 @@ import {ApiError} from "../fetch-json";
 afterEach(() => vi.unstubAllGlobals());
 
 function stubFetch(response: unknown, ok = true, status = 200) {
-  const fetchMock = vi.fn(async (_url: string, _init?: RequestInit) => ({ok, status, json: async () => response}) as Response);
+  const fetchMock = vi.fn(async () => ({ok, status, json: async () => response}) as Response);
   vi.stubGlobal("fetch", fetchMock);
   return fetchMock;
 }

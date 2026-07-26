@@ -1,7 +1,7 @@
 import {describe, it, expect, vi, beforeEach} from "vitest";
 import {renderHook, act, waitFor} from "@testing-library/react";
 
-const playScaleAtFrequencies = vi.fn(async (..._args: unknown[]) => {});
+const playScaleAtFrequencies = vi.fn(async () => {});
 const stopAll = vi.fn();
 vi.mock("@/engines/ses/engine", () => ({
   playScaleAtFrequencies: (...args: unknown[]) => playScaleAtFrequencies(...args),

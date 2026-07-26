@@ -261,7 +261,7 @@ export function ReferencesCurationDashboard({
 
     void runOperation("curation-feedback-batch", {feedbackEvents});
     setSelectedReferenceKeys([]);
-  }, [runOperation, selectedReferences]);
+  }, [runOperation, selectedReferences, setSelectedReferenceKeys]);
 
   const exportCandidateManifest = useCallback(async () => {
     const result = await runOperation("candidate-export");

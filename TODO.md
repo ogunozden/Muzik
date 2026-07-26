@@ -470,44 +470,57 @@ bölünme değil. Korpusta **5 event yanlış triole işaretlenmişti**.
 - [x] Kesir önce sadeleştiriliyor; tuplet 2178 → **2173** (gerçek triole sayısı),
       bracket'siz kalan 9 → **4**. Regresyon testi eklendi.
 
-### L1 ⏸️ TASARLANDI + ÖLÇÜLDÜ, İNDİRİLMEDİ — ölçü sınırında bölme
+### L1 ⛔ BLOKE — ölçü sınırında bölme (kaynak-otoritesi çözülmeden yapılamaz)
 
-**Bulgu:** 14.905 ölçünün yalnız **%66,28'i** nominal uzunlukta. Sapma kenarda
-değil: ilk ölçü %0,23, son ölçü %1,41, **ortadaki ölçüler %32,08**.
+**Önceki gerekçe (demo fixture tutarsız) YETERSİZDİ.** Daha derin ölçüm asıl
+engeli ortaya çıkardı ve bu arada iki hipotezimi çürüttü.
 
-**Kök neden:** `measureIndex = ceil(offsetUnits)` barı **aşan** notayı tamamen
-bittiği ölçüye yazıyor. Örnek (`acem--ilahi--duyek`, nominal 4 vuruş): satır 155
-`C5 1/4` offset **17,875 → 18,125**, yani bar çizgisini (18,0) geçiyor; ölçü 18
-yarım vuruş kaybediyor, 19 yarım vuruş fazla alıyor → 3,5 / 4,5 örüntüsü.
-Gravürde bar çizgisini geçen nota iki yana bölünüp bağla yazılır.
+**Ölçüm 1 — `Offset` kümülatif `Pay/Payda` mı?** Hayır. 398 dosyanın 312'sinde
+sapma ≥ 0,5 (yazım hassasiyeti değil, kademeli birikip 93'e kadar çıkan gerçek
+fark). Yalnız 45 dosya (%11,3) birebir eşleşiyor — hicazkâr peşrev onlardan
+biri, bu yüzden tek dosyadan yaptığım genelleme yanlıştı.
 
-**Yapıldı ve ölçüldü (sonra geri alındı):** parser'a `startOffsetUnits`,
-canonical katmana `splitEventsAtBarlines`, çalmada bağlı parçaların tek notaya
-birleştirilmesi, çizimde bağ. Gerçek korpusta (300 dosya):
+**Ölçüm 2 — `ceil(offset)` yanlış mı ölçü sayıyor?** Hayır, DOĞRU. Verinin
+ima ettiği bar uzunluğu küçük usullerde usul ölçüsüne uyuyor (düyek 8/8 → ~4,
+aksak 9/8 → ~4,3), ama büyük usullerde uymuyor (devrikebir 28/4 → ~4;
+hafif 32/4 → ~4). SymbTr büyük usulleri **küçük nota barlarına bölerek**
+yazıyor — 28 vuruşluk tek bar yazılmaz. Yani `measureIndex` = basılı bar
+numarası ve mevcut kod doğru. *("7× fazla ölçü sayıyor" iddiam çürütüldü.)*
 
-- 3.499 event bölündü; bölme oranları **temiz**: 0,50 (1269), 0,67 (1170),
-  0,75, 0,33, 0,40, 0,25 — gerçek bar geçişlerinin ürettiği kesirler.
-- Ölçü doluluğu **%66,28 → %78,83**.
+**Ölçüm 3 — hangi sütun zaman otoritesi?**
 
-**Neden indirilmedi:** demo fixture'ın (`demo-score.ts`) `Offset` sütunu elle
-yazılmış ve **kendi içinde tutarsız** — başlık Devr-i Kebir 28/4 diyor ama
-offsetler 4 vuruşluk ölçü varsayıyor. Bu tutarsızlık bölmeyle birlikte varsayılan
-tezgâh görünümünde anlamsız 0,6/0,4 bağlı notalar üretiyor. Temiz inmesi için
-fixture'ın yeniden yazılması ve ona bağlı 4 testin güncellenmesi gerekiyor;
-bunu uzun bir oturumun sonunda aceleye getirmek yerine kendi değişikliğine
-bıraktım.
+| kontrol | uyan |
+|---|---|
+| `Ms` ∝ `Pay/Payda` (cv < %2) | 379/398 (**%95,2**) |
+| `Offset` == kümülatif `Pay/Payda` | 45/398 (**%11,3**) |
 
-**İnmesi için yapılacaklar:**
-- [ ] `demo-score.ts` `Offset` sütununu kendi içinde tutarlı hale getir
-      (kümülatif vuruş / ölçü uzunluğu) — 16 satırlık inline fixture.
-- [ ] `importer-validator.test.ts` Devr-i Kebir fixture'ında `Offset 0.5` → `1.0`
-      (28 vuruşluk nota 1,0'da bitmeli; sonraki nota `1 + 1/28` diyor).
-- [ ] `splitEventsAtBarlines` + çalma birleştirme + bağ çizimini yeniden uygula
-      (tasarım ve ölçüm bu maddede).
-- [ ] Sonra: `ScoreSurface`'te `setStrict(false)` kaldırılabilir mi ölç —
-      VexFlow'un kendi ölçü-dolumu doğrulaması gerçek bir kapı olur.
-- [ ] Kalan %21 sapmanın kaynağını ayrıca ölç: **kod-52 satırları süre taşıyor**
-      (örn. ölçü 17'de 0,5 vuruş) ve parser onları atıyor.
+İki bağımsız sütun (`Pay/Payda` + `Ms`) zamanda anlaşıyor; `Offset` ayrışıyor.
+**Zaman otoritesi `Pay/Payda`; `Offset` kaynaktaki basılı bar konumudur.**
+
+**ASIL ENGEL:** bölme, notanın barın ne kadarının solunda kaldığını bilmeyi
+gerektirir. Bu oran `Offset` biriminde hesaplanır — ama notanın SÜRESİ
+`Pay/Payda`'dan gelir. Dosyaların **%88,7'sinde bu ikisi aynı zamanı
+anlatmıyor**, dolayısıyla Offset'ten türetilen oran, notanın gerçek süresinin
+aynı oranına karşılık gelmiyor. Bu haliyle bölme, eserlerin ~%89'unda
+**yanlış parça süreleri** üretir.
+
+Bu bir kod sorunu değil, **kaynak-otoritesi sorunu**: basılı bar (`Offset`) ile
+notalı zaman (`Pay/Payda`) SymbTr'de birbirinden bağımsız iki eksen. Projenin
+bağlayıcı kuralı gereği birini keyfî seçemem.
+
+**Açılması için gereken (kod değil, kaynak kararı):**
+- [ ] SymbTr'nin kendi dokümantasyonundan/makalesinden `Offset` sütununun
+      tanımını belirle. Basılı bar mı, başka bir şey mi?
+- [ ] `src/data/symbtr/layout.ts` PDF ölçü kutuları hangi eksene bağlı —
+      `Offset`e mi, `Pay/Payda` zamanına mı? (18334 verified kutu var; bu
+      soruyu ampirik yanıtlayabilir)
+- [ ] Karar verildikten sonra: bar çizgileri o eksenden türetilsin, bölme
+      oranı da AYNI eksenden hesaplansın. İki ekseni karıştırmak yasak.
+- [ ] Sonra: `setStrict(false)` kaldırılabilir mi ölç.
+
+**Not:** daha önce raporladığım "ölçülerin %32'si dolmuyor" bulgusunun bir
+kısmı bar geçişi değil, bu iki eksenin uyuşmazlığıymış. Bölme denemesi
+doluluğu %66,28 → %78,83 çıkarmıştı ama bu sayı da aynı karışımdan etkileniyor.
 
 ### L2 ⏸️ BLOKE — e2e ve tarayıcı doğrulaması
 

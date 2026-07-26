@@ -7,8 +7,14 @@ import makamSeyir from "./__generated__/makam-seyir.generated.json";
 /**
  * Makamin OTANTIK koma arizasi + 53-EDO koma dizisi elle yazilmaz; SymbTr
  * korpusundan turetilmis `makam-corpus.json`den (npm run derive:makam-corpus)
- * makam adiyla eslenerek baglanir. Editoryal alanlar (aciklama, dominant)
- * yazili kalir; ariza ve koma dizisi otonom.
+ * makam adiyla eslenerek baglanir. Yalniz editoryal METIN (aciklama,
+ * characteristic) yazili kalir; ariza, koma dizisi, `intervals`, karar ve
+ * guclu otonom/kaynaklidir.
+ *
+ * Elle yazilan `dominant` alani KALDIRILDI (D4): 48 makamin 11'inde deger
+ * makamin kendi dizisinde bile yoktu (ussak "E", huseyni "A", segah "D") ve
+ * UI'da "Güçlü: E" diye ogrenciye basiliyordu. Yerine `getMakamGuclu()` —
+ * `komaScale.gucluPerde` (Aydemir 2010 + korpus).
  */
 type MakamCorpusEntry = {display: string; total: number; consensus: number; keySignature: MakamKeyAccidental[]};
 const CORPUS_MAKAMS = makamCorpus.makams as Record<string, MakamCorpusEntry>;
@@ -27,31 +33,24 @@ function normalizeMakamName(name: string): string {
     .replace(/[^a-z0-9]/g, "");
 }
 
-// Levenshtein mesafesi <= 1 mi? (yazim varyantlari icin: Nihavend/Nihavent,
-// Bayati/Beyati gibi tek-harf farklari). Elle eslesme sozlugu yerine otonom.
-function withinOneEdit(a: string, b: string): boolean {
-  if (a === b) return true;
-  const [short, long] = a.length <= b.length ? [a, b] : [b, a];
-  if (long.length - short.length > 1) return false;
-  let i = 0;
-  let j = 0;
-  let edits = 0;
-  while (i < short.length && j < long.length) {
-    if (short[i] === long[j]) {
-      i += 1;
-      j += 1;
-      continue;
-    }
-    if (++edits > 1) return false;
-    if (short.length === long.length) {
-      i += 1;
-      j += 1; // ikame
-    } else {
-      j += 1; // silme/ekleme
-    }
-  }
-  return edits + (long.length - j) + (short.length - i) <= 1;
-}
+/**
+ * SymbTr korpusu bazi makamlari farkli yazar (ayni makam, ortografik varyant);
+ * engine adi korpus anahtarina ACIK tabloyla koprulenir — `usul/data.ts`teki
+ * `CORPUS_NAME_ALIASES` ile ayni desen (D14).
+ *
+ * Onceki surumde bu is bulanik eslesmeyle (Levenshtein <= 1, benzersizse kabul)
+ * yapiliyordu. Benzersizlik kontrolu BELIRSIZLIGI engelliyordu ama YANLISLIGI
+ * degil: korpus buyudukce bir 1-edit cakismasi sessizce YANLIS makamin koma
+ * dizisini ve ariza imzasini baglayabilirdi. Olcum, tum makinenin yalnizca
+ * ASAGIDAKI IKI kayit icin calistigini gosterdi (48 makamin 40'i zaten
+ * dogrudan adla cozumleniyor, 6'sinin korpusta karsiligi hic yok).
+ *
+ * Anahtar: normalize edilmis engine adi. Deger: korpus anahtari.
+ */
+const CORPUS_NAME_ALIASES: Record<string, string> = {
+  nihavend: "nihavent",
+  bayati: "beyati",
+};
 
 // Korpus anahtar kumesi: ariza (makams) VE koma dizisi (komaScales) anahtarlarinin
 // BIRLESIMI — bazi makamlarda (buselik/cargah) yalniz komaScales girdisi var,
@@ -59,22 +58,27 @@ function withinOneEdit(a: string, b: string): boolean {
 const CORPUS_KEY_HAS_DATA = (key: string): boolean =>
   Boolean(CORPUS_MAKAMS[key]) || Boolean(CORPUS_KOMA_SCALES[key]);
 
-// Makam adini korpus anahtarina cozumler: once tam ad/id, sonra BENZERSIZ
-// tek-harf yazim varyanti.
-function resolveCorpusKey(makam: Makam): string | undefined {
+/**
+ * Makam adini korpus anahtarina cozumler: once tam ad, sonra id, sonra ACIK
+ * alias tablosu. Karsiligi yoksa `undefined` — makam korpus verisi ALMAZ
+ * (sessizce baska bir makama baglanmaz). Cozumleme `corpus-resolution.test.ts`
+ * ile makam basina kilitlidir.
+ */
+export function resolveCorpusKeyForMakam(makam: Makam): string | undefined {
   const norm = normalizeMakamName(makam.nameTr);
   if (CORPUS_KEY_HAS_DATA(norm)) return norm;
+
   const idNorm = normalizeMakamName(makam.id);
   if (CORPUS_KEY_HAS_DATA(idNorm)) return idNorm;
-  const allKeys = new Set([...Object.keys(CORPUS_MAKAMS), ...Object.keys(CORPUS_KOMA_SCALES)]);
-  const near = [...allKeys].filter((key) => withinOneEdit(key, norm));
-  return near.length === 1 ? near[0] : undefined;
+
+  const alias = CORPUS_NAME_ALIASES[norm] ?? CORPUS_NAME_ALIASES[idNorm];
+  return alias && CORPUS_KEY_HAS_DATA(alias) ? alias : undefined;
 }
 
 function attachCorpusData(makam: Makam): Makam {
   const seyir = SEYIR_METINLERI[makam.id];
   const base = seyir ? {...makam, seyir} : makam;
-  const key = resolveCorpusKey(makam);
+  const key = resolveCorpusKeyForMakam(makam);
   if (!key) return base;
   const entry = CORPUS_MAKAMS[key]; // yalniz komaScales'te olan makamda undefined olabilir
   const komaScale = CORPUS_KOMA_SCALES[key];
@@ -140,6 +144,84 @@ export function snapMidiToMakamFrequency(makam: Makam, midiNumber: number, octav
   return kararHz * Math.pow(2, (octaveOffset * 1200 + nearest) / 1200);
 }
 
+/**
+ * AEU perde adlarinin Turkce ortografisi. Kaynak anahtarlar ASCII-normalize
+ * gelir (`dugah`, `cargah`, `sehnaz`); bu tablo YALNIZ YAZIMDIR — muzikal
+ * iddia tasimaz. Tabloda olmayan anahtar oldugu gibi doner (uydurma yok).
+ */
+const PERDE_DISPLAY_NAMES: Record<string, string> = {
+  yegah: "Yegâh",
+  "huseyni asiran": "Hüseyni Aşîran",
+  acemasiran: "Acemaşîran",
+  irak: "Irak",
+  rast: "Rast",
+  zirgule: "Zirgüle",
+  dugah: "Dügâh",
+  kurdi: "Kürdî",
+  segah: "Segâh",
+  buselik: "Bûselik",
+  cargah: "Çârgâh",
+  "nim hicaz": "Nîm Hicaz",
+  hicaz: "Hicaz",
+  neva: "Nevâ",
+  hisar: "Hisar",
+  huseyni: "Hüseyni",
+  acem: "Acem",
+  evic: "Eviç",
+  mahur: "Mâhur",
+  gerdaniye: "Gerdaniye",
+  sehnaz: "Şehnaz",
+  muhayyer: "Muhayyer",
+  sunbule: "Sünbüle",
+  "tiz segah": "Tîz Segâh",
+  "tiz buselik": "Tîz Bûselik",
+  "tiz cargah": "Tîz Çârgâh",
+  "tiz hicaz": "Tîz Hicaz",
+  "tiz neva": "Tîz Nevâ",
+  "tiz huseyni": "Tîz Hüseyni",
+  "tiz acem": "Tîz Acem",
+  "tiz evic": "Tîz Eviç",
+  "tiz gerdaniye": "Tîz Gerdaniye",
+};
+
+export function formatPerdeName(perde: string): string {
+  return PERDE_DISPLAY_NAMES[perde] ?? perde;
+}
+
+export interface MakamPerdeRef {
+  /** AEU perde anahtari (ASCII-normalize; `perdeKoma` tablosunda cozumlenir). */
+  perde: string;
+  /** Turkce ortografiyle gosterim adi. */
+  label: string;
+  /** Kanit zinciri: korpus kararPerde/gucluPerde + AEU perde tablosu. */
+  source: "corpus+aeu";
+}
+
+/**
+ * Makamin KARAR (durak) perdesi — KAYNAKLI (D3).
+ *
+ * `tonic` alanini KULLANMAZ: o alan calma register cipasidir (48 makamin
+ * hepsinde "C") ve nazari karar DEGILDIR. Karar `komaScale.kararPerde`den
+ * gelir; korpus son-nota modundan turetilip AEU perde tablosuna baglanmistir.
+ * Kaynagi olmayan makamda `null` doner — deger uydurulmaz.
+ */
+export function getMakamKarar(makam: Makam): MakamPerdeRef | null {
+  const perde = makam.komaScale?.kararPerde;
+  return perde ? {perde, label: formatPerdeName(perde), source: "corpus+aeu"} : null;
+}
+
+/**
+ * Makamin GUCLU perdesi — KAYNAKLI (D4).
+ *
+ * Eski `dominant` alani elle yazilmisti ve 11/48 makamda makamin kendi
+ * dizisinde bile yoktu (ussak "E", huseyni "A", segah "D"). Kaldirildi;
+ * deger artik `komaScale.gucluPerde`den gelir (Aydemir 2010 + korpus).
+ */
+export function getMakamGuclu(makam: Makam): MakamPerdeRef | null {
+  const perde = makam.komaScale?.gucluPerde;
+  return perde ? {perde, label: formatPerdeName(perde), source: "corpus+aeu"} : null;
+}
+
 const MAKAM_BASE: Makam[] = [
   {
     id: "rast",
@@ -148,7 +230,6 @@ const MAKAM_BASE: Makam[] = [
     nameEn: "Rast",
     tonic: "C",
     intervals: [2, 2, 1, 2, 2, 2, 1],
-    dominant: "G",
     characteristic: "Rast perdesi",
     description: "Türk musikisinin en temel makamlarından biri. Geniş ve görkemli bir ses sahibidir.",
   },
@@ -159,7 +240,6 @@ const MAKAM_BASE: Makam[] = [
     nameEn: "Hüseyni",
     tonic: "C",
     intervals: [2, 2, 1, 2, 1, 2, 2],
-    dominant: "A",
     characteristic: "Hüseyni perdesi",
     description: "Hüzünlü ve tesirli bir makam. Duygusal ifadeler için sıkça kullanılır.",
   },
@@ -170,7 +250,6 @@ const MAKAM_BASE: Makam[] = [
     nameEn: "Nihavend",
     tonic: "C",
     intervals: [1, 2, 2, 1, 2, 2, 2],
-    dominant: "D",
     characteristic: "Nihavend perdesi",
     description: "Türk musikisinde en çok kullanılan makamlardan biri. Dramamatik bir karakteri vardır.",
   },
@@ -181,7 +260,6 @@ const MAKAM_BASE: Makam[] = [
     nameEn: "Hicaz",
     tonic: "C",
     intervals: [1, 3, 1, 2, 1, 2, 2],
-    dominant: "E",
     characteristic: "Hicaz perdesi",
     description: "Doğu karakteri güçlü bir makam. Hicaz kürdi ve Uşşak ile karşılaştırılır.",
   },
@@ -192,7 +270,6 @@ const MAKAM_BASE: Makam[] = [
     nameEn: "Ussak",
     tonic: "C",
     intervals: [2, 1, 2, 2, 1, 2, 2],
-    dominant: "E",
     characteristic: "Uşşak perdesi",
     description: "Yumuşak ve akıcı bir makam. Hicaz ailesine mensuptur.",
   },
@@ -203,7 +280,6 @@ const MAKAM_BASE: Makam[] = [
     nameEn: "Saba",
     tonic: "C",
     intervals: [1, 2, 1, 2, 3, 2, 1],
-    dominant: "F",
     characteristic: "Saba perdesi",
     description: "Karakteristik ve ayırt edici bir makam. Dede Efendi eserlerinde sıkça kullanılır.",
   },
@@ -214,7 +290,6 @@ const MAKAM_BASE: Makam[] = [
     nameEn: "Segah",
     tonic: "C",
     intervals: [3, 1, 2, 1, 2, 2, 1],
-    dominant: "D",
     characteristic: "Segah perdesi",
     description: "Tiz ve keskin bir karaktere sahip makam. İlahi ve nefes müziğinde yaygındır.",
   },
@@ -225,7 +300,6 @@ const MAKAM_BASE: Makam[] = [
     nameEn: "Bayati",
     tonic: "C",
     intervals: [2, 1, 2, 2, 1, 2, 2],
-    dominant: "A",
     characteristic: "Bayati perdesi",
     description: "Yumuşak ve zarif bir makam. Şarkı formunda sıkça kullanılır.",
   },
@@ -236,7 +310,6 @@ const MAKAM_BASE: Makam[] = [
     nameEn: "Hicaz Kurdi",
     tonic: "C",
     intervals: [1, 3, 1, 2, 2, 1, 2],
-    dominant: "E",
     characteristic: "Hicaz perdesi",
     description: "Hicaz ailesinin önemli bir kolu. Duygusal ve derin bir karaktere sahiptir.",
   },
@@ -247,7 +320,6 @@ const MAKAM_BASE: Makam[] = [
     nameEn: "Kurdi",
     tonic: "C",
     intervals: [1, 2, 1, 2, 2, 1, 3],
-    dominant: "D",
     characteristic: "Kürdi perdesi",
     description: "Yatay ve içli bir makam. Tasavvuf musikisinde sıkça kullanılır.",
   },
@@ -258,7 +330,6 @@ const MAKAM_BASE: Makam[] = [
     nameEn: "Huzzam",
     tonic: "C",
     intervals: [1, 2, 2, 2, 1, 2, 2],
-    dominant: "A",
     characteristic: "Hüzzam perdesi",
     description: "Acı ve hüzünlü bir makam. Hicaz ailesiyle bağlantılıdır.",
   },
@@ -269,7 +340,6 @@ const MAKAM_BASE: Makam[] = [
     nameEn: "Gerdaniye",
     tonic: "C",
     intervals: [2, 1, 2, 2, 1, 2, 2],
-    dominant: "G",
     characteristic: "Gerdaniye perdesi",
     description: "Geniş ve görkemli bir makam. Gerdaniye perdesi karakteristik ses verir.",
   },
@@ -280,7 +350,6 @@ const MAKAM_BASE: Makam[] = [
     nameEn: "Hisar",
     tonic: "C",
     intervals: [1, 2, 2, 2, 1, 2, 2],
-    dominant: "E",
     characteristic: "Hisar perdesi",
     description: "Hicaz ailesine mensup bir makam. Orta ses bölgesinde çalınır.",
   },
@@ -291,7 +360,6 @@ const MAKAM_BASE: Makam[] = [
     nameEn: "Hisar Buselik",
     tonic: "C",
     intervals: [2, 1, 2, 2, 1, 2, 2],
-    dominant: "E",
     characteristic: "Hisar perdesi (4. derece hicaz)",
     description: "Hisar (Hicaz dörtlüsü) + Bûselik (Kürdi beşlisi) birleşik makamı. 4. derecedeki Hisar perdesi karakteristik. Çıkıcı-inici seyir; güçlü hüseyni. Korpus: 25 eser.",
   },
@@ -302,7 +370,6 @@ const MAKAM_BASE: Makam[] = [
     nameEn: "Buselik",
     tonic: "C",
     intervals: [2, 2, 2, 2, 2, 1, 1],
-    dominant: "G",
     characteristic: "Buselik perdesi",
     description: "Neşeli ve canlı bir makam. Şarkı formlarında sıkça kullanılır.",
   },
@@ -313,7 +380,6 @@ const MAKAM_BASE: Makam[] = [
     nameEn: "Cargah",
     tonic: "C",
     intervals: [2, 2, 1, 2, 2, 2, 1],
-    dominant: "D",
     characteristic: "Çargah perdesi",
     description: "Türk musikisinin en temel makamlarından biri. Beşliler sistemine dayanır.",
   },
@@ -324,7 +390,6 @@ const MAKAM_BASE: Makam[] = [
     nameEn: "Acemasiran",
     tonic: "C",
     intervals: [2, 1, 2, 1, 2, 2, 2],
-    dominant: "G",
     characteristic: "Acem perdesi",
     description: "Acem ailesinin önemli bir makamı. Farsça eserlerde sıkça kullanılır.",
   },
@@ -335,7 +400,6 @@ const MAKAM_BASE: Makam[] = [
     nameEn: "Acem Buselik",
     tonic: "C",
     intervals: [2, 1, 2, 2, 2, 2, 1],
-    dominant: "G",
     characteristic: "Acem perdesi",
     description: "Acem ve buselik ailelerinin birleşimi. Zengin bir ifade aralığına sahiptir.",
   },
@@ -346,7 +410,6 @@ const MAKAM_BASE: Makam[] = [
     nameEn: "Karcigar",
     tonic: "C",
     intervals: [1, 3, 2, 1, 2, 1, 2],
-    dominant: "F",
     characteristic: "Karcığar perdesi",
     description: "Karakteristik ve ayırt edici bir makam. Seyir karakteri dikkat çekicidir.",
   },
@@ -357,7 +420,6 @@ const MAKAM_BASE: Makam[] = [
     nameEn: "Uzzal",
     tonic: "C",
     intervals: [1, 3, 1, 3, 1, 2, 1],
-    dominant: "E",
     characteristic: "Uzzal perdesi",
     description: "Hicaz ailesinin en önemli makamlarından biri. Derin ve etkileyici bir karaktere sahiptir.",
   },
@@ -368,7 +430,6 @@ const MAKAM_BASE: Makam[] = [
     nameEn: "Zirenkend",
     tonic: "C",
     intervals: [1, 2, 2, 2, 1, 3, 1],
-    dominant: "D",
     characteristic: "Zirenkend perdesi",
     description: "Az kullanılan ama karakteristik bir makam.",
   },
@@ -379,7 +440,6 @@ const MAKAM_BASE: Makam[] = [
     nameEn: "Tahir",
     tonic: "C",
     intervals: [2, 2, 1, 2, 1, 2, 2],
-    dominant: "F",
     characteristic: "Tahir perdesi",
     description: "Yumuşak ve akıcı bir makam.",
   },
@@ -390,7 +450,6 @@ const MAKAM_BASE: Makam[] = [
     nameEn: "Nikriz",
     tonic: "C",
     intervals: [2, 2, 2, 1, 2, 1, 2],
-    dominant: "G",
     characteristic: "Nikriz perdesi",
     description: "Canlı ve neşeli bir makam.",
   },
@@ -401,7 +460,6 @@ const MAKAM_BASE: Makam[] = [
     nameEn: "Sultaniyegah",
     tonic: "C",
     intervals: [2, 2, 2, 1, 2, 2, 1],
-    dominant: "F",
     characteristic: "Sultaniye perdesi",
     description: "Sultanların makamı. Görkemli ve heybetli bir karaktere sahiptir.",
   },
@@ -412,7 +470,6 @@ const MAKAM_BASE: Makam[] = [
     nameEn: "Yegah",
     tonic: "C",
     intervals: [1, 3, 2, 2, 1, 2, 1],
-    dominant: "D",
     characteristic: "Yegah perdesi",
     description: "Alçak ve derin bir makam. Nefesli çalgılar için uygundur.",
   },
@@ -423,7 +480,6 @@ const MAKAM_BASE: Makam[] = [
     nameEn: "Dügah",
     tonic: "C",
     intervals: [2, 2, 1, 2, 2, 1, 2],
-    dominant: "G",
     characteristic: "Dügah perdesi",
     description: "Orta ses bölgesinde çalınan yumuşak bir makam.",
   },
@@ -434,7 +490,6 @@ const MAKAM_BASE: Makam[] = [
     nameEn: "Mahur",
     tonic: "C",
     intervals: [2, 2, 2, 1, 2, 2, 1],
-    dominant: "G",
     characteristic: "Mahur perdesi",
     description: "Batı musicasi etkisinde gelişen bir makam.",
   },
@@ -445,7 +500,6 @@ const MAKAM_BASE: Makam[] = [
     nameEn: "Bestenigar",
     tonic: "C",
     intervals: [1, 2, 2, 2, 1, 2, 2],
-    dominant: "D",
     characteristic: "Bestenigar perdesi",
     description: "Saray müziğinde önemli bir makam.",
   },
@@ -456,7 +510,6 @@ const MAKAM_BASE: Makam[] = [
     nameEn: "Müsteär",
     tonic: "C",
     intervals: [1, 2, 2, 2, 1, 3, 1],
-    dominant: "E",
     characteristic: "Müstear perdesi",
     description: "Karışık ve ilginç bir makam.",
   },
@@ -467,7 +520,6 @@ const MAKAM_BASE: Makam[] = [
     nameEn: "Irakeyn",
     tonic: "C",
     intervals: [2, 1, 3, 1, 2, 2, 1],
-    dominant: "G",
     characteristic: "Irak perdesi",
     description: "Irak ve çevresinde kullanılan bir makam.",
   },
@@ -478,7 +530,6 @@ const MAKAM_BASE: Makam[] = [
     nameEn: "Rehavi",
     tonic: "C",
     intervals: [2, 1, 2, 2, 2, 1, 2],
-    dominant: "F",
     characteristic: "Rehavi perdesi",
     description: "Yumuşak ve dinlendirici bir makam.",
   },
@@ -489,7 +540,6 @@ const MAKAM_BASE: Makam[] = [
     nameEn: "Muhayyer",
     tonic: "C",
     intervals: [2, 2, 1, 2, 2, 2, 1],
-    dominant: "G",
     characteristic: "Muhayyer perdesi",
     description: "Türk musikisinin en önemli makamlarından biri. Gür ve coşkulu bir karaktere sahiptir.",
   },
@@ -500,7 +550,6 @@ const MAKAM_BASE: Makam[] = [
     nameEn: "Hümayun",
     tonic: "C",
     intervals: [1, 3, 1, 2, 2, 2, 1],
-    dominant: "E",
     characteristic: "Hümayun perdesi",
     description: "Sultanların makamı. İork ve heybetli bir karaktere sahiptir.",
   },
@@ -511,7 +560,6 @@ const MAKAM_BASE: Makam[] = [
     nameEn: "Isfahan",
     tonic: "C",
     intervals: [1, 2, 2, 2, 1, 2, 2],
-    dominant: "D",
     characteristic: "Isfahan perdesi",
     description: "Acem ailesinden gelen yumuşak ve zarif bir makam.",
   },
@@ -522,7 +570,6 @@ const MAKAM_BASE: Makam[] = [
     nameEn: "Arazbar",
     tonic: "C",
     intervals: [1, 2, 2, 2, 1, 2, 2],
-    dominant: "D",
     characteristic: "Arazbar perdesi",
     description: "Acı ve hüzünlü bir makam. Hicaz ailesiyle bağlantılıdır.",
   },
@@ -535,7 +582,6 @@ const MAKAM_BASE: Makam[] = [
     nameEn: "Hicazkar",
     tonic: "C",
     intervals: [2, 1, 3, 1, 1, 3, 1],
-    dominant: "G",
     characteristic: "Rast perdesi",
     description: "Hicaz ailesinden, rast perdesinde karar kılan mürekkep makam.",
   },
@@ -546,7 +592,6 @@ const MAKAM_BASE: Makam[] = [
     nameEn: "Ferahfeza",
     tonic: "C",
     intervals: [2, 1, 2, 2, 1, 2, 2],
-    dominant: "G",
     characteristic: "Yegâh perdesi",
     description: "Nihavend ailesinden, geniş ve ferah seyirli mürekkep makam.",
   },
@@ -558,7 +603,6 @@ const MAKAM_BASE: Makam[] = [
     nameEn: "Neva",
     tonic: "C",
     intervals: [2, 2, 2, 1, 2, 2, 1],
-    dominant: "G",
     characteristic: "Dügâh perdesi",
     description: "Uşşak ailesinden; nevâ perdesinde güçlü, dügâh'ta karar kılar.",
   },
@@ -569,7 +613,6 @@ const MAKAM_BASE: Makam[] = [
     nameEn: "Kurdilihicazkar",
     tonic: "C",
     intervals: [1, 2, 2, 2, 1, 2, 2],
-    dominant: "G",
     characteristic: "Rast perdesi",
     description: "Batı minör dizisine yakın; şarkı formunda en yaygın makamlardan.",
   },
@@ -580,7 +623,6 @@ const MAKAM_BASE: Makam[] = [
     nameEn: "Suzinak",
     tonic: "C",
     intervals: [2, 1, 3, 1, 2, 2, 1],
-    dominant: "G",
     characteristic: "Rast perdesi",
     description: "Rast ve hicaz renklerini birleştiren makam; rast'ta karar kılar.",
   },
@@ -591,7 +633,6 @@ const MAKAM_BASE: Makam[] = [
     nameEn: "Sehnaz",
     tonic: "C",
     intervals: [1, 1, 2, 1, 2, 2, 3],
-    dominant: "F",
     characteristic: "Dügâh perdesi",
     description: "Hicaz ailesinden, tiz bölgede parlak seyirli makam.",
   },
@@ -602,7 +643,6 @@ const MAKAM_BASE: Makam[] = [
     nameEn: "Acemkurdi",
     tonic: "C",
     intervals: [1, 2, 2, 2, 1, 2, 2],
-    dominant: "G",
     characteristic: "Dügâh perdesi",
     description: "Kürdî ailesinden; acem perdesi vurgulu, dügâh'ta karar kılar.",
   },
@@ -613,7 +653,6 @@ const MAKAM_BASE: Makam[] = [
     nameEn: "Evic",
     tonic: "C",
     intervals: [1, 2, 2, 1, 2, 2, 2],
-    dominant: "F#",
     characteristic: "Irak perdesi",
     description: "Irak perdesinde karar kılan, segah ailesiyle ilişkili makam.",
   },
@@ -625,7 +664,6 @@ const MAKAM_BASE: Makam[] = [
     nameEn: "Ferahnak",
     tonic: "C",
     intervals: [1, 2, 2, 2, 1, 2, 2],
-    dominant: "F",
     characteristic: "Irak perdesi",
     description: "Irak perdesinde Segâh'lı karar kılan makam (korpus + Gönül No.64).",
   },
@@ -636,7 +674,6 @@ const MAKAM_BASE: Makam[] = [
     nameEn: "Evcara",
     tonic: "C",
     intervals: [1, 1, 3, 1, 1, 4, 1],
-    dominant: "F#",
     characteristic: "Irak perdesi",
     description: "Eviç açıp ırak'ta yedenli karar eden mürekkep makam (Gönül No.67).",
   },
@@ -647,7 +684,6 @@ const MAKAM_BASE: Makam[] = [
     nameEn: "Muhayyer Kurdi",
     tonic: "C",
     intervals: [1, 2, 2, 2, 1, 2, 2],
-    dominant: "F",
     characteristic: "Muhayyer perdesi",
     description: "Muhayyer üzerinde Uşşak/Kürdî açıp dügâh'ta (Kürdî) karar eder (Gönül No.112).",
   },
@@ -658,7 +694,6 @@ const MAKAM_BASE: Makam[] = [
     nameEn: "Suzidil",
     tonic: "C",
     intervals: [2, 1, 1, 4, 1, 2, 1],
-    dominant: "E",
     characteristic: "Hüseyni perdesi",
     description: "Hüseynîde Hicaz Zirgüle gösterip aşîrân'da karar eden makam (Gönül No.38).",
   },
@@ -669,7 +704,6 @@ const MAKAM_BASE: Makam[] = [
     nameEn: "Gulizar",
     tonic: "C",
     intervals: [2, 2, 2, 1, 2, 2, 1],
-    dominant: "G",
     characteristic: "Hüseyni perdesi",
     description: "Hüseynî seslerde seyredip yerinde (dügâh) karar kılan makam (Gönül No.108).",
   },

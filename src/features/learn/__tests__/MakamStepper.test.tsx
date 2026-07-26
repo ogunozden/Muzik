@@ -41,4 +41,40 @@ describe("MakamStepper", () => {
     const bar = screen.getByRole("progressbar");
     expect(bar.getAttribute("aria-valuemax")).toBe("24");
   });
+
+  /**
+   * D3/D4 regresyonu — EKRANA BASILAN degerin dogrulugu.
+   *
+   * Eskiden `Karar: {makam.tonic}` yaziliyordu ve `tonic` 48 makamin HEPSINDE
+   * "C" oldugu icin Rast, Hicaz, Segah, Evic — hepsi "Karar: C" gosteriyordu.
+   * `Güçlü` ise elle yazilmis `dominant`tan geliyordu (Rast icin "G", Ussak
+   * icin "E"; 11/48 makamda deger makamin kendi dizisinde bile yoktu).
+   */
+  describe("karar/guclu ekranda kaynakli gosterilir (D3/D4)", () => {
+    it("Rast icin karar ve guclu perde ADIYLA basilir", () => {
+      render(<MakamStepper />);
+
+      expect(screen.getByText("Karar: Rast")).toBeDefined();
+      expect(screen.getByText("Güçlü: Nevâ")).toBeDefined();
+    });
+
+    it("Ussak icin karar dugah, guclu nevadir", () => {
+      render(<MakamStepper />);
+      fireEvent.click(screen.getByRole("button", {name: "Sonraki makam"}));
+
+      expect(screen.getByText("Karar: Dügâh")).toBeDefined();
+      expect(screen.getByText("Güçlü: Nevâ")).toBeDefined();
+    });
+
+    it("hicbir adimda 'Karar: C' YAZMAZ", () => {
+      render(<MakamStepper />);
+
+      for (let step = 0; step < 24; step += 1) {
+        expect(screen.queryByText("Karar: C"), `adim ${step + 1}`).toBeNull();
+        const next = screen.queryByRole("button", {name: "Sonraki makam"}) as HTMLButtonElement | null;
+        if (!next || next.disabled) break;
+        fireEvent.click(next);
+      }
+    });
+  });
 });

@@ -61,9 +61,17 @@ export interface Makam {
   name: string;
   nameTr: string;
   nameEn: string;
+  /**
+   * CALMA REGISTER CIPASI — makamin nazari karari DEGILDIR (D3).
+   *
+   * Tum makamlarda "C"dir: uygulama her makami ayni register'da (sabit ahenk)
+   * calar, `komaScale` dereceleri karara GORELI oldugu icin aralik dogrulugu
+   * bundan etkilenmez. Nazari karar (durak) perdesi icin `getMakamKarar()`
+   * kullan — o KAYNAKLIDIR (`komaScale.kararPerde`). Bu alan kullaniciya
+   * "Karar" diye GOSTERILMEZ.
+   */
   tonic: string;
   intervals: number[];
-  dominant: string;
   characteristic: string;
   description: string;
   /**
@@ -112,6 +120,13 @@ export interface UsulSymbol {
   syllable?: string;
   isAccent: boolean;
   timeValue: number;
+  /**
+   * Velvele DOLGU vurusu mu? (ana darba denk DUSMEYEN velvele vurusu.)
+   * Yalniz velvele dizisinde tanimlidir; ana darp dizisinde undefined.
+   * Ses motoru susleme kismasini bundan yapar — `timeValue` sezgiselinden
+   * degil (bkz. D9).
+   */
+  isOrnament?: boolean;
 }
 
 export interface Nota {

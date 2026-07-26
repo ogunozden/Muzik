@@ -287,13 +287,13 @@ const MAKAM_BASE: Makam[] = [
   {
     id: "hisarbuselik",
     name: "Hisar Buselik",
-    nameTr: "Hisar Buselik",
+    nameTr: "Hisarbûselik",
     nameEn: "Hisar Buselik",
     tonic: "C",
-    intervals: [1, 2, 2, 2, 2, 2, 1],
+    intervals: [2, 1, 2, 2, 1, 2, 2],
     dominant: "E",
-    characteristic: "Hisar perdesi",
-    description: "Buselik ailesinden gelen bir makam. Yumuşak bir karakteri vardır.",
+    characteristic: "Hisar perdesi (4. derece hicaz)",
+    description: "Hisar (Hicaz dörtlüsü) + Bûselik (Kürdi beşlisi) birleşik makamı. 4. derecedeki Hisar perdesi karakteristik. Çıkıcı-inici seyir; güçlü hüseyni. Korpus: 25 eser.",
   },
   {
     id: "buselik",

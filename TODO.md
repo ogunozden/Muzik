@@ -63,10 +63,11 @@ irakeyn (Irak varyantı).
 7/7 makam (Neva, Çârgâh, Kürdilihicazkâr, Sûzinâk, Şehnaz, Acemkürdî, Evç)
 Gönül'de mevcut ve korpus koma verisine sahip.
 
-### B6 ✅ ÇÖZÜLDÜ — Gönül-dışı makamlar temizlendi (2026-07-26)
+### B6 ✅ ÇÖZÜLDÜ — Gönül-dışı makamlar temizlendi + hisarbuselik (2026-07-26)
 
-9 makam kaldırıldı, 3 makam korundu (bkz. B4). `hisarbuselik` korpus koma
-verisine sahip, seyir için Gönül veya eşdeğer kaynak bekliyor.
+9 makam kaldırıldı, 3 makam korundu (bkz. B4). `hisarbuselik`: korpus koma
+(25 eser, dügah kararlı) + Wikipedia teyidi (Hisar+Bûselik birleşik).
+Aralıklar [2,1,2,2,1,2,2], seyir eklendi.
 
 ## C — Bilinçli ertelenmiş (tasarım kararı; tetikleyici olmadan açılmaz)
 

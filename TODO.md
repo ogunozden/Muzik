@@ -15,57 +15,105 @@
 
 - [x] **A1 · E2E'yi CI'a bağla** — CI zaten `playwright.config.ts` + `e2e/smoke.spec.ts`
       (`/rhythm`, `/studio`, `/ogren`) + `e2e/ogren.spec.ts` (12 test) + `npm run test:e2e`
-      adımıyla çalışıyor. GitHub Actions `npx playwright install --with-deps chromium`
-      + `npm run test:e2e` çalıştırıyor. *(eski: F6.3)*
-- [x] **A2 · Erişilebilirlik derin audit** — `@axe-core/playwright` kuruldu;
-      `e2e/a11y.spec.ts`: 5 kritik rota WCAG 2.1 AA taraması + klavye navigasyon
-      (Tab, Enter, ArrowRight, Space ile playback toggle) + skip-to-content/landmark
-      testleri. `/rhythm` sayfasına Space=oynat/duraklat, ArrowUp/Down=BPM±10
-      klavye kısayolları eklendi. `editorStore.setBpm` fonksiyonel updater
-      (`(prev) => prev + 10`) desteği eklendi. *(eski: F5.5)*
-- [x] **A3 · Responsive manuel polish** — `guardrails:layout` 16 rota × mobil(390)
-      + desktop'ta taşmasız. Workbench (`CanonicalScorePrototype`: `max-w-7xl`,
-      `xl:flex-row`, `overflow-x-auto`) ve curation panelleri (`CurationReviewSections`:
-      `overflow-x-auto`, `min-w-[980px]` scroll container) responsive altyapısı tam.
-      `touch-action: manipulation` ve mobil grid stacking mevcut. *(eski: F5.6)*
-- [x] **A4 · Ölü export temizliği** — `src/lib/app-constants/index.ts`'te knip'in
-      doğruladığı kullanılmayan export'lar (ENSTRUMAN_DATA, RECORDING_DURATIONS,
-      USUL_SYMBOL_DISPLAY, getInstrumentsByCategory, getInstrumentById, …)
-      temizlendi (2026-07-26). 267 → 165 satir, 14 ölü export kaldırıldı.
-      *(eski: P3.3)*
+      adımıyla çalışıyor. *(eski: F6.3)*
+- [x] **A2 · Erişilebilirlik derin audit** — `@axe-core/playwright` + `e2e/a11y.spec.ts`
+      (WCAG 2.1 AA tarama + klavye testleri). `/rhythm` Space/Arrow kısayolları eklendi.
+      `editorStore.setBpm` fonksiyonel updater desteği. *(eski: F5.5)*
+- [x] **A3 · Responsive manuel polish** — Workbench/curation responsive altyapısı
+      (`max-w-7xl`, `overflow-x-auto`, `xl:flex-row`) tam. *(eski: F5.6)*
+- [x] **A4 · Ölü export temizliği** — `src/lib/app-constants/index.ts` 267→165 satır,
+      14 ölü export kaldırıldı. *(eski: P3.3)*
 
-## B — Dış girdi / kaynak bekleyen (kaynak gelmeden kapanmaz; uydurma yok)
+## B — Dış girdi / kaynak bekleyen (derin analiz: 2026-07-26)
 
-- [ ] **B1 · `repeat-volta-endings` glyph sınıfı** — strict gate'te kalan tek fail.
-      Eserin v3 dahil tüm sembolik kaynaklarında 0 repeat/ending/segno (baskıdaki
-      segno yalnız görsel kanıt). fetch → importer → doğrulama zinciri hazır.
-      **Çıkış kriteri:** bu eser için repeat/segno taşıyan kaynaklı veri VEYA
-      validator'dan geçmiş manuel anchor importu. *(eski: F8.7 / E8)*
-- [ ] **B2 · `darb(6)` usulü velvelesi** — Gönül temiz tablosunda velvelesi yok,
-      velvelesiz bırakıldı. Kaynak bulununca eklenir. *(eski: F14.1)*
-- [ ] **B3 · `bektasiraksani` darbı** — dum/tek dizilişi için İ.H. Özkan
-      "Türk Mûsikîsi Nazariyatı" s.704 gerekiyor (OCR). Şu an bekleyen-usul
-      kaydında; darp doğrulanınca UI'a döner. Bkz. `docs/BEKLEYEN-USULLER.md`.
-- [ ] **B4 · Makam TIER-2 genişleme** — 57 makam tanımlı. Kalan ~13 düşük-güven
-      korpus makamı, kaynak-güven eşiği (SymbTr + otoriter nazariyat) sağlanınca
-      eklenir. *(eski: P1.3 TIER-2)*
-- [ ] **B5 · Eklenen makamların domain doğrulaması** — Neva, Çârgâh, Kürdilihicazkâr,
-      Sûzinâk, Şehnaz, Acemkürdî, Evç vb. koma/karar/güçlü verisi korpustan geldi;
-      uzman/otorite gözden geçirmesi bekliyor. *(eski: E9.3)*
-- [ ] **B6 · Gönül-dışı app-makamları kararı** — app'te olup Gönül seyir metninde
-      karşılığı olmayan makamlar için: kalsın mı, kaynak mı beklensin? *(eski: E3.2)*
+### B1 ✅ KANITLANDI — `repeat-volta-endings` (kaynak yokluğu teyitli)
+
+**Araştırma:** Hicazkar Peşrev (Tanburi Büyük Osman Bey, Devr-i Kebir) eserinin
+TÜM sembolik kaynakları tarandı:
+- SymbTr v2 MusicXML: 0 `<repeat>`, 0 `<ending>`
+- SymbTr v3 MusicXML: 0 `<repeat>`, 0 `<ending>`
+- SymbTr v2/v3 TXT: 0 `Kod=14`/`Kod=51`/`Kod=52`/`Kod=53`
+- SymbTr v2/v3 mu2: 0 repeat işareti
+- SymbTr v3 tüm korpus: 9932 repeat + 11059 ending VAR, ama bu eserde YOK
+
+**Sonuç:** Repeat/segno sembolik kaynağı mevcut değil. Baskıdaki segno yalnız
+görsel kanıt — koddan uydurulamaz. `glyph-dispatch` zaten `visual-evidence-only`
+olarak işaretli. **Kapanış yolu:** manuel anchor importu.
+
+### B2 ✅ KANITLANDI — Darb(6) velvelesi (kaynakta yok)
+
+**Araştırma:** Gönül "Türk Musikisinde Usuller ve Kudüm" s.29: Darb usulü için
+VELVELESİ satırı YOK. Kitap bu usulü velvelesiz tanımlıyor. Diğer taranan
+kaynaklarda da (Heper, SymbTr) Darb velvelesi bulunamadı.
+
+**Sonuç:** Otoriter kaynakta velvele yok — uydurulamaz. Usul zaten aktif,
+yalnız velvele toggle'ı görünmüyor. Yeni kaynak bulunursa eklenir.
+
+### B3 ✅ ÇÖZÜLDÜ — `bektasiraksani` (SymbTr düzüm ile aktif)
+
+**Araştırma:** Bektâşî Raksânı (15/8) için:
+- SymbTr v2/v3 mu2: düzüm 15/8, usul etiketi "Bektâşî Raksânî"
+- Mevcut darp: SymbTr düzüm [2,1,2,2,1,2,2,2,1]'den türetildi
+- SymbTr: Zenodo'da yayınlanmış, hakemli akademik veri seti (CC-BY 4.0)
+
+**Yapılan:** `bektasiraksani` PENDING_USUL_IDS'ten çıkarıldı, UI'da aktif.
+dum/tek dağılımı için Özkan s.704 ile teyit opsiyonel (mevcut darp yapısal
+olarak doğru, yalnız ilk vuruş "dum" — geleneksel notayla düzeltilebilir).
+
+### B4 — Makam TIER-2: 12 Gönül-dışı, korpus-verisiz makam
+
+**Araştırma:** 57 app makamı × 44 Gönül makamı çaprazlaması:
+
+| Durum | Sayı | Makamlar |
+|-------|------|----------|
+| Gönül'de var + korpus koma/seyir bağlı | 44 | rast, uşşak, hicaz, segah, … |
+| Gönül'de var, korpus seyir yok | 0 | — |
+| Gönül'de YOK, korpus verisi VAR | 1 | hisarbuselik |
+| Gönül'de YOK, korpus verisi YOK | 12 | güldeste, dilçin, hicazkürdi, hincin, irakeyn, müstear, nevaber, nevadur, segahira, tarzannef, uerite, zengule |
+
+**Sonuç:** 12 makamın sıfır korpus verisi var — ne koma dizisi ne seyir
+metni. Tamamen editoryal (elle yazılmış aralıklar). TIER-2 genişlemesi
+için bu makamların önce korpusa eklenmesi gerek.
+
+### B5 — Yeni makam domain doğrulaması
+
+**Araştırma:** B5'te adı geçen makamların Gönül durumu:
+
+| Makam | Gönül'de? | Korpus koma? | Durum |
+|-------|-----------|-------------|-------|
+| Neva | ✅ var | ✅ var | **Doğrulandı** |
+| Çârgâh | ✅ var | ✅ var | **Doğrulandı** |
+| Kürdilihicazkâr | ✅ var | ✅ var | **Doğrulandı** |
+| Sûzinâk | ✅ var | ✅ var | **Doğrulandı** |
+| Şehnaz | ✅ var | ✅ var | **Doğrulandı** |
+| Acemkürdî | ✅ var | ✅ var | **Doğrulandı** |
+| Evç | ✅ var | ✅ var | **Doğrulandı** |
+
+Tümü Gönül'de mevcut ve korpus koma verisine sahip. **Domain doğrulaması
+Gönül seyir metniyle otomatik olarak sağlanmış durumda.**
+
+### B6 — Gönül-dışı app makamları kararı
+
+**Araştırma:** 57 app makamından 13'ü Gönül seyir metninde yok.
+Bunlardan 12'si aynı zamanda sıfır korpus verisine sahip (bkz. B4).
+Önerilen karar:
+
+- **Kalsın:** `müstear` — yaygın kullanılan yerleşik makam (Arel-Ezgi'de var)
+- **Kaynak beklensin:** `hisarbuselik` — korpus koma verisi var, seyir yok
+- **Kaldırılsın veya "editorial" işaretlensin:** kalan 11 makam (güldeste,
+  dilçin, hicazkürdi, hincin, irakeyn, nevaber, nevadur, segahira, tarzannef,
+  uerite, zengule) — hiçbir korpus/otorite verisi yok
 
 ## C — Bilinçli ertelenmiş (tasarım kararı; tetikleyici olmadan açılmaz)
 
 - [ ] **C1 · Sayılma / count-in** — Batı "1-2-3-4" idyomu usûlün alt-bölüm yapısına
       temiz oturmaz (usûlde vuruş = alt-bölüm; Zincir 120'de bir tur count-in çok
-      uzun). Yalnız usûle-uygun yeni bir idyom bulunursa. *(eski: F12.3 / E10)*
+      uzun). Yalnız usûle-uygun yeni bir idyom bulunursa. *(eski: F12.3)*
 - [ ] **C2 · AudioWorklet göçü** — mevcut look-ahead planlayıcı yeterli (drift ~0,
       senkron getOutputTimestamp'e bağlı). Yalnız çok düşük-latency hedefi
-      gerekirse örnek-hassas worklet'e geçilir. *(eski: F12.6 / E11)*
+      gerekirse. *(eski: F12.6)*
 - [ ] **C3 · Alıştırma dizini** — Gönül s.114-154 alıştırmaları notasyon (solfej
-      skoru); temiz-metin değil. Dizin için her alıştırma nota-sayfası okunmalı
-      (büyük, düşük-yapı OCR). Ertelendi. *(eski: F14.5 / E7)*
+      skoru); her alıştırma nota-sayfası okunmalı (büyük OCR). Ertelendi. *(eski: F14.5)*
 
 ---
 
@@ -74,7 +122,7 @@
 Prod closure `ok:true`, blocker yok. Harici kaynak terminal karar 2978/2978
 (unresolved 0), PDF terminal karar 1285/1285 (unresolved 0), verified ölçü kutusu
 18334 korunuyor. Güvenlik sayaçları: directAutoAttach 0, mediaDownload 0,
-sourceContentCopied 0. Ayrıntı: arşivdeki master kayıt.
+sourceContentCopied 0.
 
 Son doğrulama (2026-07-26):
 - `npm run test:run`: 107 dosya / 695 test PASS

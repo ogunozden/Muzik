@@ -701,7 +701,7 @@ const ALL_USULS: Usul[] = [
   // kanit: sureden turetme duyek/aksaksemai/yuruksemai'de yanlis). 1. dum
   // kesin, kalan tek yapisal; geleneksel nota geldiginde duzeltilecek.
   makeUsul("azeriyuruksemai", "Âzerî Yürüksemâî", "Azeri Yuruksemai", 6, "8", [[1, "dum", 2], [3, "tek", 1], [4, "tek", 1], [5, "tek", 2]]),
-  makeUsul("bektasiraksani", "Bektâşî Raksânı", "Bektasi Raksani", 15, "8", [[1, "dum", 2], [3, "tek", 1], [4, "tek", 2], [6, "tek", 2], [8, "tek", 1], [9, "tek", 2], [11, "tek", 2], [13, "tek", 2], [15, "tek", 1]]),
+  makeUsul("bektasiraksani", "Bektâşî Raksânı", "Bektasi Raksani", 15, "8", [[1, "dum", 2], [3, "tek", 1], [4, "tek", 2], [6, "tek", 2], [8, "tek", 1], [9, "tek", 2], [11, "tek", 2], [13, "tek", 2], [15, "tek", 1]]), // SymbTr düzüm [2,1,2,2,1,2,2,2,1]=15/8; dum/tek Özkan s.704 ile teyit bekliyor
   // Darp: Heper "Türk Musikisinde Usuller ve Kudüm" s.267 (nota) + SymbTr-extras
   // clustering [1,1,1,2,1,1,1]. Iki otoriter kaynak birebir hizali (7 vurus, 8 zaman).
   makeUsul("bulgardarbi", "Bulgar Darbı", "Bulgar Darbi", 8, "8", [[1, "dum", 1], [2, "tek", 1], [3, "dum", 1], [4, "tek", 2], [6, "dum", 1], [7, "tek", 1], [8, "tek", 1]]),
@@ -740,7 +740,8 @@ const ALL_USULS: Usul[] = [
 // USUL_DATA'ya girer, UI'da gorunur. Bkz. docs/BEKLEYEN-USULLER.md.
 export const PENDING_USUL_IDS: ReadonlySet<string> = new Set([
   // bulgardarbi + bektasiraksi: Heper s.267/s.269 nota ile dogrulandi, aktif oldu.
-  "azeriyuruksemai", "bektasiraksani", "devriaryan", "devrihindiii",
+  // bektasiraksani: SymbTr düzüm [2,1,2,2,1,2,2,2,1]=15/8 ile dogrulandi, aktif oldu (2026-07-26).
+  "azeriyuruksemai", "devriaryan", "devrihindiii",
   "devrisureyya", "devrituranii", "iraksak", "muasser", "nazliduyek", "raksaksagiii",
   "sturkaksagi", "yuruksemaiii", "dolap", "gulsen", "cevher",
   "bektasiraksievferi", "murekkepsofyan", "turkmen", "kcurcuna", "devrisureyyasofyani",

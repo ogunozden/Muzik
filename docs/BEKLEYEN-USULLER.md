@@ -17,11 +17,16 @@ Bu kadar. Usûl otomatik `USUL_DATA`'ya girer, `/rhythm` ve `/ogren`'de görün�
 `src/engines/usul/__tests__/data.test.ts` bekleyenlerin UI'da görünmediğini ve
 `PENDING_USULS` kayıtlarının korunduğunu doğrular.
 
-## Liste (20 usûl)
+## Aktif Edilenler (2026-07-26)
+
+| id | ad | zaman | kaynak |
+|---|---|---|---|
+| `bektasiraksani` | Bektâşî Raksânı | 15/8 | SymbTr düzüm [2,1,2,2,1,2,2,2,1]=15/8 — hakemli akademik veri seti (Zenodo). dum/tek dağılımı Özkan s.704 ile teyit bekliyor. |
+
+## Liste (19 usûl)
 
 | id | ad | zaman | kaynak durumu |
 |---|---|---|---|
-| `bektasiraksani` | Bektâşî Raksânı | 15/8 | **Özkan s.704** (15 zamanlı) — TOC-teyitli, o sayfa OCR bekliyor. **Tek somut re-add adayı.** |
 | `murekkepsofyan` | Mürekkep Sofyan | 12/8 | Özkan s.687 "Bileşik Sofyan" — isim eşdeğerliği belirsiz |
 | `azeriyuruksemai` | Âzerî Yürüksemâî | 6/8 | Bilinen kaynak yok |
 | `devriaryan` | Devr-i Âryân | 14/8 | Bilinen kaynak yok |

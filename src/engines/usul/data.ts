@@ -60,14 +60,28 @@ function corpusDefaultBpm(nameTr: string): number | undefined {
 
 type Stroke = [beat: number, symbol: UsulSymbol["symbol"], timeValue: number, syllable?: string];
 
-const ACCENTED: ReadonlySet<string> = new Set(["dum", "ta"]);
+// Kuvvetli darplar (s.14): dum/ta sag el, hek IKI ELIN BIRLIKTE vurusu.
+// `hek` eskiden burada yoktu; kaynak onu kuvvetli sayarken hic vurgulanmiyordu
+// ve hafif `tek` ailesine calmiyordu (D7).
+const ACCENTED: ReadonlySet<string> = new Set(["dum", "ta", "hek"]);
 
-function toSymbols(strokes: readonly Stroke[]): UsulSymbol[] {
+/**
+ * Darp dizisini `UsulSymbol`lere cevirir.
+ *
+ * `mainBeats` verilirse (velvele donusumunde) ANA DARBA denk DUSMEYEN vuruslar
+ * `isOrnament` isaretlenir. Ses motoru susleme kismasini artik bu bayraktan
+ * yapar; eskiden `timeValue < 1` sezgiseliyle tahmin ediyordu ve Gonul
+ * velvelelerindeki dolgunun cogu `timeValue: 1` yazili oldugu icin tam gainle
+ * caliyordu (1.400 darbin 748'i timeValue===1) — "ana iskelet one ciksin"
+ * niyeti yarim kaliyordu (D9).
+ */
+function toSymbols(strokes: readonly Stroke[], mainBeats?: ReadonlySet<number>): UsulSymbol[] {
   return strokes.map(([beat, symbol, timeValue, syllable]) => ({
     beat,
     symbol,
     isAccent: ACCENTED.has(symbol),
     timeValue,
+    ...(mainBeats ? {isOrnament: !mainBeats.has(beat)} : {}),
     ...(syllable ? {syllable} : {}),
   }));
 }
@@ -104,6 +118,8 @@ function makeUsul(
 ): Usul {
   const symbols = toSymbols(strokes);
   const defaultBpm = corpusDefaultBpm(name);
+  // Velvele vuruslarindan ANA DARBA denk gelmeyenler susleme sayilir (D9).
+  const mainBeats: ReadonlySet<number> = new Set(strokes.map(([beat]) => beat));
   return {
     id,
     name,
@@ -113,7 +129,7 @@ function makeUsul(
     unit,
     symbols,
     stressPattern: toStressPattern(beats, symbols),
-    ...(velvele ? {velvele: toSymbols(velvele)} : {}),
+    ...(velvele ? {velvele: toSymbols(velvele, mainBeats)} : {}),
     ...(defaultBpm ? {defaultBpm} : {}),
   };
 }

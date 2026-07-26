@@ -19,7 +19,7 @@ export interface SampleSlot {
   url: string;
   midiNumber?: number;
   noteName?: string;
-  symbol?: "dum" | "tek" | "ke";
+  symbol?: "dum" | "tek" | "ke" | "hek";
   isAccent?: boolean;
 }
 
@@ -73,6 +73,10 @@ const PERCUSSION_SYMBOLS = [
   {symbol: "dum", name: "Dum"},
   {symbol: "tek", name: "Tek"},
   {symbol: "ke", name: "Ke"},
+  // `hek` iki elin birlikte vurusudur (Kudum kitabi s.14). Dosyalari
+  // `scripts/derive-hek-samples.mjs` ile dum+tek toplamindan TURETILIR;
+  // gercek hek kaydi bulunursa dogrudan uzerine yazilabilir (K4).
+  {symbol: "hek", name: "Hek"},
 ] as const;
 
 const NOTE_NAMES = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"] as const;
@@ -164,8 +168,8 @@ export const MELODIC_SAMPLE_LIBRARY = SAMPLE_SLOTS
   }, {});
 
 export const PERCUSSION_SAMPLE_LIBRARY = SAMPLE_SLOTS
-  .filter((slot): slot is SampleSlot & {symbol: "dum" | "tek" | "ke"} => slot.category === "percussion" && !!slot.symbol)
-  .reduce<Record<"dum" | "tek" | "ke", PercussionSampleSet>>(
+  .filter((slot): slot is SampleSlot & {symbol: "dum" | "tek" | "ke" | "hek"} => slot.category === "percussion" && !!slot.symbol)
+  .reduce<Record<"dum" | "tek" | "ke" | "hek", PercussionSampleSet>>(
     (library, slot) => {
       if (slot.isAccent) {
         library[slot.symbol].accentUrls.push(slot.url);
@@ -178,16 +182,18 @@ export const PERCUSSION_SAMPLE_LIBRARY = SAMPLE_SLOTS
       dum: {urls: [], accentUrls: []},
       tek: {urls: [], accentUrls: []},
       ke: {urls: [], accentUrls: []},
+      hek: {urls: [], accentUrls: []},
     },
   );
 
 export const PERCUSSION_SAMPLE_LIBRARY_BY_INSTRUMENT = SAMPLE_SLOTS
-  .filter((slot): slot is SampleSlot & {symbol: "dum" | "tek" | "ke"} => slot.category === "percussion" && !!slot.symbol)
-  .reduce<Record<string, Record<"dum" | "tek" | "ke", PercussionSampleSet>>>((library, slot) => {
+  .filter((slot): slot is SampleSlot & {symbol: "dum" | "tek" | "ke" | "hek"} => slot.category === "percussion" && !!slot.symbol)
+  .reduce<Record<string, Record<"dum" | "tek" | "ke" | "hek", PercussionSampleSet>>>((library, slot) => {
     library[slot.instrumentId] = library[slot.instrumentId] ?? {
       dum: {urls: [], accentUrls: []},
       tek: {urls: [], accentUrls: []},
       ke: {urls: [], accentUrls: []},
+      hek: {urls: [], accentUrls: []},
     };
 
     if (slot.isAccent) {

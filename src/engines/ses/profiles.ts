@@ -1,4 +1,5 @@
-export type PercussionSymbol = "dum" | "tek" | "ke";
+// Kaynak (Kudum kitabi s.14): dum sag el, tek/ke sol el, hek IKI EL BIRLIKTE.
+export type PercussionSymbol = "dum" | "tek" | "ke" | "hek";
 
 export type InstrumentType =
   | "ney"
@@ -336,5 +337,5 @@ export const INSTRUMENT_PROFILES: Record<InstrumentType, InstrumentProfile> = {
 };
 
 export function isPercussionSymbol(symbol: string): symbol is PercussionSymbol {
-  return symbol === "dum" || symbol === "tek" || symbol === "ke";
+  return symbol === "dum" || symbol === "tek" || symbol === "ke" || symbol === "hek";
 }

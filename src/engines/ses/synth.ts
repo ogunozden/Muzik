@@ -33,8 +33,9 @@ export function scheduleHarmonicOscillator(
   startAt: number,
   duration: number,
   profile: InstrumentProfile,
+  destination?: AudioNode,
 ): void {
-  const masterGain = getMasterGain();
+  const masterGain = destination ?? getMasterGain();
   if (!masterGain) return;
 
   const oscillator = context.createOscillator();
@@ -68,8 +69,9 @@ export function scheduleNoiseBurst(
   duration: number,
   gainValue: number,
   brightness: number,
+  destination?: AudioNode,
 ): void {
-  const masterGain = getMasterGain();
+  const masterGain = destination ?? getMasterGain();
   if (!masterGain) return;
 
   const buffer = getOrCreateNoiseBuffer(context);
@@ -101,8 +103,13 @@ export function schedulePercussionHit(
   startAt: number,
   beatDuration: number,
   percussionInstrument?: InstrumentType,
+  /**
+   * Cikis dugumu. Verilirse tum ses BU dugume baglanir; ritim dongusu boylece
+   * KENDI planladigi sesi tek noktadan susturabilir (D10). Verilmezse master.
+   */
+  destination?: AudioNode,
 ): void {
-  const masterGain = getMasterGain();
+  const masterGain = destination ?? getMasterGain();
   if (!masterGain) return;
 
   // Map symbol to actual instrument for profile lookup
@@ -110,6 +117,7 @@ export function schedulePercussionHit(
     dum: "bendir",
     tek: "kudum",
     ke: "def",
+    hek: "bendir",
   };
   const profile = INSTRUMENT_PROFILES[percussionInstrument ?? symbolToInstrument[symbol]];
 
@@ -119,11 +127,13 @@ export function schedulePercussionHit(
       dum: isAccent ? 66 : 62,
       tek: isAccent ? 110 : 100,
       ke: isAccent ? 900 : 800,
+      hek: isAccent ? 70 : 66,
     };
     const durationMultipliers: Record<PercussionSymbol, number> = {
       dum: 0.6,
       tek: 0.25,
       ke: 0.15,
+      hek: 0.6,
     };
     const baseFreq = baseFreqs[symbol];
     const duration = beatDuration * durationMultipliers[symbol];
@@ -139,7 +149,8 @@ export function schedulePercussionHit(
         harmonicGain,
         startAt,
         duration,
-        profile
+        profile,
+        destination,
       );
     }
 
@@ -149,13 +160,15 @@ export function schedulePercussionHit(
         dum: 150,
         tek: 3000,
         ke: 5000,
+        hek: 400,
       };
       scheduleNoiseBurst(
         context,
         startAt,
         duration * 0.4,
         profile.noiseAmount * gainMultiplier,
-        noiseFreqs[symbol]
+        noiseFreqs[symbol],
+        destination,
       );
     }
   } else {

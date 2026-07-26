@@ -18,7 +18,10 @@ let availableSampleUrlsPromise: Promise<Set<string>> | null = null;
 
 async function loadSampleBuffer(context: BrowserAudioContext, url: string): Promise<AudioBuffer | null> {
   if (!sampleBufferPromises.has(url)) {
-    const promise = fetch(url, {cache: "reload"})
+    // `cache: "reload"` HTTP cache'i BAYPAS ediyordu: sample'lar her sayfa
+    // yuklemesinde yeniden agdan iniyordu (D15). Sample dosyalari icerik
+    // olarak sabit; tarayici cache'i kullanilmali.
+    const promise = fetch(url)
       .then(async (response) => {
         if (!response.ok) {
           return null;
@@ -124,12 +127,26 @@ function frequencyToMidiNumber(frequency: number): number {
   return 69 + 12 * Math.log2(frequency / 440);
 }
 
-export function getPercussionSampleSet(symbol: PercussionSymbol, percussionInstrument?: InstrumentType): PercussionSampleSet {
-  if (percussionInstrument) {
-    const instrumentSet = PERCUSSION_SAMPLE_LIBRARY_BY_INSTRUMENT[percussionInstrument]?.[symbol];
-    if (instrumentSet) return instrumentSet;
-  }
+/**
+ * Varsayilan vurmali — ACIK karar (D11).
+ *
+ * Kudum, klasik Turk musikisinin usul vurma sazidir (kaynak kitabin adi bile
+ * "Turk Musikisinde Usuller ve KUDUM"). Eskiden varsayilan YOKTU:
+ * `PERCUSSION_SAMPLE_LIBRARY` dokuz vurmalinin dosyalarini tek listede
+ * birlestiriyor, `getFirstLoadedPercussionSample` ilk yukleneni seciyordu.
+ * `PERCUSSION_INSTRUMENTS` sirasi (bendir, kudum, davul, ...) yuzunden
+ * enstrumansiz her calma BENDIR sesi veriyordu — dizi sirasinin yan etkisi,
+ * bilincli bir secim degil. Ayrica enstrumansiz preload ~54 dosya indirip
+ * yalnizca 3'unu kullaniyordu.
+ */
+const DEFAULT_PERCUSSION_INSTRUMENT: InstrumentType = "kudum";
 
+export function getPercussionSampleSet(symbol: PercussionSymbol, percussionInstrument?: InstrumentType): PercussionSampleSet {
+  const requested = percussionInstrument ?? DEFAULT_PERCUSSION_INSTRUMENT;
+  const instrumentSet = PERCUSSION_SAMPLE_LIBRARY_BY_INSTRUMENT[requested]?.[symbol];
+  if (instrumentSet && instrumentSet.urls.length > 0) return instrumentSet;
+
+  // Son care: enstrumanin o sembol icin hic slotu yoksa birlesik havuz.
   return PERCUSSION_SAMPLE_LIBRARY[symbol];
 }
 
@@ -157,8 +174,9 @@ function scheduleSampleBuffer(
   duration: number,
   gainValue: number,
   releaseTime: number,
+  destination?: AudioNode,
 ): void {
-  const masterGain = getMasterGain();
+  const masterGain = destination ?? getMasterGain();
   if (!masterGain) return;
 
   const source = context.createBufferSource();
@@ -216,6 +234,11 @@ export function scheduleSampledPercussionHit(
   beatDuration: number,
   percussionInstrument?: InstrumentType,
   gainScale: number = 1,
+  /**
+   * Cikis dugumu. Verilirse ses BU dugume baglanir; ritim dongusu boylece
+   * KENDI planladigi sesi tek noktadan susturabilir (D10). Verilmezse master.
+   */
+  destination?: AudioNode,
 ): boolean {
   const buffer = getFirstLoadedPercussionSample(symbol, isAccent, percussionInstrument);
   if (!buffer) return false;
@@ -224,14 +247,27 @@ export function scheduleSampledPercussionHit(
     dum: beatDuration * 0.8,
     tek: beatDuration * 0.4,
     ke: beatDuration * 0.3,
+    // hek = iki el birlikte: dum kadar dolu bir vurus.
+    hek: beatDuration * 0.8,
   };
   const gainBySymbol: Record<PercussionSymbol, number> = {
     dum: isAccent ? 0.75 : 0.55,
     tek: isAccent ? 0.62 : 0.46,
     ke: isAccent ? 0.55 : 0.4,
+    // Kaynak hek'i kuvvetli sayar; dum ile ayni seviyede.
+    hek: isAccent ? 0.75 : 0.55,
   };
 
   // gainScale: velvele susleme vuruslarini (F12.4) ana darplardan kisar.
-  scheduleSampleBuffer(context, buffer, 1, startAt, durationBySymbol[symbol], gainBySymbol[symbol] * gainScale, 0.05);
+  scheduleSampleBuffer(
+    context,
+    buffer,
+    1,
+    startAt,
+    durationBySymbol[symbol],
+    gainBySymbol[symbol] * gainScale,
+    0.05,
+    destination,
+  );
   return true;
 }

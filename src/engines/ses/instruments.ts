@@ -14,14 +14,19 @@ type RhythmSymbolInput = {
   symbol: string;
   isAccent: boolean;
   timeValue?: number;
+  /** Velvele dolgu vurusu (ana darba denk gelmeyen) — bkz. usul/data.ts. */
+  isOrnament?: boolean;
 };
 
 export type RhythmScheduleHit = {
   startOffset: number;
+  /** Ses zarfi penceresi (saniye). K1'den beri `notatedBeats` ile ayni. */
   beatDuration: number;
+  /** Darbin kaynaktaki zaman degerinin saniye karsiligi. */
+  notatedBeats: number;
   symbol: PercussionSymbol;
   isAccent: boolean;
-  /** Ana darplar 1.0; velvele susleme vuruslari (kisa deger) daha kisik. */
+  /** Ana darplar 1.0; velvele dolgu vuruslari daha kisik (bkz. isOrnament). */
   gainScale: number;
 };
 
@@ -225,8 +230,13 @@ export async function playInstrumentNote(
     if (!SYNTHETIC_FALLBACK_ENABLED) return;
     scheduleSynthMelodicNote(context, midiNumber, instrument, startAt, duration, gain, targetFrequency);
   } else if (profile.type === "percussion") {
-    await preloadPercussionSymbolSamples(["tek"]);
-    if (!scheduleSampledPercussionHit(context, "tek", false, startAt, duration)) {
+    // `percussionInstrument` eskiden bu iki cagrida DUSUYORDU (yalniz synth
+    // fallback'e geciyordu): sampleli yol enstrumana ozel kutuphane yerine
+    // varsayilani caliyordu (D15). Su an bu dal uygulamada ulasilamiyor
+    // (InstrumentSurface melodige kelepceliyor, samples sayfasi playRhythm
+    // kullaniyor) ama latent hatayi birakmiyoruz.
+    await preloadPercussionSymbolSamples(["tek"], instrument);
+    if (!scheduleSampledPercussionHit(context, "tek", false, startAt, duration, instrument)) {
       if (!SYNTHETIC_FALLBACK_ENABLED) return;
       schedulePercussionHit(context, "tek", false, startAt, duration, instrument);
     }
@@ -376,14 +386,25 @@ export function buildRhythmSchedule(
     .sort((left, right) => left.beat - right.beat)
     .map((symbol) => ({
       startOffset: (symbol.beat - 1) * beatDuration,
-      // Zarf penceresi EN FAZLA bir vurus: uzun degerli darplarda (orn.
-      // Devr-i Kebir'in 2 vurusluk Tek'leri) pencere degerle olceklenince
-      // sample kaydindaki dogal seken ikinci vurus da duyuluyordu
-      // (2026-07-14 kullanici raporu: "teklerde iki vurus geliyor").
-      beatDuration: beatDuration * Math.min(Math.max(symbol.timeValue ?? 1, 0.25), 1),
+      // Zarf penceresi = NOTALI DEGER (K1).
+      //
+      // Eskiden pencere 1 vurusa kirpiliyordu ("teklerde iki vurus geliyor",
+      // 2026-07-14). Kok neden kodda degil SAMPLE DOSYALARINDAYDI: kudum'un
+      // dum/ke/tek kayitlari ~10ms ve ~310ms'de IKI vurus iceriyordu ve kudum
+      // varsayilan vurmalidir. `scripts/trim-percussion-samples.mjs` uc dosyayi
+      // ilk vurusa kirpti (54/54 sample artik tek vurus), boylece kirpma
+      // workaround'una gerek kalmadi: uzun darplar (korpustaki 1.400 darbin
+      // %26'si `timeValue > 1`) artik notali degerleri kadar sesleniyor ve
+      // uzun kuyruklu sazlar (zil 1,6s; davul 1,4s) dogal olarak cinliyor.
+      beatDuration: beatDuration * Math.max(symbol.timeValue ?? 1, 0.25),
+      notatedBeats: beatDuration * Math.max(symbol.timeValue ?? 1, 0.25),
       symbol: symbol.symbol,
       isAccent: symbol.isAccent,
-      gainScale: (symbol.timeValue ?? 1) < 1 ? ORNAMENT_GAIN_SCALE : 1,
+      // Susleme kismasi VELVELE YAPISINDAN gelir (D9). Eskiden `timeValue < 1`
+      // sezgiseliydi; Gonul velvelelerindeki dolgunun cogu `timeValue: 1`
+      // yazili oldugu icin (1.400 darbin 748'i) tam gainle caliyordu ve
+      // "ana iskelet one ciksin" niyeti yalniz te-ke ikililerinde gerceklesiyordu.
+      gainScale: symbol.isOrnament ? ORNAMENT_GAIN_SCALE : 1,
     }));
 }
 
@@ -531,6 +552,21 @@ export async function startRhythmLoop(
   let hitIndex = 0;
   let stopped = false;
 
+  /**
+   * Bu dongunun KENDI cikis dugumu (D10).
+   *
+   * `stop()` eskiden yalniz pump interval'ini temizliyordu; WebAudio'ya girmis
+   * `LOOKAHEAD_SECONDS` (0,6 s) kadar vurus calmaya devam ediyordu. Iki gercek
+   * cagiran bunu global `stopAll()` ile ortuyordu — ama re-entrancy bail-out
+   * yolunda (hizli cift tiklama) `stopAll()` cagrilamaz, cunku KAZANAN
+   * donguyu de oldururdu; terk edilen dongunun on-planlanmis vuruslari
+   * canlinin ustune biniyordu (flam). Tum ses bu dugumden gectigi icin artik
+   * yalniz BU donguyu susturabiliyoruz.
+   */
+  const masterGain = getMasterGain();
+  const loopGain = context.createGain();
+  if (masterGain) loopGain.connect(masterGain);
+
   const scheduleDueHits = () => {
     if (stopped) return;
     const horizon = context.currentTime + LOOKAHEAD_SECONDS;
@@ -543,9 +579,20 @@ export async function startRhythmLoop(
       const hit = schedule[hitIndex];
       const at = startAtCtx + cycleIndex * cycleSeconds + hit.startOffset;
       if (at > horizon) break;
-      if (!scheduleSampledPercussionHit(context, hit.symbol, hit.isAccent, at, hit.beatDuration, percussionInstrument, hit.gainScale)) {
+      if (
+        !scheduleSampledPercussionHit(
+          context,
+          hit.symbol,
+          hit.isAccent,
+          at,
+          hit.beatDuration,
+          percussionInstrument,
+          hit.gainScale,
+          loopGain,
+        )
+      ) {
         if (SYNTHETIC_FALLBACK_ENABLED) {
-          schedulePercussionHit(context, hit.symbol, hit.isAccent, at, hit.beatDuration, percussionInstrument);
+          schedulePercussionHit(context, hit.symbol, hit.isAccent, at, hit.beatDuration, percussionInstrument, loopGain);
         }
       }
       hitIndex += 1;
@@ -581,6 +628,13 @@ export async function startRhythmLoop(
     stop: () => {
       stopped = true;
       window.clearInterval(pump);
+      // On-planlanmis (0,6 s'ye kadar) vuruslari SUSTUR — global `stopAll()`
+      // gerekmeden, yalnizca bu dongu icin (D10). Kisa rampa tik sesini onler.
+      const now = context.currentTime;
+      loopGain.gain.cancelScheduledValues(now);
+      loopGain.gain.setValueAtTime(loopGain.gain.value, now);
+      loopGain.gain.linearRampToValueAtTime(0, now + 0.02);
+      window.setTimeout(() => loopGain.disconnect(), 200);
     },
   };
 }

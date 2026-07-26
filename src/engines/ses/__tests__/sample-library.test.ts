@@ -103,4 +103,100 @@ describe("sample asset inventory", () => {
       console.log(`[sample-audit] Placeholder files (< 5000 bytes): ${zeroDataFiles.slice(0, 5).join(", ")}... (${zeroDataFiles.length} total)`);
     }
   });
+  /**
+   * Vurmali sample TEK VURUS icermeli (K1).
+   *
+   * Bulunan: kudum'un dum/ke/tek kayitlari ~10ms ve ~310ms'de IKI vurus
+   * iceriyordu — kudum motorun VARSAYILAN vurmalisi oldugu icin usul bozuk
+   * caliniyordu ("teklerde iki vurus geliyor", 2026-07-14). Kod tarafinda bir
+   * zarf-kirpma workaround'uyla ortulmustu; kok neden dosyalardaydi.
+   * `scripts/trim-percussion-samples.mjs --write` uc dosyayi ilk vurusa kirpti.
+   *
+   * Gercek vurusu dogal rezonanstan ayiran esikler (olculdu):
+   *   gercek ikinci vurus : aralik 290-300ms, yukselis 5.0-7.9x
+   *   rezonans (zil/davul): aralik 30-260ms,  yukselis 1.2-3.3x
+   */
+  it("her vurmali sample TEK vurus icerir", () => {
+    const WINDOW_MS = 10;
+    const MIN_STRIKE_GAP_MS = 200;
+    const MIN_STRIKE_RISE = 4;
+    const percussionFiles = new Set([
+      "dum.wav", "dum-accent.wav", "tek.wav", "tek-accent.wav",
+      "ke.wav", "ke-accent.wav", "hek.wav", "hek-accent.wav",
+    ]);
+
+    function strikeCount(fullPath: string): number {
+      const buf = readFileSync(fullPath);
+      if (buf.toString("ascii", 0, 4) !== "RIFF") return 1;
+      let offset = 12;
+      let channels = 0;
+      let sampleRate = 0;
+      let dataOffset = 0;
+      let dataLength = 0;
+      while (offset + 8 <= buf.length) {
+        const id = buf.toString("ascii", offset, offset + 4);
+        const size = buf.readUInt32LE(offset + 4);
+        if (id === "fmt ") {
+          channels = buf.readUInt16LE(offset + 10);
+          sampleRate = buf.readUInt32LE(offset + 12);
+        } else if (id === "data") {
+          dataOffset = offset + 8;
+          dataLength = size;
+        }
+        offset += 8 + size + (size % 2);
+      }
+      if (!channels || !dataLength) return 1;
+
+      const bytesPerFrame = channels * 2;
+      const frames = Math.floor(dataLength / bytesPerFrame);
+      const window = Math.max(1, Math.floor((sampleRate * WINDOW_MS) / 1000));
+      const envelope: number[] = [];
+      for (let start = 0; start + window <= frames; start += window) {
+        let peak = 0;
+        for (let i = 0; i < window; i += 1) {
+          const v = Math.abs(buf.readInt16LE(dataOffset + (start + i) * bytesPerFrame)) / 32768;
+          if (v > peak) peak = v;
+        }
+        envelope.push(peak);
+      }
+      const max = Math.max(...envelope, 0);
+      if (max <= 0) return 1;
+
+      const candidates: number[] = [];
+      let armed = true;
+      for (let i = 0; i < envelope.length; i += 1) {
+        if (armed && envelope[i] > max * 0.5) {
+          candidates.push(i);
+          armed = false;
+        } else if (!armed && envelope[i] < max * 0.35) {
+          armed = true;
+        }
+      }
+      if (candidates.length === 0) return 1;
+
+      let strikes = 1;
+      let last = candidates[0];
+      for (const index of candidates.slice(1)) {
+        const floor = Math.min(...envelope.slice(Math.max(0, index - 3), index));
+        const rise = envelope[index] / Math.max(floor, 1e-4);
+        if ((index - last) * WINDOW_MS >= MIN_STRIKE_GAP_MS && rise >= MIN_STRIKE_RISE) {
+          strikes += 1;
+          last = index;
+        }
+      }
+      return strikes;
+    }
+
+    const multiStrike: string[] = [];
+    let checked = 0;
+    for (const relativePath of actualWav) {
+      const fileName = relativePath.split("/").pop() ?? "";
+      if (!percussionFiles.has(fileName)) continue;
+      checked += 1;
+      if (strikeCount(path.join(samplesRoot, ...relativePath.split("/"))) > 1) multiStrike.push(relativePath);
+    }
+
+    expect(checked, "denetlenen vurmali sample").toBeGreaterThanOrEqual(50);
+    expect(multiStrike, "birden fazla vurus iceren sample").toEqual([]);
+  });
 });

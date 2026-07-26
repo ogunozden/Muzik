@@ -1,7 +1,8 @@
 import {describe, it, expect, vi, beforeEach} from "vitest";
 import {renderHook, act, waitFor} from "@testing-library/react";
 
-const playScaleAtFrequencies = vi.fn(async () => {});
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const playScaleAtFrequencies = vi.fn(async (...args: unknown[]) => {});
 const stopAll = vi.fn();
 vi.mock("@/engines/ses/engine", () => ({
   playScaleAtFrequencies: (...args: unknown[]) => playScaleAtFrequencies(...args),

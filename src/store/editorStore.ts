@@ -42,7 +42,7 @@ interface EditorState {
   setSelectedUsul: (usulId: string) => void;
   setSelectedInstrument: (instrument: InstrumentType) => void;
   setSelectedPercussionInstrument: (instrument: InstrumentType) => void;
-  setBpm: (bpm: number) => void;
+  setBpm: (bpm: number | ((prev: number) => number)) => void;
 
   setIsRecording: (recording: boolean) => void;
   setIsPlaying: (playing: boolean) => void;
@@ -99,7 +99,7 @@ export const useEditorStore = create<EditorState>((set, get) => ({
 
   setSelectedInstrument: (instrument) => set({ selectedInstrument: instrument }),
   setSelectedPercussionInstrument: (instrument) => set({ selectedPercussionInstrument: instrument }),
-  setBpm: (bpm) => set({ bpm }),
+  setBpm: (bpm) => set((state) => ({ bpm: typeof bpm === "function" ? bpm(state.bpm) : bpm })),
 
   setIsRecording: (recording) => set({ isRecording: recording }),
   setIsPlaying: (playing) => set({ isPlaying: playing }),

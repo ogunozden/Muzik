@@ -213,6 +213,31 @@ export default function UsulPage() {
 
   useEffect(() => stopRhythm, [stopRhythm]);
 
+  // Klavye kisayollari: Space = oynat/duraklat, ArrowUp/Down = BPM ±10 (A2).
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      const tag = (event.target as HTMLElement).tagName;
+      if (tag === "INPUT" || tag === "SELECT" || tag === "TEXTAREA") return;
+
+      if (event.key === " ") {
+        event.preventDefault();
+        if (isPlayingRef.current) {
+          stopRhythm();
+        } else {
+          void playSelectedUsul();
+        }
+      } else if (event.key === "ArrowUp") {
+        event.preventDefault();
+        setBpm((prev) => Math.min(200, prev + 10));
+      } else if (event.key === "ArrowDown") {
+        event.preventDefault();
+        setBpm((prev) => Math.max(40, prev - 10));
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [playSelectedUsul, stopRhythm, setBpm]);
+
   return (
     <UnifiedLayout>
       <PageShell className="max-w-4xl">

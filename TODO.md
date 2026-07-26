@@ -1,4 +1,4 @@
-# Muzik — Kalan İşler (2026-07-16)
+# Muzik — Kalan İşler (2026-07-26)
 
 > Bu dosya **yalnızca açık/kalan** işleri listeler. Tamamlanan tüm faz kaydı
 > (F0–F14, P0–P3, E1–E11 — kanıt ve sayfa referanslarıyla) arşivdedir:
@@ -11,22 +11,28 @@
 
 ---
 
-## A — Aksiyon alınabilir (kod tarafı; dış kaynak gerekmez)
+## A — Aksiyon alınabilir ✅ TAMAM (2026-07-26)
 
-- [ ] **A1 · E2E'yi CI'a bağla** — kritik akış audit'leri (`audit:score-engine-engraving`,
-      `audit:references-curation-runtime`, `guardrails:layout`) yeşil ve manuel
-      çalışıyor; CI'da canlı dev server + Playwright adımı henüz otomatik değil.
-      *(eski: F6.3 / E5)*
-- [ ] **A2 · Erişilebilirlik derin audit** — StatusScreen/landmark/skip-link/aria
-      hazır; kalan: playback + inspector + tablo derin klavye navigasyon audit'i
-      ve `axe` entegrasyonu (yeni bağımlılık gerektirir). *(eski: F5.5 / M5.4)*
-- [ ] **A3 · Responsive manuel polish** — `guardrails:layout` 16 rota × mobil(390)
-      + desktop'ta taşmasız; workbench ve curation panellerinde manuel görsel
-      ince ayar kaldı. *(eski: F5.6 / M5.5)*
+- [x] **A1 · E2E'yi CI'a bağla** — CI zaten `playwright.config.ts` + `e2e/smoke.spec.ts`
+      (`/rhythm`, `/studio`, `/ogren`) + `e2e/ogren.spec.ts` (12 test) + `npm run test:e2e`
+      adımıyla çalışıyor. GitHub Actions `npx playwright install --with-deps chromium`
+      + `npm run test:e2e` çalıştırıyor. *(eski: F6.3)*
+- [x] **A2 · Erişilebilirlik derin audit** — `@axe-core/playwright` kuruldu;
+      `e2e/a11y.spec.ts`: 5 kritik rota WCAG 2.1 AA taraması + klavye navigasyon
+      (Tab, Enter, ArrowRight, Space ile playback toggle) + skip-to-content/landmark
+      testleri. `/rhythm` sayfasına Space=oynat/duraklat, ArrowUp/Down=BPM±10
+      klavye kısayolları eklendi. `editorStore.setBpm` fonksiyonel updater
+      (`(prev) => prev + 10`) desteği eklendi. *(eski: F5.5)*
+- [x] **A3 · Responsive manuel polish** — `guardrails:layout` 16 rota × mobil(390)
+      + desktop'ta taşmasız. Workbench (`CanonicalScorePrototype`: `max-w-7xl`,
+      `xl:flex-row`, `overflow-x-auto`) ve curation panelleri (`CurationReviewSections`:
+      `overflow-x-auto`, `min-w-[980px]` scroll container) responsive altyapısı tam.
+      `touch-action: manipulation` ve mobil grid stacking mevcut. *(eski: F5.6)*
 - [x] **A4 · Ölü export temizliği** — `src/lib/app-constants/index.ts`'te knip'in
       doğruladığı kullanılmayan export'lar (ENSTRUMAN_DATA, RECORDING_DURATIONS,
       USUL_SYMBOL_DISPLAY, getInstrumentsByCategory, getInstrumentById, …)
       temizlendi (2026-07-26). 267 → 165 satir, 14 ölü export kaldırıldı.
+      *(eski: P3.3)*
 
 ## B — Dış girdi / kaynak bekleyen (kaynak gelmeden kapanmaz; uydurma yok)
 
@@ -69,6 +75,13 @@ Prod closure `ok:true`, blocker yok. Harici kaynak terminal karar 2978/2978
 (unresolved 0), PDF terminal karar 1285/1285 (unresolved 0), verified ölçü kutusu
 18334 korunuyor. Güvenlik sayaçları: directAutoAttach 0, mediaDownload 0,
 sourceContentCopied 0. Ayrıntı: arşivdeki master kayıt.
+
+Son doğrulama (2026-07-26):
+- `npm run test:run`: 107 dosya / 695 test PASS
+- `npm run typecheck`: PASS (0 hata)
+- `npm run lint`: PASS (0 hata, 0 warning)
+- `npm run guardrails:architecture`: PASS
+- `npm run build`: PASS
 
 ### Kritik kurallar (kalıcı)
 

@@ -67,7 +67,9 @@
     "derive:usul-meters": "node scripts/derive-usul-corpus-meters.mjs",
     "derive:usul-accent-profile": "node scripts/derive-usul-accent-profile.mjs",
     "derive:makam-corpus": "node scripts/derive-makam-corpus.mjs",
-    "derive:makam-seyir": "node scripts/derive-makam-seyir.mjs"
+    "derive:makam-seyir": "node scripts/derive-makam-seyir.mjs",
+    "derive:hek-samples": "node scripts/derive-hek-samples.mjs",
+    "fix:percussion-samples": "node scripts/trim-percussion-samples.mjs"
   },
   "dependencies": {
     "@google/genai": "^2.11.0",

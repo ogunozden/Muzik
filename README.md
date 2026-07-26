@@ -107,6 +107,18 @@ Kaynak pipeline (stage / map / sync / import / verify / discover / suggest):
   `suggest:external-sources:gemini`
 - `curation:validate`, `curation:auto-attach`, `curation:stats`
 
+Ses kutuphanesi bakimi:
+
+- `fix:percussion-samples` — vurmali sample'lari tek vurusa kirpar. Bazi
+  kayitlar bir degil BIRDEN FAZLA vurus iceriyordu (kudum'un dum/ke/tek
+  dosyalari ~10ms ve ~310ms'de iki vurus); motor bunlari tek darp diye caldigi
+  icin usul bozuluyordu. Gercek ikinci vurusu dogal rezonanstan aralik+keskinlik
+  esigiyle ayirir (varsayilan dry-run; uygulamak icin `-- --write`).
+- `derive:hek-samples` — `hek` darbi icin sample turetir. Kaynak (Kudum kitabi
+  s.14) hek'i "iki elin birlikte vurusu" diye tanimladigi icin ayni sazin
+  `dum` + `tek` kayitlari toplanip normalize edilir; ses UYDURULMAZ, tanim
+  gerceklenir. Gercek hek kaydi bulunursa dosyalarin uzerine yazilabilir.
+
 SymbTr olcu/verification:
 
 - `extract:symbtr-measures`, `review:symbtr-measures`,

@@ -26,10 +26,13 @@
 Ölçü, tahmin yerine **yazılı mertebeden** türetilsin; zaman tek ve tamsayı
 tick ekseninde olsun.
 
-- [ ] **G0** · 8 temsilci `.txt` fixture'ı commit et + mevcut çıktının fotoğrafı
-      *(fixture dizininde `0` adet `.txt` var — baseline kurulamıyor)*
-- [ ] **G1** · Tick primitifi (`TICKS_PER_WHOLE = 40320`), sıfır bağlantı
-      · **kapı:** korpustaki TÜM paydaları tam bölmeli (payda `120` dâhil)
+- [x] **G0** · 8 temsilci `.txt` fixture'ı commit edildi + baseline fotoğrafı
+      *(`fixture-baseline.test.ts`, 11 test — `5ed99787`)*
+- [x] **G1** · Tick primitifi — **`TICKS_PER_WHOLE = 524160`** (plandaki `40320`
+      değil) · **kapı geçti ve sabiti değiştirdi:** korpusun gerçek payda kümesi
+      `1 2 3 4 6 7 8 12 13 16 20 24 32 36 48 64 72 78 120 128`; `40320` **13**
+      ve **78**'i bölmüyordu → EKOK alındı. 55 test yeşil; mimari kuralı eklendi
+      (`src/core/time` hiçbir şeyi import edemez).
 - [ ] **G2** · Satır okuyucu (hiçbir satır atılmadan) + `MeterMap` + `UsulMap`,
       tüketicisiz · `parser.ts` dokunulmaz
 - [ ] **G3** · Offset yeniden üretim kapısı · **kapı:** ≥2.987/3.000 birebir

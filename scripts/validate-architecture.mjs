@@ -208,6 +208,15 @@ for (const file of walk(path.join(root, "src"))) {
   const importsFeatures = /from\s+["']@\/features\//.test(content);
   const importsApp = /from\s+["']@\/app\//.test(content);
 
+  // Zaman cekirdegi (PLAN.md §2.1 / G1): `src/core/time` ANA MOTORUN en alt
+  // katmanidir ve HICBIR seyi import etmez. Bir bagimlilik girerse cekirdek
+  // artik "her yerden cagrilabilir" olmaktan cikar ve goc tikanir.
+  if (rel.startsWith("src/core/time/") && !rel.includes("__tests__")) {
+    if (/from\s+["'](@\/|\.\.\/)/.test(content)) {
+      failures.push(`core/time is the engine kernel and must import nothing outside itself: ${rel}`);
+    }
+  }
+
   if (rel.startsWith("src/core/domain/")) {
     if (/from\s+["']@\/(features|app|core\/application|core\/infrastructure|engines)\//.test(content)) {
       failures.push(`core/domain must stay pure (no app/features/application/infrastructure/engines import): ${rel}`);

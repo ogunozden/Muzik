@@ -144,11 +144,20 @@ alınmadı; sentez uygulanır.
 
 ### 2.1 Çekirdek
 
-**Tamsayı tick, markalı tip.** `TICKS_PER_WHOLE = 40320`.
+**Tamsayı tick, markalı tip.** `TICKS_PER_WHOLE = 524160`.
 
-> Neden 40320: korpustaki tüm paydaları tam böler. **Payda kümesi
-> doğrulanmalı** — jüri üç önerinin de eksik saydığını buldu (code-9 dışı
-> satırlarda payda **120** var). G1'in kapısı budur.
+> **Düzeltildi (G1, ölçüldü):** plan `40320` diyordu; kapı testi bunu
+> **çürüttü**. 3000 TXT + 2999 mu2'nun *tüm* satır kodları tarandığında gerçek
+> payda kümesi şu çıktı:
+>
+> `1 2 3 4 6 7 8 12 13 16 20 24 32 36 48 64 72 78 120 128`
+>
+> `40320 = 2⁷·3²·5·7` — **13** ve **78 (=2·3·13)** paydalarını bölmüyor.
+> EKOK alındı: `524160 = 2⁷·3²·5·7·13`. Payda **120** ve **20** (quintuplet)
+> de bu sayı tarafından bölünüyor.
+>
+> Taşma payı: korpusun en uzun eseri 1122,75 tam nota = **588.491.040** tick;
+> `Number.MAX_SAFE_INTEGER`'ın ~15 milyonda biri.
 
 Markalı tip (`type Ticks = number & {readonly __ticks: unique symbol}`) float
 atamasını **derleme zamanında** reddeder → NaN zinciri ve
@@ -222,17 +231,25 @@ fixture'ı olmadan hiçbir baseline kurulamaz.
   çalışabilen tek kaynak bu fixture'lar.
 - **Risk:** düşük. **Geri alma:** dosyaları sil.
 
-### G1 · Tick primitifi (sıfır bağlantı)
+### G1 · Tick primitifi (sıfır bağlantı) — ✅ TAMAM
 
-- `src/core/time/ticks.ts`: markalı `Ticks`, `fromFraction`, `toWhole`,
-  `add`/`sub`/`cmp`, `floorDiv`, `mod`. **Float çıkışı tek fonksiyonda**
-  (`toNumber`), yalnız adaptör katmanı çağırır.
-- **Kapı (kritik):** korpustaki **tüm** paydaları (code-9 dâhil ve hariç)
-  tarayan bir test; `TICKS_PER_WHOLE` hepsini tam bölmeli. Payda 120 dâhil.
-  Bölmeyen payda çıkarsa sabit büyütülür ve taşma sınırı yeniden hesaplanır.
-- `scripts/validate-architecture.mjs`'e kural: bu modül `src/` dışından
-  import edilemez.
-- **Risk:** düşük (hiçbir üretim dosyası import etmez).
+- `src/core/time/ticks.ts`: markalı `Ticks`, `ticksFromFraction`,
+  `ticksFromInteger`, `add`/`sub`/`mul`/`cmp`, `floorDiv`, `mod`, `sum`.
+  **Float çıkışı tek fonksiyonda** (`wholeNotesOf`; mevcut `durationBeats`
+  eksenine köprü için `quarterBeatsOf`), yalnız adaptör katmanı çağırır.
+- **Kapı (kritik) — geçti, ama sabiti DEĞİŞTİRDİ.** Korpustaki *tüm* paydaları
+  (code-9 dâhil ve hariç) tarayan test yazıldı. Plandaki `40320` **13** ve
+  **78**'i bölmedi → sabit EKOK'a yükseltildi: **`524160`** (ayrıntı §2.1).
+  Test hem ölçülen payda listesini sabitler (CI'da çalışır) hem de canlı
+  `symb/` taramasını yapar (`it.skipIf`) → **55 test yeşil**.
+- Bölmeyen payda geldiğinde `ticksFromFraction` **`null` döner** — sessizce
+  yuvarlamaz. `0/0` yer-tutucusu da bu yoldan kapanıyor (D1 ile aynı davranış).
+- `scripts/validate-architecture.mjs`'e kural eklendi: `src/core/time`
+  **hiçbir şeyi** import edemez (`@/…` ve `../` yasak) — çekirdek her yerden
+  çağrılabilir kalsın diye.
+- **Ölçülen kanıt (teste pinlendi):** 24 adet `1/24` float ekseninde
+  `3.9999999999999996`, tick ekseninde tam `4`.
+- **Risk:** düşük (hiçbir üretim dosyası import etmiyor). **Geri alma:** klasörü sil.
 
 ### G2 · Satır okuyucu + MeterMap (tüketicisiz)
 

@@ -40,14 +40,10 @@ TÜM sembolik kaynakları tarandı:
 görsel kanıt — koddan uydurulamaz. `glyph-dispatch` zaten `visual-evidence-only`
 olarak işaretli. **Kapanış yolu:** manuel anchor importu.
 
-### B2 ✅ KANITLANDI — Darb(6) velvelesi (kaynakta yok)
+### B2 ❌ KALDIRILDI — "Darb" usul değil (2026-07-26)
 
-**Araştırma:** Gönül "Türk Musikisinde Usuller ve Kudüm" s.29: Darb usulü için
-VELVELESİ satırı YOK. Kitap bu usulü velvelesiz tanımlıyor. Diğer taranan
-kaynaklarda da (Heper, SymbTr) Darb velvelesi bulunamadı.
-
-**Sonuç:** Otoriter kaynakta velvele yok — uydurulamaz. Usul zaten aktif,
-yalnız velvele toggle'ı görünmüyor. Yeni kaynak bulunursa eklenir.
+"Darb" (6/4) bir usul adı değil, "darp" (vuruş) teriminin yanlış okunması.
+`ALL_USULS`'tan kaldırıldı.
 
 ### B3 ✅ ÇÖZÜLDÜ — `bektasiraksani` (SymbTr düzüm ile aktif)
 

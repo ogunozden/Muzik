@@ -33,8 +33,13 @@ tick ekseninde olsun.
       `1 2 3 4 6 7 8 12 13 16 20 24 32 36 48 64 72 78 120 128`; `40320` **13**
       ve **78**'i bölmüyordu → EKOK alındı. 55 test yeşil; mimari kuralı eklendi
       (`src/core/time` hiçbir şeyi import edemez).
-- [ ] **G2** · Satır okuyucu (hiçbir satır atılmadan) + `MeterMap` + `UsulMap`,
-      tüketicisiz · `parser.ts` dokunulmaz
+- [x] **G2** · `rows.ts` (hiçbir satır atılmıyor) + `meter-map.ts` +
+      `usul-map.ts` + `encoding.ts`, tüketicisiz · `parser.ts` dokunulmadı
+      · **kanıtlananlar:** zaman ilerletme kuralı `Pay>0 && Payda>0 && kod!==51`
+      (1.211.994 satırda sıfır istisna) · kod-52 = **tempo**, kanonik zamanı
+      ilerletmez (62:1 ölçüm) · kod 8/12/23/24/7 anlamları MusicXML ile
+      hizalanarak türetildi · mu2'de **134 usul adı** var ve motor hiçbirini
+      okumuyor · mu2 kodlaması **Windows-1254**
 - [ ] **G3** · Offset yeniden üretim kapısı · **kapı:** ≥2.987/3.000 birebir
 - [ ] **G4** · Keşif koşusu: geçici v2, testleri koş, kırılanları listele,
       geri al, **commit etme** · *risk sıfır, pivot kararı bu listeyle verilir*

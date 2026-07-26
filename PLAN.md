@@ -251,16 +251,44 @@ fixture'ı olmadan hiçbir baseline kurulamaz.
   `3.9999999999999996`, tick ekseninde tam `4`.
 - **Risk:** düşük (hiçbir üretim dosyası import etmiyor). **Geri alma:** klasörü sil.
 
-### G2 · Satır okuyucu + MeterMap (tüketicisiz)
+### G2 · Satır okuyucu + MeterMap + UsulMap (tüketicisiz) — ✅ TAMAM
 
-- `src/data/symbtr/rows.ts`: **hiçbir satır atılmaz**; her satır tipli bir
-  olaya çevrilir, bilinmeyen kodlar `unsupported` olarak kanıtla taşınır.
-- `src/data/symbtr/meter-map.ts`: mu2 satır-1 + TXT code-51'den `MeterMap`.
-- `src/data/symbtr/usul-map.ts`: usul ID/adı (mu2 code-51 etiketi).
-- `parser.ts` **dokunulmaz.**
-- **Kapı:** `rows.ts` çıktısındaki code-9 sayısı, mevcut `parseSymbtrScore`
-  çıktısı + atılan `0/0` satır sayısı (korpusta 28) ile birebir eşleşmeli.
-- **Risk:** düşük (üretim yolu değişmiyor).
+- `src/data/symbtr/rows.ts`: **hiçbir satır atılmıyor.** Her satır `timed` /
+  `meter-change` / `untimed` olarak tipleniyor; `code` ve **tüm sütunlar** ham
+  taşınıyor. Anlamı kanıtlanmayan kod için anlam **üretilmiyor**.
+- `src/data/symbtr/meter-map.ts`: mu2 satır-1 + TXT code-51 → `MeterMap`,
+  `measureAt()`. Mertebesiz eserde **`null`** döner (izgara uydurulmaz).
+- `src/data/symbtr/usul-map.ts` + `encoding.ts`: usul **adı** mu2 code-51'den.
+- `parser.ts` **dokunulmadı.** 74 test yeşil (47'si yeni).
+
+**Ölçülen ve kapıya bağlanan yeni gerçekler**
+
+1. **Zaman ilerletme kuralı — 1.211.994 satırda sıfır istisna:**
+   `Pay>0 && Payda>0 && kod!==51`. Süresiz bir satırın Offset'i ilerlettiği
+   **tek bir örnek yok**. Testte canlı korpus taranıyor.
+2. **Offset formülü doğrulandı:** `delta = (Pay/Payda) ÷ yazılıMertebe`.
+   `1/8` süresi 13/8'de 0,076920 · 14/8'de 0,071430 · 10/8'de 0,100000.
+3. **Kod 52 = TEMPO işareti, kanonik zamanı İLERLETMEZ.** mu2 kardeşi kendini
+   belgeliyor (`52 · 1 8 168` = "sekizlik=168"); TXT'de `Ms` her zaman 0.
+   2999 eserde "toplam süre tam ölçüye oturuyor mu?" testi:
+   **hariç 2274 (%75,8) · dâhil 629 (%21,0)**; yalnız-hariç doğru 1672 eser,
+   yalnız-dâhil doğru 27 → **62:1**. PLAN §2.3'teki `canonical`/`offsetReplay`
+   ayrımı bu yüzden doğru çıktı.
+4. **Kod anlamları MusicXML kardeşiyle hizalanarak türetildi** (444 dosya /
+   133.241 nota): `8`=çarpma (%100 `<grace>`), `12`=tril, `23`/`24`=mordent,
+   `7`=tremolo. Kalanlar süreli perdeli nota; **uydurulmadı**.
+5. **mu2 formatı kendini belgeliyor:** `50`=makam · `51`=usul (Pay/Payda+**ad**)
+   · `52`=tempo · `57`=form · `58`/`59`=besteci/söz · `60`=başlık.
+   Korpusta **134 farklı usul adı** var (Aksak 449, Düyek 432, Sofyan 378…) ve
+   motor bugün **hiçbirini okumuyor**. Hizalama kuralı: mu2 = TXT + 1
+   (2814/3000); tutmayan dosyada ad **atanmıyor** (122 ad bağlanabiliyor).
+6. **mu2 kodlaması Windows-1254**, latin1 değil. `Ağıraksak` bugüne kadar
+   `Aðýraksak` olarak okunurdu. `decodeWindows1254` bunu kapatıyor.
+7. **12 eserde `Offset` sütunu bir noktadan sonra donuyor** (çoğu
+   `serbest`/`gazel`, yani mertebesiz). Kaynak verinin özelliği; liste testte
+   sabitlendi ki değişirse görülsün.
+
+- **Risk:** sıfır (hiçbir üretim dosyası import etmiyor). **Geri alma:** dosyaları sil.
 
 ### G3 · Offset yeniden üretim kapısı
 

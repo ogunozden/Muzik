@@ -40,7 +40,12 @@ tick ekseninde olsun.
       ilerletmez (62:1 ölçüm) · kod 8/12/23/24/7 anlamları MusicXML ile
       hizalanarak türetildi · mu2'de **134 usul adı** var ve motor hiçbirini
       okumuyor · mu2 kodlaması **Windows-1254**
-- [ ] **G3** · Offset yeniden üretim kapısı · **kapı:** ≥2.987/3.000 birebir
+- [x] **G3** · Offset yeniden üretim kapısı · **KAPI GEÇTİ: 2987/2999 (%99,6)**
+      · `RowAdvance {canonical, offsetReplay}` — tek fonksiyon iki sayı
+      · karşıt kanıt: `Offset` üretimi kod-52 **dâhil** %99,6 / hariç %25,4;
+      tam ölçüye oturma **hariç** %75,8 / dâhil %21,0 → iki eksen de gerekli
+      · eşleşmeyen 12 eser sabitlendi (11'i donmuş `Offset`, 1'i tek mu2/TXT
+      çelişkisi: `hicaz_uzzal--zeybek` mu2 9/4 der, Offset 9/8 ile yazılmış)
 - [ ] **G4** · Keşif koşusu: geçici v2, testleri koş, kırılanları listele,
       geri al, **commit etme** · *risk sıfır, pivot kararı bu listeyle verilir*
 - [ ] **G5** · PDF `measureIndexBasis` alanı — **G6'dan ÖNCE**

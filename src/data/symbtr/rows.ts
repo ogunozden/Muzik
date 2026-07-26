@@ -83,6 +83,13 @@ export const SYMBTR_COLUMNS = [
 /** README v2 madde 5: usul/mertebe gecisi satiri. */
 export const METER_CHANGE_CODE = 51;
 
+/**
+ * Tempo isareti. `mu2` esdegeri: `52 <bos> 1 8 168` = "sekizlik = 168".
+ * Kanonik zamani ILERLETMEZ (bkz. dosya basligi §5); ama TXT `Offset`
+ * sutunu suresini yine de ekler.
+ */
+export const TEMPO_MARK_CODE = 52;
+
 /** README v2 madde 4: es isareti `Koma53`/`KomaAE` sutununda `-1`. */
 const REST_KOMA_MARKER = -1;
 

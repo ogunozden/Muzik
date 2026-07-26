@@ -290,14 +290,27 @@ fixture'ı olmadan hiçbir baseline kurulamaz.
 
 - **Risk:** sıfır (hiçbir üretim dosyası import etmiyor). **Geri alma:** dosyaları sil.
 
-### G3 · Offset yeniden üretim kapısı
+### G3 · Offset yeniden üretim kapısı — ✅ TAMAM · **kapı geçti**
 
-- `src/data/symbtr/offset-replay.ts`: `RowAdvance` (§2.3) ile TXT Offset
-  sütununu yeniden üret.
-- **Kapı:** 8 fixture'da birebir; korpus taramasında **≥2.987/3.000**
-  (`it.skipIf(!symbVar)` ile, CI'da atlanır).
-- **Değer:** bu kapı geçerse §1.2 formülü kanıtlanmış olur ve code-52 kararı
-  geri alınabilir kalır.
+- `src/data/symbtr/offset-replay.ts`: `RowAdvance {canonical, offsetReplay}`
+  (§2.3) — **tek fonksiyon, iki sayı**; kalıcı mod enum'u yok.
+- **Kapı sonucu: `2987 / 2999` (%99,6)** — hedef ≥2.987 idi, tam tutturdu.
+  Hata medyanı 3,3e-6 · p95 3,3e-5 (dosya 7 anlamlı hane yazıyor; tolerans
+  bu yüzden **göreli**: `max(2e-6, |offset|·2e-6)`).
+- **§1.2 formülü kanıtlandı:** `offsetDelta = (Pay/Payda) ÷ yazılıMertebe`.
+- **İki eksenin de gerekli olduğu karşıt kanıtla gösterildi:**
+
+  | eksen | `Offset` yeniden üretimi | eser tam ölçüye oturuyor |
+  |---|---|---|
+  | kod-52 **dâhil** (`offsetReplay`) | **%99,6** | %21,0 |
+  | kod-52 **hariç** (`canonical`) | %25,4 | **%75,8** |
+
+  Tek eksen seçmek iki durumdan birini bozardı. `RowAdvance` tasarımı doğru.
+- **Eşleşmeyen 12 eser sabitlendi** (kaynak verinin özelliği, motorun değil):
+  11'inde `Offset` sütunu donuyor (çoğu `serbest`/`gazel`);
+  `hicaz_uzzal--zeybek--aksak----izmir` ise korpustaki **tek mu2/TXT
+  çelişkisi** — mu2 `9/4` diyor, `Offset` sütunu `9/8` ile yazılmış.
+- **Risk:** sıfır (tüketicisiz). 93 symbtr testi yeşil.
 - **Risk:** düşük.
 
 ### G4 · Keşif koşusu (commit YOK)

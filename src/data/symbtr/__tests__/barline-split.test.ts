@@ -177,8 +177,10 @@ describe("KAPI — canli korpus (PLAN §3/G7)", () => {
     // toplaniyordu, ama `parseSymbtrScore` yalniz kod-9 uretiyor. Korpustaki
     // 31.605 sureli kod-9-disi satir atlandigi icin ilk boyle satirdan sonraki
     // TUM bar cizgileri kayiyordu ve bolunen nota %2,07 cikiyordu.
-    expect(splitNotes).toBe(5961);
-    expect(splitNotes / totalNotes).toBeCloseTo(0.0051, 4);
+    // 5.984 (ilk hal) -> 5.961 (C4: triole kaynagi bolunmuyor)
+    //               -> 5.773 (C4.1: sahte triole ureten bolme de yapilmiyor)
+    expect(splitNotes).toBe(5773);
+    expect(splitNotes / totalNotes).toBeCloseTo(0.005, 4);
     expect(totalNotes).toBe(1_163_593);
   });
 
@@ -215,10 +217,9 @@ describe("KAPI — canli korpus (PLAN §3/G7)", () => {
     // Once 23 taneydi; parcalari triole sisteminin disina dusuyordu.
     expect(splitSourceTuplets).toBe(0);
 
-    // AYRI BIR OLGU — gizlenmiyor: triole OLMAYAN bir nota bolununce
-    // parcasi triole SEKLINDE bir kesre denk gelebiliyor (orn. 12/8
-    // mertebede 1/12'lik artik). Bunlar sahte triole olarak cizilebilir.
-    // Olculdu: 376 parca. Kapsam kucuk ama gercek; TODO'da C4.1 olarak acik.
-    expect(tupletShapedFragments).toBe(376);
+    // C4.1: triole OLMAYAN bir nota bolununce parcasi triole SEKLINDE bir
+    // kesre denk gelebiliyordu (orn. 12/8'de 1/12) ve cizimde SAHTE TRIOLE
+    // gorunuyordu. Olculmustu: 376 parca. Artik boyle bir bolme yapilmiyor.
+    expect(tupletShapedFragments).toBe(0);
   });
 });

@@ -271,7 +271,16 @@ function collectCheckFailures(viewportResult) {
   if (data.frameworkOverlay) failures.push("framework overlay is visible");
   if (data.hasHorizontalOverflow) failures.push("page has horizontal overflow");
   if (data.systemCount <= 0) failures.push("no score render systems found");
-  if (data.firstMeasureSystemCount <= 1) failures.push("long first 28/4 measure was not split into multiple render systems");
+  // NOT: burada eskiden `firstMeasureSystemCount <= 1` kontrolu vardi ve
+  // "ilk 28/4 olcusu birden fazla sisteme bolunmeli" diyordu. G6 pivotundan
+  // sonra olcu izgarasi yazili mertebeden turuyor; demo eserin 1. olcusu
+  // artik 5 event / 4 vurus tutuyor ve TEK sisteme SIGIYOR. Yani kontrol
+  // gecersiz bir varsayimi kovaliyordu.
+  //
+  // Korunmasi gereken GERCEK degismez zaten asagida: hicbir sistem yogunluk
+  // ya da vurus-acikligi sinirini asmamali. "Uzun olcu bolunur mu?"
+  // sorusunun kendisi ise `score-layout.test.ts` icinde birim testiyle
+  // korunuyor — tarayici denetimine gerek yok, CI'da da kosuyor.
   if (data.denseSystemCount > 0) failures.push(`${data.denseSystemCount} render systems exceed event density limit`);
   if (data.overlongSystemCount > 0) failures.push(`${data.overlongSystemCount} render systems exceed beat-span limit`);
   if (data.svgPathCount <= 20) failures.push("VexFlow SVG appears blank or under-rendered");

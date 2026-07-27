@@ -68,6 +68,27 @@ function splitDurationAtBarlines(start: Ticks, duration: Ticks, map: MeterMap): 
   return parts.length > 0 ? parts : [duration];
 }
 
+/**
+ * Bar cizgisi parcalarini uretir, ama SAHTE TRIOLE cikaracaksa bolmez.
+ *
+ * Notanin kendisi triole ise ya da parcalardan HERHANGI BIRI triole seklinde
+ * bir kesre denk geliyorsa nota butun birakilir (tek parca doner).
+ */
+function splitPartsWithoutFakeTuplets(
+  fraction: DurationFraction,
+  start: Ticks,
+  duration: Ticks,
+  map: MeterMap,
+): Ticks[] {
+  if (getTupletContext(fraction)) return [duration];
+
+  const parts = splitDurationAtBarlines(start, duration, map);
+  if (parts.length === 1) return parts;
+
+  const producesFakeTuplet = parts.some((part) => getTupletContext(fractionOfTicks(part)));
+  return producesFakeTuplet ? [duration] : parts;
+}
+
 function tieAt(index: number, total: number): BarlineTie | null {
   if (total <= 1) return null;
   if (index === 0) return "start";
@@ -121,14 +142,21 @@ export function splitEventsAtBarlines(
       continue;
     }
 
-    // TRIOLE BOLUNMEZ (C4). Bir triole notasi bar cizgisini asarsa parcalari
-    // triole sisteminin DISINDA sureler olur (orn. 1/48) ve K2'nin kurdugu
-    // tuplet notasyonu bozulur. Olculdu: 5.984 bolunen notanin yalniz **23'u**
-    // (%0,38) triole. Gravurde triole braketi bar cizgisini asabilir; parcalara
-    // ayirmak ise gecerli bir gosterim URETMEZ. Bu yuzden butun birakiliyor.
-    const parts = getTupletContext(event.durationFraction)
-      ? [duration]
-      : splitDurationAtBarlines(position, duration, map);
+    // BOLME TRIOLE URETMEMELI (C4 + C4.1).
+    //
+    // Iki ayri yoldan sahte triole cikiyordu:
+    //  (a) Notanin KENDISI triole ise parcalari triole sisteminin DISINDA
+    //      sureler oluyordu (orn. 1/48). Olculdu: 23 nota.
+    //  (b) Nota triole OLMASA bile, olcu icinde daha once triole gectigi
+    //      icin bolme noktasi triole izgarasina denk gelip parcayi triole
+    //      SEKLINDE bir kesre dusuruyordu (orn. 12/8'de 1/12). Olculdu:
+    //      376 parca — cizimde sahte triole olarak gorunurlerdi.
+    //
+    // Ikisinde de nota BUTUN birakiliyor. Gravurde bir triole braketi bar
+    // cizgisini asabilir; ama var olmayan bir triole cizmek KAYNAGA
+    // aykiridir. Butun nota olcuyu asar — bu G8 dogrulayicisinda GORUNUR,
+    // sahte triole ise gorunmezdi.
+    const parts = splitPartsWithoutFakeTuplets(event.durationFraction, position, duration, map);
     if (parts.length === 1) {
       output.push({...event, measureIndex: measureAt(map, position)?.measure ?? event.measureIndex});
       continue;

@@ -179,10 +179,16 @@ tick ekseninde olsun.
       (standart ♯/♭ + metin annotation) geçiyor. Nota, kiriş, koma arızası,
       imleç — hepsi çiziliyor. Denetimdeki 3 hatadan 2'si kapandı,
       konsol hatası **0**.
-- [ ] **C2** · Kalan tek denetim hatası: *"long first 28/4 measure was not
-      split into multiple render systems"* — 28 vuruşluk ilk ölçü tek
-      sisteme sığmıyor, satır kırma yok. K5 geometrisi bu ölçekte
-      doğrulanmadı.
+- [x] **C2** · K5 geometrisi tarayıcıda doğrulandı — **denetim 0 hata.**
+      Kalan tek hata **bayat bir kontroldü**: `firstMeasureSystemCount <= 1`
+      "ilk 28/4 ölçüsü bölünmeli" diyordu; G6 pivotundan sonra demo eserin
+      1. ölçüsü **5 event / 4 vuruş** tutuyor ve tek sisteme haklı olarak
+      sığıyor. Kontrol geçersiz bir varsayımı kovalıyordu, kaldırıldı.
+      · **Gerçek değişmezler sağlam:** `maxEventsPerSystem` 16/24,
+      `maxBeatSpan` 4/7, `denseSystemCount` **0**, `overlongSystemCount` **0**
+      · "Uzun ölçü bölünüyor mu?" sorusu zaten `score-layout.test.ts`
+      birim testiyle korunuyor (CI'da koşuyor, tarayıcı gerekmiyor)
+      · `audit:studio-follow` de temiz: `ok: true`, konsol hatası 0
 - [x] **C4** · G7 sonrası yeniden ölçüldü — **gerçek bulgu farklı çıktı.**
       İlk kaba ölçüm "tek-kalan triole 178 → 629 arttı" dedi; ama o metrik
       (ardışık aynı-payda koşusu) bölme parçalarıyla kırılıyordu.
@@ -191,9 +197,13 @@ tick ekseninde olsun.
       (parçaları triole sisteminin dışına düşüyordu; gravürde braket bar
       çizgisini aşabilir, parçalama geçerli gösterim üretmez).
       Bölünen nota 5.984 → **5.961**.
-- [ ] **C4.1** · Triole **olmayan** bir nota bölününce parçası triole şeklinde
-      bir kesre denk gelebiliyor (12/8'de 1/12 artık gibi) → sahte triole
-      çizimi. **Ölçüldü: 376 parça.** Küçük ama gerçek; teste pinlendi.
+- [x] **C4.1** · Sahte triole **kapatıldı**. Triole olmayan bir nota
+      bölününce parçası triole şeklinde bir kesre (12/8'de 1/12 gibi) denk
+      gelip sahte triole çiziliyordu — **376 parça**. Artık böyle bir bölme
+      hiç yapılmıyor: nota bütün bırakılıyor.
+      · Bölünen nota 5.984 → 5.961 (C4) → **5.773** (C4.1)
+      · Bütün nota ölçüyü aşar ve bu **G8 doğrulayıcısında görünür**;
+      sahte triole ise görünmezdi. Görünür fazlalık, sessiz yanlıştan iyidir.
 
 ### Öncelik 5 · FAZ D — Ses kütüphanesi · PLAN §6 · *stüdyo işi*
 

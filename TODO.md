@@ -132,10 +132,24 @@ tick ekseninde olsun.
       · kod 50 sütun 8'in **donanım** olduğu düzeltildi (tek karar perdesi değil)
       · kod 56 ve 62 **adlandırılmadı** — `H`/`E` harflerinin neyi kısalttığı
       belgelenmemiş; ham taşınıyor
-- [ ] **B4** · mu2 code-14 darp gruplaması (46.214 satır) — usul vurgusunu
-      kaynaktan verir, bugün `USUL_DATA`dan geliyor
+- [x] **B4** · mu2 code-14 okunuyor · **planın iddiası kısmen düzeltildi.**
+      46.214 satır (2.586/3000 dosya), 42.319'u rakam desenli.
+      Desen toplamı mertebeye eşit: **%79,1**.
+      · Desen **ölçü başına değişiyor** (Düyek'te 100'den fazla farklı desen)
+      → bu usulün *kanonik düzümü değil*, o ölçüdeki hüzmeleme.
+      `USUL_DATA` **değiştirilmedi**.
+      · Ama usul başına **en sık** desen ders kitabı düzümüyle örtüşüyor —
+      Aksak `22221`, Düyek `12122`, Aksaksemâî `212221`, Curcuna `21223`.
+      Kanıt olarak sunulabilir, otorite olarak değil.
 - [ ] **B5** · Tekrar işaretleri (TXT açılmış 1,488×, mu2 koruyor)
-- [ ] **B6** · code-51 usul adı v3 regresyonu (382/382 boş; v2'de 319/411 dolu)
+- [x] **B6** · **Kaynak regresyonu doğrulandı ve teste bağlandı.**
+      v3: 382 kod-51 satırının **0'ında** `Soz1` var.
+      v2: aynı alan **319/411 (%77,6)** satırda doluydu — README v2 madde 5
+      o zaman doğruydu, v3'te alan boşaltılmış. Motorun hatası değil.
+      · Telafi zaten yerinde: usul adı `mu2` kod-51'den okunuyor
+      (`usul-map.ts`, 3000/3000).
+      · Yan bulgu: v2 metinleri **UTF-8**, v3 mu2'leri **Windows-1254** —
+      sürümler arası kodlama da değişmiş.
 - [x] **B7** · `TempoMap` · **planlanan kural REDDEDİLDİ.**
       `(LNS>=127 ? 127+Bas : LNS)` mu2'nin kırpılmamış değerine karşı
       ölçüldü (2.121 çift): **%87,3** — yani sekizde bir yanılıyor ve

@@ -116,18 +116,33 @@ tick ekseninde olsun.
 
 ### Öncelik 3 · FAZ B — Kaynak zenginliği · PLAN §4 · *FAZ A'ya bağlı*
 
-- [ ] **B1** · Süslemeler: grace (15.984 satır), trill (3.443), tremolo (3.807),
-      mordent (841) — MusicXML çapraz-doğrulamayla kimliklendirildi
-- [ ] **B2** · Çözülemeyen 9 kod (code-1/4/10/11/24/28/32/43/44) — çöz veya
-      `unsupported` olarak dürüstçe raporla
-- [ ] **B3** · mu2 metadata bloğu (makam+karar, usul adı, form, bestekâr,
-      güftekâr, eser adı, tür) — 3000/3000 dosyada var, hiçbiri okunmuyor
+- [x] **B1** · Süsleme kimlikleri satırlarda taşınıyor: grace **15.984**,
+      tremolo **3.807**, trill **3.443**, mordent **1.395** (kod 23+24)
+      · kanıt gücü `high`/`low` olarak **görünür** (kod 23/24/7 küçük örneklem)
+      · çarpmaların **%91'i süresiz** — `<grace>` semantiğiyle tutarlı,
+      süresiz olsa da kimlik kaybolmuyor
+- [x] **B2** · Çözülemeyen 9 kod (1/4/10/11/16/28/32/43/44) `unresolvedCode`
+      ile işaretleniyor: **nota olarak işleniyor** (süre ve perde gerçek),
+      ama "anlamı biliniyor" gibi sunulmuyor · 12.000+ satır — eskiden
+      tamamen atılıyorlardı
+- [x] **B3** · mu2 künyesi okunuyor: makam, usul, form, bestekâr, güftekâr,
+      eser adı, tür (TSM/THM) — **3000/3000 dosyada tam**
+      · **163 makam adı**, 124 açılış usul beyanı · künye dosya adından
+      farklı: `yeni_cargah` → **`Çargâh(Yeni)`**
+      · kod 50 sütun 8'in **donanım** olduğu düzeltildi (tek karar perdesi değil)
+      · kod 56 ve 62 **adlandırılmadı** — `H`/`E` harflerinin neyi kısalttığı
+      belgelenmemiş; ham taşınıyor
 - [ ] **B4** · mu2 code-14 darp gruplaması (46.214 satır) — usul vurgusunu
       kaynaktan verir, bugün `USUL_DATA`dan geliyor
 - [ ] **B5** · Tekrar işaretleri (TXT açılmış 1,488×, mu2 koruyor)
 - [ ] **B6** · code-51 usul adı v3 regresyonu (382/382 boş; v2'de 319/411 dolu)
-- [ ] **B7** · `TempoMap` — code-52 BPM 7-bit kırpılmış,
-      `(LNS>=127 ? 127+Bas : LNS)` kuralı %87,3
+- [x] **B7** · `TempoMap` · **planlanan kural REDDEDİLDİ.**
+      `(LNS>=127 ? 127+Bas : LNS)` mu2'nin kırpılmamış değerine karşı
+      ölçüldü (2.121 çift): **%87,3** — yani sekizde bir yanılıyor ve
+      yanılmaları rastgele (`LNS=127 Bas=89` → kural 216, gerçek **432**).
+      · **Karar:** tempo `mu2`den okunuyor (3000/3000, kırpılmamış).
+      mu2 yoksa TXT değeri `clipped: true` ile işaretleniyor — kırpılmış
+      bir sayı kesin gibi sunulmuyor, uydurma kural yok.
 
 ### Öncelik 4 · FAZ C — Doğrulama borcu · PLAN §5
 

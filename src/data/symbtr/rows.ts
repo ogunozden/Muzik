@@ -90,6 +90,46 @@ export const METER_CHANGE_CODE = 51;
  */
 export const TEMPO_MARK_CODE = 52;
 
+/**
+ * SUSLEME KIMLIKLERI (PLAN.md §4/B1).
+ *
+ * MusicXML kardes dosyalariyla HIZALANARAK turetildi — uydurulmadi.
+ * Hizalama: 444 dosya / 133.241 nota; her kodun XML karsiligindaki
+ * `<ornaments>` ogeleri sayildi.
+ *
+ *   kod  8 → carpma    %100 `<grace>`         n=1336  (ayrica 2. bagimsiz
+ *                                              hizalamada da %100)
+ *   kod 12 → tril      %98  `<trill-mark>`    n=61
+ *   kod 23 → mordent   %100 `<mordent>`       n=10
+ *   kod 24 → mordent   %100 `<mordent>`       n=3
+ *   kod  7 → tremolo   %100 `<tremolo>`       n=3   (2. hizalamada da %100)
+ *
+ * Kucuk orneklem (23/24/7) ikinci bir bagimsiz hizalamayla dogrulandi;
+ * yine de kesinlik derecesi `confidence` ile tasinir.
+ */
+export const ORNAMENT_BY_CODE: ReadonlyMap<number, {kind: SymbtrOrnament; confidence: "high" | "low"}> = new Map([
+  [8, {kind: "grace", confidence: "high"}],
+  [12, {kind: "trill", confidence: "high"}],
+  [23, {kind: "mordent", confidence: "low"}],
+  [24, {kind: "mordent", confidence: "low"}],
+  [7, {kind: "tremolo", confidence: "low"}],
+]);
+
+export type SymbtrOrnament = "grace" | "trill" | "mordent" | "tremolo";
+
+/**
+ * Perde ve sure tasiyan ama ANLAMI KANITLANMAYAN kodlar (PLAN.md §4/B2).
+ *
+ * MusicXML hizalamasinda bu kodlarin ayirt edici bir `<ornaments>` ogesi
+ * YOKTU: duz nota gibi davraniyorlar (kod 10 ve 11 icin `(plain)` %80-100).
+ * Sure tasiyorlar ve zamani ilerletiyorlar — bu KANITLI. Ama neden ayri bir
+ * kod aldiklari belgelenmemis.
+ *
+ * Bunlar `note` olarak islenir ve `unresolvedCode: true` ile isaretlenir:
+ * calinir/cizilir ama "anlami biliniyor" gibi sunulmaz.
+ */
+export const UNRESOLVED_PITCHED_CODES: ReadonlySet<number> = new Set([1, 4, 10, 11, 16, 28, 32, 43, 44]);
+
 /** README v2 madde 4: es isareti `Koma53`/`KomaAE` sutununda `-1`. */
 const REST_KOMA_MARKER = -1;
 
@@ -127,6 +167,18 @@ export interface TimedSymbtrRow extends SymbtrRowBase {
   readonly velocity: number | null;
   readonly lyric: string | null;
   readonly isRest: boolean;
+  /**
+   * MusicXML hizalamasiyla turetilmis susleme kimligi (B1). `null` ise
+   * susleme yok ya da kanit yok.
+   */
+  readonly ornament: SymbtrOrnament | null;
+  /** Susleme kimliginin kanit gucu — kucuk orneklemler `low`. */
+  readonly ornamentConfidence: "high" | "low" | null;
+  /**
+   * Perde ve sure tasiyor ama kodun ANLAMI kanitlanmadi (B2). Nota olarak
+   * islenir; "biliniyor" gibi sunulmaz.
+   */
+  readonly unresolvedCode: boolean;
 }
 
 /** Mertebe/usul gecisi (kod 51). Pay/Payda SURE DEGIL, MERTEBEDIR. */
@@ -154,6 +206,12 @@ export interface UntimedSymbtrRow extends SymbtrRowBase {
   readonly pitchKoma53Name: string | null;
   readonly koma53: number | null;
   readonly lyric: string | null;
+  /**
+   * Suresiz satirlar da susleme olabilir — kod-8 carpmalarinin **%91'i**
+   * suresizdir ve `<grace>` olarak dogrulanmistir. Kimlik burada da tasinir.
+   */
+  readonly ornament: SymbtrOrnament | null;
+  readonly ornamentConfidence: "high" | "low" | null;
 }
 
 export type UntimedReason =
@@ -291,9 +349,22 @@ export function readSymbtrRows(raw: string): SymbtrRowReadResult {
     const pitchAeu = toText(columns[3]);
     const koma53 = toFiniteNumber(columns[4]);
     const lyric = toText(columns[11]);
+    const ornamentEntry = code === null ? undefined : ORNAMENT_BY_CODE.get(code);
+    const ornament = ornamentEntry?.kind ?? null;
+    const ornamentConfidence = ornamentEntry?.confidence ?? null;
 
     if (numerator === null || denominator === null || numerator <= 0 || denominator <= 0) {
-      rows.push({...base, kind: "untimed", reason: "no-duration", pitchAeu, pitchKoma53Name, koma53, lyric});
+      rows.push({
+        ...base,
+        kind: "untimed",
+        reason: "no-duration",
+        pitchAeu,
+        pitchKoma53Name,
+        koma53,
+        lyric,
+        ornament,
+        ornamentConfidence,
+      });
       continue;
     }
 
@@ -307,6 +378,8 @@ export function readSymbtrRows(raw: string): SymbtrRowReadResult {
         pitchKoma53Name,
         koma53,
         lyric,
+        ornament,
+        ornamentConfidence,
       });
       continue;
     }
@@ -324,6 +397,9 @@ export function readSymbtrRows(raw: string): SymbtrRowReadResult {
       velocity: toFiniteNumber(columns[10]),
       lyric,
       isRest,
+      ornament,
+      ornamentConfidence,
+      unresolvedCode: code !== null && UNRESOLVED_PITCHED_CODES.has(code),
     });
   }
 

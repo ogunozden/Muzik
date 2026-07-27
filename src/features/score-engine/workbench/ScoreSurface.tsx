@@ -241,9 +241,18 @@ export function ScoreSurface({
         const vexflow = await import("vexflow");
         const {Accidental, Annotation, Beam, Dot, Formatter, Renderer, Stave, StaveNote, StaveTie, Tuplet, Voice} =
           vexflow;
-        // `Glyphs` enum runtime'da var ama entry type'inda re-export edilmemis
-        // (glyphs.d.ts). Koma arizasi codepoint'leri icin cast ile erisilir.
-        const GLYPHS = (vexflow as unknown as {Glyphs: Record<string, string>}).Glyphs;
+        // `Glyphs` enum'u VexFlow'un CJS derlemesinde var ama TARAYICI
+        // paketinde modul ad-alaninin tepesinde GORUNMUYOR — bu yuzden
+        // `GLYPHS[...]` erisimi `Cannot read properties of undefined` ile
+        // patliyor ve TUM porte cizimi cokuyordu (yalniz anahtar + mertebe
+        // kaliyordu). Hata `audit:score-engine-engraving` denetimi C1
+        // blokaji yuzunden hic kosamadigi icin gorunmemisti.
+        //
+        // Bos nesneye dusuyoruz: glyph bulunamayinca kod zaten BELGELENMIS
+        // yedege gecer (standart # / b + metin annotation).
+        const GLYPHS =
+          (vexflow as unknown as {Glyphs?: Record<string, string>}).Glyphs ??
+          ((vexflow as unknown as {default?: {Glyphs?: Record<string, string>}}).default?.Glyphs ?? {});
         if (cancelled) return;
 
         const renderer = new Renderer(container, Renderer.Backends.SVG);

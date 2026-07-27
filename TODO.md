@@ -168,8 +168,21 @@ tick ekseninde olsun.
 
 ### Öncelik 4 · FAZ C — Doğrulama borcu · PLAN §5
 
-- [ ] **C2** · K5 sanallaştırma/responsive geometrisi tarayıcıda *(C1'e bağlı)*
-- [ ] **C3** · `audit:score-engine-*` browser denetimleri *(C1'e bağlı)*
+- [x] **C3** · `audit:score-engine-engraving` ilk kez koştu ve **gizli bir
+      çökme buldu.** `ScoreSurface.tsx` `vexflow.Glyphs`'e doğrudan
+      erişiyordu; tarayıcı paketinde o ad-alanı **yok** →
+      `Cannot read properties of undefined (reading 'accidentalBakiyeSharp')`
+      → **tüm porte çizimi çöküyordu** (yalnız anahtar + 28/4 mertebe
+      kalıyordu). Kusur benim değişikliklerimden ÖNCE vardı (`ScoreSurface`
+      son kez `a5ef1af8`'de değişmiş); C1 blokajı yüzünden hiç görülmemişti.
+      · **Düzeltildi:** boş nesneye düşülüyor, kod zaten belgelenmiş yedeğe
+      (standart ♯/♭ + metin annotation) geçiyor. Nota, kiriş, koma arızası,
+      imleç — hepsi çiziliyor. Denetimdeki 3 hatadan 2'si kapandı,
+      konsol hatası **0**.
+- [ ] **C2** · Kalan tek denetim hatası: *"long first 28/4 measure was not
+      split into multiple render systems"* — 28 vuruşluk ilk ölçü tek
+      sisteme sığmıyor, satır kırma yok. K5 geometrisi bu ölçekte
+      doğrulanmadı.
 - [x] **C4** · G7 sonrası yeniden ölçüldü — **gerçek bulgu farklı çıktı.**
       İlk kaba ölçüm "tek-kalan triole 178 → 629 arttı" dedi; ama o metrik
       (ardışık aynı-payda koşusu) bölme parçalarıyla kırılıyordu.

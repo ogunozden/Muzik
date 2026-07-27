@@ -109,10 +109,15 @@ tick ekseninde olsun.
         tablosu testi statik bir tabloda ok tuşu gezinmesi bekliyordu —
         ölçüldü: 0 odaklanabilir öge. Test artık WCAG 1.3.1 semantiğini ve
         etkileşimli ögelerin erişilebilirliğini ölçüyor.
-- [ ] **C1.1** · e2e'yi **üretim derlemesine** karşı koştur (`next build`).
-      `next dev` sayfaya kendi dev-tools düğmesini enjekte ediyor ve sekme
-      sırasında uygulamadan önce geliyor; klavye testleri bunu atlamak
-      zorunda kalıyor.
+- [x] **C1.1** · e2e artık **üretim derlemesine** karşı koşuyor — **23/23**.
+      `npm run test:e2e:prod` tek komutta derler, sunucuyu kaldırır, testi
+      koşar, kapatır (`scripts/run-e2e-production.mjs`).
+      · Neden önemli: `next dev` sayfaya kendi dev-tools düğmesini enjekte
+      ediyor ve o düğme **sekme sırasında uygulamadan önce** geliyor —
+      yani dev sunucusunda ölçülen şey kullanıcının gördüğü şey değil.
+      Üretim derlemesinde o katman yok.
+      · `cross-env` / kabuk-bağımlı `&` kullanılmadı; süreçler Node'dan
+      yönetiliyor (Windows/POSIX ayrımı yok).
 
 ### Öncelik 3 · FAZ B — Kaynak zenginliği · PLAN §4 · *FAZ A'ya bağlı*
 

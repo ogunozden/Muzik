@@ -18,7 +18,7 @@ jobs:
       # `REQUIRE_CORPUS=1` atlamayi gorunur yapar — indirme basarisiz olursa
       # `corpus-gate.test.ts` kirmizi olur.
       - name: Cache SymbTr corpus
-        uses: actions/cache@v4
+        uses: actions/cache@v6
         with:
           path: symb
           key: symbtr-v3-zenodo-15470412

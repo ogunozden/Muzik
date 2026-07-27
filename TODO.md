@@ -210,6 +210,19 @@ tick ekseninde olsun.
       · Bütün nota ölçüyü aşar ve bu **G8 doğrulayıcısında görünür**;
       sahte triole ise görünmezdi. Görünür fazlalık, sessiz yanlıştan iyidir.
 
+### Öncelik 4.5 · G9 — parser'ı `rows.ts`'e geçir *(FAZ A'nın son halkası)*
+
+- [ ] **G9** · `parseSymbtrScore` **hâlâ yalnız kod-9 okuyor.** G2 hiçbir
+      satırı atmayan okuyucuyu kurdu ama parser ona bağlanmadı; bu yüzden
+      31.605 süreli kod-9-dışı satır (çarpma, tril, mordent, tremolo + 9
+      çözülemeyen kod) olay akışına **girmiyor**.
+      · **Ölçülen kanıt:** ölçü doluluğu kanonik ızgarada **%93,13**, ama
+      parser'ın akışında **%88,81** — aradaki fark tam olarak bu satırlar.
+      · Süsleme kimlikleri (B1) ve `unresolvedCode` (B2) `rows.ts` üzerinde
+      hazır; iş, parser'ı okuyucuya bağlayıp olay akışını genişletmek.
+      · **Risk: YÜKSEK** — olay akışı her tüketiciyi etkiler (çalma, gravür,
+      PDF hizalama). G0 baseline fixture'ları ve G3 kapısı zemini hazır.
+
 ### Öncelik 5 · FAZ D — Ses kütüphanesi · PLAN §6 · *stüdyo işi*
 
 - [ ] **D1** · Ney kapsamı 10/36, `D3→B3` arası 9 yarım-ton delik — kayıt gerek
@@ -742,7 +755,18 @@ bağlayıcı kuralı gereği birini keyfî seçemem.
       `MeterMap` yürünüyor (G6). `Offset` ölçü için **hiç** kullanılmıyor —
       iki eksenin karışması yapısal olarak imkânsız hale geldi.
       Bölme (G7) de aynı eksenden hesaplanıyor.
-- [ ] `setStrict(false)` kaldırılabilir mi ölç *(hâlâ açık)*
+- [x] `setStrict(false)` ölçüldü — **kaldırılamaz, ve bu bir kusur değil.**
+      İki bağımsız sebep:
+      1. **Yapısal:** `Voice` **ölçü başına değil, render sistemi başına**
+         kuruluyor (`ScoreSurface.tsx:368`). Sistem, bir ölçünün keyfî bir
+         dilimi; `numBeats` de `Math.ceil(span)` ile yuvarlanıyor. Strict mod
+         tick toplamının mertebeye **tam** eşitliğini ister — dilimlerde bu
+         hiçbir zaman sağlanamaz.
+      2. **Veri:** ölçü doluluğu G7 sonrası **%88,81** (156.944 ölçüde
+         139.381; son ölçüler hariç). Ölçü başına voice'a geçilse bile
+         kalan ~%11 strict modda hata verirdi.
+      Kaldırmak için önce voice'ların ölçü başına kurulması, sonra
+      doluluğun %100'e çıkması gerekir — ikisi de ayrı iş.
 
 **Not:** daha önce raporladığım "ölçülerin %32'si dolmuyor" bulgusunun bir
 kısmı bar geçişi değil, bu iki eksenin uyuşmazlığıymış. Bölme denemesi

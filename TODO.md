@@ -67,9 +67,13 @@ tick ekseninde olsun.
       · TS ↔ `.mjs` eşdeğerliği 8 fixture'da test ediliyor
       · G5 valfi tetiklendi: 520 PDF girdisi bayatladı, kutular **görünür**
       şekilde 0'a düştü (veri silinmedi)
-- [ ] **G6.1** · PDF ölçü kutularını `meter-walk-v2` tabanıyla yeniden doğrula
-      *(`verify-pdf-measures-symbtr-aligned.mjs` zaten yeni tabanı kullanıyor;
-      18.334 kutu yeniden üretilecek)*
+- [x] **G6.1** · PDF ölçü kutuları `meter-walk-v2` ile yeniden doğrulandı
+      · **546 girdi / 19.064 kutu** (öncesi 520 / 18.334 — *arttı*)
+      · `verify:symbtr-measures` **0 hata** · pivot sırasında 0'a düşen kutular
+      geri geldi · üç bayat türev artefakt da yenilendi (review template,
+      empty-import dry-run, verification manifest)
+      · yeni kapı: temizlik yalnız **makine üretimi** kayıtları siler;
+      `human-reviewed`/`visual-regression` emeği silinmez, raporlanır
 - [ ] **G7** · L1: bar-aşan nota bölme + bağ · **gerçek kapsam G4'te ölçüldü:
       5.787 nota (%0,50)**; ölçü doluluğu %93,13 → ~%99. Çalma nota sayısı ve
       toplam süresi DEĞİŞMEMELİ

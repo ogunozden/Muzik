@@ -404,9 +404,38 @@ uygulamayı 8 fixture üzerinde koşturup **birebir aynı ölçü kümesini**
 artık **0** dönüyor ve `verify:symbtr-measures` 520 hatayı **adıyla**
 raporluyor. Veri silinmedi, yalnız geçersiz sayılıyor.
 
-- **Kalan iş:** kutuların `meter-walk-v2` tabanıyla yeniden doğrulanması
-  (`verify-pdf-measures-symbtr-aligned.mjs` zaten yeni tabanı kullanıyor).
-- **Risk:** YÜKSEK'ti; 917 test yeşil. **Geri alma:** tek commit, `git revert`.
+- **Risk:** YÜKSEK'ti; 919 test yeşil. **Geri alma:** tek commit, `git revert`.
+
+### G6.1 · PDF ölçü kutularını yeniden doğrula — ✅ TAMAM
+
+Pivot 520 girdiyi bayatlatmıştı; yeni tabanla yeniden üretildiler.
+
+| | önce | sonra |
+|---|---|---|
+| doğrulanmış girdi | 520 | **546** |
+| ölçü kutusu | 18.334 | **19.064** |
+| taban | `offset-ceil-v1` | `meter-walk-v2` |
+
+`npm run verify:symbtr-measures` **0 hata**. Kutular pivotta 0'a düşmüş,
+yeniden doğrulamayla geri gelmişti — üstelik daha fazlası.
+
+**Zincirleme bayatlama.** Pivot tek bir dosyayı değil **dört** türev
+artefaktı geçersiz kıldı; her biri sırayla yenilendi:
+`layout-verification.generated.json` → review template (`scoreMeasureSummary`
+önbelleği) → empty-import dry-run sayacı → doğrulama özeti. Üçüncüsü
+yenilenmeden import geçmiyordu — kapılar birbirini tuttu.
+
+**İki tutarsızlık kapatıldı** (pivotu taşırken çıktı):
+1. `.mjs` doğrulayıcılar alanı olmayan kaydı **güncel** sayıyordu, `layout.ts`
+   ise **eski**. Alanı unutulmuş yeni bir kayıt import'tan geçip çalışma
+   zamanında sessizce bayatlardı. İkisi de artık `LEGACY_…` varsayıyor.
+2. Yeniden doğrulama betiği tabanı **yazmıyordu**; artık `summary`nin kendi
+   bildirdiği tabanı kaydediyor (varsaymıyor).
+
+**Yıkıcı işlem sınırı:** temizlik yalnız `symbtr-txt-aligned` (makine üretimi,
+yeniden üretilebilir) kayıtları siler. `human-reviewed` / `visual-regression`
+kayıtları **silinmez** — bayat sayılır ve `staleBasisKeptForReview` ile
+raporlanır. İnsan emeği sessizce atılmaz.
 
 ### G7 · L1 — bar-aşan nota bölme + bağ
 

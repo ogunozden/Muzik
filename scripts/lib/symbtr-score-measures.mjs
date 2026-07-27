@@ -23,6 +23,15 @@ export const MEASURE_INDEX_BASES = ["offset-ceil-v1", "meter-walk-v2"];
 export const CURRENT_MEASURE_INDEX_BASIS = "meter-walk-v2";
 
 /**
+ * Alani OLMAYAN kayitlarin varsayilani. `src/data/symbtr/layout.ts` ile ayni
+ * olmali: alan eklenmeden once yazilan her kayit `offset-ceil-v1` tabanindaydi.
+ * Burada `CURRENT`e dusmek, alani unutulmus YENI bir kaydin dogrulayicidan
+ * gecip calisma zamaninda bayat sayilmasina — yani sessiz bir ayrilmaya —
+ * yol acardi.
+ */
+export const LEGACY_MEASURE_INDEX_BASIS = "offset-ceil-v1";
+
+/**
  * `src/core/time/ticks.ts` ile AYNI cozunurluk. Korpustaki tum paydalarin
  * EKOK'u: 2^7 · 3^2 · 5 · 7 · 13. `symbtr-score-measures.test.mjs` TS
  * sabitiyle esitligini test eder.

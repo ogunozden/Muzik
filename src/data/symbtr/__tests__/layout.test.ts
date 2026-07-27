@@ -55,11 +55,10 @@ describe("SymbTr PDF layout candidates", () => {
     expect(coverage.totalCatalogEntries).toBe(3000);
     expect(coverage.extractedEntries).toBeGreaterThan(1);
     expect(coverage.candidateEntries).toBeGreaterThan(1);
-    // G6 PIVOTU SONRASI: 520 dogrulanmis girdi `offset-ceil-v1` tabanindaydi;
-    // motor artik `meter-walk-v2` kullaniyor, dolayisiyla hepsi BAYAT.
-    // Kutular yeniden dogrulanana kadar 0. Bu, G5'in kabul kriteridir —
-    // gorunur kayip, sessiz yanlistan iyidir.
-    expect(coverage.verifiedMeasureBoxEntries).toBe(0);
+    // G6.1 sonrasi: kutular `meter-walk-v2` tabaniyla YENIDEN dogrulandi.
+    // Pivot sirasinda 0'a dusmuslerdi (G5 valfi); simdi 546 girdi / 19.064
+    // kutu ile geri geldiler — eskisinden (520 / 18.334) fazla.
+    expect(coverage.verifiedMeasureBoxEntries).toBe(546);
     expect(coverage.unresolvedCandidateEntries).toBeGreaterThanOrEqual(0);
   });
 
@@ -75,25 +74,20 @@ describe("SymbTr PDF layout candidates", () => {
     expect(status.status).toBe("unreviewed-candidates");
   });
 
-  it("G6 sonrasi: `offset-ceil-v1` tabanli dogrulamalar BAYAT sayilir", () => {
-    // Bu eser `symbtr-txt-aligned` ile otomatik dogrulanmisti ve kutulari
-    // vardi. G6 pivotu tabani `meter-walk-v2` yapinca kayit bayatladi.
-    // Veri SILINMEDI — `layout-verification.generated.json` duruyor; yalniz
-    // GECERSIZ sayiliyor. Yeniden dogrulama sonrasi geri gelecek.
+  it("auto-verifies entries with matching candidate-to-TXT measure count via symbtr-txt-aligned", () => {
     const boxes = getSymbTrVerifiedPdfMeasureBoxes(VERIFIED_CATALOG_ID);
-    expect(boxes.length).toBe(0);
+    expect(boxes.length).toBeGreaterThan(0);
 
     const status = getSymbTrPdfLayoutVerificationStatus(VERIFIED_CATALOG_ID);
     expect(status.candidateCount).toBeGreaterThan(0);
-    expect(status.verifiedMeasureBoxCount).toBe(0);
-    expect(status.status).not.toBe("verified");
+    expect(status.verifiedMeasureBoxCount).toBeGreaterThan(0);
+    expect(status.status).toBe("verified");
 
-    // Ham kayit hala orada ve tabanini beyan ediyor.
-    const stored = (verificationData.entries as Record<string, {measureIndexBasis?: string; measureBoxes: unknown[]}>)[
-      VERIFIED_CATALOG_ID
-    ];
-    expect(stored.measureIndexBasis).toBe("offset-ceil-v1");
-    expect(stored.measureBoxes.length).toBeGreaterThan(0);
+    for (const box of boxes) {
+      expect(box.confidence).toBe("verified");
+      expect(box.method).toBe("symbtr-txt-aligned");
+      expect(box.measureIndex).toBeGreaterThanOrEqual(1);
+    }
   });
 });
 
@@ -109,12 +103,13 @@ describe("measureIndexBasis — pivot emniyet valfi (G5)", () => {
     expect(scriptModule.MEASURE_INDEX_BASES).toContain("meter-walk-v2");
   });
 
-  it("dogrulanmis 520 girdinin HEPSI tabanini kaydediyor", () => {
+  it("dogrulanmis girdilerin HEPSI tabanini kaydediyor (cikarim degil, KAYIT)", () => {
     const entries: Array<{measureIndexBasis?: string}> = Object.values(verificationData.entries);
 
-    expect(entries.length).toBe(520);
+    // G6.1 sonrasi: 546 girdi, hepsi yurunmus izgara tabaninda.
+    expect(entries.length).toBe(546);
     for (const entry of entries) {
-      expect(entry.measureIndexBasis).toBe("offset-ceil-v1");
+      expect(entry.measureIndexBasis).toBe(CURRENT_MEASURE_INDEX_BASIS);
     }
   });
 

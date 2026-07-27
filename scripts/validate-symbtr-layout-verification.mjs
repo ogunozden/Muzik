@@ -6,6 +6,7 @@ import {
 } from "./lib/symbtr-layout-fingerprint.mjs";
 import {
   CURRENT_MEASURE_INDEX_BASIS,
+  LEGACY_MEASURE_INDEX_BASIS,
   MEASURE_INDEX_BASES,
   getSymbTrMeasureIndexSummary,
 } from "./lib/symbtr-score-measures.mjs";
@@ -197,8 +198,9 @@ function validateVerificationEntry({
 
   // G5: dogrulanmis kutular olcu numarasi tabanina bagimli. Taban degisince
   // bu kontrol kutulari BAYATLATIR — sessizce baska olculere kaymalarindansa.
+  // Varsayilan `layout.ts` ile AYNI: alan yoksa eski kayit sayilir.
   const measureIndexBasis =
-    verificationEntry.measureIndexBasis ?? CURRENT_MEASURE_INDEX_BASIS;
+    verificationEntry.measureIndexBasis ?? LEGACY_MEASURE_INDEX_BASIS;
   if (!MEASURE_INDEX_BASES.includes(measureIndexBasis)) {
     errors.push(
       `${prefix}.measureIndexBasis must be one of ${MEASURE_INDEX_BASES.join(", ")}`,

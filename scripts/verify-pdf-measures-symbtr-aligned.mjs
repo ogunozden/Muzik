@@ -1,7 +1,11 @@
 import {readFileSync, writeFileSync, mkdirSync} from "node:fs";
 import path from "node:path";
 import {spawnSync} from "node:child_process";
-import {getSymbTrMeasureIndexSummary} from "./lib/symbtr-score-measures.mjs";
+import {
+  CURRENT_MEASURE_INDEX_BASIS,
+  LEGACY_MEASURE_INDEX_BASIS,
+  getSymbTrMeasureIndexSummary,
+} from "./lib/symbtr-score-measures.mjs";
 import {getSymbTrLayoutCandidateFingerprint} from "./lib/symbtr-layout-fingerprint.mjs";
 
 const root = process.cwd();
@@ -12,15 +16,42 @@ const INPUT_PATH = path.join(OUTPUT_DIR, "layout-verification-symbtr-aligned-inp
 const TOLERANCE = 0.15;
 const ALLOWED_METHODS = new Set(["human-reviewed", "visual-regression", "symbtr-txt-aligned"]);
 
+/**
+ * Gecersizlesen kayitlari temizler.
+ *
+ * Iki gerekce:
+ *   (a) izin verilmeyen `method`
+ *   (b) BAYAT olcu numarasi tabani — kutu->olcu eslesmesi artik motorun
+ *       kullanmadigi bir formulle hesaplanmis demektir (G5/G6).
+ *
+ * (b) yalniz MAKINE uretimi (`symbtr-txt-aligned`) kayitlar icin silme
+ * yapar; bunlar bu betikten yeniden uretilebilir. `human-reviewed` /
+ * `visual-regression` kayitlari SILINMEZ — insan emegi sessizce atilmaz,
+ * yalniz raporlanir ve dogrulayici onlari zaten bayat sayar.
+ */
 function cleanVerification() {
   const current = JSON.parse(readFileSync(VERIFICATION_PATH, "utf8"));
   const entries = current.entries ?? {};
   let removed = 0;
+  let removedStaleBasis = 0;
+  const staleBasisKeptForReview = [];
 
   for (const [catalogId, entry] of Object.entries(entries)) {
     if (!ALLOWED_METHODS.has(entry?.method)) {
       delete entries[catalogId];
       removed += 1;
+      continue;
+    }
+
+    const basis = entry?.measureIndexBasis ?? LEGACY_MEASURE_INDEX_BASIS;
+    if (basis === CURRENT_MEASURE_INDEX_BASIS) continue;
+
+    if (entry.method === "symbtr-txt-aligned") {
+      delete entries[catalogId];
+      removed += 1;
+      removedStaleBasis += 1;
+    } else {
+      staleBasisKeptForReview.push(catalogId);
     }
   }
 
@@ -29,7 +60,7 @@ function cleanVerification() {
     writeFileSync(VERIFICATION_PATH, `${JSON.stringify(current, null, 2)}\n`);
   }
 
-  return removed;
+  return {removed, removedStaleBasis, staleBasisKeptForReview};
 }
 
 function main() {
@@ -103,6 +134,9 @@ function main() {
       sourceArchiveMemberPath: entry.source.archiveMemberPath,
       sourceMeasureCandidateCount: candidateCount,
       candidateGeometryFingerprint,
+      // Kutular hangi olcu numarasi tabaniyla hizalandi (G5/G6). `summary`
+      // tabani kendi bildiriyor; burada onu KAYDEDIYORUZ, varsaymiyoruz.
+      measureIndexBasis: summary.measureIndexBasis,
       verifiedAt: now,
       reviewer: "symbtr-txt-system",
       method: "symbtr-txt-aligned",
@@ -149,7 +183,10 @@ function main() {
     skippedNoTxt,
     skippedMismatch,
     verifiedMeasureBoxTotal: verifications.reduce((sum, v) => sum + v.measureBoxes.length, 0),
-    cleanedExistingEntries: cleanedEntries,
+    cleanedExistingEntries: cleanedEntries.removed,
+    cleanedStaleBasisEntries: cleanedEntries.removedStaleBasis,
+    staleBasisKeptForReview: cleanedEntries.staleBasisKeptForReview,
+    measureIndexBasis: CURRENT_MEASURE_INDEX_BASIS,
     importStatus: importError ? "FAILED" : "OK",
   };
   if (importSummary) stats.importSummary = importSummary;

@@ -16,7 +16,7 @@
 > **GÜNCEL DURUM (2026-07-27 · uygulama sonrası):**
 > **FAZ A (G0–G9) ✅ · FAZ B (B1–B7) ✅ · FAZ C (C1–C4 + C1.1/C4.1) ✅ ·
 > FAZ F (F0–F4) ✅ · E1 ölçüldü→yapılmadı ✅**
-> 126 dosya / **1033 birim testi** + **23 e2e** (dev *ve* üretim derlemesi) yeşil.
+> 127 dosya / **1044 birim testi** + **23 e2e** (dev *ve* üretim derlemesi) yeşil.
 >
 > **G9 ile göç tamamlandı:** parser artık `rows.ts`'ten besleniyor, hiçbir
 > satır atılmıyor. **Ölçü doluluğu %88,81 → %98,03**; olay akışı
@@ -705,6 +705,12 @@ başlığı ve betik yorumları):
 - **Yan düzeltme:** perde yukarı kaydırılırken **anti-alias alçak geçiren**
   (pencerelenmiş sinc FIR) eklendi; yoksa Nyquist üstü içerik katlanıp
   inharmonik gürültüye dönüşüyordu.
+- **İkinci kapı — sayısal çekirdek:**
+  `scripts/__tests__/rebuild-instrument-samples.test.mjs` (11 iddia).
+  Çıktı dosyalarına bakan kapı kusuru ancak *sonradan* yakalayabildiği için
+  `lowPass`/`resample`/`detectByPeakSpacing` artık **doğrudan** ölçülüyor —
+  kusur dosyalara ulaşmadan yakalansın. Tepe aralığının iki dizi üst üste
+  binince **alttakini** verdiği de burada sabit (tanpura'nın tam durumu).
 - **Risk:** orta. **Geri alma:** dosyalar git'te.
 
 ### F2 · Kayıt dışı perde bildirilsin — **TAMAM (kapsamı daraltıldı, sebebi aşağıda)**

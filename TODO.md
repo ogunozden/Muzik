@@ -279,6 +279,9 @@ tick ekseninde olsun.
         doluyordu — 53 dosyada sessiz kuyruk vardı, yeni kapı eklendi;
         (2) betik doğrulanmayan çıktıyı da yazıp "üretildi" sayıyordu.
       · Perde yukarı kaydırılırken **anti-alias alçak geçiren** eklendi.
+      · **İkinci kapı:** `scripts/__tests__/rebuild-instrument-samples.test.mjs`
+        sayısal çekirdeği (alçak geçiren · yeniden örnekleme · tepe aralığı)
+        **doğrudan** ölçer — kusur dosyalara ulaşmadan yakalansın diye.
 - [x] **F2** · **Kayıt dışı perde bildiriliyor.** Ney'in ölçülen kayıt
       aralığı **B3–Fs5** (MIDI 59–78); dışındaki 16 yuva gerilmiş.
       `sample-provenance.ts` + `/samples` sayfasında "Gerilmiş perde" uyarısı.

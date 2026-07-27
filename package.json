@@ -57,7 +57,7 @@
     "test:visual-regression": "vitest run scripts/__tests__/visual-regression.test.mjs",
     "precommit": "npm run guardrails:architecture && npx lint-staged && npm run test:run",
     "quality": "npm run precommit && npm run audit:security",
-    "audit:security": "npm audit --audit-level=moderate",
+    "audit:security": "npm audit --omit=dev --audit-level=moderate",
     "prepare": "husky",
     "test": "vitest",
     "test:run": "vitest run",
@@ -70,7 +70,8 @@
     "derive:makam-corpus": "node scripts/derive-makam-corpus.mjs",
     "derive:makam-seyir": "node scripts/derive-makam-seyir.mjs",
     "derive:hek-samples": "node scripts/derive-hek-samples.mjs",
-    "fix:percussion-samples": "node scripts/trim-percussion-samples.mjs"
+    "fix:percussion-samples": "node scripts/trim-percussion-samples.mjs",
+    "audit:security:dev": "npm audit --audit-level=moderate || echo \"[audit:dev] yukaridaki bulgular GELISTIRME bagimliliklarinda; bkz. docs/SECURITY-AUDIT.md\""
   },
   "dependencies": {
     "@google/genai": "^2.11.0",
@@ -102,7 +103,7 @@
     "jsdom": "^29.1.1",
     "lint-staged": "^17.0.7",
     "playwright": "^1.60.0",
-    "postcss": "^8.5.19",
+    "postcss": "^8.5.23",
     "typescript": "^6.0.3",
     "vitest": "^4.1.8"
   },
@@ -120,7 +121,9 @@
     },
     "next": {
       ".": "$next",
-      "postcss": "8.5.15"
-    }
+      "postcss": "^8.5.23",
+      "sharp": "^0.35.3"
+    },
+    "sharp": "^0.35.3"
   }
 }

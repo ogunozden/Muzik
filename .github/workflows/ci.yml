@@ -17,7 +17,12 @@ jobs:
       - run: npm run test:coverage
       - run: npm run build
       - run: npm run audit:bundle-size
+      # Kullaniciya GIDEN bagimliliklarda bilinen acik olamaz — bu adim bloke eder.
       - run: npm run audit:security
+      # Gelistirme bagimliliklarindaki borc GORUNUR kalir ama CI'yi kirmaz:
+      # bugun yamali bir surum kombinasyonu yok (bkz. docs/SECURITY-AUDIT.md).
+      - run: npm run audit:security:dev
+        continue-on-error: true
       # E2E (E5/F6.3): kritik akislar gercek tarayicida. webServer config'i CI'da
       # (reuseExistingServer=false) taze `next dev` baslatir; PLAYWRIGHT_BASE_URL
       # verilmez. Chromium runner'a kurulur.

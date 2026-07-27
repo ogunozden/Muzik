@@ -167,6 +167,13 @@
         koddu. 69,73→**70,66** · 65,07→**65,78** · 78,30→**79,77** ·
         70,59→**71,61**. Eşikler 69/64/77/70 → **70/65/79/71**.
       · `ENSTRUMAN_LIST` = `INSTRUMENTS` ikizliği kaldırıldı; tek ad kaldı.
+      · **Kapı ilk koşusunda beni yakaladı (CI kırmızı).** Lint uyarılarını
+        giderirken `designShadows`/`designTypography` import'larını kaldırdım;
+        bu, `typography` ve `shadows`ı ölüleştirdi — ama yerel knip koşum o
+        düzeltmeden ÖNCEYDİ. *İki tarayıcı birbirini besliyor:* lint ölü
+        import'u, knip ölü export'u görüyor; biri temizlenince öteki yeni
+        bulgu üretiyor. Artık **yakınsayana kadar** birlikte koşuluyor.
+        Sonuç: `typography.ts` tümüyle ölüydü, silindi.
 
 **Çürütülen fikir (kayda geçsin):** "ney'de işe yaradı, 19 klasöre de uygula."
 Ölçüldü — kemençe/tambur/ud bugün **1,00** uzlaşmada; kaynaktan yeniden

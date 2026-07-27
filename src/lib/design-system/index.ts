@@ -9,6 +9,5 @@
 
 // Core design tokens
 export { colors } from "./colors";
-export { typography } from "./typography";
-export { spacing, shadows } from "./spacing";
+export { spacing } from "./spacing";
 export { radius } from "./radius";

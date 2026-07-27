@@ -89,18 +89,6 @@ export const spacing = {
   },
 } as const;
 
-// Border radius
-// Shadows
-export const shadows = {
-  none: "none",
-  sm: "0 1px 2px oklch(0% 0 0 / 0.04)",
-  DEFAULT: "0 2px 4px oklch(0% 0 0 / 0.06), 0 1px 2px oklch(0% 0 0 / 0.04)",
-  md: "0 2px 4px oklch(0% 0 0 / 0.06), 0 1px 2px oklch(0% 0 0 / 0.04)",
-  lg: "0 4px 8px oklch(0% 0 0 / 0.08), 0 2px 4px oklch(0% 0 0 / 0.04)",
-  xl: "0 8px 16px oklch(0% 0 0 / 0.10), 0 4px 8px oklch(0% 0 0 / 0.04)",
-  focus: "0 0 0 3px oklch(60% 0.08 45 / 0.25)",
-} as const;
-
 // Transitions
 // Z-index scale
 // CSS class mappings

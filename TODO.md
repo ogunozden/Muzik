@@ -11,7 +11,48 @@
 
 ---
 
-## ✅ KOD İŞİ KALMADI (2026-07-27)
+## ⏳ FAZ H — AÇIK (derin analiz: 2026-07-27) · PLAN §11
+
+> **"Kod işi kalmadı" dediğim doğruydu ama eksikti:** kendi TODO'ma bakarak
+> doğruydu. Koda ölçerek bakınca kök bir boşluk çıktı.
+>
+> **Kök bulgu: en güçlü kapılarımız CI'da koşmuyor.** İki büyük girdi
+> gitignored — `symb/` (korpus) ve `all-samples/` (ses kaynak arşivi).
+> Sonuç: **13 kapı CI'da atlanıyor.** "1.192.643 olay", "5.802 bar-aşan nota",
+> "%98,03 ölçü doluluğu" yalnız tek makinede doğrulanıyor. Bugün bir refactor
+> parser'ı bozsa **CI yeşil kalır**.
+
+- [ ] **H1** · Korpus kapılarını CI'da koşturulabilir yap — korpustan **özet**
+      türet, özeti commit et (proje bu deseni zaten kullanıyor). Kapı: CI'da
+      atlanan kapı **13 → 0**. *Dürüst sınır: bu regresyon kapısıdır, doğruluk
+      kanıtı değil — özet test edilen koddan türetilir.*
+- [ ] **H2** · Korpus kapılarının zaman aşımını düzelt — `testTimeout: 20000`
+      genel; korpus kapısı coverage altında **44 s** sürüp deterministik
+      düşüyor. CI'da görünmüyor çünkü orada test zaten atlanıyor.
+- [ ] **H3** · Ses kaynak arşivinin kimliğini sabitle — `all-samples/` commit
+      edilmez (56 MB, üçüncü parti) ama **sha256 + lisans + URL** edilmeli.
+      Yoksa F5'teki "yeniden üretilebilir" iddiası tek makinede doğru.
+- [ ] **H4** · Sample provenance'ını 20 klasörün tamamına yay — bugün yalnız
+      `ney` belgeli; diğer 19'un üretim parametreleri hiçbir yerde yok.
+- [ ] **H5** · `hek` için gerçek kayıt ara — bugünkü "arandı, yok" ifadesi
+      **dosya adına** dayanıyor; vurmalı preset'lerin *bölgeleri* ölçülmedi.
+- [ ] **H6** · Büyük dosyalar: `studio/follow/page.tsx` **1024**,
+      `references/curation/page.tsx` **848** (ratchet tavanı 800).
+- [ ] **H7** · Coverage — **önce ölç**. H2'deki zaman aşımı yüzünden bu
+      oturumda ölçülemedi; eşik yükseltmesi ölçüm görülmeden planlanmayacak.
+
+**Çürütülen fikir (kayda geçsin):** "ney'de işe yaradı, 19 klasöre de uygula."
+Ölçüldü — kemençe/tambur/ud bugün **1,00** uzlaşmada; kaynaktan yeniden
+üretilseler en çok gerilme sırasıyla **16,02 · 14,23 · 6,96** yarım ton olurdu.
+Ney bir istisnaymış (2,23). Yeniden üretim bugün kusursuz olanı bozardı.
+
+**Kullanıcı kararı bekleyen tek madde — tanpura kalsın mı?** Kaynağının 4
+bölgesinin hiçbiri ölçülemiyor; ayrıca tanpura **Hint** sazıdır ve projede
+zaten `tambur` var. Kaldır / bırak / kaynak getir → PLAN §11.7.
+
+---
+
+## ✅ FAZ A–G KOD İŞİ TAMAM (2026-07-27)
 
 > **Bu bölümde açık kutu yok.** Aşağıdaki §A–§L listeleri tamamlanmış işin
 > kaydıdır; nasıl yapıldığı [PLAN.md](PLAN.md)'de.

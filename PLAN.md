@@ -840,3 +840,181 @@ yeni üretilmiş dosya + derive betiği + senkron testi + kalıcı drift riski,
 
 Yeniden bakılacak an: `audit:bundle-size` bütçenin %80'ini geçtiğini
 raporladığında.
+
+---
+
+## 11. FAZ H — Kanıtın CI'da görünmesi (derin analiz: 2026-07-27)
+
+> **Bu faz bir "kalan işler" listesi değil, bir teşhis.** "Kod işi kalmadı"
+> dediğim yer kendi TODO'ma bakarak doğruydu; kodun kendisine ölçerek
+> bakınca kök bir boşluk çıktı.
+
+### 11.0 Kök bulgu — en güçlü kapılarımız CI'da koşmuyor
+
+Projenin doğrulama gücü iki büyük girdiye dayanıyor ve **ikisi de gitignored**:
+
+| girdi | durum | sonucu |
+|---|---|---|
+| `symb/` (SymbTr korpusu, 3000 eser) | `.gitignore:51` | **13 kapı CI'da atlanıyor** |
+| `all-samples/` (ses kaynak arşivi) | `.gitignore:47` · 0 dosya izleniyor | sample üreticileri CI'da koşamaz |
+
+Atlanan 13 kapı sıradan testler değil; projenin **manşet kanıtları** onlar:
+`ticks` · `rows` · `meter-map` · `offset-replay` · `ornaments` ·
+`repeat-structure` · `barline-split`. "1.192.643 olay", "5.802 bar-aşan nota",
+"%98,03 ölçü doluluğu" — hepsi yalnız **bu makinede** doğrulanıyor.
+
+Yani bugün bir refactor parser'ı bozsa **CI yeşil kalır**. Bu,
+`docs/SECURITY-AUDIT.md`'de yazdığımız dersin simetriği: orada CI hep
+kırmızıydı ve insanlara görmezden gelmeyi öğretiyordu; burada CI hep yeşil ve
+**bakmadığı için** yeşil.
+
+### 11.1 İkinci bulgu — yerel korpus koşusu zaman aşımına giriyor
+
+`barline-split.test.ts` canlı korpus kapısı tek başına **13 s**, `test:coverage`
+altında **44 s** sürüyor; `vitest.config` `testTimeout: 20000`. Yani coverage
+koşusunda **deterministik olarak** düşüyor (rastgelelik değil, yük).
+
+CI'da görünmüyor çünkü orada korpus yok → test zaten atlanıyor. Kusur tam da
+11.0'ın gölgesinde saklanmış.
+
+### 11.2 Üçüncü bulgu — "hepsini yeniden üret" fikri ÇÜRÜDÜ
+
+F5'te ney'i soundfont'tan üretmek işe yarayınca doğal sonraki adım "aynısını
+19 klasöre uygula" görünüyordu. **Ölçüldü, yanlış çıktı:**
+
+| enstrüman | bugünkü uzlaşma | kaynaktan yeniden üretilse en çok gerilme |
+|---|---|---|
+| kemençe | **1,00** | 16,02 yarım ton · 20/36 yuva >3 |
+| tambur | **1,00** | 14,23 · 12/36 |
+| ud | **1,00** | 6,96 · 4/36 |
+| bağlama | 0,64 | 13,32 (en iyi 3'lü kombinasyon) |
+| rebab | 0,25 | **23,97** · 21/36 |
+| *ney (yapıldı)* | 0,81 | **2,23** · 0/36 |
+
+**Ney bir istisnaydı:** `Moss_Nay` + `NEY_05`in ölçülebilir bölgeleri tesadüfen
+C3–B5'in tamamını kaplıyor. Diğerlerinde kaplamıyor — yeniden üretmek bugün
+kusursuz olan dört enstrümanı **bozardı**. Bu faz o yüzden yeniden üretim
+değil, **kaynağı kayda geçirme** üzerine kurulu.
+
+### 11.3 Dördüncü bulgu — tanpura'nın iki ayrı sorunu var
+
+1. **Ölçüm:** kaynağı olan Proteus `Tamburas` preset'inin 4 bölgesinin
+   **hiçbiri ölçülemiyor**. Yani sorun bizim render'ımızda değil, malzemede.
+2. **Domain:** tanpura bir **Hint** sazıdır; Türk müziğinin dem sazı değildir
+   ve projede zaten `tambur` var. Türk soundfont'unda (113 preset) tanpura
+   yok — olmaması beklenen şey.
+
+Bu ikincisi bir mühendislik kararı değil; **kullanıcının kararı** (§11.7).
+
+---
+
+### H1 · Korpus kapılarını CI'da koşturulabilir yap — **öncelik 1**
+
+**Sorun:** korpus 3000 dosya ve gitignored; commit edilemez.
+
+**Yapılacak:** korpustan **özet** türet, özeti commit et, CI o özete karşı
+koşsun. Proje bu deseni zaten kullanıyor (usul mertebeleri, makam koma
+dizileri: *türet → üretilmiş JSON'u commit et → test JSON'a karşı doğrula*).
+
+- `scripts/derive-corpus-digest.mjs`: her eser için olay sayısı, toplam tick,
+  bölünen nota sayısı, ölçü doluluğu. Çıktı
+  `src/data/symbtr/__tests__/fixtures/corpus-digest.json` (boyut önce ölçülür;
+  >1 MB ise temsilî örnekleme + manşet toplamlar).
+- Korpuslu makinede: mevcut kapı **hem** korpusu **hem** özeti doğrular; özet
+  bayatsa test kırılır.
+- Korpussuz makinede (CI): özete karşı koşar.
+- **Kapı:** CI'da atlanan kapı sayısı **13 → 0**.
+- **Dürüst sınır — bu bir doğruluk kanıtı DEĞİL:** özet, test edilen kodun
+  kendisinden türetilir; dolayısıyla kodun *doğru* olduğunu kanıtlamaz,
+  **değiştiğini** yakalar (regresyon kapısı). FAZ A/G8'de öğrendiğimiz totoloji
+  tuzağına düşmemek için bu ayrım koda ve belgeye yazılacak.
+- **Risk:** düşük. **Geri alma:** tek dosya + tek test değişikliği.
+
+### H2 · Korpus kapılarının zaman aşımını düzelt — **öncelik 1, ucuz**
+
+`testTimeout: 20000` genel değer; korpus kapıları 13–44 s sürüyor.
+
+- Korpusa bağlı 13 kapıya **açık** timeout ver (ölçülen sürenin ~3 katı).
+- **Kapı:** `npm run test:coverage` korpuslu makinede yeşil.
+- **Risk:** sıfır.
+
+### H3 · Ses kaynak arşivinin kimliğini sabitle — **öncelik 2**
+
+`all-samples/` 56 MB+ üçüncü parti ikili; commit edilmez ve edilmemeli. Ama
+**kimliği** commit edilmeli, yoksa F5'te yazdığım "artık yeniden üretilebilir"
+iddiası yalnız bu makinede doğru.
+
+- `public/samples/sources.json`: her kaynak dosya için `sha256`, indirme URL'i,
+  lisans, sürüm.
+- **Kapı:** dosya yerelde varsa hash tutmalı (tutmuyorsa test kırılır);
+  yoksa test *bilgi verip* geçer — kaynağın yokluğu sessiz kalmaz.
+- **Risk:** sıfır.
+
+### H4 · Sample provenance'ını 20 klasörün tamamına yay — **öncelik 2**
+
+Bugün yalnız `ney` belgeli ve üreticisi depoda. Diğer 19 klasörün üretim
+parametreleri (hangi preset, hangi bölge, ne kadar gerilme) **hiçbir yerde
+yok**; README yalnız preset adını yazıyor.
+
+- `public/samples/provenance.json`: her klasör için kaynak dosya + preset(ler)
+  + üretici betik + ölçülen kapsam + gerilme istatistiği + uzlaşma oranı.
+- `sample-provenance.ts` bu dosyadan beslensin (bugün `ney` elle yazılı).
+- `/samples` sayfası her klasörün kaynağını göstersin — bugün yalnız
+  "türetilmiş/gerilmiş" uyarısı var, **kaynak** yok.
+- **Kapı:** provenance'ı olmayan klasör kalmayacak; olmayanlar "bilinmiyor"
+  diye işaretlenecek — sessizce boş geçilmeyecek.
+- **Risk:** düşük (yalnız veri + görüntü).
+
+### H5 · `hek` için gerçek kayıt ara — **öncelik 3, ölçülebilir**
+
+`hek` bugün dum+tek toplamından türetiliyor (F3) ve bu görünür. Ama arama
+yalnız **dosya adına** bakılarak yapılmıştı. Soundfont'ta `Bendir`, `Darbuka`,
+`Riq_Full`, `Eastern Percussion`, `Derbake`, `Doumbek`, `Syrian Bendir`
+preset'leri var; iki elin birlikte vuruşu bunların **bölgelerinde** olabilir.
+
+- Her vurmalı preset'in bölgeleri çıkarılıp ölçülsün (enerji, saldırı,
+  spektral merkez): dum'dan **daha dolu**, tek'ten **daha güçlü** bir vuruş
+  var mı?
+- **Kapı:** bulunursa `derivedFrom` kalkar ve F3 testi kırılır (öyle yazıldı).
+  Bulunmazsa **bulunmadığı ölçümle** kayda geçer — bugünkü "arandı, yok"
+  ifadesi dosya adına dayanıyor, o zayıf.
+- **Risk:** sıfır (yalnız ölçüm).
+
+### H6 · Yapısal borç — büyük dosyalar
+
+Ratchet tavanı 800; iki dosya üstünde (grandfathered):
+
+| dosya | satır |
+|---|---|
+| `src/app/studio/follow/page.tsx` | **1024** |
+| `src/app/references/curation/page.tsx` | **848** |
+
+- Ratchet büyümeyi engelliyor, yani acil değil; ama ikisi de çekirdek akış.
+- **Kapı:** her ikisi ≤800; ratchet tavanı sıkılaştırılır.
+- **Risk:** orta (JSX taşıma). **Geri alma:** tek commit.
+
+### H7 · Coverage — önce ölç
+
+Yapılandırılmış eşikler: statements 67 · branches 62 · functions 76 · lines 68.
+**Gerçek değer bu oturumda ölçülemedi** çünkü `test:coverage` H2'deki zaman
+aşımına takıldı. H2'den sonra ölçülecek; eşik yükseltmesi **ölçüm görülmeden
+planlanmayacak**.
+
+---
+
+### 11.7 Kullanıcının kararı bekleyen tek madde
+
+**Tanpura projede kalsın mı?**
+
+Ölçülen: kaynağının 4 bölgesinin hiçbiri ölçülemiyor; 36 dosyanın 35'i etiketiyle
+uyuşmuyor; üç bağımsız yöntem uzlaşmıyor. Domain: tanpura Hint sazıdır, Türk
+müziğinin sazı değildir ve projede zaten `tambur` var.
+
+Üç seçenek:
+
+1. **Kaldır** — enstrüman listesinden çıkar (klasör de gider).
+2. **Bırak** — borç testte görünür kalmaya devam eder.
+3. **Kaynak getir** — ölçülebilir bir tanpura kaydı bulunursa yeniden üretilir.
+
+Bu bir mühendislik kararı değil, **ürün kararı**; ADR 0001 gereği tek başıma
+vermem.

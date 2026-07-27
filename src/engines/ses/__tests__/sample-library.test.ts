@@ -18,6 +18,16 @@ const samplesRoot = path.join(process.cwd(), "public", "samples");
  *
  * Liste bos kalsa bile DURUYOR: bir klasorun sessizce bosalmasi asagidaki
  * kapida durur ve buraya gerekce yazmayi zorunlu kilar.
+ *
+ * ── BURAYA BIR KLASOR EKLERSEN: `.gitkeep` KOY ──────────────────────────
+ * Git BOS DIZIN IZLEMEZ. Tanpura'da tam bu tuzaga dusuldu: dosyalar
+ * `git rm` ile silindi, yerel makinede bos klasor durmaya devam etti ve
+ * testler gecti — ama CI'nin temiz klonunda klasor HIC YOKTU ve provenance
+ * kaydi "oksuz" cikip CI'yi kirdi.
+ *
+ * Yani filesystem okuyan bir test, yerelde CI'da VAR OLAMAYACAK bir sebeple
+ * gecebilir. Bilincli bos birakilan bir klasorun temiz klonda da var olmasi
+ * gerekiyorsa icine izlenen bir dosya (`.gitkeep`) konmalidir.
  */
 const INTENTIONALLY_EMPTY_FOLDERS = new Set<string>();
 

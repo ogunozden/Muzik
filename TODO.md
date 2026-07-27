@@ -87,6 +87,9 @@ provenance kaydı kaldırıldı — **melodik enstrüman 11 → 10**.
 **İleriye dönük kapı:** `public/samples/` altındaki her melodik klasör artık
 doğrulama listesinde olmak *zorunda* (KAPSAM iddiası). Tanpura'nın aylarca
 sessizce durabilmesinin sebebi bu kapının olmamasıydı.
+**Yakalanan yerel/CI ayrışması:** `git rm` sonrası boş dizin yerelde kaldı,
+CI'nın temiz klonunda yoktu — test yerelde *CI'da var olamayacak* bir sebeple
+geçmişti. Tuzak koda yazıldı (bilinçli boş klasör gerekiyorsa `.gitkeep`).
 
 ---
 

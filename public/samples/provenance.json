@@ -36,8 +36,9 @@
       "sourceId": "proteus3",
       "presets": ["Tamburas"],
       "producer": null,
-      "confidence": "claimed",
-      "note": "OLCULDU: kaynak preset'in 4 bolgesinin HICBIRI olculemiyor; klasordeki 36 dosyanin 35'i etiketiyle uyusmuyor. Ayrica tanpura bir HINT sazidir — projede zaten `tambur` var. Bkz. PLAN §11.3."
+      "confidence": "unknown",
+      "samplesRemoved": true,
+      "note": "SAMPLE'LARI KALDIRILDI. Olculdu: kaynak Proteus `Tamburas` preset'inin 4 bolgesinin HICBIRI olculemiyor ve klasordeki 36 dosyanin 35'i etiketiyle uyusmuyordu — yani onarim imkansiz. Yanlis perde calan dosya, dosya olmamasindan kotudur: motor sample bulamayinca sentezleyiciye duser ve DOGRU perdeyi calar. Enstruman listede kaldi. AYRI ve ACIK soru (urun karari): tanpura bir HINT sazidir ve projede zaten `tambur` var — listede durup durmayacagi kullanicinin karari, bkz. PLAN §11.7."
     },
     "davul": {"sourceId": "turkish-arab3", "presets": ["Eastern Percussion"], "producer": null, "confidence": "claimed"},
     "def": {"sourceId": "turkish-arab3", "presets": ["Riq_Full"], "producer": null, "confidence": "claimed"},

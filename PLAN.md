@@ -1055,19 +1055,32 @@ duruyordu — çünkü yerel coverage koşusu H2'deki zaman aşımına takılıy
 
 ---
 
-### 11.7 Kullanıcının kararı bekleyen tek madde
+### 11.7 Tanpura — mühendislik kısmı ÇÖZÜLDÜ, ürün kısmı sizde
 
-**Tanpura projede kalsın mı?**
+**Mühendislik kararı (verildi ve uygulandı):** 36 dosyanın 35'i yanlış perde
+çalıyordu ve kaynak preset'in dört bölgesinin hiçbiri ölçülemediği için onarım
+imkânsız. **Yanlış perde çalan dosya, dosya olmamasından kötüdür** — motor
+sample bulamayınca sentezleyiciye düşüyor ve *doğru* perdeyi çalıyor. Dosyalar
+kaldırıldı; enstrüman listede kaldı.
+
+Kapı: `sample-pitch-labels.test.ts` → "tanpura klasöründe sample YOK". Ölçülebilir
+bir kayıt gelirse test **kırılır** ve enstrümanı doğrulanan listeye almayı
+hatırlatır. `sample-library.test.ts` de klasörün *tamamen* boş olmasını şart
+koşuyor — yarım dolu bir klasör "bilinçli" değil, kazadır.
+
+**Ürün kararı (sizde):** tanpura enstrüman listesinde kalsın mı?
 
 Ölçülen: kaynağının 4 bölgesinin hiçbiri ölçülemiyor; 36 dosyanın 35'i etiketiyle
 uyuşmuyor; üç bağımsız yöntem uzlaşmıyor. Domain: tanpura Hint sazıdır, Türk
 müziğinin sazı değildir ve projede zaten `tambur` var.
 
-Üç seçenek:
+Tanpura bir **Hint** sazıdır; Türk müziğinin dem sazı değildir ve projede
+zaten `tambur` var. Türk soundfont'unun 113 preset'inde tanpura yok — olmaması
+beklenen şey.
 
-1. **Kaldır** — enstrüman listesinden çıkar (klasör de gider).
-2. **Bırak** — borç testte görünür kalmaya devam eder.
-3. **Kaynak getir** — ölçülebilir bir tanpura kaydı bulunursa yeniden üretilir.
+1. **Listeden çıkar** — enstrüman kaydı da gider.
+2. **Bırak** — sentez sesiyle çalınabilir kalır.
+3. **Kaynak getir** — ölçülebilir bir tanpura kaydı gelirse yeniden üretilir.
 
-Bu bir mühendislik kararı değil, **ürün kararı**; ADR 0001 gereği tek başıma
-vermem.
+Bir sazın projeye ait olup olmadığı **küratöryel** bir yargı; ADR 0001 gereği
+tek başıma vermem. Bozuk dosyaları kaldırmak ise mühendislik işiydi ve yapıldı.

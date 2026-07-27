@@ -81,9 +81,31 @@ const INSTRUMENTS: Array<{name: string; verified: boolean; minAgreement: number;
   // olculebilen her dosya adiyla ayni perdede.
   {name: "baglama", verified: true, minAgreement: 0.55},
   {name: "rebab", verified: true, minAgreement: 0.2, note: "bir oktav tizdi, duzeltildi"},
-  // DOGRULANAMIYOR — dosyalara dokunulmadi. Gerekcesi asagida.
-  {name: "tanpura", verified: false, minAgreement: 0, note: "hicbir dosyada uzlasma yok"},
+  // `tanpura` bu listede DEGIL — dosyalari KALDIRILDI (asagida).
 ];
+
+/**
+ * TANPURA'NIN SAMPLE'LARI NEDEN KALDIRILDI (PLAN.md §11.3 / §11.7)
+ *
+ * Uzun sure "dogrulanamiyor" diye isaretli durdu. Sonunda kaynaga bakildi ve
+ * sorunun olcumde degil MALZEMEDE oldugu goruldu: kaynak Proteus `Tamburas`
+ * preset'inin dort bolgesinin **hicbiri olculemiyor**, ve klasordeki 36
+ * dosyanin 35'i etiketiyle uyusmuyordu.
+ *
+ * Yani bu dosyalar sessiz bir borc degil, **duyulan bir kusurdu**: motor
+ * dosya adini dogru varsayip `playbackRate = istenen / etiketlenen`
+ * hesapladigi icin tanpura secildiginde yanlis perde caliyordu.
+ *
+ * Onarim imkansiz oldugu icin dosyalar kaldirildi. Enstruman listede KALDI:
+ * motor sample bulamayinca sentezleyiciye duser (`SYNTHETIC_FALLBACK_ENABLED`,
+ * varsayilan acik) ve sentez **dogru perdeyi** calar. Yanlis perde calan bir
+ * dosya, dosya olmamasindan kotudur.
+ *
+ * Acik kalan AYRI soru (urun karari, muhendislik karari degil): tanpura bir
+ * HINT sazidir ve projede zaten `tambur` var. Enstruman listesinde durup
+ * durmayacagi kullanicinin karari — bkz. PLAN §11.7.
+ */
+const TANPURA_SAMPLES_REMOVED = true;
 
 function midiFromSlotName(name: string): number | null {
   const match = name.match(/^([A-G]s?)(-?\d)$/);
@@ -132,6 +154,20 @@ function scanInstrument(folder: string): Scan {
 }
 
 describe("Sample etiketleri icerikle uyusmali (F1)", () => {
+  it("tanpura klasorunde sample YOK — sentezleyiciye dusuyor", () => {
+    expect(TANPURA_SAMPLES_REMOVED).toBe(true);
+
+    const folder = path.join(SAMPLES_ROOT, "tanpura");
+    const files = fs.existsSync(folder)
+      ? fs.readdirSync(folder).filter((name) => name.endsWith(".wav"))
+      : [];
+
+    // Gerekce yukarida. Bir gun OLCULEBILIR bir tanpura kaydi gelirse bu test
+    // kirilir ve enstrumani yeniden `INSTRUMENTS` listesine almak gerektigini
+    // hatirlatir.
+    expect(files).toEqual([]);
+  });
+
   for (const instrument of INSTRUMENTS) {
     const folder = path.join(SAMPLES_ROOT, instrument.name);
     const exists = fs.existsSync(folder);

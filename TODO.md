@@ -79,9 +79,15 @@
 üretilseler en çok gerilme sırasıyla **16,02 · 14,23 · 6,96** yarım ton olurdu.
 Ney bir istisnaymış (2,23). Yeniden üretim bugün kusursuz olanı bozardı.
 
-**Kullanıcı kararı bekleyen tek madde — tanpura kalsın mı?** Kaynağının 4
-bölgesinin hiçbiri ölçülemiyor; ayrıca tanpura **Hint** sazıdır ve projede
-zaten `tambur` var. Kaldır / bırak / kaynak getir → PLAN §11.7.
+**Tanpura — mühendislik kısmı çözüldü, ürün kısmı sizde.** 36 dosyanın 35'i
+yanlış perde çalıyordu ve kaynak preset'in dört bölgesinin hiçbiri ölçülemediği
+için onarım imkânsızdı. **Yanlış perde çalan dosya, dosya olmamasından
+kötüdür** — motor sample bulamayınca sentezleyiciye düşüyor ve *doğru* perdeyi
+çalıyor. Dosyalar **kaldırıldı**; enstrüman listede kaldı. Ölçülebilir bir
+kayıt gelirse kapı kırılır.
+Kalan **ürün** sorusu: tanpura bir Hint sazı ve projede zaten `tambur` var —
+enstrüman listesinde kalsın mı? Küratöryel yargı, ADR 0001 gereği sizde
+(PLAN §11.7).
 
 ---
 

@@ -65,7 +65,7 @@ file:
 ney       <- Moss_Nay + NEY_05 presets (bkz. asagidaki ney bolumu)
 ud        <- UD-3 / Oud soundfont presets
 kemence   <- Kabak-MU bowed string preset
-tanpura   <- Proteus Tamburas preset
+tanpura   <- (SAMPLE YOK — kaldirildi, bkz. asagidaki tanpura bolumu)
 kanun     <- Kanun Original preset
 baglama   <- BAGLMACE preset
 tambur    <- Tanbur preset
@@ -146,6 +146,30 @@ sessizce geri getirirdi.
 - Kayit araligi disinda kalan C3 ve Cs3 `src/engines/ses/sample-provenance.ts`
   icinde veri olarak durur ve `/samples` sayfasinda **"Gerilmis perde"**
   uyarisi olarak gorunur — saklanmaz.
+
+## tanpura — sample'lari KALDIRILDI (2026-07-27)
+
+Olculdu: kaynak Proteus `Tamburas` preset'inin **dort bolgesinin hicbiri
+olculemiyor** ve klasordeki 36 dosyanin **35'i etiketiyle uyusmuyordu**. Yani
+onarim mumkun degil.
+
+Bu sessiz bir borc DEGILDI, duyulan bir kusurdu: motor dosya adini dogru
+varsayip `playbackRate = istenen / etiketlenen` hesapladigi icin tanpura
+secildiginde yanlis perde caliyordu.
+
+**Yanlis perde calan dosya, dosya olmamasindan kotudur.** Motor sample
+bulamayinca sentezleyiciye duser (`NEXT_PUBLIC_ENABLE_SYNTH_FALLBACK`,
+varsayilan acik) ve sentez **dogru perdeyi** calar. Bu yuzden dosyalar
+kaldirildi; enstruman listede kaldi.
+
+**Acik ve AYRI soru (urun karari):** tanpura bir **Hint** sazidir; Turk
+muziginin dem sazi degildir ve projede zaten `tambur` var. Turk soundfont'unun
+113 preset'inde tanpura yok — olmamasi beklenen sey. Enstrumanin listede durup
+durmayacagi kullanicinin karari (PLAN.md §11.7).
+
+Olculebilir bir tanpura kaydi gelirse `sample-pitch-labels.test.ts` icindeki
+"tanpura klasorunde sample YOK" kapisi **kirilir** ve enstrumani yeniden
+dogrulanan listeye almak gerektigini hatirlatir.
 
 `src/engines/ses/__tests__/sample-pitch-labels.test.ts` her dosyanin
 **icerigini** olcup adiyla karsilastirir — etiket/icerik ayrismasi bir daha

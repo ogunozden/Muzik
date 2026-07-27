@@ -13,6 +13,22 @@
 
 ## 0. Durum özeti
 
+> **GÜNCEL DURUM (2026-07-27 · uygulama sonrası):**
+> **FAZ A (G0–G8) ✅ · FAZ B (B1–B7) ✅ · FAZ C (C1–C4 + C1.1/C4.1) ✅**
+> 122 dosya / **981 birim testi** + **23 e2e** (dev *ve* üretim derlemesi) yeşil.
+> Tarayıcı denetimleri: `score-engine-engraving` **0 hata**, `studio-follow` `ok`.
+>
+> **Ölçüm planı dört kez çürüttü** — dördü de kapılar sayesinde erken yakalandı:
+> `TICKS_PER_WHOLE` 40320 → **524160** · pivot `floor(offset)+1` **daha kötü**
+> (sorun formül değil eksen) · tempo `127+Bas` kuralı **%87,3** (reddedildi,
+> mu2'den okunuyor) · "mu2 tekrarı korur" örtüşmesi **%32** (adlandırılmadı).
+>
+> **Kalan:** yalnız FAZ D (stüdyo kaydı — kod işi değil), E1 (tetikleyici
+> beklemede) ve `setStrict(false)` ölçümü.
+
+Aşağıdaki bölümler tarihsel plandır; her adımın altında **ne olduğu** ve
+ölçülen sonuç kayıtlıdır.
+
 D ve K fazları kapandı (bkz. TODO.md §D, §K): 15 + 6 bulgu uygulandı,
 111 dosya / 768 test PASS. Ama L1 (ölçü sınırında bölme) inmedi ve inmemesinin
 sebebi bir yaprak kusuru değil: **motorun metrik bağlamı yok.**

@@ -730,39 +730,50 @@ Bu bir kod sorunu değil, **kaynak-otoritesi sorunu**: basılı bar (`Offset`) i
 notalı zaman (`Pay/Payda`) SymbTr'de birbirinden bağımsız iki eksen. Projenin
 bağlayıcı kuralı gereği birini keyfî seçemem.
 
-**Açılması için gereken (kod değil, kaynak kararı):**
-- [ ] SymbTr'nin kendi dokümantasyonundan/makalesinden `Offset` sütununun
-      tanımını belirle. Basılı bar mı, başka bir şey mi?
-- [ ] `src/data/symbtr/layout.ts` PDF ölçü kutuları hangi eksene bağlı —
-      `Offset`e mi, `Pay/Payda` zamanına mı? (18334 verified kutu var; bu
-      soruyu ampirik yanıtlayabilir)
-- [ ] Karar verildikten sonra: bar çizgileri o eksenden türetilsin, bölme
-      oranı da AYNI eksenden hesaplansın. İki ekseni karıştırmak yasak.
-- [ ] Sonra: `setStrict(false)` kaldırılabilir mi ölç.
+**Açılması için gerekenler — ✅ HEPSİ ÇÖZÜLDÜ (FAZ A, 2026-07-27):**
+- [x] `Offset` sütununun tanımı belirlendi. README v2 madde 3 + G3 kapısı:
+      **yazılı ölçü cinsinden, notanın BİTTİĞİ kümülatif konum.** Formül
+      `offsetDelta = (Pay/Payda) ÷ yazılıMertebe` **2987/2999 eserde birebir**
+      yeniden üretilerek kanıtlandı.
+- [x] PDF ölçü kutularının bağlı olduğu eksen artık **kayıtlı**, çıkarım
+      değil: `measureIndexBasis` (G5). 546 girdi / 19.064 kutu
+      `meter-walk-v2` tabanında (G6.1).
+- [x] Bar çizgileri **tek eksenden** türiyor: kanonik tick ekseninde
+      `MeterMap` yürünüyor (G6). `Offset` ölçü için **hiç** kullanılmıyor —
+      iki eksenin karışması yapısal olarak imkânsız hale geldi.
+      Bölme (G7) de aynı eksenden hesaplanıyor.
+- [ ] `setStrict(false)` kaldırılabilir mi ölç *(hâlâ açık)*
 
 **Not:** daha önce raporladığım "ölçülerin %32'si dolmuyor" bulgusunun bir
 kısmı bar geçişi değil, bu iki eksenin uyuşmazlığıymış. Bölme denemesi
 doluluğu %66,28 → %78,83 çıkarmıştı ama bu sayı da aynı karışımdan etkileniyor.
 
-### L2 ⏸️ BLOKE — e2e ve tarayıcı doğrulaması
+### L2 ✅ ÇÖZÜLDÜ (2026-07-27) — blokaj kalktı, denetimler koştu
 
-3000 portunu **takılmış bir `next dev` süreci** (PID 12356) tutuyor; süreç var
-ama HTTP'ye yanıt vermiyor (90 s timeout). Playwright'ın webServer'ı bu yüzden
-başlayamıyor.
+Takılmış süreç artık yok; port boş. Blokaj kalkınca **gizli kusurlar ortaya
+çıktı** — hepsi giderildi.
 
-- [ ] **23 e2e testi hiç çalışmadı.** `ScoreSurface`'te esaslı değişiklikler var
-      (tuplet, bağla bölme, sanallaştırma, responsive genişlik).
-- [ ] K5'in sanallaştırma/responsive **geometrisi jsdom'da test edilemez**
-      (layout yok; `getBoundingClientRect`/`clientWidth` 0 döner). Kod yolu
-      çalışıyor, geometrisi doğrulanmamış.
-- [ ] Portu boşaltmak gerekiyor: `taskkill /PID 12356 /F` — kullanıcının süreci
-      olduğu için dokunulmadı.
+- [x] **23 e2e testi koştu** — ilk denemede 16/7, şimdi **23/23**
+      (dev sunucusu *ve* üretim derlemesi). 7 a11y hatasının hepsi çözüldü.
+- [x] K5 geometrisi **tarayıcıda** doğrulandı: `denseSystemCount` 0,
+      `overlongSystemCount` 0, `maxEventsPerSystem` 16/24, `maxBeatSpan` 4/7.
+      `audit:score-engine-engraving` → **0 hata**; `audit:studio-follow` → `ok`.
+- [x] **`ScoreSurface`'te gizli çökme bulundu:** `vexflow.Glyphs` tarayıcı
+      paketinde yok → tüm porte çizimi çöküyordu (sadece anahtar + mertebe
+      görünüyordu). Kusur bu oturumdan **önce** vardı; jsdom'da VexFlow
+      çizmediği için birim testleri yakalayamazdı, tarayıcı denetimi de
+      blokaj yüzünden koşamıyordu. Giderildi.
 
-### L3 · Dört tek-kalan triole notası 🟡
+### L3 ✅ ÇÖZÜLDÜ (2026-07-27) — C4 + C4.1'de yeniden ölçüldü
 
-2.173 triolenin 4'ü tek başına (koşu uzunluğu 1), bracket alamıyor (%0,18).
-Muhtemelen kardeşleri es'le veya bar çizgisiyle ayrılmış. **L1 indikten sonra
-yeniden ölçülmeli**; bir kısmı orada çözülebilir.
+"L1 indikten sonra yeniden ölçülmeli" dendiği gibi yapıldı ve **hipotez
+kısmen yanlış çıktı**: sorun tek-kalan triolelerden çok, bölmenin **triole
+üretmesiydi**.
+
+- Bölünen 5.984 notanın **23'ü** triole kaynağıydı → artık hiç bölünmüyor.
+- Triole olmayan notaların **376 parçası** triole şeklinde kesre denk gelip
+  **sahte triole** çiziliyordu → artık böyle bölme yapılmıyor.
+- Bölünen nota: 5.984 → 5.961 (C4) → **5.773** (C4.1). İkisi de teste bağlı.
 
 ### L4 · Ney kapsamı 🟡 — kod işi değil
 

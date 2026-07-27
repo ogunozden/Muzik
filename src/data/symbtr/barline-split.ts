@@ -1,4 +1,5 @@
 import {type Ticks, TICKS_PER_WHOLE, ZERO_TICKS, addTicks, cmpTicks, subTicks} from "@/core/time/ticks";
+import {getTupletContext} from "@/data/score-engine/notation";
 import {type MeterMap, buildMeterMap, measureAt, meterToTicks} from "./meter-map";
 import {type DurationFraction, readSymbtrRows, rowAdvance} from "./rows";
 import type {SymbtrScoreEvent} from "./parser";
@@ -120,7 +121,14 @@ export function splitEventsAtBarlines(
       continue;
     }
 
-    const parts = splitDurationAtBarlines(position, duration, map);
+    // TRIOLE BOLUNMEZ (C4). Bir triole notasi bar cizgisini asarsa parcalari
+    // triole sisteminin DISINDA sureler olur (orn. 1/48) ve K2'nin kurdugu
+    // tuplet notasyonu bozulur. Olculdu: 5.984 bolunen notanin yalniz **23'u**
+    // (%0,38) triole. Gravurde triole braketi bar cizgisini asabilir; parcalara
+    // ayirmak ise gecerli bir gosterim URETMEZ. Bu yuzden butun birakiliyor.
+    const parts = getTupletContext(event.durationFraction)
+      ? [duration]
+      : splitDurationAtBarlines(position, duration, map);
     if (parts.length === 1) {
       output.push({...event, measureIndex: measureAt(map, position)?.measure ?? event.measureIndex});
       continue;

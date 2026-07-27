@@ -1,6 +1,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import {describe, expect, it} from "vitest";
+import {getTupletContext} from "@/data/score-engine/notation";
 import {splitEventsAtBarlines} from "../barline-split";
 import {decodeWindows1254} from "../encoding";
 import {readMu2WrittenMeter} from "../meter-map";
@@ -176,8 +177,48 @@ describe("KAPI — canli korpus (PLAN §3/G7)", () => {
     // toplaniyordu, ama `parseSymbtrScore` yalniz kod-9 uretiyor. Korpustaki
     // 31.605 sureli kod-9-disi satir atlandigi icin ilk boyle satirdan sonraki
     // TUM bar cizgileri kayiyordu ve bolunen nota %2,07 cikiyordu.
-    expect(splitNotes).toBe(5984);
+    expect(splitNotes).toBe(5961);
     expect(splitNotes / totalNotes).toBeCloseTo(0.0051, 4);
     expect(totalNotes).toBe(1_163_593);
+  });
+
+  it.skipIf(!hasCorpus)("TRIOLE notasi bar cizgisinde BOLUNMEZ (C4)", () => {
+    const txtDir = path.join(CORPUS, "txt");
+    const mu2Dir = path.join(CORPUS, "mu2");
+    let splitSourceTuplets = 0;
+    let tupletShapedFragments = 0;
+
+    for (const file of fs.readdirSync(txtDir).filter((name) => name.endsWith(".txt"))) {
+      const mu2Path = path.join(mu2Dir, file.replace(/\.txt$/, ".mu2"));
+      if (!fs.existsSync(mu2Path)) continue;
+      const meter = readMu2WrittenMeter(decodeWindows1254(fs.readFileSync(mu2Path)));
+      if (meter === null) continue;
+
+      const raw = fs.readFileSync(path.join(txtDir, file), "utf8");
+      const events = parseSymbtrScore(raw, 60, 0, {writtenMeter: meter});
+      const result = splitEventsAtBarlines(events, raw, meter);
+
+      // Bolunen ORIJINAL notalari bul.
+      const splitSources = new Set(
+        result.events.filter((part) => part.barlineTie === "start").map((part) => part.index),
+      );
+      for (const original of events) {
+        if (splitSources.has(original.index) && getTupletContext(original.durationFraction)) splitSourceTuplets++;
+      }
+
+      for (const part of result.events) {
+        if (part.barlineTie !== null && getTupletContext(part.durationFraction)) tupletShapedFragments++;
+      }
+    }
+
+    // KAPI: KAYNAGI triole olan nota artik HIC bolunmuyor.
+    // Once 23 taneydi; parcalari triole sisteminin disina dusuyordu.
+    expect(splitSourceTuplets).toBe(0);
+
+    // AYRI BIR OLGU — gizlenmiyor: triole OLMAYAN bir nota bolununce
+    // parcasi triole SEKLINDE bir kesre denk gelebiliyor (orn. 12/8
+    // mertebede 1/12'lik artik). Bunlar sahte triole olarak cizilebilir.
+    // Olculdu: 376 parca. Kapsam kucuk ama gercek; TODO'da C4.1 olarak acik.
+    expect(tupletShapedFragments).toBe(376);
   });
 });

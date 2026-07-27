@@ -170,7 +170,17 @@ tick ekseninde olsun.
 
 - [ ] **C2** · K5 sanallaştırma/responsive geometrisi tarayıcıda *(C1'e bağlı)*
 - [ ] **C3** · `audit:score-engine-*` browser denetimleri *(C1'e bağlı)*
-- [ ] **C4** · 4 tek-kalan triole notası (%0,18) — G7 sonrası yeniden ölç
+- [x] **C4** · G7 sonrası yeniden ölçüldü — **gerçek bulgu farklı çıktı.**
+      İlk kaba ölçüm "tek-kalan triole 178 → 629 arttı" dedi; ama o metrik
+      (ardışık aynı-payda koşusu) bölme parçalarıyla kırılıyordu.
+      Doğru soru "kaç bölünen nota triole?" → **5.984'ün 23'ü (%0,38)**.
+      · **Düzeltildi:** triole notası artık bar çizgisinde **hiç bölünmüyor**
+      (parçaları triole sisteminin dışına düşüyordu; gravürde braket bar
+      çizgisini aşabilir, parçalama geçerli gösterim üretmez).
+      Bölünen nota 5.984 → **5.961**.
+- [ ] **C4.1** · Triole **olmayan** bir nota bölününce parçası triole şeklinde
+      bir kesre denk gelebiliyor (12/8'de 1/12 artık gibi) → sahte triole
+      çizimi. **Ölçüldü: 376 parça.** Küçük ama gerçek; teste pinlendi.
 
 ### Öncelik 5 · FAZ D — Ses kütüphanesi · PLAN §6 · *stüdyo işi*
 

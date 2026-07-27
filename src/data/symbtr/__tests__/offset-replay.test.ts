@@ -6,6 +6,7 @@ import {decodeWindows1254} from "../encoding";
 import {readMu2WrittenMeter} from "../meter-map";
 import {offsetTolerance, replaySymbtrOffsets, rowAdvance} from "../offset-replay";
 import {SYMBTR_COLUMNS, readSymbtrRows} from "../rows";
+import {CORPUS_TIMEOUT_MS} from "./corpus-gate";
 
 const FIXTURE_TXT = path.join(__dirname, "..", "..", "score-engine", "__tests__", "fixtures", "symbtr", "txt");
 const FIXTURE_MU2 = path.join(__dirname, "..", "..", "score-engine", "__tests__", "fixtures", "symbtr", "mu2");
@@ -202,7 +203,7 @@ describe("KAPI — canli korpus (PLAN §3/G3: >=2987/3000)", () => {
     expect(unmetered).toBe(1);
     expect(failures.sort()).toEqual(REPLAY_EXCEPTIONS);
     expect(usable - failures.length).toBeGreaterThanOrEqual(2987);
-  });
+  }, CORPUS_TIMEOUT_MS);
 
   it.skipIf(!hasCorpus)("KANONIK EKSEN kod-52'yi katmadigi icin tam olcuye oturuyor", () => {
     // Iki eksenin de gerekli olduguna dair KARSIT kanit: `Offset` eksenini
@@ -234,5 +235,5 @@ describe("KAPI — canli korpus (PLAN §3/G3: >=2987/3000)", () => {
     expect(usable).toBe(2999);
     expect(canonicalWhole).toBeGreaterThan(2200); // olculdu: 2274
     expect(canonicalWhole).toBeGreaterThan(replayWhole * 3); // 2274 vs ~629
-  });
+  }, CORPUS_TIMEOUT_MS);
 });

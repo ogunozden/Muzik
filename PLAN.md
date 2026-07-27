@@ -908,35 +908,47 @@ Bu ikincisi bir mühendislik kararı değil; **kullanıcının kararı** (§11.7
 
 ---
 
-### H1 · Korpus kapılarını CI'da koşturulabilir yap — **öncelik 1**
+### H1 · Korpus kapılarını CI'da koşturulabilir yap — **TAMAM**
 
-**Sorun:** korpus 3000 dosya ve gitignored; commit edilemez.
+**Planlanan çözüm terk edildi, daha iyisi vardı.** Plan "korpustan özet türet,
+özeti commit et" diyordu. Ama o yol CI'da **kodu koşturmaz**, yalnız iki
+commit'li dosyayı karşılaştırır — regresyon yakalar, doğrulama yapmaz.
 
-**Yapılacak:** korpustan **özet** türet, özeti commit et, CI o özete karşı
-koşsun. Proje bu deseni zaten kullanıyor (usul mertebeleri, makam koma
-dizileri: *türet → üretilmiş JSON'u commit et → test JSON'a karşı doğrula*).
+**Yapılan:** korpus zaten indirilebilir (Zenodo 15470412, CC-BY 4.0) ve depoda
+`scripts/fetch-symbtr-v3.mjs` **vardı**. Arşivler yalnız **27 MB** (PDF hariç).
+CI artık korpusu indirip önbelleğe alıyor; **13 kapı gerçekten koşuyor**.
 
-- `scripts/derive-corpus-digest.mjs`: her eser için olay sayısı, toplam tick,
-  bölünen nota sayısı, ölçü doluluğu. Çıktı
-  `src/data/symbtr/__tests__/fixtures/corpus-digest.json` (boyut önce ölçülür;
-  >1 MB ise temsilî örnekleme + manşet toplamlar).
-- Korpuslu makinede: mevcut kapı **hem** korpusu **hem** özeti doğrular; özet
-  bayatsa test kırılır.
-- Korpussuz makinede (CI): özete karşı koşar.
-- **Kapı:** CI'da atlanan kapı sayısı **13 → 0**.
-- **Dürüst sınır — bu bir doğruluk kanıtı DEĞİL:** özet, test edilen kodun
-  kendisinden türetilir; dolayısıyla kodun *doğru* olduğunu kanıtlamaz,
-  **değiştiğini** yakalar (regresyon kapısı). FAZ A/G8'de öğrendiğimiz totoloji
-  tuzağına düşmemek için bu ayrım koda ve belgeye yazılacak.
-- **Risk:** düşük. **Geri alma:** tek dosya + tek test değişikliği.
+Yol boyunca çıkan iki kusur:
 
-### H2 · Korpus kapılarının zaman aşımını düzelt — **öncelik 1, ucuz**
+1. **Betik Linux'ta kırılırdı.** Zip'i `tar` ile açıyordu; bu Windows/macOS'ta
+   bsdtar olduğu için çalışır ama CI'daki (`ubuntu-latest`) GNU tar **zip
+   okuyamaz**. Kimse görmemişti çünkü korpus CI'da hiç indirilmiyordu.
+   Linux'ta `unzip` kullanılacak şekilde düzeltildi.
+2. **Atlama sessizdi.** `it.skipIf(!hasCorpus)` korpus yoksa hiçbir iz
+   bırakmadan geçiyordu. `REQUIRE_CORPUS=1` eklendi: CI bunu verir, indirme
+   başarısız olursa `corpus-gate.test.ts` **kırmızı** olur.
 
-`testTimeout: 20000` genel değer; korpus kapıları 13–44 s sürüyor.
+- **Kapı:** `corpus-gate.test.ts` — 3 iddia. Kırılma yolu **gerçekten
+  sınandı**: `symb/` geçici olarak kaldırılıp `REQUIRE_CORPUS=1` ile koşuldu,
+  test düştü, korpus geri alındı.
+- Üçüncü iddia mekanik: korpusa bağlı **yeni** bir kapı açık timeout almadan
+  eklenemez (H2'nin kuralını kalıcı kılar). Bu iddia yazılır yazılmaz kendi
+  dosyamdaki eksik timeout'u yakaladı.
+- **Ortak zemin:** `corpus-gate.ts` — korpus yolu on dosyada tekrar ediyordu.
 
-- Korpusa bağlı 13 kapıya **açık** timeout ver (ölçülen sürenin ~3 katı).
-- **Kapı:** `npm run test:coverage` korpuslu makinede yeşil.
-- **Risk:** sıfır.
+### H2 · Korpus kapılarının zaman aşımını düzelt — **TAMAM**
+
+Ölçülen süreler (paralel koşu): barline-split **7,5 s** / 6,2 · meter-map
+4,9 / 3,8 · offset-replay 4,4 / 3,6 · repeat-structure 3,4 / 2,9 / 2,4 ·
+ornaments 2,4 · rows 2,4 / 2,0 · ticks 2,0.
+
+En yavaş kapı 7,5 s; ama aynı kapı `test:coverage` altında **44 s** sürüyor —
+enstrümantasyon ~6 kat yavaşlatıyor. Genel 20 s bu yüzden **deterministik**
+olarak düşüyordu (rastgelelik değil, yük).
+
+- 13 kapının hepsine `CORPUS_TIMEOUT_MS = 120_000` verildi (ölçülen en kötü
+  halin ~3 katı).
+- **Kapı geçti:** `npm run test:coverage` artık yeşil (exit 0).
 
 ### H3 · Ses kaynak arşivinin kimliğini sabitle — **öncelik 2**
 
@@ -993,12 +1005,22 @@ Ratchet tavanı 800; iki dosya üstünde (grandfathered):
 - **Kapı:** her ikisi ≤800; ratchet tavanı sıkılaştırılır.
 - **Risk:** orta (JSX taşıma). **Geri alma:** tek commit.
 
-### H7 · Coverage — önce ölç
+### H7 · Coverage — **TAMAM (ölçüldü, sonra yükseltildi)**
 
-Yapılandırılmış eşikler: statements 67 · branches 62 · functions 76 · lines 68.
-**Gerçek değer bu oturumda ölçülemedi** çünkü `test:coverage` H2'deki zaman
-aşımına takıldı. H2'den sonra ölçülecek; eşik yükseltmesi **ölçüm görülmeden
-planlanmayacak**.
+H2 çözülünce ölçüm alınabildi. **İki ortam ayrı ölçüldü** — çünkü CI'da korpus
+yoktu ve yereldeki daha yüksek sayıya göre eşik koymak CI'yı kırardı:
+
+| | yerel (korpuslu) | CI (korpussuz) | yeni eşik |
+|---|---|---|---|
+| statements | 69,73 | 69,47 | **69** |
+| branches | 65,07 | 64,83 | **64** |
+| functions | 78,30 | 78,30 | **77** |
+| lines | 70,59 | 70,40 | **70** |
+
+Eski eşikler 67/62/76/68 idi ve **aylardır güncel ölçüm görülmeden**
+duruyordu — çünkü yerel coverage koşusu H2'deki zaman aşımına takılıyordu.
+
+*(H1'den sonra CI de korpuslu koşacağı için iki sütun birleşecek.)*
 
 ---
 

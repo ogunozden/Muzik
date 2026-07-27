@@ -38,11 +38,27 @@ export default defineConfig({
       exclude: ['**/__tests__/**', '**/*.test.*', '**/*.generated.*'],
       // Mevcut olculen seviyenin hemen altinda ratchet; regresyonu yakalar,
       // yeni test eklendikce yukari cekilir (F6.1).
+      //
+      // 2026-07-27 (H7) olcum — IKI ORTAM ayri olculdu:
+      //
+      //                 yerel (korpuslu)   CI (korpussuz)   <- BAGLAYICI
+      //   statements        69,73             69,47
+      //   branches          65,07             64,83
+      //   functions         78,30             78,30
+      //   lines             70,59             70,40
+      //
+      // Esikler **CI degerinin** altina konuldu; yereldeki daha yuksek sayiya
+      // gore ayarlamak CI'yi kirardi. Fark kucuk (~0,2 puan) cunku korpus
+      // kapilari fixture testleriyle ayni kod yollarini geziyor.
+      //
+      // NOT: bu olcum H2'den ONCE alinamiyordu; korpus kapilari `testTimeout`
+      // 20 s'ye takilip yerel coverage kosusunu dusuruyordu. Esikler aylardir
+      // ***guncel olcum gorulmeden*** duruyordu.
       thresholds: {
-        statements: 67,
-        branches: 62,
-        functions: 76,
-        lines: 68,
+        statements: 69,
+        branches: 64,
+        functions: 77,
+        lines: 70,
       },
     },
   },

@@ -2,6 +2,7 @@ import fs from "node:fs";
 import path from "node:path";
 import {describe, expect, it} from "vitest";
 import {ORNAMENT_BY_CODE, SYMBTR_COLUMNS, UNRESOLVED_PITCHED_CODES, readSymbtrRows} from "../rows";
+import {CORPUS_TIMEOUT_MS} from "./corpus-gate";
 
 const CORPUS_TXT = path.join(process.cwd(), "symb", "SymbTr-3.0", "txt");
 const HEADER = SYMBTR_COLUMNS.join("\t");
@@ -137,5 +138,5 @@ describe("CANLI KORPUS — sayilar sabitlenir", () => {
 
     // Cozulemeyen ama sure tasiyan satirlar: eskiden tamamen atiliyorlardi.
     expect(unresolved).toBeGreaterThan(12_000);
-  });
+  }, CORPUS_TIMEOUT_MS);
 });

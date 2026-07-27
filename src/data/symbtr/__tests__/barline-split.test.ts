@@ -7,6 +7,7 @@ import {decodeWindows1254} from "../encoding";
 import {readMu2WrittenMeter} from "../meter-map";
 import {parseSymbtrScore} from "../parser";
 import {SYMBTR_COLUMNS} from "../rows";
+import {CORPUS_TIMEOUT_MS} from "./corpus-gate";
 
 const FIXTURE_TXT = path.join(__dirname, "..", "..", "score-engine", "__tests__", "fixtures", "symbtr", "txt");
 const FIXTURE_MU2 = path.join(__dirname, "..", "..", "score-engine", "__tests__", "fixtures", "symbtr", "mu2");
@@ -186,7 +187,7 @@ describe("KAPI — canli korpus (PLAN §3/G7)", () => {
     // G9: olay akisi 1.163.593 -> 1.192.643 (kod-9 disi sureli satirlar
     // artik akista; +29.050 olay).
     expect(totalNotes).toBe(1_192_643);
-  });
+  }, CORPUS_TIMEOUT_MS);
 
   it.skipIf(!hasCorpus)("TRIOLE notasi bar cizgisinde BOLUNMEZ (C4)", () => {
     const txtDir = path.join(CORPUS, "txt");
@@ -225,5 +226,5 @@ describe("KAPI — canli korpus (PLAN §3/G7)", () => {
     // kesre denk gelebiliyordu (orn. 12/8'de 1/12) ve cizimde SAHTE TRIOLE
     // gorunuyordu. Olculmustu: 376 parca. Artik boyle bir bolme yapilmiyor.
     expect(tupletShapedFragments).toBe(0);
-  });
+  }, CORPUS_TIMEOUT_MS);
 });

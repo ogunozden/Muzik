@@ -6,6 +6,7 @@ import {decodeWindows1254} from "../encoding";
 import {buildMeterMap, measureAt, meterToTicks, readMu2WrittenMeter} from "../meter-map";
 import {SYMBTR_COLUMNS, readSymbtrRows} from "../rows";
 import {buildUsulMap, readMu2UsulDeclarations, usulAt} from "../usul-map";
+import {CORPUS_TIMEOUT_MS} from "./corpus-gate";
 
 const FIXTURE_TXT = path.join(__dirname, "..", "..", "score-engine", "__tests__", "fixtures", "symbtr", "txt");
 const FIXTURE_MU2 = path.join(__dirname, "..", "..", "score-engine", "__tests__", "fixtures", "symbtr", "mu2");
@@ -265,7 +266,7 @@ describe("CANLI KORPUS", () => {
     // ad UYDURULMUYOR. Fark bilincli ve gorunur.
     expect(attachedNames.size).toBeGreaterThanOrEqual(120);
     expect(attachedNames.size).toBeLessThan(declaredNames.size);
-  });
+  }, CORPUS_TIMEOUT_MS);
 
   it.skipIf(!hasCorpus)("yazili mertebe okunabilen her eserde izgara kurulur", () => {
     const txtDir = path.join(CORPUS, "txt");
@@ -292,5 +293,5 @@ describe("CANLI KORPUS", () => {
     expect(built).toBe(withMeter);
     // Mertebesiz eserler var ve GIZLENMIYOR.
     expect(unmetered).toBeGreaterThan(0);
-  });
+  }, CORPUS_TIMEOUT_MS);
 });

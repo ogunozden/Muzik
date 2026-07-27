@@ -16,6 +16,7 @@ import {
   ticksFromInteger,
   wholeNotesOf,
 } from "../ticks";
+import {CORPUS_TIMEOUT_MS} from "@/data/symbtr/__tests__/corpus-gate";
 
 /**
  * KRITIK KAPI (PLAN.md §3/G1): `TICKS_PER_WHOLE` korpusta gorulen HER paydayi
@@ -69,7 +70,7 @@ describe("Ticks — zaman cekirdegi (G1)", () => {
       }
 
       expect([...unseen]).toEqual([]);
-    });
+    }, CORPUS_TIMEOUT_MS);
   });
 
   describe("kesirden tick — kayipsiz", () => {

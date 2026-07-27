@@ -84,20 +84,36 @@ function extractArchive(archive, zipPath) {
   const stagingDir = path.join(DOWNLOAD_ROOT, `_extract-${archive.innerDir}`);
   rmSync(stagingDir, {recursive: true, force: true});
   mkdirSync(stagingDir, {recursive: true});
-  // Zip acmak icin bsdtar gerekir: Windows'ta System32\tar.exe bsdtar'dir;
-  // PATH'teki tar Git'in GNU tar'i olabilir ve zip'i okuyamaz. Yollar cwd'ye
-  // gore GORELI verilir: GNU tar fallback'i mutlak Windows yolundaki `C:`
-  // onekini uzak-makine sanip "Cannot connect to C" ile duser.
-  const systemTar =
-    process.platform === "win32" ? path.join(process.env.SystemRoot ?? "C:\\Windows", "System32", "tar.exe") : null;
-  const tarExecutable = systemTar && existsSync(systemTar) ? systemTar : "tar";
-  const result = spawnSync(
-    tarExecutable,
-    ["-xf", path.basename(zipPath), "-C", path.relative(DOWNLOAD_ROOT, stagingDir) || "."],
-    {cwd: DOWNLOAD_ROOT, stdio: "inherit"},
-  );
+  // ── ZIP ACMA: platforma gore FARKLI arac ───────────────────────────────
+  // Windows/macOS'ta `tar` bsdtar'dir ve zip okur. LINUX'ta ise GNU tar'dir
+  // ve **zip okuyamaz** — bu betik CI'da (ubuntu-latest) tam olarak burada
+  // kiriliyordu ve kimse gormemisti, cunku korpus CI'da hic indirilmiyordu.
+  // Linux'ta `unzip` kullanilir (ubuntu-latest'te kurulu gelir).
+  //
+  // Windows notu: PATH'teki tar Git'in GNU tar'i olabilir, bu yuzden
+  // System32\tar.exe acikca secilir. Yollar cwd'ye gore GORELI verilir; GNU
+  // tar fallback'i mutlak `C:` onekini uzak-makine sanip "Cannot connect to
+  // C" ile duser.
+  const relativeStaging = path.relative(DOWNLOAD_ROOT, stagingDir) || ".";
+  const [command, args] =
+    process.platform === "linux"
+      ? ["unzip", ["-q", "-o", path.basename(zipPath), "-d", relativeStaging]]
+      : [
+          (() => {
+            const systemTar =
+              process.platform === "win32"
+                ? path.join(process.env.SystemRoot ?? "C:\\Windows", "System32", "tar.exe")
+                : null;
+            return systemTar && existsSync(systemTar) ? systemTar : "tar";
+          })(),
+          ["-xf", path.basename(zipPath), "-C", relativeStaging],
+        ];
+
+  const result = spawnSync(command, args, {cwd: DOWNLOAD_ROOT, stdio: "inherit"});
   if (result.error || result.status !== 0) {
-    throw new Error(`tar extraction failed for ${archive.key} (exit ${result.status ?? "error"})`);
+    throw new Error(
+      `zip extraction failed for ${archive.key} via \`${command}\` (exit ${result.status ?? "error"})`,
+    );
   }
   const innerPath = path.join(stagingDir, archive.innerDir);
   const sourceDir = existsSync(innerPath) ? innerPath : stagingDir;

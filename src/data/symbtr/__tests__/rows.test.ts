@@ -4,6 +4,7 @@ import {describe, expect, it} from "vitest";
 import {TICKS_PER_WHOLE, quarterBeatsOf, ticksFromFraction} from "@/core/time/ticks";
 import {parseSymbtrScore} from "../parser";
 import {METER_CHANGE_CODE, SYMBTR_COLUMNS, readSymbtrRows, rowAdvance} from "../rows";
+import {CORPUS_TIMEOUT_MS} from "./corpus-gate";
 
 const FIXTURE_DIR = path.join(__dirname, "..", "..", "score-engine", "__tests__", "fixtures", "symbtr", "txt");
 const CORPUS_TXT = path.join(process.cwd(), "symb", "SymbTr-3.0", "txt");
@@ -226,7 +227,7 @@ describe("readSymbtrRows (G2) — hicbir satir atilmaz", () => {
       }
 
       expect(offenders).toEqual([]);
-    });
+    }, CORPUS_TIMEOUT_MS);
 
     it.skipIf(!hasCorpus)("ZAMAN ILERLETME KURALI: `Pay>0 && Payda>0 && kod!==51`", () => {
       // Dosyanin KENDI `Offset` sutunu hakem. `timed` dedigimiz her satir
@@ -263,6 +264,6 @@ describe("readSymbtrRows (G2) — hicbir satir atilmaz", () => {
       // yani MERTEBESIZ eserler: olcu ekseni olmadigi icin yazar Offset'i
       // ilerletmemis. Liste burada SABITLENIR ki bir gun degisirse gorulsun.
       expect(stalledFiles.sort()).toEqual(FROZEN_OFFSET_FILES);
-    });
+    }, CORPUS_TIMEOUT_MS);
   });
 });

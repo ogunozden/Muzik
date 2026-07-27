@@ -10,11 +10,28 @@ jobs:
           node-version: "26"
           cache: "npm"
       - run: npm ci
+      # SymbTr korpusu (Zenodo 15470412, CC-BY 4.0 · 27 MB, PDF haric).
+      # ── NEDEN BU ADIM VAR ───────────────────────────────────────────────
+      # Projenin en guclu 13 kapisi canli korpusa dayaniyor ve `symb/`
+      # gitignored. Bu adim yokken o kapilar CI'da SESSIZCE atlaniyordu:
+      # CI aylarca yesildi ama parser'i hic 3000 eserle sinamadi.
+      # `REQUIRE_CORPUS=1` atlamayi gorunur yapar — indirme basarisiz olursa
+      # `corpus-gate.test.ts` kirmizi olur.
+      - name: Cache SymbTr corpus
+        uses: actions/cache@v4
+        with:
+          path: symb
+          key: symbtr-v3-zenodo-15470412
+      - run: npm run corpus:fetch
       - run: npm run guardrails:architecture
       - run: npm run lint
       - run: npm run typecheck
       - run: npm run test:run
+        env:
+          REQUIRE_CORPUS: "1"
       - run: npm run test:coverage
+        env:
+          REQUIRE_CORPUS: "1"
       - run: npm run build
       - run: npm run audit:bundle-size
       # Kullaniciya GIDEN bagimliliklarda bilinen acik olamaz — bu adim bloke eder.

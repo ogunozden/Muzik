@@ -22,13 +22,23 @@
 > "%98,03 ölçü doluluğu" yalnız tek makinede doğrulanıyor. Bugün bir refactor
 > parser'ı bozsa **CI yeşil kalır**.
 
-- [ ] **H1** · Korpus kapılarını CI'da koşturulabilir yap — korpustan **özet**
-      türet, özeti commit et (proje bu deseni zaten kullanıyor). Kapı: CI'da
-      atlanan kapı **13 → 0**. *Dürüst sınır: bu regresyon kapısıdır, doğruluk
-      kanıtı değil — özet test edilen koddan türetilir.*
-- [ ] **H2** · Korpus kapılarının zaman aşımını düzelt — `testTimeout: 20000`
-      genel; korpus kapısı coverage altında **44 s** sürüp deterministik
-      düşüyor. CI'da görünmüyor çünkü orada test zaten atlanıyor.
+- [x] **H1** · **Korpus kapıları artık CI'da GERÇEKTEN koşuyor.** Planlanan
+      "özet türet" yolu terk edildi — o yol kodu koşturmaz, iki commit'li
+      dosyayı karşılaştırır. Korpus zaten indirilebilirdi (Zenodo, CC-BY 4.0,
+      **27 MB**) ve indirme betiği depoda vardı; CI'ya önbellekli indirme
+      adımı eklendi.
+      · **Betik Linux'ta kırık çıktı:** zip'i `tar` ile açıyordu, GNU tar zip
+        okuyamaz. `unzip`e geçirildi. Kimse görmemişti çünkü korpus CI'da hiç
+        indirilmiyordu.
+      · **Atlama sessizdi:** `REQUIRE_CORPUS=1` eklendi, CI verir; indirme
+        başarısız olursa `corpus-gate.test.ts` **kırmızı** olur.
+      · Kırılma yolu gerçekten sınandı (korpus geçici kaldırıldı → test düştü
+        → geri alındı). Üçüncü iddia mekanik: yeni korpus kapısı açık timeout
+        almadan eklenemez — ve yazılır yazılmaz kendi eksiğimi yakaladı.
+- [x] **H2** · **13 kapıya açık timeout verildi** (`CORPUS_TIMEOUT_MS`
+      120 s = ölçülen en kötü halin ~3 katı). Ölçüm: en yavaş kapı 7,5 s ama
+      coverage altında 44 s — enstrümantasyon ~6 kat yavaşlatıyor, genel 20 s
+      deterministik düşüyordu. `test:coverage` artık yeşil.
 - [ ] **H3** · Ses kaynak arşivinin kimliğini sabitle — `all-samples/` commit
       edilmez (56 MB, üçüncü parti) ama **sha256 + lisans + URL** edilmeli.
       Yoksa F5'teki "yeniden üretilebilir" iddiası tek makinede doğru.
@@ -38,8 +48,11 @@
       **dosya adına** dayanıyor; vurmalı preset'lerin *bölgeleri* ölçülmedi.
 - [ ] **H6** · Büyük dosyalar: `studio/follow/page.tsx` **1024**,
       `references/curation/page.tsx` **848** (ratchet tavanı 800).
-- [ ] **H7** · Coverage — **önce ölç**. H2'deki zaman aşımı yüzünden bu
-      oturumda ölçülemedi; eşik yükseltmesi ölçüm görülmeden planlanmayacak.
+- [x] **H7** · **Ölçüldü ve eşikler yükseltildi:** 67/62/76/68 →
+      **69/64/77/70**. İki ortam ayrı ölçüldü (yerel korpuslu 69,73/65,07/
+      78,30/70,59 · CI korpussuz 69,47/64,83/78,30/70,40); eşik **CI**
+      değerinin altına konuldu. Eski eşikler aylardır güncel ölçüm görülmeden
+      duruyordu — çünkü yerel coverage koşusu H2'ye takılıyordu.
 
 **Çürütülen fikir (kayda geçsin):** "ney'de işe yaradı, 19 klasöre de uygula."
 Ölçüldü — kemençe/tambur/ud bugün **1,00** uzlaşmada; kaynaktan yeniden

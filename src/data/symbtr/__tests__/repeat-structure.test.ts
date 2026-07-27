@@ -1,6 +1,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import {describe, expect, it} from "vitest";
+import {CORPUS_TIMEOUT_MS} from "./corpus-gate";
 
 const CORPUS = path.join(process.cwd(), "symb", "SymbTr-3.0");
 
@@ -56,7 +57,7 @@ describe("Tekrar yapisi (B5) — kaynaklar arasi fark", () => {
 
     const ratios = withRepeats.map((pair) => pair.txtPitched / pair.xmlNotes).sort((a, b) => a - b);
     expect(ratios[Math.floor(ratios.length / 2)]).toBeGreaterThan(1.5);
-  });
+  }, CORPUS_TIMEOUT_MS);
 
   it.skipIf(!hasCorpus)("MusicXML tekrar isaretini KORUR — otoritatif kaynak budur", () => {
     const totalRepeats = corpusPairs().reduce((sum, pair) => sum + pair.repeats, 0);
@@ -65,7 +66,7 @@ describe("Tekrar yapisi (B5) — kaynaklar arasi fark", () => {
     // okuyor (D2). Sayinin sifirdan buyuk olmasi o yolun canli oldugunu
     // gosterir.
     expect(totalRepeats).toBeGreaterThan(9000);
-  });
+  }, CORPUS_TIMEOUT_MS);
 
   it.skipIf(!hasCorpus)("mu2 kod-21 tekrar isareti SAYILMAZ — ortusme yalniz %32", () => {
     const mu2Dir = path.join(CORPUS, "mu2");
@@ -94,5 +95,5 @@ describe("Tekrar yapisi (B5) — kaynaklar arasi fark", () => {
     // Bu yuzden `mu2` kod-21 "tekrar" OLARAK ADLANDIRILMAZ.
     expect(exact / files).toBeLessThan(0.5);
     expect(exact / files).toBeGreaterThan(0.25);
-  });
+  }, CORPUS_TIMEOUT_MS);
 });

@@ -99,9 +99,24 @@ async function getSlotStatus(slotKey: string) {
  */
 async function readFolderProvenance(): Promise<Record<string, unknown>> {
   try {
-    const raw = await readFile(path.join(SAMPLES_ROOT, "provenance.json"), "utf8");
-    const parsed = JSON.parse(raw) as {folders?: Record<string, unknown>};
-    return parsed.folders ?? {};
+    const [provenanceRaw, sourcesRaw] = await Promise.all([
+      readFile(path.join(SAMPLES_ROOT, "provenance.json"), "utf8"),
+      readFile(path.join(SAMPLES_ROOT, "sources.json"), "utf8"),
+    ]);
+    const folders = (JSON.parse(provenanceRaw) as {folders?: Record<string, Record<string, unknown>>}).folders ?? {};
+    const sources = (JSON.parse(sourcesRaw) as {sources?: Array<Record<string, unknown>>}).sources ?? [];
+    const byId = new Map(sources.map((source) => [source.id as string, source]));
+
+    // Kaynagin LISANSINI ve kokenini de disari ver. Preset adi tek basina
+    // yetmiyor: `kudum` bir icra KAYDINDAN kesiliyor, preset'i yok — ekranda
+    // "Kaynak:" bos kaliyordu. Ustelik atif sarti olan kaynaklarda lisansin
+    // gorunmesi zaten gerekli.
+    return Object.fromEntries(
+      Object.entries(folders).map(([name, record]) => {
+        const source = record.sourceId ? byId.get(record.sourceId as string) : undefined;
+        return [name, {...record, license: source?.license ?? null, origin: source?.origin ?? null}];
+      }),
+    );
   } catch {
     // Kayit okunamazsa sayfa calismaya devam etsin; eksiklik `unknown` olarak
     // gorunur, sessizce "kaynagi var" gibi gosterilmez.

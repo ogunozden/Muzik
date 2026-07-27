@@ -86,10 +86,15 @@ describe("Ses kaynaklarının kimliği (H3)", () => {
     }
 
     // Sayi sabit: yeni bir kisitli kaynak sessizce eklenemez.
-    // `compmusic-bendir` LISTEDEN CIKTI: `bendir` 2026-07-27'de Art Libre
-    // soundfont'tan yeniden uretildi ve o kaydi artik kullanmiyor. Geriye
-    // kalan tek kisit `kudum` — ve onun icin depoda alternatif YOK.
-    expect(restricted.map((source) => source.id).sort()).toEqual(["compmusic-kudum"]);
+    // ── BUGUN BOS, VE BU KAPI ONU KORUR ─────────────────────────────────
+    // 2026-07-27: projenin TUM ses kaynaklari ticarete acik hale geldi.
+    //   ney    : CC BY-NC -> Art Libre soundfont (F5)
+    //   bendir : CC BY-NC -> Art Libre soundfont (H8.1)
+    //   kudum  : CC BY-NC -> CC BY icra kaydi    (H8.2)
+    // Liste bos kalsa bile duruyor: kisitli bir kaynak eklenirse SESSIZ
+    // olamaz — yukaridaki iddialar atif ve gerekce yazilmasini zorunlu kilar,
+    // bu iddia da sayinin degistigini soyler.
+    expect(restricted.map((source) => source.id)).toEqual([]);
   });
 
   it("kisitli kaynagin atfi README'de GERCEKTEN yazili", () => {
@@ -142,7 +147,7 @@ describe("Her klasörün provenance kaydı (H4)", () => {
 
     // 2026-07-27 durumu. Bu sayilar bir HEDEF degil, bir OLCUM: iyilestikce
     // (claimed -> documented) test kirilir ve guncellenmesi gerekir.
-    expect(counts).toEqual({documented: 2, measured: 2, claimed: 15, unknown: 0});
+    expect(counts).toEqual({documented: 3, measured: 1, claimed: 15, unknown: 0});
 
     // `unknown` KALMADI: `bendir` ve `kudum`un kaynagi dalga bicimi
     // korelasyonuyla bulundu (r=1,0000'e kadar). Yeni bir klasor kayitsiz
@@ -168,7 +173,15 @@ describe("Her klasörün provenance kaydı (H4)", () => {
         fs.existsSync(path.join(process.cwd(), record.producer as string)),
         `${folder} ureticisi depoda yok: ${record.producer}`,
       ).toBe(true);
-      expect(record.presets?.length ?? 0).toBeGreaterThan(0);
+      // Preset YALNIZ soundfont kaynaklarinda anlamlidir. `kudum` bir icra
+      // KAYDINDAN kesiliyor; preset'i olmamasi dogru. Bu iddia once "her
+      // belgeli klasorun preset'i olmali" diyordu ve kaynak cesitliligini
+      // yok sayiyordu.
+      const source = sources.sources.find((entry) => entry.id === record.sourceId);
+      const isSoundFont = source?.path.toLowerCase().endsWith(".sf2") ?? false;
+      if (isSoundFont) {
+        expect(record.presets?.length ?? 0, `${folder} soundfont kaynakli ama preset yazilmamis`).toBeGreaterThan(0);
+      }
     }
   });
 });

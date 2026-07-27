@@ -58,17 +58,16 @@
       "commercialUse": "serbest"
     },
     {
-      "id": "compmusic-kudum",
-      "path": "all-samples/140764__barisbozkurt__turkaksagi_kudum.wav",
-      "sha256": "141786cc4271aa1637c3aacb3db89976dee1f5c148465e15ca962270cbba8bc9",
-      "bytes": 2411388,
-      "origin": "https://freesound.org/s/140764/",
-      "license": "CC BY-NC 4.0",
-      "licenseUrl": "https://creativecommons.org/licenses/by-nc/4.0/",
-      "commercialUse": "kisitli",
+      "id": "xserra-kudum",
+      "path": "all-samples/115397__xserra__kudum.wav",
+      "sha256": "c47eefe64c594ea88f569c3f5bba0e6cc27df86513700ed7cf085540d12a4bbb",
+      "bytes": 10321324,
+      "origin": "https://freesound.org/s/115397/",
+      "license": "CC BY 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+      "commercialUse": "serbest",
       "attributionRequired": true,
-      "attribution": "Kayit: barisbozkurt (Freesound) · Icra: Eren Ergen · 23.12.2011 · CompMusic projesi, Universitat Pompeu Fabra",
-      "restrictionNote": "Ticari kullanim KISITLI. `kudum/` klasorunun kaynagi budur ve kudum uygulamanin VARSAYILAN vurmalisidir. `bendir` ayni kaydediciden gelen bir kayittan uretiliyordu; 2026-07-27'de Art Libre soundfont'tan yeniden uretilerek bu kisittan CIKARILDI. kudum icin ayni cozum YOK: dort soundfont'un 113+ preset'inde `kudum` preset'i hic gecmiyor."
+      "attribution": "Kayit: xserra (Xavier Serra, MTG/UPF) · Icra: Hamza Zeytinoglu · Istanbul, 20.02.2011 · Sony PCM-D50"
     }
   ]
 }

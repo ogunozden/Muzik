@@ -1029,10 +1029,47 @@ işi motorun 1,36× kazancı yapıyor. Bendir artık bu kuralın dışında.
 Güven dağılımı: `documented` **2** · `measured` 2 · `claimed` 15 · `unknown` 0.
 Kısıtlı kaynak: **1** (yalnız `compmusic-kudum`).
 
-**Sizde bekleyen karar — yalnız `kudum`:** ticari kullanım kısıtlı ve
-**varsayılan vurmalı**. Depoda alternatif YOK (113+ preset tarandı, `kudum`
-preset'i hiç geçmiyor); bendir'de kullanılan çözüm burada uygulanamaz.
-Ya dış kaynak (ticarete açık kudum kaydı) ya da yeniden lisanslama gerekiyor.
+### H8.2 · `kudum` CC BY kayıttan yeniden üretildi — **kısıt kalmadı**
+
+Depoda alternatif yoktu, dışarıda arandı ve bulundu:
+[freesound.org/s/115397](https://freesound.org/s/115397/) — **CC BY 4.0**,
+kaydeden **xserra** (Xavier Serra, MTG/UPF), icra **Hamza Zeytinoğlu**
+(İstanbul, 20.02.2011). 58,5 s — eski NC kaydından (13,7 s) dört kat uzun.
+
+`scripts/cut-percussion-from-recording.mjs` yazıldı. Kesim noktaları komut
+satırında **açık** verilir: bir icradan darp seçmek bir yargıdır, gizlenmemesi
+için üretim birebir tekrarlanabilir ve seçim denetlenebilir.
+
+**Seçim kulakla değil ölçümle:** 257 vuruş başı bulundu, 41'i yalıtılmış
+sayıldı (öncesi/sonrası boş), her biri için pes band oranı ve parlaklık
+ölçüldü.
+
+| darp | normal / vurgu | pes bandı | gerekçe |
+|---|---|---|---|
+| `dum` | 20,05 / 10,59 s | **%79–81** | en pes grup, parlaklık 0,015–0,024 (büyük kazan) |
+| `tek` | 23,36 / 28,84 s | %39–40 | tiz kazan, parlaklık 0,076–0,083 |
+| `ke` | 28,52 / 55,84 s | %37–42 | tek'in **hafifi**: hem normalde (0,0427<0,0467) hem vurguda (0,0835<0,0969) altında |
+
+---
+
+## 🎉 Projede ticari kısıtlı ses kaynağı KALMADI
+
+| klasör | önce | sonra |
+|---|---|---|
+| `ney` | CC BY-NC (Freesound 27726) | **Art Libre** soundfont (F5) |
+| `bendir` | CC BY-NC (Freesound 140395) | **Art Libre** soundfont (H8.1) |
+| `kudum` | CC BY-NC (Freesound 140764) | **CC BY 4.0** icra kaydı (H8.2) |
+
+Güven dağılımı: `documented` **3** · `measured` 1 · `claimed` 15 · `unknown` 0.
+
+Kapı bu durumu **korur**: kısıtlı kaynak listesi bugün boş ama iddia duruyor —
+kısıtlı bir kaynak eklenirse atıf ve gerekçe yazmak zorunlu, ve sayının
+değiştiği testte görünür.
+
+**Yan düzeltme:** `/samples` sayfası kaynağı yazarken preset adına
+dayanıyordu; kayıttan kesilen klasörde (`kudum`) "Kaynak:" boş kalıyordu.
+Artık kaynağın kimliği **ve lisansı** gösteriliyor — atıf şartı olan bir
+kaynakta lisansın görünmesi zaten gerekli.
 
 ### H4 · Sample provenance'ını 20 klasörün tamamına yay — **TAMAM**
 

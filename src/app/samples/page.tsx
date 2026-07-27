@@ -43,8 +43,10 @@ interface FolderProvenance {
   sourceId: string | null;
   presets: string[] | null;
   producer: string | null;
-  confidence: "documented" | "claimed" | "unknown";
+  confidence: "documented" | "measured" | "claimed" | "unknown";
   note?: string;
+  license?: string | null;
+  origin?: string | null;
 }
 
 interface SamplesResponse {
@@ -128,12 +130,18 @@ function SourceLine({record}: {record: FolderProvenance | null}) {
     );
   }
 
-  const presets = record.presets?.join(", ") ?? "";
+  // Preset YALNIZ soundfont kaynaklarinda var. Kayittan kesilen klasorlerde
+  // (`kudum`) preset yok; orada kaynagin kimligi gosterilir — yoksa ekranda
+  // "Kaynak:" bos kalirdi.
+  const label = record.presets?.join(", ") ?? record.sourceId ?? "bilinmiyor";
   return (
     <p className={`mt-1 text-xs ${tokens.colors.text.secondary}`}>
-      Kaynak: <strong>{presets}</strong>
+      Kaynak: <strong>{label}</strong>
+      {record.license ? <> · {record.license}</> : null}
       {record.confidence === "documented" ? (
         <> · üretici <code>{record.producer}</code> · yeniden üretilebilir</>
+      ) : record.confidence === "measured" ? (
+        <> · ölçümle doğrulandı · üretim parametreleri kayıtlı değil</>
       ) : (
         <> · üretim parametreleri kayıtlı değil (yalnız preset adı biliniyor)</>
       )}

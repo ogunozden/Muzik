@@ -145,39 +145,50 @@ sessizce geri getirirdi.
   icinde veri olarak durur ve `/samples` sayfasinda **"Gerilmis perde"**
   uyarisi olarak gorunur — saklanmaz.
 
-## kudum — CompMusic kaydi, CC BY-NC (DIKKAT)
+## kudum — CC BY icra kaydindan YENIDEN URETILDI (2026-07-27)
 
-`kudum/` klasoru soundfont'tan **gelmiyor**. Kaynagi gercek bir icra kaydidir
-ve bu OLCUMLE bulundu (2026-07-27): tek vuruslar kayittan dogrudan kesilmis,
-dalga bicimi korelasyonu **r = 1,0000**.
+Onceki `kudum/` bir CompMusic icra kaydindan kesilmisti
+([freesound.org/s/140764](https://freesound.org/s/140764/), olcumle bulundu:
+r=1,0000) ve **CC BY-NC 4.0** tasiyordu — ticari kullanim kisitli, ustelik
+kudum uygulamanin **varsayilan vurmalisi**.
 
-| klasor | kaynak | olculen korelasyon |
-|---|---|---|
-| `kudum` | [freesound.org/s/140764](https://freesound.org/s/140764/) — turkAksagi_kudum.wav (13,7 s) | dum **1,0000** · ke 0,9999 · dum-accent 0,9999 · tek 0,9801 |
+Soundfont'ta alternatif YOKTU (dort dosyanin 113+ preset'i tarandi, `kudum`
+preset'i hic gecmiyor). Cozum baska bir icra kaydindan geldi:
 
-> `bendir` de ayni kaydediciden gelen bir kayittan uretiliyordu
-> ([freesound.org/s/140395](https://freesound.org/s/140395/), r=1,0000). Ayni
-> gun **Art Libre** soundfont'tan yeniden uretilerek bu kisittan CIKARILDI —
-> asagidaki bendir bolumune bak.
+| | |
+|---|---|
+| kaynak | [freesound.org/s/115397](https://freesound.org/s/115397/) — `kudum.wav`, 58,5 s |
+| **lisans** | **CC BY 4.0** — ticari kullanim **serbest** |
+| kaydeden | **xserra** (Xavier Serra, MTG / Universitat Pompeu Fabra) |
+| icra | **Hamza Zeytinoglu** · Istanbul · 20.02.2011 · Sony PCM-D50 |
 
-### Atif (BY sarti — zorunlu)
+> **Atif (BY sarti — zorunlu):** yukaridaki kaydeden/icraci/kaynak satirlari bu
+> sartin yerine getirilmesidir. `sample-sources.test.ts` atfin README'de
+> GERCEKTEN yazili oldugunu ayrica dogrular.
 
-- **Kaydeden:** `barisbozkurt` — <https://freesound.org/people/barisbozkurt/>
-- **Icra:** Eren Ergen · 23 Aralik 2011
-- **Proje:** CompMusic, Universitat Pompeu Fabra
-- **Lisans:** **CC BY-NC 4.0** — <https://creativecommons.org/licenses/by-nc/4.0/>
+### Nasil uretiliyor
 
-> Bu atif daha once hicbir yerde YAZMIYORDU; klasorlerin kaynagi da bilinmiyordu.
-> BY sarti o sure boyunca ihlal ediliyordu.
+```
+node scripts/cut-percussion-from-recording.mjs   --source all-samples/115397__xserra__kudum.wav --out kudum   --cut "dum=20.05/10.59,tek=23.36/28.84,ke=28.52/55.84"
+```
 
-### Ticari kullanim KISITLI
+Kesim noktalari komut satirinda **acik** verilir; boylece uretim birebir
+tekrarlanabilir ve secim denetlenebilir olur. Bir icradan darp secmek bir
+yargidir — gizlenmemesi icin boyle.
 
-`kudum` uygulamanin **varsayilan vurmalisi** (`DEFAULT_PERCUSSION_INSTRUMENT`),
-yani en cok duyulan ses. Proje ticarilesecekse bu klasor ya yeniden
-lisanslanmali ya baska kaynakla degistirilmelidir.
+**Secim olculdu, kulakla degil:** 58,5 s'lik kayittan 257 vurus basi bulundu,
+bunlardan 41'i yalitilmis (oncesi/sonrasi bos) sayildi ve her biri icin pes
+band orani + parlaklik olculdu.
 
-Depoda alternatif **YOK**: dort soundfont'un 113+ preset'i tarandi, `kudum`
-preset'i hic gecmiyor. `bendir`de kullanilan cozum burada uygulanamaz.
+| darp | normal / vurgu | pes bandi | gerekce |
+|---|---|---|---|
+| `dum` | 20,05 s / 10,59 s | **%79-81** | en pes grup, parlaklik 0,015-0,024 (buyuk kazan) |
+| `tek` | 23,36 s / 28,84 s | %39-40 | tiz kazan, parlaklik 0,076-0,083 |
+| `ke` | 28,52 s / 55,84 s | %37-42 | tek'in HAFIFI: rms hem normalde (0,0427<0,0467) hem vurguda (0,0835<0,0969) tek'in altinda |
+
+Vurgular **gercek daha guclu vuruslardir**, kazanc artirmayla taklit degil.
+Cift tek katsayiyla normalize edilir ki aradaki dinamik fark korunsun
+(dum 2,38x · tek 2,05x · ke 1,94x).
 
 ## bendir — Art Libre'den YENIDEN URETILDI (2026-07-27)
 

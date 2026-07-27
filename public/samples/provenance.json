@@ -59,11 +59,11 @@
       "note": "2026-07-27'de LISANS sebebiyle yeniden uretildi. Onceki kaynak `140395__barisbozkurt__curcuna_bendir.wav` idi (olcumle bulundu, r=1,0000) ve CC BY-NC 4.0 tasiyordu. Yeni kaynak Art Libre — ticari kullanim serbest. Esleme kaynagin kendi adlandirmasina ve Kudum kitabi s.14'e dayanir: dum<-bass (en pes), tek<-slp1 (slap), ke<-riml (rim LEFT = sol el, en hafif). Vurgular GERCEK dinamik katmanlardan (p/mf -> ff), kazanc artirmayla taklit degil."
     },
     "kudum": {
-      "sourceId": "compmusic-kudum",
+      "sourceId": "xserra-kudum",
       "presets": null,
-      "producer": null,
-      "confidence": "measured",
-      "note": "KAYNAK OLCUMLE BULUNDU. Soundfont'ta `kudum` preset'i hic yok (113 preset tarandi) cunku klasor soundfont'tan gelmiyor: bir icra kaydindan kesilmis — `140764__barisbozkurt__turkaksagi_kudum.wav` (13,7 s, Turk Aksagi). Korelasyon dum r=1,0000 · ke r=0,9999 · dum-accent r=0,9999 · tek r=0,9801. LISANS: CC BY-NC 4.0 — ticari kullanim kisitli, atif zorunlu. Bu, uygulamanin VARSAYILAN vurmalisi."
+      "producer": "scripts/cut-percussion-from-recording.mjs",
+      "confidence": "documented",
+      "note": "2026-07-27'de LISANS sebebiyle yeniden uretildi. Onceki kaynak `140764__barisbozkurt__turkaksagi_kudum.wav` idi (olcumle bulundu, r=1,0000) ve CC BY-NC 4.0 tasiyordu — ustelik kudum uygulamanin VARSAYILAN vurmalisi. Soundfont'ta alternatif yoktu (113+ preset tarandi), cozum baska bir icra kaydindan geldi: CC BY 4.0. Kesim noktalari komut satirinda ACIK verilir, uretim birebir tekrarlanabilir: dum=20,05/10,59 · tek=23,36/28,84 · ke=28,52/55,84 saniye. Secim olculdu: dum en pes grup (pes bandi %79-81), tek/ke tiz kazan (%37-42), ke hem normalde hem vurguda tek'in ALTINDA."
     }
   },
   "hekSearch": {

@@ -65,8 +65,16 @@
       · **"Ev normuna uy" fikri çürüdü:** 27 vurgu dosyasının **9'u kendi
         normalinden daha sessiz** — uyulacak tutarlı norm yok.
       · Güven: `documented` **2** · `measured` 2 · `claimed` 15 · `unknown` 0.
-      · **Sizde kalan tek karar — kudum:** kısıtlı ve varsayılan vurmalı,
-        depoda alternatif YOK. Dış kaynak ya da yeniden lisanslama gerekiyor.
+      · **kudum ÜRETİLDİ — ticari kısıt KALMADI** (H8.2): dışarıda CC BY 4.0
+        bir icra kaydı bulundu ([freesound 115397](https://freesound.org/s/115397/),
+        xserra / Hamza Zeytinoğlu, 58,5 s). Kesim noktaları komut satırında
+        **açık** (`cut-percussion-from-recording.mjs`) — üretim tekrarlanabilir,
+        seçim denetlenebilir. Seçim ölçümle: 257 vuruştan 41 yalıtılmış olanın
+        pes bandı + parlaklığı ölçüldü; dum %79-81, tek/ke %37-42, ke hem
+        normalde hem vurguda tek'in altında.
+      · **Artık projede ticari kısıtlı ses kaynağı YOK:** ney (F5) · bendir
+        (H8.1) · kudum (H8.2) — üçü de CC BY-NC'den çıkarıldı.
+      · Güven: `documented` **3** · `measured` 1 · `claimed` 15 · `unknown` 0.
 - [x] **H4** · **`public/samples/provenance.json`** — 20 klasörün tamamı
       kayıtlı: `documented` **1** · `claimed` **17** · `unknown` **2**.
       · **Yeni bulgu:** `unknown` olanlar `bendir` ve **`kudum`** — ve

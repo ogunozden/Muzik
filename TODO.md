@@ -212,16 +212,25 @@ tick ekseninde olsun.
 
 ### Öncelik 4.5 · G9 — parser'ı `rows.ts`'e geçir *(FAZ A'nın son halkası)*
 
-- [ ] **G9** · `parseSymbtrScore` **hâlâ yalnız kod-9 okuyor.** G2 hiçbir
-      satırı atmayan okuyucuyu kurdu ama parser ona bağlanmadı; bu yüzden
-      31.605 süreli kod-9-dışı satır (çarpma, tril, mordent, tremolo + 9
-      çözülemeyen kod) olay akışına **girmiyor**.
-      · **Ölçülen kanıt:** ölçü doluluğu kanonik ızgarada **%93,13**, ama
-      parser'ın akışında **%88,81** — aradaki fark tam olarak bu satırlar.
-      · Süsleme kimlikleri (B1) ve `unresolvedCode` (B2) `rows.ts` üzerinde
-      hazır; iş, parser'ı okuyucuya bağlayıp olay akışını genişletmek.
-      · **Risk: YÜKSEK** — olay akışı her tüketiciyi etkiler (çalma, gravür,
-      PDF hizalama). G0 baseline fixture'ları ve G3 kapısı zemini hazır.
+- [x] **G9** · **Parser `rows.ts`'e geçti — FAZ A'nın son halkası kapandı.**
+      `parseSymbtrScore` artık `if (code !== "9") return` yapmıyor; zamanı
+      ilerleten **her** satır olay üretiyor. Tanım tek yerde:
+      `rowAdvance().canonical`.
+      · **Ölçü doluluğu %88,81 → %98,03** (157.173 ölçüde 154.082).
+      Kanonik ızgaradaki %93,13'ü de **aştı** — çünkü G7 bölmesi artık
+      tam olay kümesi üzerinde çalışıyor.
+      · Olay akışı **1.163.593 → 1.192.643** (+29.050): çarpma, tril,
+      mordent, tremolo ve 9 çözülemeyen kod artık akışta.
+      · Kod-52 (tempo) olay **üretmiyor** — hayalet süre eklemiyor;
+      süresiz çarpmalar (kod-8'in %91'i) zaman eksenini bozmuyor.
+      · Her olay `code`, `ornament`, `unresolvedCode` taşıyor.
+      · **Bilinçli baseline değişimi** (G0 fotoğrafı güncellendi, gizlenmedi):
+      `beyati` 224→245 olay, endBeat 144→**154,5** — mertebe 8/8 × 39 ölçü
+      = nominal 156; eski akış 12 vuruş **eksikti**. Eklenenler uydurma
+      değil, ölçünün zaten eksik olan parçası.
+      · `.mjs` yürüyüşü de aynı kurala geçirildi; TS↔`.mjs` eşdeğerlik
+      testi 8 fixture'da yeşil.
+      · Doğrulama: 983 birim testi · 23 e2e · gravür denetimi **0 hata**.
 
 ### Öncelik 5 · FAZ D — Ses kütüphanesi · PLAN §6 · *stüdyo işi*
 

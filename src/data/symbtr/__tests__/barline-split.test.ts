@@ -179,9 +179,13 @@ describe("KAPI — canli korpus (PLAN §3/G7)", () => {
     // TUM bar cizgileri kayiyordu ve bolunen nota %2,07 cikiyordu.
     // 5.984 (ilk hal) -> 5.961 (C4: triole kaynagi bolunmuyor)
     //               -> 5.773 (C4.1: sahte triole ureten bolme de yapilmiyor)
-    expect(splitNotes).toBe(5773);
-    expect(splitNotes / totalNotes).toBeCloseTo(0.005, 4);
-    expect(totalNotes).toBe(1_163_593);
+    //               -> 5.802 (G9: olay akisi kod-9 disi sureli satirlari da
+    //                         iceriyor, dolayisiyla bar asan nota da arti)
+    expect(splitNotes).toBe(5802);
+    expect(splitNotes / totalNotes).toBeCloseTo(0.0049, 4);
+    // G9: olay akisi 1.163.593 -> 1.192.643 (kod-9 disi sureli satirlar
+    // artik akista; +29.050 olay).
+    expect(totalNotes).toBe(1_192_643);
   });
 
   it.skipIf(!hasCorpus)("TRIOLE notasi bar cizgisinde BOLUNMEZ (C4)", () => {

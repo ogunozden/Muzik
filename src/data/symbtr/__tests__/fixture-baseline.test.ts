@@ -38,10 +38,27 @@ interface Baseline {
   topFractions: string[];
 }
 
+/**
+ * G9 SONRASI GUNCELLENDI — davranis BILEREK degisti, gizlenmedi.
+ *
+ * `parseSymbtrScore` artik yalniz kod-9'u degil, ZAMANI ILERLETEN her satiri
+ * okuyor (bkz. `parser.ts` G9 notu). Degisen uc fixture, sureli kod-9-disi
+ * satir tasiyanlar:
+ *
+ *   beyati (21x kod-8 carpma) : 224 -> 245 olay · endBeat 144    -> 154,5
+ *   saba   (serbest)          : 1233 -> 1240   · endBeat 808,875 -> 812,875
+ *   segah                     : 42 -> 44       · endBeat 20,5    -> 21,5
+ *
+ * `beyati` DOGRULAMASI: mertebe 8/8, 39 olcu -> nominal 156 vurus.
+ * Eski akis 144'te kaliyordu (12 vurus EKSIK), yenisi 154,5. Yani eklenen
+ * satirlar uydurma degil, olcunun zaten eksik olan parcasi.
+ * Bu satirlarin zamani ilerlettigi G3'te kanitlanmisti: kod-8'in sureli olan
+ * %9'u `Offset` sutununu ILERLETIYOR.
+ */
 const EXPECTED: Record<string, Baseline> = {
   "beyati--sarki--duyek--dilbera_sazin--tanburi_isak.txt": {
-    events: 224, rests: 2, measureMin: 1, measureMax: 39, measureDistinct: 39, endBeat: 144,
-    topFractions: ["1/8:135", "1/4:34", "1/16:29"],
+    events: 245, rests: 2, measureMin: 1, measureMax: 39, measureDistinct: 39, endBeat: 154.5,
+    topFractions: ["1/8:156", "1/4:34", "1/16:29"],
   },
   "cargah--turku--senginsemai--sak_sak--yurdagul_ulgar.txt": {
     events: 62, rests: 0, measureMin: 1, measureMax: 5, measureDistinct: 5, endBeat: 20,
@@ -56,12 +73,12 @@ const EXPECTED: Record<string, Baseline> = {
     topFractions: ["1/8:37", "1/4:14", "3/8:3"],
   },
   "saba--miraciye--serbest--pes_heman--nayi_osman_dede.txt": {
-    events: 1233, rests: 8, measureMin: null, measureMax: null, measureDistinct: 0, endBeat: 808.875,
-    topFractions: ["1/8:526", "1/4:300", "1/16:211"],
+    events: 1240, rests: 8, measureMin: null, measureMax: null, measureDistinct: 0, endBeat: 812.875,
+    topFractions: ["1/8:532", "1/4:301", "1/16:211"],
   },
   "segah--salatiummiye--aksaksemaievferi--allahumme_salli--itri.txt": {
-    events: 42, rests: 0, measureMin: 1, measureMax: 4, measureDistinct: 4, endBeat: 20.5,
-    topFractions: ["1/8:29", "1/16:9", "1/4:3"],
+    events: 44, rests: 0, measureMin: 1, measureMax: 4, measureDistinct: 4, endBeat: 21.5,
+    topFractions: ["1/8:31", "1/16:9", "1/4:3"],
   },
   "sultaniyegah--sarki--curcuna--peymaneme_mehtab--emin_ongan.txt": {
     events: 212, rests: 0, measureMin: 1, measureMax: 40, measureDistinct: 40, endBeat: 197.5,

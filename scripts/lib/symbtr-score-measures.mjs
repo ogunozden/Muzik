@@ -109,10 +109,11 @@ function walkMeasureIndexes(rawText, writtenMeter) {
     // Kod-52 tempo isareti: kanonik zamani ilerletmez, olcuye de yazilmaz.
     if (code === 52) continue;
 
-    if (code === 9) {
-      noteEventCount += 1;
-      measureIndexes.add(measureBase + Math.floor((position - segmentStart) / measureTicks));
-    }
+    // G9: TS tarafi artik zamani ilerleten HER satiri olay sayiyor
+    // (yalniz kod-9 degil). Iki uygulama ayni kalmali — `symbtr-score-
+    // measures.test.mjs` bunu fixture'larda dogruluyor.
+    noteEventCount += 1;
+    measureIndexes.add(measureBase + Math.floor((position - segmentStart) / measureTicks));
 
     position += numerator * (TICKS_PER_WHOLE / denominator);
   }

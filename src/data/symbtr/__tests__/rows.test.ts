@@ -3,7 +3,7 @@ import path from "node:path";
 import {describe, expect, it} from "vitest";
 import {TICKS_PER_WHOLE, quarterBeatsOf, ticksFromFraction} from "@/core/time/ticks";
 import {parseSymbtrScore} from "../parser";
-import {METER_CHANGE_CODE, SYMBTR_COLUMNS, readSymbtrRows} from "../rows";
+import {METER_CHANGE_CODE, SYMBTR_COLUMNS, readSymbtrRows, rowAdvance} from "../rows";
 
 const FIXTURE_DIR = path.join(__dirname, "..", "..", "score-engine", "__tests__", "fixtures", "symbtr", "txt");
 const CORPUS_TXT = path.join(process.cwd(), "symb", "SymbTr-3.0", "txt");
@@ -54,23 +54,52 @@ describe("readSymbtrRows (G2) — hicbir satir atilmaz", () => {
       expect(result.counts.blank).toBe(bodyLines.length - nonBlank);
     });
 
-    it.each(files)("%s — `timed` kumesi eski parser + dusurulen satirlarla ortusur", (file) => {
+    it.each(files)("%s — `timed` kumesi parser ciktisiyla BIREBIR ortusur", (file) => {
       const raw = fixture(file);
-      const legacy = parseSymbtrScore(raw, 60);
+      const events = parseSymbtrScore(raw, 60);
       const result = readSymbtrRows(raw);
 
-      // Eski parser YALNIZ kod-9'u ve yalniz sureli olanlari uretiyor.
-      const code9Timed = result.rows.filter((row) => row.kind === "timed" && row.code === 9);
+      // G9 sonrasi: parser ZAMANI ILERLETEN her satiri uretiyor, yalniz
+      // kod-9'u degil. Iki tarafin ayni kumeyi gormesi artik dogrudan
+      // dogrulanabiliyor — eskiden "kod-9 alt kumesi" ile kiyaslaniyordu.
+      const advancing = result.rows.filter((row) => row.kind === "timed" && rowAdvance(row).canonical > 0);
 
-      expect(code9Timed).toHaveLength(legacy.length);
-      for (let index = 0; index < legacy.length; index++) {
-        const row = code9Timed[index];
+      expect(advancing).toHaveLength(events.length);
+      for (let index = 0; index < events.length; index++) {
+        const row = advancing[index];
         if (row.kind !== "timed") throw new Error("beklenmeyen satir tipi");
 
-        expect(row.durationFraction).toEqual(legacy[index].durationFraction);
-        expect(quarterBeatsOf(row.duration)).toBeCloseTo(legacy[index].durationBeats, 9);
-        expect(row.isRest).toBe(legacy[index].isRest);
+        expect(row.durationFraction).toEqual(events[index].durationFraction);
+        expect(quarterBeatsOf(row.duration)).toBeCloseTo(events[index].durationBeats, 9);
+        expect(row.code).toBe(events[index].code);
       }
+    });
+
+    it("kod-9 DISI sureli satirlar artik olay akisinda (G9)", () => {
+      // Bu fixture 21 adet kod-8 (carpma) tasiyor ve hepsi sure iceriyor.
+      // Eskiden akista HIC gorunmuyorlardi.
+      const raw = fixture("beyati--sarki--duyek--dilbera_sazin--tanburi_isak.txt");
+      const events = parseSymbtrScore(raw, 60);
+      const graceEvents = events.filter((event) => event.code === 8);
+
+      expect(graceEvents.length).toBe(21);
+      expect(graceEvents.every((event) => event.ornament === "grace")).toBe(true);
+      expect(events.some((event) => event.code === 9)).toBe(true);
+    });
+
+    it("kod-52 tempo isareti olay URETMEZ — hayalet sure eklemez", () => {
+      const raw = [
+        SYMBTR_COLUMNS.join("\t"),
+        line({Sira: 1, Kod: 9, Nota53: "Do5", NotaAE: "C5", Koma53: 318, Pay: 1, Payda: 4}),
+        line({Sira: 2, Kod: 52, Pay: 1, Payda: 8, LNS: 127}),
+        line({Sira: 3, Kod: 9, Nota53: "Do5", NotaAE: "C5", Koma53: 318, Pay: 1, Payda: 4}),
+      ].join("\n");
+      const events = parseSymbtrScore(raw, 60);
+
+      expect(events).toHaveLength(2);
+      expect(events.every((event) => event.code === 9)).toBe(true);
+      // Ikinci nota 1. ceyreklikte basliyor — tempo satiri zamani kaydirmadi.
+      expect(events[1].startBeat).toBe(1);
     });
 
     it("eski parser'in DUSURDUGU satirlar burada gorunur kalir", () => {

@@ -14,8 +14,13 @@
 ## 0. Durum özeti
 
 > **GÜNCEL DURUM (2026-07-27 · uygulama sonrası):**
-> **FAZ A (G0–G8) ✅ · FAZ B (B1–B7) ✅ · FAZ C (C1–C4 + C1.1/C4.1) ✅**
-> 122 dosya / **981 birim testi** + **23 e2e** (dev *ve* üretim derlemesi) yeşil.
+> **FAZ A (G0–G9) ✅ · FAZ B (B1–B7) ✅ · FAZ C (C1–C4 + C1.1/C4.1) ✅**
+> 122 dosya / **983 birim testi** + **23 e2e** (dev *ve* üretim derlemesi) yeşil.
+>
+> **G9 ile göç tamamlandı:** parser artık `rows.ts`'ten besleniyor, hiçbir
+> satır atılmıyor. **Ölçü doluluğu %88,81 → %98,03**; olay akışı
+> 1.163.593 → 1.192.643. Motorun metrik bağlamı yok diye başlayan teşhis,
+> ölçülebilir bir sonla kapandı.
 > Tarayıcı denetimleri: `score-engine-engraving` **0 hata**, `studio-follow` `ok`.
 >
 > **Ölçüm planı dört kez çürüttü** — dördü de kapılar sayesinde erken yakalandı:

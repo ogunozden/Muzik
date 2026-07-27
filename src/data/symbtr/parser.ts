@@ -1,7 +1,7 @@
 import {formatSolfegePitch} from "@/core/domain/note-naming";
-import {ZERO_TICKS, addTicks} from "@/core/time/ticks";
+import {ZERO_TICKS, addTicks, quarterBeatsOf} from "@/core/time/ticks";
 import {buildMeterMap, measureAt} from "./meter-map";
-import {type DurationFraction, readSymbtrRows, rowAdvance} from "./rows";
+import {type DurationFraction, type SymbtrOrnament, readSymbtrRows, rowAdvance} from "./rows";
 
 /**
  * Olcu numarasinin NASIL bulundugu (PLAN.md §3/G5-G6).
@@ -49,6 +49,15 @@ export interface SymbtrScoreEvent {
    * `null` uretir — calma yolu butun notalari gorur.
    */
   barlineTie: "start" | "continue" | "stop" | null;
+  /**
+   * Kaynak satir kodu (G9). Eskiden akista yalniz `9` vardi; artik zamani
+   * ilerleten HER kod geliyor ve hangisi oldugu KAYBOLMUYOR.
+   */
+  code: number | null;
+  /** MusicXML ile turetilmis susleme kimligi (B1); yoksa `null`. */
+  ornament: SymbtrOrnament | null;
+  /** Kodun anlami kanitlanmadi (B2) — nota olarak islenir, iddia edilmez. */
+  unresolvedCode: boolean;
   isMeasureEnd: boolean;
   isRest: boolean;
 }
@@ -178,79 +187,79 @@ export function parseSymbtrScore(
   const measureIndexBySira = options.writtenMeter ? buildMeasureIndexBySira(raw, options.writtenMeter) : null;
   const measureIndexBasis: MeasureIndexBasis = measureIndexBySira ? "meter-walk-v2" : "offset-ceil-v1";
 
-  return raw
-    .split(/\r?\n/)
-    .slice(1)
-    .reduce<SymbtrScoreEvent[]>((events, line) => {
-      if (!line.trim()) return events;
+  // G9: OLAY AKISI ARTIK `rows.ts`TEN GELIYOR.
+  //
+  // Eskiden burada `if (code !== "9") return events;` vardi ve korpusun
+  // 1.211.994 satirindan 47.140'i — bunlarin **31.605'i SURE TASIYAN** —
+  // sessizce dusuyordu: carpma, tril, mordent, tremolo ve anlami
+  // kanitlanmamis dokuz kod. Olcum: olcu doluluğu kanonik izgarada %93,13
+  // iken parser'in akisinda %88,81'de kaliyordu; fark tam olarak bu satirlar.
+  //
+  // Artik `readSymbtrRows` yuruyor ve ZAMANI ILERLETEN her satir olay
+  // uretiyor. "Zamani ilerletir" tanimi tek yerde: `rowAdvance().canonical`.
+  // Bu sayede:
+  //   · kod-51 (mertebe) zaten `meter-change` — olay uretmez
+  //   · kod-52 (tempo) `canonical = 0` — olay uretmez (hayalet sure eklemez)
+  //   · suresiz carpmalar (kod-8'in %91'i) `untimed` — zaman eksenini bozmaz
+  return readSymbtrRows(raw).rows.reduce<SymbtrScoreEvent[]>((events, row) => {
+    if (row.kind !== "timed") return events;
+    if (rowAdvance(row).canonical === ZERO_TICKS) return events;
 
-      const columns = line.split("\t");
-      const code = columns[1];
-      if (code !== "9") return events;
+    const columns = row.columns;
+    const index = row.sira ?? Number(columns[0]);
+    // Perde ham sutundan okunuyor: `rows.ts` es satirlarinda `pitchAeu`i
+    // `null`liyor, ama buradaki es tespiti (`normalizePitch` basarisiz mi)
+    // eski davranisla BIREBIR ayni kalmali — sessiz kayma olmasin.
+    const sourcePitch = columns[3] ?? "";
+    const koma53 = Number(columns[4]);
+    const section = columns[11]?.trim() || null;
+    const offsetUnits = row.offsetUnits;
+    const measureIndex = measureIndexBySira
+      ? measureIndexBySira.get(index) ?? null
+      : offsetUnits && offsetUnits > 0
+        ? Math.max(1, Math.ceil(offsetUnits))
+        : null;
+    const isMeasureEnd = Boolean(offsetUnits && offsetUnits > 0 && isNearInteger(offsetUnits));
+    const {numerator: pay, denominator: payda} = row.durationFraction;
+    // `rows.ts` sureyi TICK ekseninde dogruladi (payda tick cozunurlugunu
+    // bolmeliydi); burada yalniz ceyreklik eksenine koprulenir.
+    const durationBeats = quarterBeatsOf(row.duration);
 
-      const index = Number(columns[0]);
-      const sourcePitch = columns[3];
-      const koma53 = Number(columns[4]);
-      const pay = Number(columns[6]);
-      const payda = Number(columns[7]);
-      const section = columns[11]?.trim() || null;
-      const rawOffsetUnits = Number(columns[12]);
-      const offsetUnits = Number.isFinite(rawOffsetUnits) ? rawOffsetUnits : null;
-      const measureIndex = measureIndexBySira
-        ? measureIndexBySira.get(index) ?? null
-        : offsetUnits && offsetUnits > 0
-          ? Math.max(1, Math.ceil(offsetUnits))
-          : null;
-      const isMeasureEnd = Boolean(offsetUnits && offsetUnits > 0 && isNearInteger(offsetUnits));
-      const durationBeats = (pay / payda) * 4;
+    const normalized = normalizePitch(sourcePitch);
+    const playbackKoma53 = koma53 + koma53Offset;
+    const targetFrequency =
+      normalized && Number.isFinite(koma53) && Number.isFinite(playbackKoma53)
+        ? koma53ToFrequency(playbackKoma53)
+        : null;
+    const isRest = !normalized;
 
-      // Korpusta `Kod=9` (nota) olmasina ragmen PERDESIZ ve SURESIZ yer-tutucu
-      // satirlar var: `NotaAE=[] Koma53=-1 Pay=0 Payda=0`. Bunlar nota da es de
-      // degil. Eskiden `(0/0)*4 = NaN` uretiliyor ve asagidaki
-      // `startBeat += durationBeats` yuzunden ESERIN GERI KALANININ TAMAMI NaN
-      // zaman eksenine dusuyordu (olcum, SymbTr-3.0 / 401 dosya / 146.477 event:
-      // 5 bozuk satir -> 124 event cokmus, 4 eser etkilenmis).
-      //
-      // Satiri dusuruyoruz — bos satir ve `Kod !== "9"` satirlariyla ayni
-      // sozlesme. Olculen 5 satirin HEPSI perdesiz oldugu icin gercek nota
-      // kaybi yok; zaman ekseni asla sonsuz/NaN bir degerle ilerlemez. (D1)
-      if (!Number.isFinite(durationBeats) || durationBeats <= 0) return events;
+    events.push({
+      index,
+      sourcePitch,
+      solfegePitch: toSolfegePitch(sourcePitch),
+      notationSymbol: toNotationSymbol(durationBeats, isRest),
+      playbackPitch: normalized?.playbackPitch ?? null,
+      midiNumber: targetFrequency ? frequencyToMidiNumber(targetFrequency) : normalized?.midiNumber ?? null,
+      koma53: targetFrequency ? koma53 : null,
+      targetFrequency,
+      startBeat,
+      durationBeats,
+      durationFraction: {numerator: pay, denominator: payda},
+      startTime: startBeat * beatDuration,
+      duration: durationBeats * beatDuration,
+      section,
+      offsetUnits,
+      measureIndex,
+      measureIndexBasis,
+      barlineTie: null,
+      isMeasureEnd,
+      isRest,
+      code: row.code,
+      ornament: row.ornament,
+      unresolvedCode: row.unresolvedCode,
+    });
 
-      const normalized = normalizePitch(sourcePitch);
-      const playbackKoma53 = koma53 + koma53Offset;
-      const targetFrequency =
-        normalized && Number.isFinite(koma53) && Number.isFinite(playbackKoma53)
-          ? koma53ToFrequency(playbackKoma53)
-          : null;
-      const isRest = !normalized;
-
-      events.push({
-        index,
-        sourcePitch,
-        solfegePitch: toSolfegePitch(sourcePitch),
-        notationSymbol: toNotationSymbol(durationBeats, isRest),
-        playbackPitch: normalized?.playbackPitch ?? null,
-        midiNumber: targetFrequency ? frequencyToMidiNumber(targetFrequency) : normalized?.midiNumber ?? null,
-        koma53: targetFrequency ? koma53 : null,
-        targetFrequency,
-        startBeat,
-        durationBeats,
-        durationFraction: {
-          numerator: Number.isFinite(pay) ? pay : 0,
-          denominator: Number.isFinite(payda) ? payda : 0,
-        },
-        startTime: startBeat * beatDuration,
-        duration: durationBeats * beatDuration,
-        section,
-        offsetUnits,
-        measureIndex,
-        measureIndexBasis,
-        barlineTie: null,
-        isMeasureEnd,
-        isRest,
-      });
-
-      startBeat += durationBeats;
-      return events;
-    }, []);
+    startBeat += durationBeats;
+    return events;
+  }, []);
 }

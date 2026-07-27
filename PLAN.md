@@ -950,47 +950,59 @@ olarak düşüyordu (rastgelelik değil, yük).
   halin ~3 katı).
 - **Kapı geçti:** `npm run test:coverage` artık yeşil (exit 0).
 
-### H3 · Ses kaynak arşivinin kimliğini sabitle — **öncelik 2**
+### H3 · Ses kaynak arşivinin kimliğini sabitle — **TAMAM**
 
-`all-samples/` 56 MB+ üçüncü parti ikili; commit edilmez ve edilmemeli. Ama
-**kimliği** commit edilmeli, yoksa F5'te yazdığım "artık yeniden üretilebilir"
-iddiası yalnız bu makinede doğru.
+`public/samples/sources.json` — dört kaynak dosyanın `sha256`, boyut, köken
+URL, lisans ve **ticari kullanım** durumu. (Arşiv 200 MB+; `TURKISH-ARAB3.sf2`
+tek başına 206 MB — plandaki "56 MB" tahmini yanlıştı, ölçüldü.)
 
-- `public/samples/sources.json`: her kaynak dosya için `sha256`, indirme URL'i,
-  lisans, sürüm.
-- **Kapı:** dosya yerelde varsa hash tutmalı (tutmuyorsa test kırılır);
-  yoksa test *bilgi verip* geçer — kaynağın yokluğu sessiz kalmaz.
-- **Risk:** sıfır.
+- **Kapı:** dosya yerelde varsa hash **tutmalı**; tutmazsa üretim
+  tekrarlanamaz demektir ve test kırılır. Yoksa iddia edilmez.
+- **İkinci kapı:** her kaynağın `commercialUse` alanı `serbest` olmalı —
+  ney'in CC BY-NC borcu F5'te tam bu yüzden kapatıldı; kısıtlı bir kaynak
+  yeniden eklenirse burada durur.
 
-### H4 · Sample provenance'ını 20 klasörün tamamına yay — **öncelik 2**
+### H4 · Sample provenance'ını 20 klasörün tamamına yay — **TAMAM**
 
-Bugün yalnız `ney` belgeli ve üreticisi depoda. Diğer 19 klasörün üretim
-parametreleri (hangi preset, hangi bölge, ne kadar gerilme) **hiçbir yerde
-yok**; README yalnız preset adını yazıyor.
+`public/samples/provenance.json` — her klasör için kaynak + preset + üretici +
+**güven düzeyi**. Amaç klasörleri "belgeli" göstermek değil, belgesizliği
+**sayılabilir** kılmak:
 
-- `public/samples/provenance.json`: her klasör için kaynak dosya + preset(ler)
-  + üretici betik + ölçülen kapsam + gerilme istatistiği + uzlaşma oranı.
-- `sample-provenance.ts` bu dosyadan beslensin (bugün `ney` elle yazılı).
-- `/samples` sayfası her klasörün kaynağını göstersin — bugün yalnız
-  "türetilmiş/gerilmiş" uyarısı var, **kaynak** yok.
-- **Kapı:** provenance'ı olmayan klasör kalmayacak; olmayanlar "bilinmiyor"
-  diye işaretlenecek — sessizce boş geçilmeyecek.
-- **Risk:** düşük (yalnız veri + görüntü).
+| güven | sayı | anlamı |
+|---|---|---|
+| `documented` | **1** | kaynak + preset + üretici biliniyor, yeniden üretilebilir (`ney`) |
+| `claimed` | **17** | README preset *adını* yazıyor, üretim parametreleri kayıtsız |
+| `unknown` | **2** | kaynağı hiçbir yerde yazmıyor |
 
-### H5 · `hek` için gerçek kayıt ara — **öncelik 3, ölçülebilir**
+**Yeni bulgu — `unknown` olan ikisi:** `bendir` ve `kudum`. README kaynak
+eşlemesinde ikisi de yok, ve soundfont'un 113 preset'inde **`kudum` hiç yok**.
+Yani uygulamanın **varsayılan vurmalısı** (`DEFAULT_PERCUSSION_INSTRUMENT`) —
+en çok duyulan ses — kaynağı en belirsiz olanı.
 
-`hek` bugün dum+tek toplamından türetiliyor (F3) ve bu görünür. Ama arama
-yalnız **dosya adına** bakılarak yapılmıştı. Soundfont'ta `Bendir`, `Darbuka`,
-`Riq_Full`, `Eastern Percussion`, `Derbake`, `Doumbek`, `Syrian Bendir`
-preset'leri var; iki elin birlikte vuruşu bunların **bölgelerinde** olabilir.
+- `/samples` sayfası artık her enstrümanın kaynağını yazıyor; üç düzeyin üçü
+  de canlı doğrulandı (ney "yeniden üretilebilir" · ud "üretim parametreleri
+  kayıtlı değil" · kudüm "**Kaynak bilinmiyor**").
+- **Kapı:** kayıtsız klasör olamaz, bayat kayıt (klasörü silinmiş) olamaz,
+  `documented` diyen bir klasörün üreticisi gerçekten depoda olmalı, ve
+  sayılar sabit — belgesizlik sessizce artamaz.
 
-- Her vurmalı preset'in bölgeleri çıkarılıp ölçülsün (enerji, saldırı,
-  spektral merkez): dum'dan **daha dolu**, tek'ten **daha güçlü** bir vuruş
-  var mı?
-- **Kapı:** bulunursa `derivedFrom` kalkar ve F3 testi kırılır (öyle yazıldı).
-  Bulunmazsa **bulunmadığı ölçümle** kayda geçer — bugünkü "arandı, yok"
-  ifadesi dosya adına dayanıyor, o zayıf.
-- **Risk:** sıfır (yalnız ölçüm).
+### H5 · `hek` için gerçek kayıt ara — **TAMAM (bulunmadı, ama artık ölçümle)**
+
+Önceki "arandı, yok" ifadesi yalnız **dosya adına** bakıyordu. Bu kez kaynağın
+iç yapısı tarandı: 9 vurmalı preset, **354 benzersiz bölge adı**.
+
+- Görülen vuruş sözlüğü: `finger` `bass` `trill` `phrase` `tek` `talking`
+  `rim` `dum` `thubb` `slap` `doum` `slp` `ka` — **iki-el/eşzamanlı vuruş
+  kategorisi yok**.
+- Tek sözlüksel yakın eşleşme **"Finger Flam"** (20 bölge). Ölçüldü:
+  **16/20'si birden çok vuruş** içeriyor, ilk iki vuruş arası 8–269 ms
+  (ortanca **94 ms**). Yani çok vuruşlu ifadeler — flam tanımı gereği
+  *kaydırılmış* iki vuruştur, `hek` ise eşzamanlı. Uygun değil.
+- **Ek bulgu:** soundfont'ta **`kudum` preset'i hiç yok**. `hek`in kudum
+  terminolojisi olması, bu paketlerde bulunmamasını açıklıyor.
+
+Sonuç `provenance.json → hekSearch` içinde veri olarak duruyor; `hek` dum+tek
+türetimi olarak kalıyor ve `/samples` sayfasında görünür.
 
 ### H6 · Yapısal borç — büyük dosyalar
 

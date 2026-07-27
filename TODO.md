@@ -39,13 +39,25 @@
       120 s = ölçülen en kötü halin ~3 katı). Ölçüm: en yavaş kapı 7,5 s ama
       coverage altında 44 s — enstrümantasyon ~6 kat yavaşlatıyor, genel 20 s
       deterministik düşüyordu. `test:coverage` artık yeşil.
-- [ ] **H3** · Ses kaynak arşivinin kimliğini sabitle — `all-samples/` commit
-      edilmez (56 MB, üçüncü parti) ama **sha256 + lisans + URL** edilmeli.
-      Yoksa F5'teki "yeniden üretilebilir" iddiası tek makinede doğru.
-- [ ] **H4** · Sample provenance'ını 20 klasörün tamamına yay — bugün yalnız
-      `ney` belgeli; diğer 19'un üretim parametreleri hiçbir yerde yok.
-- [ ] **H5** · `hek` için gerçek kayıt ara — bugünkü "arandı, yok" ifadesi
-      **dosya adına** dayanıyor; vurmalı preset'lerin *bölgeleri* ölçülmedi.
+- [x] **H3** · **`public/samples/sources.json`** — dört kaynak için sha256 +
+      köken URL + lisans + ticari kullanım. *(Arşiv 200 MB+; plandaki "56 MB"
+      tahmini yanlıştı, ölçüldü.)* Kapı: dosya yereldeyse hash tutmalı; ayrıca
+      her kaynağın `commercialUse` alanı **serbest** olmalı — kısıtlı bir
+      kaynak yeniden eklenirse burada durur.
+- [x] **H4** · **`public/samples/provenance.json`** — 20 klasörün tamamı
+      kayıtlı: `documented` **1** · `claimed` **17** · `unknown` **2**.
+      · **Yeni bulgu:** `unknown` olanlar `bendir` ve **`kudum`** — ve
+        soundfont'un 113 preset'inde `kudum` HİÇ YOK. Yani uygulamanın
+        **varsayılan vurmalısı**, kaynağı en belirsiz olanı.
+      · `/samples` sayfası artık kaynağı yazıyor; üç düzey de canlı doğrulandı.
+      · Kapı: kayıtsız klasör olamaz, bayat kayıt olamaz, `documented` diyenin
+        üreticisi gerçekten depoda olmalı, sayılar sabit.
+- [x] **H5** · **Arandı, yok — ama artık ölçümle.** 9 vurmalı preset, **354
+      benzersiz bölge adı** tarandı. Vuruş sözlüğünde iki-el/eşzamanlı
+      kategorisi yok. Tek yakın eşleşme "Finger Flam" (20 bölge) ölçüldü:
+      **16/20'si birden çok vuruş**, aralık 8–269 ms (ortanca 94) — flam
+      kaydırılmış iki vuruştur, `hek` eşzamanlı. Uygun değil.
+      Sonuç `provenance.json → hekSearch`te veri olarak duruyor.
 - [ ] **H6** · Büyük dosyalar: `studio/follow/page.tsx` **1024**,
       `references/curation/page.tsx` **848** (ratchet tavanı 800).
 - [x] **H7** · **Ölçüldü ve eşikler yükseltildi:** 67/62/76/68 →

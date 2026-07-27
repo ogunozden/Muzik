@@ -38,11 +38,21 @@ interface SampleCoverageSummary {
   percussionInstrumentCount: number;
 }
 
+/** Bir ses klasorunun kaynagi (PLAN.md §11/H4). */
+interface FolderProvenance {
+  sourceId: string | null;
+  presets: string[] | null;
+  producer: string | null;
+  confidence: "documented" | "claimed" | "unknown";
+  note?: string;
+}
+
 interface SamplesResponse {
   total: number;
   installed: number;
   coverage?: SampleCoverageSummary;
   slots: SampleSlotStatus[];
+  provenance?: Record<string, FolderProvenance>;
 }
 
 function formatBytes(bytes: number): string {
@@ -100,6 +110,37 @@ function ProvenanceNotice({slot}: {slot: SampleSlotStatus}) {
   );
 }
 
+/**
+ * Bu klasorun sesi NEREDEN geldi? (PLAN.md §11/H4)
+ *
+ * Kayit `public/samples/provenance.json`de durur. Amac klasorleri "belgeli"
+ * gostermek degil, belgesizligi GORUNUR kilmak: kaynagi bilinmeyen klasor
+ * bos gecilmez, "bilinmiyor" yazar.
+ */
+function SourceLine({record}: {record: FolderProvenance | null}) {
+  if (!record) return null;
+
+  if (record.confidence === "unknown") {
+    return (
+      <p className="mt-1 text-xs text-[var(--color-text-primary)]">
+        <strong>Kaynak bilinmiyor</strong> — bu klasörün nereden üretildiği kayıtlı değil.
+      </p>
+    );
+  }
+
+  const presets = record.presets?.join(", ") ?? "";
+  return (
+    <p className={`mt-1 text-xs ${tokens.colors.text.secondary}`}>
+      Kaynak: <strong>{presets}</strong>
+      {record.confidence === "documented" ? (
+        <> · üretici <code>{record.producer}</code> · yeniden üretilebilir</>
+      ) : (
+        <> · üretim parametreleri kayıtlı değil (yalnız preset adı biliniyor)</>
+      )}
+    </p>
+  );
+}
+
 export default function SeslerPage() {
   const [slots, setSlots] = useState<SampleSlotStatus[]>([]);
   const [coverage, setCoverage] = useState<SampleCoverageSummary | null>(null);
@@ -108,6 +149,7 @@ export default function SeslerPage() {
   const [uploadingKey, setUploadingKey] = useState<string | null>(null);
   const [message, setMessage] = useState<string>("");
   const [opsToken, setOpsToken] = useState("");
+  const [provenance, setProvenance] = useState<Record<string, FolderProvenance>>({});
 
   const loadSlots = useCallback(async () => {
     clearSampleCache();
@@ -118,6 +160,7 @@ export default function SeslerPage() {
   const applySlots = useCallback((data: SamplesResponse) => {
     setSlots(data.slots);
     setCoverage(data.coverage ?? null);
+    setProvenance(data.provenance ?? {});
     setActiveGroup((current) => current || data.slots[0]?.groupLabel || "");
     setIsLoading(false);
   }, []);
@@ -174,6 +217,13 @@ export default function SeslerPage() {
     () => groups.find((group) => group.label === activeGroup)?.slots ?? [],
     [activeGroup, groups],
   );
+
+  /** Aktif enstrumanin ses klasoru (`ney`, `kudum`, ...) ve kaynak kaydi. */
+  const activeProvenance = useMemo(() => {
+    const relativePath = activeSlots[0]?.relativePath ?? "";
+    const folder = relativePath.split("/")[0];
+    return folder ? (provenance[folder] ?? null) : null;
+  }, [activeSlots, provenance]);
 
   const installedCount = slots.filter((slot) => slot.installed).length;
   const activeGroupInstalledCount = activeSlots.filter((slot) => slot.installed).length;
@@ -383,6 +433,7 @@ export default function SeslerPage() {
             <div>
               <h2 className={`text-lg font-semibold ${tokens.colors.text.primary}`}>{activeGroup || "Sample slotları"}</h2>
               <p className={`text-xs ${tokens.colors.text.secondary}`}>WAV önerilir; tarayıcının çözdüğü ses formatları da kullanılabilir.</p>
+              <SourceLine record={activeProvenance} />
             </div>
             <div className="flex gap-2">
               <Button variant="accent" size="sm" ariaLabel={`${activeGroup} test`} onPress={() => void testActiveGroup()}>

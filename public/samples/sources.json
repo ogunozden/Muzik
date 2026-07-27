@@ -1,0 +1,57 @@
+{
+  "$comment": [
+    "SES KAYNAKLARININ KIMLIGI (PLAN.md §11/H3).",
+    "",
+    "`all-samples/` gitignored: 200 MB+ ucuncu parti ikili, depoya konmaz ve",
+    "konmamali. Ama KIMLIGI konmali — yoksa 'bu sample'lar su kaynaktan",
+    "uretildi' ve 'yeniden uretilebilir' iddialari yalnizca uretimi yapan",
+    "makinede dogrulanabilir olur.",
+    "",
+    "`sha256` alani, elimizdeki dosyanin kaynagin BEKLENEN surumu oldugunu",
+    "dogrular. Dosya yerelde varsa hash tutmali; yoksa test bilgi verip gecer",
+    "(bkz. `src/engines/ses/__tests__/sample-sources.test.ts`)."
+  ],
+  "sources": [
+    {
+      "id": "turkish-arab3",
+      "path": "all-samples/TURKISH-ARAB3.sf2",
+      "sha256": "f771cbf922f3a419c7d5cc2fefc13b39c301e963f0270819f4e05eb34942e2f2",
+      "bytes": 216230000,
+      "origin": "https://www.musical-artifacts.com/artifacts/947",
+      "license": "Free Art License (LAL) 1.3",
+      "licenseUrl": "http://artlibre.org/licence/lal/en/",
+      "commercialUse": "serbest",
+      "presetCount": 113
+    },
+    {
+      "id": "proteus1",
+      "path": "all-samples/Proteus_Pack/Proteus1.sf2",
+      "sha256": "c1329a9b6c9b8ea6a99468100ac321ad88c3f912481cd708469d11c0e5a6130b",
+      "bytes": 2831000,
+      "origin": "https://musical-artifacts.com/artifacts/764",
+      "license": "CC BY 4.0",
+      "licenseUrl": "http://creativecommons.org/licenses/by/4.0/deed.en",
+      "commercialUse": "serbest"
+    },
+    {
+      "id": "proteus2",
+      "path": "all-samples/Proteus_Pack/Proteus2.sf2",
+      "sha256": "8cab05e2190370e95d1422628e79b592acc03c5e4156f2b572500722e16da747",
+      "bytes": 2621000,
+      "origin": "https://musical-artifacts.com/artifacts/764",
+      "license": "CC BY 4.0",
+      "licenseUrl": "http://creativecommons.org/licenses/by/4.0/deed.en",
+      "commercialUse": "serbest"
+    },
+    {
+      "id": "proteus3",
+      "path": "all-samples/Proteus_Pack/Proteus3.sf2",
+      "sha256": "0b1316d2c383aab6172a10c95685ba35efa75693d35c042de5a01f80234447dc",
+      "bytes": 1468000,
+      "origin": "https://musical-artifacts.com/artifacts/764",
+      "license": "CC BY 4.0",
+      "licenseUrl": "http://creativecommons.org/licenses/by/4.0/deed.en",
+      "commercialUse": "serbest"
+    }
+  ]
+}

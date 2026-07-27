@@ -1,4 +1,4 @@
-import {mkdir, stat, unlink, writeFile} from "node:fs/promises";
+import {mkdir, readFile, stat, unlink, writeFile} from "node:fs/promises";
 import path from "node:path";
 import {SAMPLE_SLOT_BY_KEY, SAMPLE_SLOTS} from "@/engines/ses/sample-library";
 import {summarizeSampleCoverage} from "@/engines/ses/sample-coverage";
@@ -90,8 +90,30 @@ async function getSlotStatus(slotKey: string) {
   }
 }
 
+/**
+ * Her ses klasorunun kaynagi (PLAN.md §11/H4).
+ *
+ * Kayit `public/samples/provenance.json`de veri olarak durur; buradan disari
+ * verilir ki `/samples` sayfasi "bu ses nereden geldi" sorusunu
+ * cevaplayabilsin. Kaydi olmayan klasor **gizlenmez**, `unknown` gorunur.
+ */
+async function readFolderProvenance(): Promise<Record<string, unknown>> {
+  try {
+    const raw = await readFile(path.join(SAMPLES_ROOT, "provenance.json"), "utf8");
+    const parsed = JSON.parse(raw) as {folders?: Record<string, unknown>};
+    return parsed.folders ?? {};
+  } catch {
+    // Kayit okunamazsa sayfa calismaya devam etsin; eksiklik `unknown` olarak
+    // gorunur, sessizce "kaynagi var" gibi gosterilmez.
+    return {};
+  }
+}
+
 export async function GET() {
-  const slots = await Promise.all(SAMPLE_SLOTS.map((slot) => getSlotStatus(slot.key)));
+  const [slots, folderProvenance] = await Promise.all([
+    Promise.all(SAMPLE_SLOTS.map((slot) => getSlotStatus(slot.key))),
+    readFolderProvenance(),
+  ]);
   const validSlots = slots.filter((slot) => slot !== null);
 
   return Response.json({
@@ -99,6 +121,7 @@ export async function GET() {
     installed: validSlots.filter((slot) => slot.installed).length,
     coverage: summarizeSampleCoverage(validSlots),
     slots: validSlots,
+    provenance: folderProvenance,
   });
 }
 

@@ -1,0 +1,91 @@
+{
+  "$comment": [
+    "HER SES KLASORUNUN KAYNAGI (PLAN.md §11/H4).",
+    "",
+    "Bu dosyanin amaci klasorleri 'belgeli' gostermek DEGIL, ne kadarinin",
+    "belgesiz oldugunu SAYILABILIR kilmaktir. `confidence` alani uc deger alir:",
+    "",
+    "  documented — kaynak + preset + uretici betik biliniyor, yeniden",
+    "               uretilebilir (bugun yalniz `ney`).",
+    "  claimed    — README preset ADINI yaziyor ama uretim parametreleri",
+    "               (hangi bolge, ne kadar gerilme, hangi betik) kayitli degil.",
+    "               Yani 'su preset'ten geldi' bir IDDIA; dogrulanmadi.",
+    "  unknown    — kaynagi hicbir yerde yazmiyor.",
+    "",
+    "`unknown` olanlar gizlenmiyor; `sample-provenance` testi sayilarini",
+    "sabitler, yani bir klasor sessizce belgesiz kalamaz."
+  ],
+  "folders": {
+    "ney": {
+      "sourceId": "turkish-arab3",
+      "presets": ["Moss_Nay", "NEY_05"],
+      "producer": "scripts/render-soundfont-instrument.mjs",
+      "confidence": "documented",
+      "note": "F5'te lisans sebebiyle yeniden uretildi (CC BY-NC -> Art Libre). Olculen kayit araligi D3-C6."
+    },
+    "ud": {"sourceId": "turkish-arab3", "presets": ["UD-3", "Oud"], "producer": null, "confidence": "claimed"},
+    "kemence": {"sourceId": "turkish-arab3", "presets": ["KABAK-MU-1"], "producer": null, "confidence": "claimed"},
+    "kanun": {"sourceId": "turkish-arab3", "presets": ["Kanun (Original)"], "producer": null, "confidence": "claimed"},
+    "baglama": {"sourceId": "turkish-arab3", "presets": ["BAGLMACE"], "producer": null, "confidence": "claimed"},
+    "tambur": {"sourceId": "turkish-arab3", "presets": ["Tanbur"], "producer": null, "confidence": "claimed"},
+    "lavta": {"sourceId": "turkish-arab3", "presets": ["Oud (Bright)"], "producer": null, "confidence": "claimed"},
+    "santur": {"sourceId": "proteus3", "presets": ["Santur"], "producer": null, "confidence": "claimed"},
+    "rebab": {"sourceId": "proteus3", "presets": ["Yesir Rebab"], "producer": null, "confidence": "claimed"},
+    "miskal": {"sourceId": "proteus2", "presets": ["Pan Flute"], "producer": null, "confidence": "claimed"},
+    "tanpura": {
+      "sourceId": "proteus3",
+      "presets": ["Tamburas"],
+      "producer": null,
+      "confidence": "claimed",
+      "note": "OLCULDU: kaynak preset'in 4 bolgesinin HICBIRI olculemiyor; klasordeki 36 dosyanin 35'i etiketiyle uyusmuyor. Ayrica tanpura bir HINT sazidir — projede zaten `tambur` var. Bkz. PLAN §11.3."
+    },
+    "davul": {"sourceId": "turkish-arab3", "presets": ["Eastern Percussion"], "producer": null, "confidence": "claimed"},
+    "def": {"sourceId": "turkish-arab3", "presets": ["Riq_Full"], "producer": null, "confidence": "claimed"},
+    "darbuka": {"sourceId": "turkish-arab3", "presets": ["Darbuka"], "producer": null, "confidence": "claimed"},
+    "zilli-def": {"sourceId": "turkish-arab3", "presets": ["Darbuka & Riq"], "producer": null, "confidence": "claimed"},
+    "kasik": {"sourceId": "turkish-arab3", "presets": ["Eastern Percussion"], "producer": null, "confidence": "claimed"},
+    "zil": {"sourceId": "turkish-arab3", "presets": ["Eastern Percussion"], "producer": null, "confidence": "claimed"},
+    "nakkare": {"sourceId": "turkish-arab3", "presets": ["Eastern Percussion"], "producer": null, "confidence": "claimed"},
+    "bendir": {
+      "sourceId": null,
+      "presets": null,
+      "producer": null,
+      "confidence": "unknown",
+      "note": "README kaynak eslemesinde YOK. Soundfont'ta `Bendir` ve `Syrian Bendir` preset'leri var ama klasorun onlardan geldigi DOGRULANMADI."
+    },
+    "kudum": {
+      "sourceId": null,
+      "presets": null,
+      "producer": null,
+      "confidence": "unknown",
+      "note": "README kaynak eslemesinde YOK ve soundfont'ta `kudum` preset'i HIC YOK (113 preset tarandi). Bu, uygulamanin VARSAYILAN vurmalisi (`DEFAULT_PERCUSSION_INSTRUMENT`) — yani en cok duyulan ses, kaynagi en belirsiz olani."
+    }
+  },
+  "hekSearch": {
+    "$comment": [
+      "`hek` (iki elin BIRLIKTE vurusu, Kudum kitabi s.14) icin gercek kayit",
+      "aramasinin OLCULEN sonucu (PLAN.md §11/H5).",
+      "",
+      "Onceki arama yalnizca DOSYA ADINA bakiyordu; bu zayif bir kanitti.",
+      "Bu kez kaynagin ic yapisi tarandi."
+    ],
+    "date": "2026-07-27",
+    "scannedPresets": [
+      "Darbuka", "PRC:DARBUKA 1.3", "Doumbek", "Bendir", "Syrian Bendir",
+      "Derbake", "Darbuka & Riq", "Riq_Full", "Eastern Percussion"
+    ],
+    "uniqueZoneNames": 354,
+    "kudumPresetExists": false,
+    "strokeVocabulary": [
+      "finger", "bass", "trill", "phrase", "tek", "talking", "rim", "dum",
+      "thubb", "slap", "doum", "slp", "ka"
+    ],
+    "twoHandStrokeFound": false,
+    "nearestLexicalMatch": {
+      "name": "Finger Flam",
+      "zoneCount": 20,
+      "measured": "16/20 ornek BIRDEN COK vurus iceriyor; ilk iki vurus arasi 8-269 ms (ortanca 94 ms). Yani cok vuruslu ifadeler — flam tanimi geregi KAYDIRILMIS iki vurustur, `hek` ise eszamanli. Uygun degil."
+    },
+    "conclusion": "Kaynak paketlerde gercek bir `hek` kaydi YOK. `hek` dum+tek toplamindan turetilmeye devam eder ve bu `/samples` sayfasinda gorunur kalir."
+  }
+}

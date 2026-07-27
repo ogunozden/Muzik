@@ -129,35 +129,9 @@ export interface UsulSymbol {
   isOrnament?: boolean;
 }
 
-export interface Nota {
-  midinetoName: string;
-  englishName: string;
-  frequency: number;
-  octave: number;
-  midiNumber: number;
-}
-
 export interface NotaEvent {
   pitch: string;
   duration: number;
   velocity?: number;
   startTime: number;
-}
-
-export interface SymbTrNotation {
-  identifier: string;
-  makam: string;
-  form: string;
-  usul: string;
-  name: string;
-  composer: string;
-  lyrics?: string;
-  events: NotaEvent[];
-}
-
-export interface Enstruman {
-  id: string;
-  name: string;
-  nameTr: string;
-  soundType: string;
 }

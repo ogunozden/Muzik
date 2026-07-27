@@ -24,36 +24,153 @@
   "folders": {
     "ney": {
       "sourceId": "turkish-arab3",
-      "presets": ["Moss_Nay", "NEY_05"],
+      "presets": [
+        "Moss_Nay",
+        "NEY_05"
+      ],
       "producer": "scripts/render-soundfont-instrument.mjs",
       "confidence": "documented",
       "note": "F5'te lisans sebebiyle yeniden uretildi (CC BY-NC -> Art Libre). Olculen kayit araligi D3-C6."
     },
-    "ud": {"sourceId": "turkish-arab3", "presets": ["UD-3", "Oud"], "producer": null, "confidence": "claimed"},
-    "kemence": {"sourceId": "turkish-arab3", "presets": ["KABAK-MU-1"], "producer": null, "confidence": "claimed"},
-    "kanun": {"sourceId": "turkish-arab3", "presets": ["Kanun (Original)"], "producer": null, "confidence": "claimed"},
-    "baglama": {"sourceId": "turkish-arab3", "presets": ["BAGLMACE"], "producer": null, "confidence": "claimed"},
-    "tambur": {"sourceId": "turkish-arab3", "presets": ["Tanbur"], "producer": null, "confidence": "claimed"},
-    "lavta": {"sourceId": "turkish-arab3", "presets": ["Oud (Bright)"], "producer": null, "confidence": "claimed"},
-    "santur": {"sourceId": "proteus3", "presets": ["Santur"], "producer": null, "confidence": "claimed"},
-    "rebab": {"sourceId": "proteus3", "presets": ["Yesir Rebab"], "producer": null, "confidence": "claimed"},
-    "miskal": {"sourceId": "proteus2", "presets": ["Pan Flute"], "producer": null, "confidence": "claimed"},
-    "davul": {"sourceId": "turkish-arab3", "presets": ["Eastern Percussion"], "producer": null, "confidence": "claimed"},
-    "def": {"sourceId": "turkish-arab3", "presets": ["Riq_Full"], "producer": null, "confidence": "claimed"},
-    "darbuka": {"sourceId": "turkish-arab3", "presets": ["Darbuka"], "producer": null, "confidence": "claimed"},
+    "ud": {
+      "sourceId": "turkish-arab3",
+      "presets": [
+        "UD-3"
+      ],
+      "producer": null,
+      "confidence": "measured",
+      "note": "UD-3 / UD-3 08 bolgesiyle r=1,0000 (E4)."
+    },
+    "kemence": {
+      "sourceId": "turkish-arab3",
+      "presets": [
+        "KABAK-MU-1"
+      ],
+      "producer": null,
+      "confidence": "measured",
+      "note": "KABAK-MU-1 / 00 bolgesiyle r=1,0000 (E4). NOT: `KABAK-MU` bir KABAK KEMANE preset'idir — klasik kemence DEGILDIR. Yaklastirma oldugu olcumle teyitli."
+    },
+    "kanun": {
+      "sourceId": "turkish-arab3",
+      "presets": [
+        "Kanun (Original)"
+      ],
+      "producer": null,
+      "confidence": "measured",
+      "note": "Kanun (Original) / EMREKANUNC3 bolgesiyle r=1,0000 (C4)."
+    },
+    "baglama": {
+      "sourceId": "turkish-arab3",
+      "presets": [
+        "BAGLMACE"
+      ],
+      "producer": null,
+      "confidence": "claimed"
+    },
+    "tambur": {
+      "sourceId": "turkish-arab3",
+      "presets": [
+        "Tanbur"
+      ],
+      "producer": null,
+      "confidence": "measured",
+      "note": "Tanbur / EMRE MT 4C bolgesiyle r=1,0000 (C4)."
+    },
+    "lavta": {
+      "sourceId": "turkish-arab3",
+      "presets": [
+        "Oud (Bright)"
+      ],
+      "producer": null,
+      "confidence": "claimed"
+    },
+    "santur": {
+      "sourceId": "proteus3",
+      "presets": [
+        "Santur"
+      ],
+      "producer": null,
+      "confidence": "claimed"
+    },
+    "rebab": {
+      "sourceId": "proteus3",
+      "presets": [
+        "Yesir Rebab"
+      ],
+      "producer": null,
+      "confidence": "claimed"
+    },
+    "miskal": {
+      "sourceId": "turkish-arab3",
+      "presets": [
+        "NEY_05"
+      ],
+      "producer": null,
+      "confidence": "measured",
+      "note": "NEY_05 / 03 bolgesiyle r=0,9760 (E4). BULGU: README 'Proteus Pan Flute' diyordu, OLCUM CURUTTU — kaynak bir NEY preset'i. Yani miskal yerine ney tinisi caliyor. (miskal ile `ney` klasoru AYNI DEGIL: korelasyon 0,01 — ney F5'te yeniden orneklenerek uretildi.)"
+    },
+    "davul": {
+      "sourceId": "turkish-arab3",
+      "presets": [
+        "Eastern Percussion"
+      ],
+      "producer": null,
+      "confidence": "claimed"
+    },
+    "def": {
+      "sourceId": "turkish-arab3",
+      "presets": [
+        "Riq_Full"
+      ],
+      "producer": null,
+      "confidence": "claimed"
+    },
+    "darbuka": {
+      "sourceId": "turkish-arab3",
+      "presets": [
+        "Darbuka"
+      ],
+      "producer": null,
+      "confidence": "claimed"
+    },
     "zilli-def": {
       "sourceId": "turkish-arab3",
-      "presets": ["Darbuka & Riq"],
+      "presets": [
+        "Darbuka & Riq"
+      ],
       "producer": null,
       "confidence": "measured",
       "note": "Dalga bicimi karsilastirmasiyla DOGRULANDI: `Darbuka & Riq / EMREATEF DUM` bolgesiyle r=1,0000."
     },
-    "kasik": {"sourceId": "turkish-arab3", "presets": ["Eastern Percussion"], "producer": null, "confidence": "claimed"},
-    "zil": {"sourceId": "turkish-arab3", "presets": ["Eastern Percussion"], "producer": null, "confidence": "claimed"},
-    "nakkare": {"sourceId": "turkish-arab3", "presets": ["Eastern Percussion"], "producer": null, "confidence": "claimed"},
+    "kasik": {
+      "sourceId": "turkish-arab3",
+      "presets": [
+        "Eastern Percussion"
+      ],
+      "producer": null,
+      "confidence": "claimed"
+    },
+    "zil": {
+      "sourceId": "turkish-arab3",
+      "presets": [
+        "Eastern Percussion"
+      ],
+      "producer": null,
+      "confidence": "claimed"
+    },
+    "nakkare": {
+      "sourceId": "turkish-arab3",
+      "presets": [
+        "Eastern Percussion"
+      ],
+      "producer": null,
+      "confidence": "claimed"
+    },
     "bendir": {
       "sourceId": "turkish-arab3",
-      "presets": ["Syrian Bendir"],
+      "presets": [
+        "Syrian Bendir"
+      ],
       "producer": "scripts/render-soundfont-percussion.mjs",
       "confidence": "documented",
       "note": "2026-07-27'de LISANS sebebiyle yeniden uretildi. Onceki kaynak `140395__barisbozkurt__curcuna_bendir.wav` idi (olcumle bulundu, r=1,0000) ve CC BY-NC 4.0 tasiyordu. Yeni kaynak Art Libre — ticari kullanim serbest. Esleme kaynagin kendi adlandirmasina ve Kudum kitabi s.14'e dayanir: dum<-bass (en pes), tek<-slp1 (slap), ke<-riml (rim LEFT = sol el, en hafif). Vurgular GERCEK dinamik katmanlardan (p/mf -> ff), kazanc artirmayla taklit degil."
@@ -76,14 +193,32 @@
     ],
     "date": "2026-07-27",
     "scannedPresets": [
-      "Darbuka", "PRC:DARBUKA 1.3", "Doumbek", "Bendir", "Syrian Bendir",
-      "Derbake", "Darbuka & Riq", "Riq_Full", "Eastern Percussion"
+      "Darbuka",
+      "PRC:DARBUKA 1.3",
+      "Doumbek",
+      "Bendir",
+      "Syrian Bendir",
+      "Derbake",
+      "Darbuka & Riq",
+      "Riq_Full",
+      "Eastern Percussion"
     ],
     "uniqueZoneNames": 354,
     "kudumPresetExists": false,
     "strokeVocabulary": [
-      "finger", "bass", "trill", "phrase", "tek", "talking", "rim", "dum",
-      "thubb", "slap", "doum", "slp", "ka"
+      "finger",
+      "bass",
+      "trill",
+      "phrase",
+      "tek",
+      "talking",
+      "rim",
+      "dum",
+      "thubb",
+      "slap",
+      "doum",
+      "slp",
+      "ka"
     ],
     "twoHandStrokeFound": false,
     "nearestLexicalMatch": {
@@ -91,6 +226,18 @@
       "zoneCount": 20,
       "measured": "16/20 ornek BIRDEN COK vurus iceriyor; ilk iki vurus arasi 8-269 ms (ortanca 94 ms). Yani cok vuruslu ifadeler — flam tanimi geregi KAYDIRILMIS iki vurustur, `hek` ise eszamanli. Uygun degil."
     },
-    "conclusion": "Kaynak paketlerde gercek bir `hek` kaydi YOK. `hek` dum+tek toplamindan turetilmeye devam eder ve bu `/samples` sayfasinda gorunur kalir."
+    "conclusion": "Kaynak paketlerde gercek bir `hek` kaydi YOK. `hek` dum+tek toplamindan turetilmeye devam eder ve bu `/samples` sayfasinda gorunur kalir.",
+    "kudumRecordingProbe": {
+      "date": "2026-07-27",
+      "question": "Yeni CC BY kudum kaydinda (58,5 s) gercek bir `hek` (iki elin BIRLIKTE vurusu) var mi?",
+      "measured": [
+        "257 vurus basindan 41'i yalitilmis sayildi.",
+        "Ayirt edici olcut: `dum`un temeli 134 Hz, `tek`inki 191 Hz.",
+        "Iki temeli de neredeyse esit guclukte tasiyan iki aday bulundu: 13,61 s (denge 0,97) ve 25,64 s (0,94) — kiyasla dum 0,03, tek 0,52, ke 0,47.",
+        "Ayirt edici ikinci test denendi: iki el ayni anda vurduysa iki bandin YUKSELISI eszamanli, tek vurus + sempatik rezonansta ikincisi gecikmeli olmali. Test AYIRT ETMEDI — `dum`da bile iki bant 0 ms'de yukseliyor; bu frekanslarda 8 ms'lik pencerenin cozunurlugu soruyu cevaplamiyor."
+      ],
+      "conclusion": "SONUCSUZ. Kudum'un iki kazani birlikte monte ve guclu kuplajli; 'iki el birlikte' ile 'tek vurus + kuplaj' elimizdeki kanitla ayrilamiyor. `hek` dum+tek toplamindan TURETILMEYE devam eder.",
+      "wouldSettleIt": "Vurusu ADIYLA etiketleyen bir kaynak (soundfont'un `Bendir Dum`/`Bendir Tek` gibi) ya da icracinin/kaydin notasyonu."
+    }
   }
 }

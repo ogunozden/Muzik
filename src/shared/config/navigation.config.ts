@@ -65,6 +65,18 @@ export const navigation: NavItem[] = [
   },
 ];
 
+/**
+ * Eski yol adlarinin merkezi kaydi. Ana navigasyonda GORUNMEZ; yalniz
+ * yonlendirme sayfalari icin tutulur.
+ *
+ * Bu dizi hicbir modul tarafindan import EDILMEZ — tuketicisi
+ * `scripts/validate-architecture.mjs`, dosyayi METIN olarak okuyup her
+ * eski yolun burada kayitli oldugunu dogrular. Olu kod tarayicisi (knip)
+ * metinsel okumayi goremedigi icin bunu olu sanip sildirdi; guardrail
+ * yakaladi ve geri kondu. Asagidaki etiket knip'e bunu bildirir.
+ *
+ * @knipignore
+ */
 export const legacyNavigationAliases: NavItem[] = [
   {
     id: "makam",
@@ -116,19 +128,3 @@ export const legacyNavigationAliases: NavItem[] = [
     icon: "📍",
   },
 ];
-
-/**
- * Footer linkleri
- */
-export const footerLinks = [
-  { id: "studio", label: "Studio", href: routes.studio },
-  { id: "studioFollow", label: "Eser Takip", href: routes.studioFollow },
-  { id: "studioScoreEngine", label: "Skor Motoru", href: routes.studioScoreEngine },
-  { id: "rhythm", label: "Ritim", href: routes.rhythm },
-  { id: "samples", label: "Sesler", href: routes.samples },
-  { id: "references", label: "Kaynaklar", href: routes.references },
-  { id: "referencesCuration", label: "Kürasyon", href: routes.referencesCuration },
-  { id: "archive", label: "Arşiv", href: routes.archive },
-];
-
-export type NavigationConfig = typeof navigation;

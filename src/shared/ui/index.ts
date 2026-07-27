@@ -1,15 +1,11 @@
 export {Badge} from "@/shared/ui/atoms/Badge";
 export {Button} from "@/shared/ui/atoms/Button";
-export {Card, CardBody, CardHeader} from "@/shared/ui/atoms/Card";
+export {Card, CardBody} from "@/shared/ui/atoms/Card";
 export {Input} from "@/shared/ui/atoms/Input";
 export {Select} from "@/shared/ui/atoms/Select";
 export {UnifiedLayout} from "@/shared/ui/layout/UnifiedLayout";
 export {PageHeader, PageShell, PageSurface} from "@/shared/ui/layout/PageShell";
 export {LabeledSelect} from "@/shared/ui/molecules/LabeledSelect";
 export {LabeledSlider} from "@/shared/ui/molecules/LabeledSlider";
-export {NoteChip} from "@/shared/ui/molecules/NoteChip";
-export {PlaybackControls} from "@/shared/ui/molecules/PlaybackControls";
 export {ErrorBoundary} from "@/shared/ui/organisms/ErrorBoundary";
-export {MakamPanel} from "@/shared/ui/organisms/MakamPanel";
-export {PianoRollViewer} from "@/shared/ui/organisms/PianoRollViewer";
 export {UsulPanel} from "@/shared/ui/organisms/UsulPanel";

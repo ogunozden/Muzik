@@ -575,8 +575,6 @@ export function ReferencesOperationsDashboard({
   );
 }
 
-export default ReferencesOperationsDashboard;
-
 function getOperationMessage(action: OperationAction, result: unknown): string {
   if (!result || typeof result !== "object") {
     return "Operasyon tamamlandı.";

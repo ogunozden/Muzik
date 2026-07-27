@@ -90,18 +90,6 @@ export const spacing = {
 } as const;
 
 // Border radius
-export const borderRadius = {
-  none: "0",
-  sm: "0.25rem",    // 4px - subtle rounding
-  DEFAULT: "0.375rem", // 6px - default
-  md: "0.375rem",   // alias
-  lg: "0.5rem",     // 8px - cards
-  xl: "0.75rem",    // 12px - large cards
-  "2xl": "1rem",     // 16px - modals
-  "3xl": "1.5rem",   // 24px
-  full: "9999px",   // pills/circles
-} as const;
-
 // Shadows
 export const shadows = {
   none: "none",
@@ -114,100 +102,5 @@ export const shadows = {
 } as const;
 
 // Transitions
-export const transitions = {
-  duration: {
-    fast: "150ms",
-    DEFAULT: "200ms",
-    slow: "300ms",
-    slower: "500ms",
-  },
-  easing: {
-    DEFAULT: "ease-out",
-    linear: "linear",
-    in: "ease-in",
-    out: "ease-out",
-    "in-out": "ease-in-out",
-  },
-} as const;
-
 // Z-index scale
-export const zIndex = {
-  base: 0,
-  dropdown: 100,
-  sticky: 200,
-  overlay: 300,
-  modal: 400,
-  popover: 500,
-  tooltip: 600,
-  toast: 700,
-} as const;
-
 // CSS class mappings
-export const spacingClasses = {
-  // Gap utilities
-  gap: {
-    xs: "gap-1",
-    sm: "gap-2",
-    md: "gap-4",
-    lg: "gap-6",
-    xl: "gap-8",
-  },
-  
-  // Padding utilities
-  padding: {
-    xs: "p-1",
-    sm: "p-2",
-    md: "p-4",
-    lg: "p-6",
-    xl: "p-8",
-  },
-  
-  paddingX: {
-    xs: "px-1",
-    sm: "px-2",
-    md: "px-4",
-    lg: "px-6",
-    xl: "px-8",
-  },
-  
-  paddingY: {
-    xs: "py-1",
-    sm: "py-2",
-    md: "py-4",
-    lg: "py-6",
-    xl: "py-8",
-  },
-  
-  // Margin utilities
-  marginY: {
-    section: "my-6 md:my-8",
-    component: "my-4",
-  },
-  
-  // Border radius classes
-  borderRadius: {
-    none: "rounded-none",
-    sm: "rounded-sm",
-    DEFAULT: "rounded",
-    md: "rounded-md",
-    lg: "rounded-lg",
-    xl: "rounded-xl",
-    "2xl": "rounded-2xl",
-    full: "rounded-full",
-  },
-  
-  // Shadow classes
-  shadow: {
-    none: "shadow-none",
-    sm: "shadow-sm",
-    DEFAULT: "shadow",
-    md: "shadow-md",
-    lg: "shadow-lg",
-    xl: "shadow-xl",
-  },
-} as const;
-
-export type Spacing = typeof spacing;
-export type BorderRadius = typeof borderRadius;
-export type Shadows = typeof shadows;
-export type ZIndex = typeof zIndex;

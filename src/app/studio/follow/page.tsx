@@ -19,7 +19,7 @@ import {
 } from "@/data/pieces/visual-map";
 import {getHeardPlaybackPosition, normalizePercussionSymbol, playArrangement, stopAll, type InstrumentType, type PercussionSymbol} from "@/engines/ses/engine";
 import {USUL_DATA, getUsulBeatDuration} from "@/engines/usul/data";
-import {ENSTRUMAN_LIST, MELODIC_INSTRUMENTS, PERCUSSION_INSTRUMENTS} from "@/lib/app-constants";
+import {INSTRUMENTS, MELODIC_INSTRUMENTS, PERCUSSION_INSTRUMENTS} from "@/lib/app-constants";
 import {tokens} from "@/shared/tokens";
 import type {SymbTrCatalogEntry} from "@/data/symbtr/catalog";
 import {useSymbtrPieceBundle} from "@/features/studio/useSymbtrPieceBundle";
@@ -203,7 +203,7 @@ export default function EserTakipPage() {
   );
   const melodicInstrumentItems = useMemo(
     () =>
-      ENSTRUMAN_LIST.filter((instrument) => (MELODIC_INSTRUMENTS as readonly string[]).includes(instrument.id)).map(
+      INSTRUMENTS.filter((instrument) => (MELODIC_INSTRUMENTS as readonly string[]).includes(instrument.id)).map(
         (instrument) => ({
           id: instrument.id as InstrumentType,
           label: instrument.nameTr,
@@ -213,7 +213,7 @@ export default function EserTakipPage() {
   );
   const percussionInstrumentItems = useMemo(
     () =>
-      ENSTRUMAN_LIST.filter((instrument) => (PERCUSSION_INSTRUMENTS as readonly string[]).includes(instrument.id)).map(
+      INSTRUMENTS.filter((instrument) => (PERCUSSION_INSTRUMENTS as readonly string[]).includes(instrument.id)).map(
         (instrument) => ({
           id: instrument.id as InstrumentType,
           label: instrument.nameTr,

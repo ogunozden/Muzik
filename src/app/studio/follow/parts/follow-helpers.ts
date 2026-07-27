@@ -7,7 +7,7 @@ import {
 } from "@/data/pieces/hicazkarPesrev";
 import type {PieceVisualStaffBand} from "@/data/pieces/visual-map";
 import type {InstrumentType, PercussionSymbol} from "@/engines/ses/engine";
-import {ENSTRUMAN_LIST} from "@/lib/app-constants";
+import {INSTRUMENTS} from "@/lib/app-constants";
 import type {SymbTrCatalogEntry} from "@/data/symbtr/catalog";
 
 /**
@@ -58,7 +58,7 @@ export function clampBpm(value: number, fallbackBpm: number = DEFAULT_PIECE.bpm)
 }
 
 export function getInstrumentLabel(instrumentId: InstrumentType): string {
-  const instrument = ENSTRUMAN_LIST.find((item) => item.id === instrumentId);
+  const instrument = INSTRUMENTS.find((item) => item.id === instrumentId);
   return instrument?.nameTr ?? instrumentId;
 }
 

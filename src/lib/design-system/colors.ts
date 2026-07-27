@@ -62,6 +62,3 @@ export const colors = {
     ke: "var(--color-accent)",
   },
 } as const;
-
-export type ColorToken = typeof colors;
-export type ColorCategory = keyof ColorToken;

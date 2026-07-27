@@ -38,5 +38,3 @@ export const appConfig = {
     bpmStep: 10,
   },
 } as const;
-
-export type AppConfig = typeof appConfig;

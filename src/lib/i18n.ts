@@ -12,8 +12,7 @@ import en from "@/i18n/locales/en.json";
 // CONSTANTS
 // ============================================
 
-const SUPPORTED_LANGUAGES = ["tr", "en"] as const;
-type SupportedLanguage = typeof SUPPORTED_LANGUAGES[number];
+type SupportedLanguage = "tr" | "en";
 const DEFAULT_LANGUAGE: SupportedLanguage = "tr";
 
 // ============================================
@@ -51,23 +50,5 @@ i18n
 // ============================================
 // EXPORTS
 // ============================================
-
-export type { SupportedLanguage };
-export const supportedLanguages = SUPPORTED_LANGUAGES;
-export const defaultLanguage = DEFAULT_LANGUAGE;
-
-/**
- * Dil değiştir
- */
-export async function changeLanguage(lang: SupportedLanguage) {
-  await i18n.changeLanguage(lang);
-}
-
-/**
- * Mevcut dili al
- */
-export function getCurrentLanguage(): SupportedLanguage {
-  return (i18n.language || DEFAULT_LANGUAGE) as SupportedLanguage;
-}
 
 export default i18n;

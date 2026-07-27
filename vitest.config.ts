@@ -54,11 +54,23 @@ export default defineConfig({
       // NOT: bu olcum H2'den ONCE alinamiyordu; korpus kapilari `testTimeout`
       // 20 s'ye takilip yerel coverage kosusunu dusuruyordu. Esikler aylardir
       // ***guncel olcum gorulmeden*** duruyordu.
+      //
+      // 2026-07-27 (H11) — OLU KOD SILINDI, oran YUKSELDI. Silinen sey
+      // kapsanmayan koddu; paydadan cikinca yuzde kendiliginden arti:
+      //
+      //                 yerel (korpuslu)   H7'ye gore
+      //   statements        70,66            +0,93
+      //   branches          65,78            +0,71
+      //   functions         79,77            +1,47
+      //   lines             71,61            +1,02
+      //
+      // Yeni esikler yine CI payi birakilarak (H7'de olculen ~0,2 puanlik
+      // yerel/CI farki) bir tam sayi asagi yuvarlandi.
       thresholds: {
-        statements: 69,
-        branches: 64,
-        functions: 77,
-        lines: 70,
+        statements: 70,
+        branches: 65,
+        functions: 79,
+        lines: 71,
       },
     },
   },

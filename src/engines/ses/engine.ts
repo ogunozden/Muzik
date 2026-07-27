@@ -9,8 +9,7 @@ import {
   playPercussionSymbolScheduled,
   preloadInstrumentSamples,
   preloadPercussionSamples,
-  preloadPercussionSymbolSamples,
-  startRhythmLoop as startRhythmLoopBase,
+    startRhythmLoop as startRhythmLoopBase,
   clearSampleCache as clearSampleCacheBase,
   initAudio as initAudioBase,
   stopAll as stopAllBase,
@@ -158,23 +157,6 @@ export async function startRhythmLoop(
     isOrnament: s.isOrnament,
   }));
   return startRhythmLoopBase(beats, normalized, bpm, percussionInstrument, unit, loop);
-}
-
-/**
- * Ritim sample'larini calmadan ONCE isitir: usul sayfasi gorsel sayaci
- * baslatmadan bunu bekler; aksi halde ilk turda imlec, sample indirme
- * gecikmesi kadar sesin onune geciyordu (2026-07-14 duzeltmesi).
- */
-export async function preloadRhythm(
-  symbols: RhythmSymbolInput[],
-  percussionInstrument?: InstrumentType,
-): Promise<boolean> {
-  return preloadPercussionSymbolSamples(
-    symbols
-      .map((symbol) => PERCUSSION_SYMBOL_ALIASES[symbol.symbol] ?? symbol.symbol)
-      .filter(isPercussionSymbol),
-    percussionInstrument,
-  );
 }
 
 export async function playSequence(

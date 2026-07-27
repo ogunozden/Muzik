@@ -12,7 +12,7 @@ import type {CanonicalDocumentListItem, SymbtrCanonicalImportResult} from "@/dat
 import {SCORE_ENGINE_DEMO_DOCUMENT} from "@/data/score-engine/demo-score";
 import {evaluateCanonicalScoreQuality} from "@/data/score-engine/quality";
 import {getHeardPlaybackPosition, playArrangement, stopAll, type InstrumentType} from "@/engines/ses/engine";
-import {ENSTRUMAN_LIST, MELODIC_INSTRUMENTS} from "@/lib/app-constants";
+import {INSTRUMENTS, MELODIC_INSTRUMENTS} from "@/lib/app-constants";
 import {tokens} from "@/shared/tokens";
 import {
   ConfidenceBar,
@@ -63,7 +63,7 @@ export function CanonicalScorePrototype({
   const activeProgress = Math.min(100, Math.max(0, (playbackPosition / Math.max(document.totalDuration, 0.1)) * 100));
   const activeSource = activeEvent ? document.sources.find((source) => source.id === activeEvent.evidenceId) : null;
   const melodicInstrumentOptions = useMemo(
-    () => ENSTRUMAN_LIST.filter((instrument) => (MELODIC_INSTRUMENTS as readonly string[]).includes(instrument.id)),
+    () => INSTRUMENTS.filter((instrument) => (MELODIC_INSTRUMENTS as readonly string[]).includes(instrument.id)),
     [],
   );
   const scheduledNotes = useMemo(

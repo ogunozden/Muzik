@@ -147,7 +147,7 @@ describe("Her klasörün provenance kaydı (H4)", () => {
 
     // 2026-07-27 durumu. Bu sayilar bir HEDEF degil, bir OLCUM: iyilestikce
     // (claimed -> documented) test kirilir ve guncellenmesi gerekir.
-    expect(counts).toEqual({documented: 3, measured: 1, claimed: 15, unknown: 0});
+    expect(counts).toEqual({documented: 3, measured: 6, claimed: 10, unknown: 0});
 
     // `unknown` KALMADI: `bendir` ve `kudum`un kaynagi dalga bicimi
     // korelasyonuyla bulundu (r=1,0000'e kadar). Yeni bir klasor kayitsiz

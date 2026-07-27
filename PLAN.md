@@ -1166,30 +1166,162 @@ duruyordu — çünkü yerel coverage koşusu H2'deki zaman aşımına takılıy
 
 ### 11.7 Tanpura — **PROJEDEN ÇIKARILDI** (kullanıcı kararı, 2026-07-27)
 
-**Mühendislik kararı (verildi ve uygulandı):** 36 dosyanın 35'i yanlış perde
-çalıyordu ve kaynak preset'in dört bölgesinin hiçbiri ölçülemediği için onarım
-imkânsız. **Yanlış perde çalan dosya, dosya olmamasından kötüdür** — motor
-sample bulamayınca sentezleyiciye düşüyor ve *doğru* perdeyi çalıyor. Dosyalar
-kaldırıldı; enstrüman listede kaldı.
+İki gerekçe üst üste geldi:
 
-Kapı: `sample-pitch-labels.test.ts` → "tanpura klasöründe sample YOK". Ölçülebilir
-bir kayıt gelirse test **kırılır** ve enstrümanı doğrulanan listeye almayı
-hatırlatır. `sample-library.test.ts` de klasörün *tamamen* boş olmasını şart
-koşuyor — yarım dolu bir klasör "bilinçli" değil, kazadır.
+**Mühendislik:** 36 dosyanın 35'i yanlış perde çalıyordu ve kaynak preset'in
+dört bölgesinin hiçbiri ölçülemediği için onarım imkânsızdı. **Yanlış perde
+çalan dosya, dosya olmamasından kötüdür** — motor sample bulamayınca
+sentezleyiciye düşüyor ve *doğru* perdeyi çalıyor.
 
-**Ürün kararı (sizde):** tanpura enstrüman listesinde kalsın mı?
+**Küratöryel (kullanıcı kararı):** tanpura bir **Hint** sazıdır, Türk müziğinin
+dem sazı değildir ve projede zaten `tambur` var. Türk soundfont'unun 113
+preset'inde tanpura yok — olmaması beklenen şey. Bu yargıyı ADR 0001 gereği
+tek başıma vermedim; kullanıcı verdi, uygulandı.
 
-Ölçülen: kaynağının 4 bölgesinin hiçbiri ölçülemiyor; 36 dosyanın 35'i etiketiyle
-uyuşmuyor; üç bağımsız yöntem uzlaşmıyor. Domain: tanpura Hint sazıdır, Türk
-müziğinin sazı değildir ve projede zaten `tambur` var.
+Kaldırılanlar: tip birleşimi · listeler · ses profili · klasör eşlemesi ·
+görsel tanım · provenance kaydı. **Melodik enstrüman 11 → 10.**
 
-Tanpura bir **Hint** sazıdır; Türk müziğinin dem sazı değildir ve projede
-zaten `tambur` var. Türk soundfont'unun 113 preset'inde tanpura yok — olmaması
-beklenen şey.
+**İleriye dönük kapı:** `public/samples/` altındaki her melodik klasör artık
+doğrulama listesinde olmak *zorunda*. Tanpura'nın aylarca sessizce
+durabilmesinin sebebi bu KAPSAM kapısının olmamasıydı.
 
-1. **Listeden çıkar** — enstrüman kaydı da gider.
-2. **Bırak** — sentez sesiyle çalınabilir kalır.
-3. **Kaynak getir** — ölçülebilir bir tanpura kaydı gelirse yeniden üretilir.
+**Yakalanan yerel/CI ayrışması:** `git rm` sonrası boş dizin yerelde kaldı,
+CI'nın temiz klonunda yoktu — test yerelde *CI'da var olamayacak* bir sebeple
+geçmişti. git boş dizin izlemez. Tuzak koda yazıldı.
 
-Bir sazın projeye ait olup olmadığı **küratöryel** bir yargı; ADR 0001 gereği
-tek başıma vermem. Bozuk dosyaları kaldırmak ise mühendislik işiydi ve yapıldı.
+---
+
+### H9 · Melodik köken ölçüldü — README'nin bir iddiası **çürüdü**
+
+10 melodik klasörün her biri, dört soundfont'un tüm bölgelerine karşı
+normalize çapraz korelasyonla (gecikme aramalı) tarandı.
+
+| klasör | bulunan bölge | r |
+|---|---|---|
+| `ud` | UD-3 / UD-3 08 | **1,0000** |
+| `kemence` | KABAK-MU-1 / 00 | **1,0000** |
+| `kanun` | Kanun (Original) / EMREKANUNC3 | **1,0000** |
+| `tambur` | Tanbur / EMRE MT 4C | **1,0000** |
+| `miskal` | **NEY_05** / 03 | 0,9760 |
+
+**Çürüyen iddia:** README `miskal`ın "Proteus Pan Flute"tan geldiğini
+yazıyordu. Ölçüm bunu reddetti — kaynak bir **ney** preset'i. Miskal yuvası
+ney tınısı çalıyor. README ölçüme göre düzeltildi.
+
+**Doğrulanan iddia:** `kemence` kaynağı `KABAK-MU-1`, yani **kabak kemane** —
+klasik kemençe değil. Yaklaştırma olduğu artık açıkça yazılı.
+
+Eşleşmeyen 10 klasör **iddia** olarak kaldı. Bu bir yokluk kanıtı değildir:
+soundfont'un sentez zincirinden (zarf/filtre) geçmiş bir ses, ham bölgeyle
+birebir tutmaz. Kaydı "ölçüldü" diye işaretlemek burada yanlış olurdu.
+
+Güven dağılımı: `documented` 3 · **`measured` 6** · `claimed` 10 · `unknown` 0.
+
+---
+
+### H10 · `hek` gerçek kaydı — **SONUÇSUZ** (ve bu kayda geçti)
+
+CC BY kudüm icra kaydında iki temel frekansı da taşıyan iki aday bulundu:
+**13,61 s** (denge 0,97) ve **25,64 s** (denge 0,94).
+
+**Ama ayırt edici ölçütüm çöktü.** "İki el aynı anda vurursa iki kâse *birlikte*
+yükselir" varsayımıyla yükselme süresi farkını ölçmeye kalktım; kontrol olarak
+`dum`u ölçtüğümde o da **0 ms / 0 ms** verdi. Kudümün iki kâsesi güçlü
+kuplajlı — tek elle vurulan `dum` bile diğer kâseyi uyandırıyor.
+
+Yani "iki el birlikte" iddiası bu kayıttan **ayırt edilemez**. Aday sesler
+gerçekten `hek` olabilir; ölçüm bunu söyleyemez. ADR 0001 gereği ölçemediğim
+şeyi iddia etmiyorum: türetilmiş dosya yerinde kaldı, `derivedFrom` görünür,
+sonuç `provenance.json → hekSearch.kudumRecordingProbe`te **veri olarak** duruyor.
+
+---
+
+### H11 · Depo sadeleştirildi — ölü kod, atıl veri, cache
+
+**Ölü kod tarayıcımı kendim yazdım ve çöktü:** 948 yanlış pozitif verdi, çünkü
+barrel re-export ve dinamik import'u göremiyordu. `npx knip`e geçildi.
+
+**14 dosya silindi:** 5 `ai-*.mjs` · `audit-pdf-candidates` · `_probe.mjs` ·
+`test-gemini-models` · `core/domain/{index,score-document,usul-pattern,
+instrument-profile}.ts` · `data/references/source-curation.ts` (canlı test
+edilen `.mjs`'in ölü ikizi) · `design-system/shadows.ts`.
+
+**Silinmeyip bağlananlar:** çıktısı depoda *duran* 3 betik
+(`build-symbtr-catalog` · `verify-pdf-measures-heuristic` ·
+`extract-ai-variations`) `package.json`a script olarak eklendi. Commit'li bir
+artefaktın üreticisi ölü değildir — **bağlanmamıştır**; silmek üretilebilirliği
+öldürürdü.
+
+**Kök dizin:** `.hermes/` kaldırıldı · `.obsidian/` gitignore'landı ·
+`.impeccable.md` → `docs/design-context.md` · `scratchpad_heper_ocr.md` →
+`docs/kaynak-heper-kudum-ocr.md` · boş `PDF/` kaldırıldı.
+
+> OCR notu **silinmedi**: `usul/data.ts:643` ona kaynak olarak atıf veriyor.
+> Adı "scratchpad" olan bir dosya çöp gibi görünüyordu; aslında kanıttı.
+
+**Cache (~3,5 GB):** `.next` · `coverage` · `test-results` ·
+`node_modules/.cache` · `tsconfig.tsbuildinfo`.
+
+**Bilerek silinmeyenler:** `var/` (SQLite — kullanıcı verisi, yeniden
+üretilemez) ve `output/` (canlı kod okuyor: `src/app/api/external-references/
+route-config.ts`; ayrıca `docs/EXTERNAL_SOURCE_PIPELINE.md`'de kanıt).
+
+**Ve kapı kondu:** knip artık CI adımı (`npm run lint:dead-code`, sürümü
+sabitlenmiş devDependency). Ölü kodun sessizce birikebilmesinin tek sebebi
+ölçen bir kapının olmamasıydı; 100+ ölü export tam da böyle birikmişti.
+
+#### knip'in göremediği bağ — guardrail yakaladı
+
+`legacyNavigationAliases` hiçbir modül tarafından import **edilmiyor**. Ölü
+sandım, sildim, `guardrails:architecture` kırmızı oldu:
+
+```
+Legacy redirect route must remain centrally tracked: makam · usul · nota · ...
+```
+
+Tüketicisi `scripts/validate-architecture.mjs` ve dosyayı **metin olarak**
+okuyor. Ölü kod tarayıcıları import grafiğiyle çalışır; metinle okuyan bir
+tüketiciyi göremezler. Dizi geri kondu, neden import edilmediği koda yazıldı,
+`@knipignore` ile işaretlendi.
+
+> Ders: "hiçbir yerden import edilmiyor" ≠ "kimse kullanmıyor".
+
+#### Kendi hatam: satır sonu
+
+Python metin modunda yazarken `
+` → `os.linesep` çevirdiği için 23 dosya
+LF'ten CRLF'e döndü ve diff onları **tümüyle değişmiş** gösterdi. Diff'i
+okumasam 3.700 satırlık gürültü commit'lenecekti. Her dosya HEAD'deki biçime
+geri döndürüldü; gerçek değişim **408 ekleme / 764 silme** çıktı.
+
+#### Silmeden önce ölçülen şey: bu ölü kod mu, açık mı?
+
+`shared/security/upload-policy.ts`in yarısı (`isAllowedScoreUpload`,
+`sanitizeFileName`, `MAX_SCORE_UPLOAD_BYTES`, `SCORE_UPLOAD_EXTENSIONS`) hiçbir
+yerden çağrılmıyordu. İki okuma mümkündü:
+
+1. Ölü kod → silinir.
+2. **Bir yükleme uç noktası doğrulamayı atlıyor** → güvenlik açığı.
+
+Ölçüldü: nota görselleri `URL.createObjectURL` ile **istemcide kalıyor**,
+sunucuya hiç gitmiyor; nota dosyası için uç nokta **yok**. Var olan tek
+yükleme yolu (`api/samples` POST) kendi politikasıyla (`isAllowedSampleUpload`,
+25 MB, uzantı beyaz listesi) zaten doğruluyor. Açık değil, ölü koddu.
+
+#### Kapsam ölü kod silinince YÜKSELDİ
+
+Silinen şey kapsanmayan koddu; paydadan çıkınca oran kendiliğinden arttı.
+
+| | H7 | H11 | fark |
+|---|---|---|---|
+| statements | 69,73 | **70,66** | +0,93 |
+| branches | 65,07 | **65,78** | +0,71 |
+| functions | 78,30 | **79,77** | +1,47 |
+| lines | 70,59 | **71,61** | +1,02 |
+
+Eşikler 69/64/77/70 → **70/65/79/71** (CI payı bırakılarak aşağı yuvarlandı).
+
+#### Son durum
+
+`0 hata · 0 uyarı` — typecheck, eslint, knip, mimari guardrail, 1.047 test
+(korpus kapıları dahil), build, bundle bütçesi, `npm audit` (0 açık).

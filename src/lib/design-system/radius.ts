@@ -41,5 +41,3 @@ export const radius = {
     lg: "rounded-lg",
   },
 } as const;
-
-export type RadiusToken = typeof radius;

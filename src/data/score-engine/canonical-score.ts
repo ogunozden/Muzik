@@ -217,9 +217,6 @@ export interface CanonicalScoreDocument {
   validationIssues: CanonicalValidationIssue[];
 }
 
-export type CanonicalScoreDocumentV2 = CanonicalScoreDocument;
-export type CanonicalScoreEventV2 = CanonicalScoreEvent;
-
 export type CanonicalScheduledNote = ScheduledNote & {
   noteId: string;
   measureId: string;

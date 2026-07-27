@@ -105,6 +105,69 @@
       değerinin altına konuldu. Eski eşikler aylardır güncel ölçüm görülmeden
       duruyordu — çünkü yerel coverage koşusu H2'ye takılıyordu.
 
+- [x] **H9** · **Melodik köken ÖLÇÜLDÜ — README'nin bir iddiası çürüdü.**
+      10 melodik klasörün her biri, dört soundfont'un tüm bölgelerine karşı
+      normalize çapraz korelasyonla tarandı.
+      · **Tam kesit (r = 1,0000):** `ud` ← UD-3 · `kemence` ← KABAK-MU-1 ·
+        `kanun` ← EMREKANUNC3 · `tambur` ← EMRE MT 4C.
+      · **`miskal` ← `NEY_05` (r = 0,976).** README "Proteus Pan Flute"
+        diyordu — **yanlış**; miskal yuvası bir *ney* preset'i çalıyor.
+        İddia ölçümle değiştirildi, README düzeltildi.
+      · `kemence` kaynağı `KABAK-MU-1`, yani **kabak kemane** — klasik kemençe
+        değil. Yaklaştırma olduğu artık yazılı.
+      · Eşleşmeyen 10 klasör (`baglama`·`santur`·`lavta`·`rebab`·`darbuka`·
+        `davul`·`def`·`kasik`·`zil`·`nakkare`) **iddia** olarak kaldı; sentez
+        zincirinden geçmiş ses ham bölgeyle birebir tutmaz, yokluk kanıt değil.
+      · Güven: `documented` 3 · **`measured` 6** · `claimed` 10 · `unknown` 0.
+- [x] **H10** · **`hek` gerçek kaydı — SONUÇSUZ, ve bu kayda geçti.** Kudüm
+      icra kaydında iki temel frekansı da taşıyan iki aday bulundu (13,61 s
+      denge 0,97 · 25,64 s denge 0,94), ama ayırt edici olarak seçtiğim
+      **yükselme süresi ölçütü çöktü**: `dum`un kendisi bile 0 ms/0 ms
+      veriyor — kudümün iki kâsesi güçlü kuplajlı, tek vuruş da iki tarafı
+      birden uyandırıyor. "İki el birlikte" iddiası bu kayıttan **ayırt
+      edilemez**. Türetilmiş dosya yerinde kaldı, `derivedFrom` görünür.
+      Sonuç `provenance.json → hekSearch.kudumRecordingProbe`te veri olarak.
+- [x] **H11** · **Depo sadeleştirildi — ölü kod ve atıl veri.**
+      · **14 ölü dosya silindi.** Tarayıcıyı kendim yazmıştım, **948 yanlış
+        pozitif** verdi (barrel re-export ve dinamik import'u göremiyordu);
+        `npx knip`e geçildi. Silinenler: 5 `ai-*.mjs` · `audit-pdf-candidates`
+        · `_probe.mjs` · `test-gemini-models` · `core/domain/{index,
+        score-document,usul-pattern,instrument-profile}.ts` ·
+        `data/references/source-curation.ts` (canlı test edilen `.mjs`'in ölü
+        ikizi) · `design-system/shadows.ts` (`spacing.ts`'in ikizi).
+      · **Silinmeyip BAĞLANANLAR:** commit'li çıktı üreten 3 betik
+        (`build-symbtr-catalog` · `verify-pdf-measures-heuristic` ·
+        `extract-ai-variations`) `package.json`a script olarak eklendi —
+        çıktısı depoda duran betik ölü değil, *bağlanmamıştı*.
+      · Kök dizin: `.hermes/` kaldırıldı, `.obsidian/` gitignore'landı,
+        `.impeccable.md` → `docs/design-context.md`, `scratchpad_heper_ocr.md`
+        → `docs/kaynak-heper-kudum-ocr.md` (**silinmedi**: `usul/data.ts:643`
+        bu OCR'a kaynak olarak atıf veriyor), boş `PDF/` kaldırıldı.
+      · Cache: `.next` · `coverage` · `test-results` · `node_modules/.cache`
+        temizlendi (~3,5 GB). **Silinmeyenler:** `var/` (SQLite kullanıcı
+        verisi) ve `output/` (canlı kod okuyor — `route-config.ts`).
+      · **knip artık CI kapısı** (`lint:dead-code`, sürüm sabitli devDependency).
+        Ölü kodun sessizce birikebilmesinin sebebi kapının olmamasıydı.
+        Sonuç: **100+ ölü export + 1 ölü modül** temizlendi, net **−356 satır**.
+      · **knip'in göremediği bir bağ vardı ve guardrail yakaladı:**
+        `legacyNavigationAliases` hiçbir modülce import edilmiyor — tüketicisi
+        `validate-architecture.mjs`, dosyayı **metin olarak** okuyor. knip ölü
+        sandı, sildim, mimari kapısı kırmızı oldu, geri kondu ve `@knipignore`
+        ile işaretlendi. *Ölü kod tarayıcısı import grafiğidir; metinle okuyan
+        tüketiciyi göremez.*
+      · **Kendi hatam ölçümle yakalandı:** Python yazımı LF'i CRLF'e çevirip
+        23 dosyayı "tümüyle değişmiş" gösterdi. Diff'e bakmasam gürültü
+        commit'lenecekti; her dosya HEAD'deki biçime döndürüldü.
+      · **`shared/security/upload-policy.ts` yarısı ölüydü — ama önce açık mı
+        diye ölçtüm.** Nota yükleme uç noktası **yok**: görseller istemcide
+        `URL.createObjectURL` ile kalıyor, sunucuya hiç gitmiyor. Örnek
+        yükleme yolu ise kendi politikasıyla (`isAllowedSampleUpload`) zaten
+        doğruluyor. Açık değil, ölü koddu; silindi.
+      · **Ölçüm: kapsam ölü kod silinince YÜKSELDİ** — silinen şey kapsanmayan
+        koddu. 69,73→**70,66** · 65,07→**65,78** · 78,30→**79,77** ·
+        70,59→**71,61**. Eşikler 69/64/77/70 → **70/65/79/71**.
+      · `ENSTRUMAN_LIST` = `INSTRUMENTS` ikizliği kaldırıldı; tek ad kaldı.
+
 **Çürütülen fikir (kayda geçsin):** "ney'de işe yaradı, 19 klasöre de uygula."
 Ölçüldü — kemençe/tambur/ud bugün **1,00** uzlaşmada; kaynaktan yeniden
 üretilseler en çok gerilme sırasıyla **16,02 · 14,23 · 6,96** yarım ton olurdu.

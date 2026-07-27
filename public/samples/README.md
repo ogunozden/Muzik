@@ -63,14 +63,14 @@ file:
 ```text
 ney       <- Moss_Nay + NEY_05 presets (bkz. asagidaki ney bolumu)
 ud        <- UD-3 / Oud soundfont presets
-kemence   <- Kabak-MU bowed string preset
+kemence   <- KABAK-MU-1 (KABAK KEMANE — klasik kemence DEGIL, yaklastirma)
 kanun     <- Kanun Original preset
 baglama   <- BAGLMACE preset
 tambur    <- Tanbur preset
 santur    <- Proteus Santur preset
 lavta     <- Oud Bright preset
 rebab     <- Proteus Yesir Rebab preset
-miskal    <- Proteus Pan Flute preset
+miskal    <- NEY_05 preset (OLCULDU — README once 'Pan Flute' diyordu, yanlisti)
 davul     <- Eastern percussion drum presets
 def       <- Deff / Req presets
 darbuka   <- Darbuka preset
@@ -79,6 +79,32 @@ kasik     <- Eastern percussion clap preset
 zil       <- Open Sagat / gong presets
 nakkare   <- Tabla / Eastern percussion presets
 ```
+
+### Hangi klasorun kaynagi OLCUMLE dogrulandi
+
+Yukaridaki esleme bir IDDIA listesidir. Dalga bicimi karsilastirmasiyla
+**dogrulananlar** (`public/samples/provenance.json` -> `confidence: measured`):
+
+| klasor | bolge | korelasyon |
+|---|---|---|
+| `ud` | UD-3 / UD-3 08 | **1,0000** |
+| `kemence` | KABAK-MU-1 / 00 | **1,0000** |
+| `kanun` | Kanun (Original) / EMREKANUNC3 | **1,0000** |
+| `tambur` | Tanbur / EMRE MT 4C | **1,0000** |
+| `zilli-def` | Darbuka & Riq / EMREATEF DUM | **1,0000** |
+| `miskal` | NEY_05 / 03 | 0,9760 |
+
+`baglama` · `santur` · `lavta` · `rebab` · `darbuka` · `davul` · `def` ·
+`kasik` · `zil` · `nakkare` eslesmedi. Bu **yokluk kanit degil**: soundfont'un
+sentez zincirinden (zarf/filtre) gecmis bir ses, ham bolgeyle birebir tutmaz.
+Onlarin kaynagi iddia olarak kalir.
+
+**Iki iddia olcumle duzeltildi:**
+
+- `miskal` "Proteus Pan Flute"tan geldigi yaziyordu; **gercekte `NEY_05`**,
+  yani bir ney preset'i. Miskal yerine ney tinisi caliyor.
+- `kemence` kaynagi `KABAK-MU-1`, yani **kabak kemane** — klasik kemence
+  degil. README zaten "Kabak-MU" yaziyordu, olcum bunu teyit etti.
 
 Source reference:
 

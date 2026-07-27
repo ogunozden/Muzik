@@ -25,6 +25,11 @@ jobs:
       - run: npm run corpus:fetch
       - run: npm run guardrails:architecture
       - run: npm run lint
+      # Olu kod kapisi (knip). Kendi yazdigim tarayici barrel re-export ve
+      # dinamik import'u goremedigi icin 948 yanlis pozitif vermisti; knip
+      # ikisini de cozuyor. Kapi olmadan olu kod SESSIZCE birikiyor —
+      # 14 olu dosya ve 100+ olu export tam da boyle birikmisti.
+      - run: npm run lint:dead-code
       - run: npm run typecheck
       - run: npm run test:run
         env:

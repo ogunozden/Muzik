@@ -68,11 +68,6 @@ export const PERCUSSION_INSTRUMENTS: readonly InstrumentType[] = [
   "nakkare",
 ] as const;
 
-/**
- * Eski isim - geriye uyumlu
- */
-export const ENSTRUMAN_LIST = INSTRUMENTS;
-
 // ============================================
 // PİYANO - Piano
 // ============================================
@@ -128,39 +123,3 @@ for (let octave = PIANO_CONFIG.startOctave; octave <= PIANO_CONFIG.endOctave; oc
   }
 }
 
-/**
- * Pitch class (MIDI mod 12)
- */
-export const PITCH_CLASS: Record<number, typeof NOTE_NAMES[number]> = {
-  0: "C",
-  1: "C#",
-  2: "D",
-  3: "D#",
-  4: "E",
-  5: "F",
-  6: "F#",
-  7: "G",
-  8: "G#",
-  9: "A",
-  10: "A#",
-  11: "B",
-};
-
-/**
- * MIDI numarasından nota adını al
- */
-export function midiToNoteName(midiNumber: number): string {
-  const label = NOTE_LABELS[midiNumber];
-  return label?.name ?? `C${PIANO_CONFIG.startOctave}`;
-}
-
-/**
- * Nota adından MIDI numarasını al
- */
-export function noteNameToMidi(noteName: string, octave: number): number {
-  const noteIndex = NOTE_NAMES.indexOf(noteName as typeof NOTE_NAMES[number]);
-  if (noteIndex === -1) return 60;
-  
-  const baseOctave = PIANO_CONFIG.startOctave + 1;
-  return (baseOctave * 12) + ((octave - PIANO_CONFIG.startOctave) * 12) + noteIndex;
-}

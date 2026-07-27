@@ -136,37 +136,3 @@ export const typography = {
 } as const;
 
 // CSS utility class mappings for the active UnoCSS Wind4 integration.
-export const typographyClasses = {
-  // Font families
-  fontFamily: {
-    sans: "font-sans",
-    display: "font-serif",
-    mono: "font-mono",
-  },
-  
-  // Heading classes
-  heading: {
-    display: "text-5xl font-bold tracking-tight leading-none",
-    h1: "text-4xl font-bold tracking-tight",
-    h2: "text-3xl font-semibold",
-    h3: "text-2xl font-semibold",
-    h4: "text-xl font-medium",
-  },
-  
-  // Body classes
-  body: {
-    large: "text-lg leading-relaxed",
-    default: "text-base leading-normal",
-    small: "text-sm leading-normal",
-  },
-  
-  // UI text classes
-  ui: {
-    label: "text-sm font-medium tracking-wide uppercase text-[var(--color-text-tertiary)]",
-    caption: "text-xs text-[var(--color-text-tertiary)]",
-    button: "text-sm font-medium",
-  },
-} as const;
-
-export type Typography = typeof typography;
-export type TypographyClasses = typeof typographyClasses;

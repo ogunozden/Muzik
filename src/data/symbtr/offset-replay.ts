@@ -1,8 +1,8 @@
 import {type Ticks, ZERO_TICKS, addTicks, wholeNotesOf} from "@/core/time/ticks";
 import {meterToTicks} from "./meter-map";
-import {type DurationFraction, type RowAdvance, type SymbtrRow, rowAdvance} from "./rows";
+import {type DurationFraction, type SymbtrRow, rowAdvance} from "./rows";
 
-export {type RowAdvance, rowAdvance};
+export {rowAdvance};
 
 /**
  * OFFSET YENIDEN URETIM KAPISI (PLAN.md §2.3 / §3 G3).

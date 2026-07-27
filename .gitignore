@@ -62,3 +62,6 @@ output/
 /blob-report/
 /playwright/.cache/
 /public/exercises/
+
+# Kisisel editor durumu — depoya girmez.
+.obsidian/

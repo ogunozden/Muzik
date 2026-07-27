@@ -11,7 +11,7 @@ import { USUL_DATA } from "@/engines/usul/data";
 import { midiToNoteName, noteNameToMidi } from "@/engines/nota/data";
 import { playSequence, stopAll } from "@/engines/ses/engine";
 import type { InstrumentType } from "@/engines/ses/engine";
-import { ENSTRUMAN_LIST, MELODIC_INSTRUMENTS } from "@/lib/app-constants";
+import { INSTRUMENTS, MELODIC_INSTRUMENTS } from "@/lib/app-constants";
 import { NotaEvent } from "@/types";
 import { Badge, Button, Card, CardBody, Input, Select } from "@/shared/ui";
 import { tokens } from "@/shared/tokens";
@@ -247,7 +247,7 @@ function NotaEditorPage() {
     label: usul.name,
   }));
 
-  const instrumentItems = ENSTRUMAN_LIST.filter((instrument) =>
+  const instrumentItems = INSTRUMENTS.filter((instrument) =>
     (MELODIC_INSTRUMENTS as readonly string[]).includes(instrument.id as string)
   ).map((instrument) => ({
     key: instrument.id as string,

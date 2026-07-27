@@ -30,7 +30,7 @@ import type {InstrumentType} from "@/engines/ses/engine";
 import {startRhythmLoop, stopAll, type RhythmLoopController} from "@/engines/ses/engine";
 import type {UsulNotationHandle} from "@/shared/ui/organisms/UsulNotation";
 import {useEditorStore} from "@/store/editorStore";
-import {ENSTRUMAN_LIST, PERCUSSION_INSTRUMENTS} from "@/lib/app-constants";
+import {INSTRUMENTS, PERCUSSION_INSTRUMENTS} from "@/lib/app-constants";
 
 const SYMBOL_LABELS: Record<string, string> = {
   dum: "Düm",
@@ -119,7 +119,7 @@ export default function UsulPage() {
   const symbols =
     isVelveleEnabled && selectedUsulObj?.velvele?.length ? selectedUsulObj.velvele : selectedUsulObj?.symbols;
   const activeSymbol = currentSymbolIndex >= 0 ? symbols?.[currentSymbolIndex] : null;
-  const percussionItems = ENSTRUMAN_LIST.filter((instrument) =>
+  const percussionItems = INSTRUMENTS.filter((instrument) =>
     (PERCUSSION_INSTRUMENTS as readonly string[]).includes(instrument.id as string)
   ).map((instrument) => ({
     key: instrument.id as string,

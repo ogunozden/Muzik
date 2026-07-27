@@ -1,11 +1,6 @@
 import type {InstrumentType, PercussionSymbol} from "@/engines/ses/engine";
 import type {SymbtrScoreEvent} from "@/data/symbtr/parser";
-import type {
-  ExternalReferenceAccess,
-  ExternalReferenceProvider,
-  ExternalReferenceSource,
-  ExternalReferenceVerification,
-} from "@/data/references/external-sources";
+import type {ExternalReferenceSource} from "@/data/references/external-sources";
 import {createDefaultVisualMap} from "@/data/pieces/visual-map";
 import type {PieceVisualMap} from "@/data/pieces/visual-map";
 
@@ -32,9 +27,6 @@ export interface PiecePlaybackAhenk {
   referencePitch: string;
 }
 
-export type PieceReferenceProvider = ExternalReferenceProvider;
-export type PieceReferenceAccess = ExternalReferenceAccess;
-export type PieceReferenceVerification = ExternalReferenceVerification;
 export type PieceReferenceSource = ExternalReferenceSource;
 
 export interface PieceUsulHit {

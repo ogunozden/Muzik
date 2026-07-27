@@ -1,17 +1,7 @@
 import {
   colors as designColors,
   radius as designRadius,
-  shadows as designShadows,
   spacing as designSpacing,
-  typography as designTypography,
-} from "@/lib/design-system";
-
-export {
-  colors,
-  radius,
-  shadows,
-  spacing,
-  typography,
 } from "@/lib/design-system";
 
 export const tokens = {
@@ -63,10 +53,4 @@ export const tokens = {
   },
 } as const;
 
-export {
-  designColors,
-  designRadius,
-  designShadows,
-  designSpacing,
-  designTypography,
-};
+export {designColors, designRadius, designSpacing};

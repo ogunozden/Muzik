@@ -3,7 +3,7 @@ import { MELODIC_SAMPLE_LIBRARY } from "./sample-library";
 import { getOrCreateAudioContext, getAudioContext, stopAll, getMasterGain, trackOscillator, trackSource, getOrCreateNoiseBuffer } from "./core";
 import type { BrowserAudioContext } from "./core";
 import { INSTRUMENT_PROFILES, isPercussionSymbol } from "./profiles";
-import type { InstrumentProfile, InstrumentType, PercussionSymbol } from "./profiles";
+import type { InstrumentType, PercussionSymbol } from "./profiles";
 import { preloadSampleUrls, scheduleSampledMelodicNote, scheduleSampledPercussionHit, clearSampleCache, getPercussionSampleSet } from "./samples";
 import { schedulePercussionHit, applyADSREnvelope } from "./synth";
 
@@ -241,27 +241,6 @@ export async function playInstrumentNote(
       schedulePercussionHit(context, "tek", false, startAt, duration, instrument);
     }
   }
-}
-
-export async function playPercussionSymbol(
-  symbol: PercussionSymbol,
-  isAccent: boolean = false,
-  bpm: number = 120,
-  percussionInstrument?: InstrumentType,
-): Promise<void> {
-  const ok = await initAudio();
-  const context = getOrCreateAudioContext();
-  if (!ok || !context) return;
-
-  const beatDuration = 60 / bpm;
-  const startAt = context.currentTime + 0.02;
-
-  await preloadPercussionSymbolSamples([symbol], percussionInstrument);
-  if (scheduleSampledPercussionHit(context, symbol, isAccent, startAt, beatDuration, percussionInstrument)) {
-    return;
-  }
-  if (!SYNTHETIC_FALLBACK_ENABLED) return;
-  schedulePercussionHit(context, symbol, isAccent, startAt, beatDuration, percussionInstrument);
 }
 
 export async function preloadPercussionSamples(
@@ -641,4 +620,4 @@ export async function startRhythmLoop(
 
 // Re-exports
 export { getAudioContext, stopAll, clearSampleCache, INSTRUMENT_PROFILES };
-export type { InstrumentType, PercussionSymbol, InstrumentProfile };
+export type { InstrumentType, PercussionSymbol };

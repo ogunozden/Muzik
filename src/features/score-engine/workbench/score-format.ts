@@ -8,7 +8,7 @@ import {
 } from "@/data/score-engine/notation";
 import type {CanonicalScoreQualityReport} from "@/data/score-engine/quality";
 import type {InstrumentType} from "@/engines/ses/engine";
-import {ENSTRUMAN_LIST} from "@/lib/app-constants";
+import {INSTRUMENTS} from "@/lib/app-constants";
 import {buildScoreRenderSystems, type ScoreRenderSystem} from "../score-layout";
 
 /**
@@ -337,7 +337,7 @@ export function buildGlyphClassMapText(document: CanonicalScoreDocument): string
 }
 
 export function getInstrumentLabel(instrumentId: InstrumentType): string {
-  return ENSTRUMAN_LIST.find((instrument) => instrument.id === instrumentId)?.nameTr ?? instrumentId;
+  return INSTRUMENTS.find((instrument) => instrument.id === instrumentId)?.nameTr ?? instrumentId;
 }
 
 export function getValidationTone(document: CanonicalScoreDocument): "success" | "warning" | "neutral" {

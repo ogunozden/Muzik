@@ -122,9 +122,6 @@ const entries = layoutData.entries as Record<string, SymbTrPdfLayoutEntry>;
 const verificationEntries = layoutVerificationData.entries as unknown as Record<string, SymbTrPdfLayoutVerificationEntry>;
 
 export const SYMBTR_PDF_LAYOUT_GENERATED_AT = layoutData.generatedAt;
-export const SYMBTR_PDF_LAYOUT_WARNING = layoutData.warning;
-export const SYMBTR_PDF_LAYOUT_VERIFICATION_POLICY = layoutVerificationData.policy;
-
 export function getSymbTrPdfLayout(catalogId: string): SymbTrPdfLayoutEntry | null {
   if (!getSymbTrEntryById(catalogId)) return null;
 

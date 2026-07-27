@@ -71,11 +71,15 @@ describe("ScoreEngine SymbTr importer and validator", () => {
   });
 
   it("keeps measureBeat relative to the real SymbTr measure start, not a 4/4 fallback", () => {
+    // Mertebe artik ACIKCA veriliyor (G6). Fixture sentetik oldugu icin
+    // `piece`in `mu2` kardesi okunmamali — o baska bir eserin mertebesidir.
+    // 28/4 = 7 tam nota = tam bir olcu; sonraki nota 2. olcunun basinda.
     const result = parseSymbtrToCanonical({
       raw: DEVRI_KEBIR_MEASURE_FIXTURE,
       piece: HICAZKAR_PESREV,
       scoreId: "score:devri-kebir-fixture",
       sourceReference: "fixture",
+      writtenMeter: {numerator: 28, denominator: 4},
     });
 
     expect(result.document.events[1]).toMatchObject({
@@ -83,6 +87,36 @@ describe("ScoreEngine SymbTr importer and validator", () => {
       measureBeat: 0,
       startBeat: 28,
     });
+  });
+
+  it("USUL ile YAZILI MERTEBE ayni sey degildir (PLAN §1.5)", () => {
+    // Ayni fixture, gercek Hicazkar pesrevinin YAZILI mertebesiyle (mu2: 4/4).
+    // Devrikebir 28 zamanlidir ama notada 4/4 yazilir: 28/4'luk bir nota
+    // YEDI yazili olcu boyunca surer, bir olcu degil.
+    const result = parseSymbtrToCanonical({
+      raw: DEVRI_KEBIR_MEASURE_FIXTURE,
+      piece: HICAZKAR_PESREV,
+      scoreId: "score:devri-kebir-written-meter",
+      sourceReference: "fixture",
+      writtenMeter: {numerator: 4, denominator: 4},
+    });
+
+    // 7 tam nota / (4/4 = 1 tam nota) = 7 olcu -> sonraki nota 8. olcude.
+    expect(result.document.events[1]).toMatchObject({
+      measureId: "score:devri-kebir-written-meter:m8",
+      startBeat: 28,
+    });
+  });
+
+  it("mertebe verilmezse olcu tabani ACIKCA `offset-ceil-v1` olarak isaretlenir", () => {
+    // Mertebe bilinmeyen girdide motor tahmine duser; bu ORTULU kalmaz.
+    const events = parseSymbtrScore(DEVRI_KEBIR_MEASURE_FIXTURE, 60);
+    const walked = parseSymbtrScore(DEVRI_KEBIR_MEASURE_FIXTURE, 60, 0, {
+      writtenMeter: {numerator: 28, denominator: 4},
+    });
+
+    expect(events.every((event) => event.measureIndexBasis === "offset-ceil-v1")).toBe(true);
+    expect(walked.every((event) => event.measureIndexBasis === "meter-walk-v2")).toBe(true);
   });
 
   it("registers five reachable calibration catalog pieces without making up scores", () => {

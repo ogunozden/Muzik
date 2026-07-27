@@ -366,23 +366,47 @@ yalnız **%0,50** (5.787 nota) — G7'nin gerçek kapsamı bu.
   kayardı. *Görünür kayıp, sessiz yanlıştan iyidir.*
 - **Risk:** düşük çıktı (alan opsiyonel, geriye dönük uyumlu). 904 test yeşil.
 
-### G6 · Pivot — hedef DEĞİŞTİ (G4 ölçümü)
+### G6 · Pivot — ✅ TAMAM · hedef G4 ölçümüyle değişmişti
 
 - ~~`measureIndex = floor(başlangıçOffset)+1`~~ **ÇÜRÜTÜLDÜ** (G4: %76,23).
-- **Yeni hedef:** `measureIndex = measureAt(kanonikBaşlangıç).measure`
-  — `MeterMap` yürünür, `Offset` sütunu ölçü için **hiç kullanılmaz**.
-  `Offset` yalnız G3 kapısında (kaynak doğrulama) kalır.
-- Dört kopya (§1.7) **tek kaynağa** indirgenir.
-  - `scripts/lib/symbtr-score-measures.mjs` için: projede **TS runner yok**
-    (`tsx`/`ts-node`/`jiti` yok — `package.json`daki `tsx` eşleşmesi
-    lint-staged'ın `*.{ts,tsx}` kalıbı, yanlış pozitif *(doğrulandı)*).
-    Bu yüzden ya script `.mjs` olarak formülü **tek yerden** okuyacak şekilde
-    yeniden yazılır ya da build adımı eklenir.
-- **Kapı:** commit mesajında kayan nota sayısı (**157.491 / %13,61**)
-  raporlanır. Tempo işareti olmayan eserlerde kayma **%1,42** olmalı.
-- **Pivot öncesi tarama:** `grep -rn "toBe([0-9]*\.[0-9]{6,})" src` ile
-  float-pinlenmiş assertion'ları çıkar.
-- **Risk:** YÜKSEK. **Geri alma:** tek commit, `git revert`.
+- **Yapılan:** `measureIndex = measureAt(kanonikBaşlangıç).measure`.
+  `MeterMap` yürünüyor; `Offset` sütunu ölçü için **artık hiç kullanılmıyor**
+  (yalnız G3 kapısında, kaynak doğrulamada kalıyor).
+- **Yazılı mertebe kaynağı:** `mu2` satır-1. `parseSymbtrScore`'a
+  `options.writtenMeter` eklendi; `parseSymbtrToCanonical` bunu `mu2`
+  kardeşinden okuyor. `SymbtrCanonicalImportInput.writtenMeter` ile açıkça
+  geçersiz kılınabiliyor (sentetik fixture'lar için gerekli).
+- **Taban her olayda taşınıyor:** `SymbtrScoreEvent.measureIndexBasis` —
+  mertebe bilinmiyorsa `offset-ceil-v1`, biliniyorsa `meter-walk-v2`.
+  Hangi tabanın kullanıldığı **asla örtülü kalmıyor**.
+- **Yan kazanç:** `piece.meter === "auto"` artık süre dağılımından **tahmin
+  etmiyor**; `mu2`'nun yazılı mertebesini kullanıyor. `inferMeter…` yalnız
+  arşiv dışı girdiler için kalıyor.
+
+**Ölçülen kayma (2999 eser / 1.163.593 nota)**
+
+| kohort | başka ölçüye taşınan |
+|---|---|
+| tümü | **160.860 (%13,82)** |
+| tempo işareti **olmayan** eserler | 3.314 / 218.770 (**%1,51**) |
+
+G4 tahmini %13,61 ve %1,42 idi — ölçüm tutuyor. Toplam ölçü sayısı değişen
+eser: **1.768 / 2.999**.
+
+**İki dil, tek davranış.** Projede TS runner yok *(doğrulandı)*, bu yüzden
+`scripts/lib/symbtr-score-measures.mjs` yürüyüşü tekrar uyguluyor. Kopya
+kaçınılmaz, **sessiz ayrışma değil**: `symbtr-score-measures.test.mjs` iki
+uygulamayı 8 fixture üzerinde koşturup **birebir aynı ölçü kümesini**
+ürettiklerini doğruluyor, sabitlerin (`TICKS_PER_WHOLE`, taban) eşitliğini de.
+
+**G5 emniyet valfi tetiklendi — tasarlandığı gibi.** 520 doğrulanmış girdi
+`offset-ceil-v1` olduğu için bayatladı; `getSymbTrVerifiedPdfMeasureBoxes`
+artık **0** dönüyor ve `verify:symbtr-measures` 520 hatayı **adıyla**
+raporluyor. Veri silinmedi, yalnız geçersiz sayılıyor.
+
+- **Kalan iş:** kutuların `meter-walk-v2` tabanıyla yeniden doğrulanması
+  (`verify-pdf-measures-symbtr-aligned.mjs` zaten yeni tabanı kullanıyor).
+- **Risk:** YÜKSEK'ti; 917 test yeşil. **Geri alma:** tek commit, `git revert`.
 
 ### G7 · L1 — bar-aşan nota bölme + bağ
 

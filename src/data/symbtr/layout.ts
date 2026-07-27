@@ -93,7 +93,7 @@ export interface SymbTrVerifiedPdfMeasureBox extends Omit<SymbTrPdfMeasureCandid
 export type SymbTrMeasureIndexBasis = "offset-ceil-v1" | "meter-walk-v2";
 
 /** `scripts/lib/symbtr-score-measures.mjs` ile ayni deger olmali (test eder). */
-export const CURRENT_MEASURE_INDEX_BASIS: SymbTrMeasureIndexBasis = "offset-ceil-v1";
+export const CURRENT_MEASURE_INDEX_BASIS: SymbTrMeasureIndexBasis = "meter-walk-v2";
 
 /** Alani olmayan kayitlarin varsayilan tabani. */
 export const LEGACY_MEASURE_INDEX_BASIS: SymbTrMeasureIndexBasis = "offset-ceil-v1";

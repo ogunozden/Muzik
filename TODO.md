@@ -59,9 +59,17 @@ tick ekseninde olsun.
       iki doğrulayıcı betiğe kapı eklendi · sabit **tek kaynak**
       (`scripts/lib/symbtr-score-measures.mjs`) ve TS ile eşitliği test ediliyor
       · pivotta 18.334 kutu **görünür** düşecek, sessizce kaymayacak
-- [ ] **G6** · **PIVOT** · `measureIndex = measureAt(kanonikBaşlangıç)`
-      (~~`floor(offset)+1`~~ çürütüldü), dört kopya tek kaynağa
-      · *157.491 nota (%13,61) kayar — commit mesajında raporlanır*
+- [x] **G6** · **PIVOT YAPILDI** · `measureIndex = measureAt(kanonikBaşlangıç)`
+      (~~`floor(offset)+1`~~ çürütüldü) · yazılı mertebe `mu2` satır-1'den
+      · **ölçülen kayma: 160.860 nota (%13,82)**; tempo işareti olmayan
+      eserlerde yalnız %1,51 · toplam ölçü sayısı değişen eser 1.768/2.999
+      · her olay `measureIndexBasis` taşıyor — taban örtülü kalmıyor
+      · TS ↔ `.mjs` eşdeğerliği 8 fixture'da test ediliyor
+      · G5 valfi tetiklendi: 520 PDF girdisi bayatladı, kutular **görünür**
+      şekilde 0'a düştü (veri silinmedi)
+- [ ] **G6.1** · PDF ölçü kutularını `meter-walk-v2` tabanıyla yeniden doğrula
+      *(`verify-pdf-measures-symbtr-aligned.mjs` zaten yeni tabanı kullanıyor;
+      18.334 kutu yeniden üretilecek)*
 - [ ] **G7** · L1: bar-aşan nota bölme + bağ · **gerçek kapsam G4'te ölçüldü:
       5.787 nota (%0,50)**; ölçü doluluğu %93,13 → ~%99. Çalma nota sayısı ve
       toplam süresi DEĞİŞMEMELİ

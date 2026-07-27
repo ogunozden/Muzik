@@ -55,7 +55,11 @@ describe("SymbTr PDF layout candidates", () => {
     expect(coverage.totalCatalogEntries).toBe(3000);
     expect(coverage.extractedEntries).toBeGreaterThan(1);
     expect(coverage.candidateEntries).toBeGreaterThan(1);
-    expect(coverage.verifiedMeasureBoxEntries).toBeGreaterThan(0);
+    // G6 PIVOTU SONRASI: 520 dogrulanmis girdi `offset-ceil-v1` tabanindaydi;
+    // motor artik `meter-walk-v2` kullaniyor, dolayisiyla hepsi BAYAT.
+    // Kutular yeniden dogrulanana kadar 0. Bu, G5'in kabul kriteridir —
+    // gorunur kayip, sessiz yanlistan iyidir.
+    expect(coverage.verifiedMeasureBoxEntries).toBe(0);
     expect(coverage.unresolvedCandidateEntries).toBeGreaterThanOrEqual(0);
   });
 
@@ -71,18 +75,25 @@ describe("SymbTr PDF layout candidates", () => {
     expect(status.status).toBe("unreviewed-candidates");
   });
 
-  it("auto-verifies entries with matching candidate-to-TXT measure count via symbtr-txt-aligned", () => {
+  it("G6 sonrasi: `offset-ceil-v1` tabanli dogrulamalar BAYAT sayilir", () => {
+    // Bu eser `symbtr-txt-aligned` ile otomatik dogrulanmisti ve kutulari
+    // vardi. G6 pivotu tabani `meter-walk-v2` yapinca kayit bayatladi.
+    // Veri SILINMEDI — `layout-verification.generated.json` duruyor; yalniz
+    // GECERSIZ sayiliyor. Yeniden dogrulama sonrasi geri gelecek.
     const boxes = getSymbTrVerifiedPdfMeasureBoxes(VERIFIED_CATALOG_ID);
-    expect(boxes.length).toBeGreaterThan(0);
+    expect(boxes.length).toBe(0);
+
     const status = getSymbTrPdfLayoutVerificationStatus(VERIFIED_CATALOG_ID);
     expect(status.candidateCount).toBeGreaterThan(0);
-    expect(status.verifiedMeasureBoxCount).toBeGreaterThan(0);
-    expect(status.status).toBe("verified");
-    for (const box of boxes) {
-      expect(box.confidence).toBe("verified");
-      expect(box.method).toBe("symbtr-txt-aligned");
-      expect(box.measureIndex).toBeGreaterThanOrEqual(1);
-    }
+    expect(status.verifiedMeasureBoxCount).toBe(0);
+    expect(status.status).not.toBe("verified");
+
+    // Ham kayit hala orada ve tabanini beyan ediyor.
+    const stored = (verificationData.entries as Record<string, {measureIndexBasis?: string; measureBoxes: unknown[]}>)[
+      VERIFIED_CATALOG_ID
+    ];
+    expect(stored.measureIndexBasis).toBe("offset-ceil-v1");
+    expect(stored.measureBoxes.length).toBeGreaterThan(0);
   });
 });
 
@@ -107,30 +118,28 @@ describe("measureIndexBasis — pivot emniyet valfi (G5)", () => {
     }
   });
 
-  it("KABUL KRITERI: taban degisirse kutular GORUNUR sekilde duser", () => {
-    // G6 pivotu `CURRENT_MEASURE_INDEX_BASIS`i `meter-walk-v2` yapacak.
-    // O anda 520 girdi de `offset-ceil-v1` oldugu icin BAYATLAYACAK ve
-    // `getSymbTrVerifiedPdfMeasureBoxes` **0** dondurecek — yeniden dogrulama
+  it("KABUL KRITERI: taban uyusmayan kayit BAYAT sayilir", () => {
+    // G6 pivotu `CURRENT_MEASURE_INDEX_BASIS`i `meter-walk-v2` yapti; 520
+    // girdi de `offset-ceil-v1` oldugu icin BAYATLADI ve
+    // `getSymbTrVerifiedPdfMeasureBoxes` artik 0 donuyor — yeniden dogrulama
     // bitene kadar. Gorunur kayip, sessiz yanlistan iyidir (PLAN §3/G5).
-    //
-    // Burada `isVerificationCurrent`in taban dalini dogrudan sinariz.
-    const stale: SymbTrPdfLayoutVerificationEntry = {
+    const layout = getSymbTrPdfLayout(VERIFIED_CATALOG_ID)!;
+    const base: SymbTrPdfLayoutVerificationEntry = {
       catalogId: VERIFIED_CATALOG_ID,
       sourceLayoutGeneratedAt: SYMBTR_PDF_LAYOUT_GENERATED_AT,
-      sourceArchiveMemberPath: getSymbTrPdfLayout(VERIFIED_CATALOG_ID)!.source.archiveMemberPath,
-      sourceMeasureCandidateCount: getSymbTrPdfLayout(VERIFIED_CATALOG_ID)!.summary.measureCandidateCount,
-      measureIndexBasis: "meter-walk-v2",
+      sourceArchiveMemberPath: layout.source.archiveMemberPath,
+      sourceMeasureCandidateCount: layout.summary.measureCandidateCount,
+      measureIndexBasis: CURRENT_MEASURE_INDEX_BASIS,
       verifiedAt: "2026-07-27T00:00:00.000Z",
       reviewer: "test",
       method: "symbtr-txt-aligned",
       measureBoxes: [],
     };
 
-    // Taban disindaki her sey guncel; tek fark taban -> bayat sayilmali.
-    expect(stale.measureIndexBasis).not.toBe(CURRENT_MEASURE_INDEX_BASIS);
-    expect(isSymbTrVerificationBasisCurrent(stale)).toBe(false);
-    expect(isSymbTrVerificationBasisCurrent({...stale, measureIndexBasis: CURRENT_MEASURE_INDEX_BASIS})).toBe(true);
-    // Alani olmayan ESKI kayit geriye donuk uyumlu: `offset-ceil-v1` sayilir.
-    expect(isSymbTrVerificationBasisCurrent({...stale, measureIndexBasis: undefined})).toBe(true);
+    expect(isSymbTrVerificationBasisCurrent(base)).toBe(true);
+    // Onceki taban -> bayat. 520 girdinin bugunku durumu tam olarak budur.
+    expect(isSymbTrVerificationBasisCurrent({...base, measureIndexBasis: "offset-ceil-v1"})).toBe(false);
+    // Alani olmayan ESKI kayit da `offset-ceil-v1` sayilir -> o da bayat.
+    expect(isSymbTrVerificationBasisCurrent({...base, measureIndexBasis: undefined})).toBe(false);
   });
 });

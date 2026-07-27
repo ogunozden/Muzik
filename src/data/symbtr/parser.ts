@@ -1,4 +1,21 @@
 import {formatSolfegePitch} from "@/core/domain/note-naming";
+import {ZERO_TICKS, addTicks} from "@/core/time/ticks";
+import {buildMeterMap, measureAt} from "./meter-map";
+import {type DurationFraction, readSymbtrRows, rowAdvance} from "./rows";
+
+/**
+ * Olcu numarasinin NASIL bulundugu (PLAN.md §3/G5-G6).
+ *
+ *   `offset-ceil-v1` — `Math.ceil(Offset)`. Yazili mertebe bilinmedigi zaman
+ *      tek secenek. G4 olcumu (1.157.450 nota): tempo isareti olmayan
+ *      eserlerde %98,58 dogru, olanlarda **%83,56** — cunku `Offset` sutunu
+ *      kod-52'nin hayalet suresini tasiyor.
+ *   `meter-walk-v2` — `MeterMap` KANONIK eksende yurunerek. Yazili mertebe
+ *      verildiginde kullanilir; `Offset` sutununa hic bakmaz.
+ *
+ * Alan HER olayda tasinir: hangi tabanin kullanildigi asla ortulu kalmaz.
+ */
+export type MeasureIndexBasis = "offset-ceil-v1" | "meter-walk-v2";
 
 export interface SymbtrScoreEvent {
   index: number;
@@ -24,6 +41,8 @@ export interface SymbtrScoreEvent {
    */
   offsetUnits: number | null;
   measureIndex: number | null;
+  /** `measureIndex`in hangi tabandan geldigi — ortulu kalmaz. */
+  measureIndexBasis: MeasureIndexBasis;
   isMeasureEnd: boolean;
   isRest: boolean;
 }
@@ -102,9 +121,56 @@ export function koma53ToFrequency(koma53: number): number {
   return A4_FREQUENCY * Math.pow(2, (koma53 - A4_KOMA53) / 53);
 }
 
-export function parseSymbtrScore(raw: string, bpm: number, koma53Offset: number = 0): SymbtrScoreEvent[] {
+export interface ParseSymbtrScoreOptions {
+  /**
+   * Yazili mertebe (`mu2` satir-1). VERILDIGINDE olcu numarasi `MeterMap`
+   * yurunerek bulunur (`meter-walk-v2`) ve `Offset` sutununa HIC bakilmaz.
+   * Verilmezse `Math.ceil(Offset)` tabani kullanilir (`offset-ceil-v1`).
+   */
+  writtenMeter?: DurationFraction | null;
+}
+
+/**
+ * Yazili mertebeden olcu numarasi tablosu kurar: `Sira` -> olcu.
+ *
+ * Neden `Offset` degil: G4 olctu — `Offset` sutunu kod-52 tempo isaretinin
+ * hayalet suresini tasiyor, dolayisiyla tempo isaretli 2228 eserde muzikal
+ * zamandan sapiyor. Burada KANONIK eksende yuruyoruz.
+ *
+ * Nota, BASLADIGI olcuye yazilir (gravurde dogru olan budur). Bar-asan
+ * notalarin ikinci parcasi G7'de bagla ayrilir.
+ */
+function buildMeasureIndexBySira(raw: string, writtenMeter: DurationFraction): Map<number, number> | null {
+  const rows = readSymbtrRows(raw).rows;
+  const map = buildMeterMap(rows, writtenMeter);
+  if (!map) return null;
+
+  const bySira = new Map<number, number>();
+  let position = ZERO_TICKS;
+
+  for (const row of rows) {
+    const advance = rowAdvance(row);
+    if (row.kind === "timed" && row.sira !== null) {
+      const at = measureAt(map, position);
+      if (at) bySira.set(row.sira, at.measure);
+    }
+    position = addTicks(position, advance.canonical);
+  }
+
+  return bySira;
+}
+
+export function parseSymbtrScore(
+  raw: string,
+  bpm: number,
+  koma53Offset: number = 0,
+  options: ParseSymbtrScoreOptions = {},
+): SymbtrScoreEvent[] {
   const beatDuration = 60 / bpm;
   let startBeat = 0;
+
+  const measureIndexBySira = options.writtenMeter ? buildMeasureIndexBySira(raw, options.writtenMeter) : null;
+  const measureIndexBasis: MeasureIndexBasis = measureIndexBySira ? "meter-walk-v2" : "offset-ceil-v1";
 
   return raw
     .split(/\r?\n/)
@@ -124,7 +190,11 @@ export function parseSymbtrScore(raw: string, bpm: number, koma53Offset: number 
       const section = columns[11]?.trim() || null;
       const rawOffsetUnits = Number(columns[12]);
       const offsetUnits = Number.isFinite(rawOffsetUnits) ? rawOffsetUnits : null;
-      const measureIndex = offsetUnits && offsetUnits > 0 ? Math.max(1, Math.ceil(offsetUnits)) : null;
+      const measureIndex = measureIndexBySira
+        ? measureIndexBySira.get(index) ?? null
+        : offsetUnits && offsetUnits > 0
+          ? Math.max(1, Math.ceil(offsetUnits))
+          : null;
       const isMeasureEnd = Boolean(offsetUnits && offsetUnits > 0 && isNearInteger(offsetUnits));
       const durationBeats = (pay / payda) * 4;
 
@@ -168,6 +238,7 @@ export function parseSymbtrScore(raw: string, bpm: number, koma53Offset: number 
         section,
         offsetUnits,
         measureIndex,
+        measureIndexBasis,
         isMeasureEnd,
         isRest,
       });

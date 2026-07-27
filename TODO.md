@@ -1,5 +1,17 @@
 # Muzik — Kalan İşler (2026-07-27)
 
+> **Açık kod işi YOK.** Her fazda (A–H) kutuların hepsi işaretli. Kalan üç
+> şey de kod değil, **dış girdi** bekliyor:
+>
+> | ne | neyi bekliyor | tetiklenince ne olur |
+> |---|---|---|
+> | **FAZ D** · stüdyo kaydı | gerçek enstrüman kayıtları | `public/samples/` altına konur, `sample-pitch-labels.test.ts` içeriği ölçüp adıyla karşılaştırır |
+> | **`hek` gerçek kaydı** | iki elin birlikte vuruşunu taşıyan bir kayıt | türetilmiş dosyanın üzerine yazılır, `derivedFrom` kalkar (H10: mevcut kayıttan **ayırt edilemedi**) |
+> | **10 `claimed` klasör** | ölçülebilir kaynak eşleşmesi | `provenance.json` `measured`a geçer (bugün: `baglama`·`lavta`·`santur`·`rebab`·`davul`·`def`·`darbuka`·`kasik`·`zil`·`nakkare`) |
+>
+> **E1** (korpus JSON süzme) ölçüldü ve bilinçli yapılmadı: bundle bütçenin
+> **%31**'inde, kazanç 3,4 KB. Tetikleyici = bütçenin %80'i.
+
 > Bu dosya **yalnızca açık/kalan** işleri listeler. Tamamlanan tüm faz kaydı
 > (F0–F14, P0–P3, E1–E11 — kanıt ve sayfa referanslarıyla) arşivdedir:
 > `docs/archive/TODO-master-tamamlanan-2026-07-16.md`,
@@ -11,7 +23,7 @@
 
 ---
 
-## ⏳ FAZ H — AÇIK (derin analiz: 2026-07-27) · PLAN §11
+## ✅ FAZ H — TAMAM (H1–H11 kapandı, 2026-07-27) · PLAN §11
 
 > **"Kod işi kalmadı" dediğim doğruydu ama eksikti:** kendi TODO'ma bakarak
 > doğruydu. Koda ölçerek bakınca kök bir boşluk çıktı.

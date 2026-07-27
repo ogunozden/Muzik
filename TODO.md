@@ -1,4 +1,4 @@
-# Muzik — Kalan İşler (2026-07-26)
+# Muzik — Kalan İşler (2026-07-27)
 
 > Bu dosya **yalnızca açık/kalan** işleri listeler. Tamamlanan tüm faz kaydı
 > (F0–F14, P0–P3, E1–E11 — kanıt ve sayfa referanslarıyla) arşivdedir:
@@ -11,15 +11,26 @@
 
 ---
 
-## ⏳ AÇIK İŞLER — öncelik sırası (2026-07-27)
+## ✅ KOD İŞİ KALMADI (2026-07-27)
 
-> **Nasıl yapılacağı [PLAN.md](PLAN.md)'de.** Bu liste yalnız *ne* ve *hangi
-> sırayla*. Aşağıdaki §A–§L bölümleri tamamlanmış işin kaydıdır.
+> **Bu bölümde açık kutu yok.** Aşağıdaki §A–§L listeleri tamamlanmış işin
+> kaydıdır; nasıl yapıldığı [PLAN.md](PLAN.md)'de.
 >
-> Kök teşhis: **motorun metrik bağlamı yok.** Parser 19 satır kodundan yalnız
-> `9`'u okuyor; atılan **31.605 süreli satır** ve okunmayan yazılı mertebe
-> yüzünden ölçü, tahminle (`ceil(offset)`) kuruluyor. L1 bu yüzden inmedi —
-> yaprak değil, gövde sorunu.
+> **Kalan tek iş kod işi değil:** FAZ D — stüdyo kaydı (gerçek enstrüman
+> kayıtları). Kayıt gelince `public/samples/` altına konur ve
+> `sample-pitch-labels.test.ts` içeriği ölçüp adıyla karşılaştırır.
+>
+> **Ölçülüp bilinçli yapılmayanlar** (körlemesine atlanmadı, tetikleyicisi
+> ateşlenmedi — gerekçeleri PLAN.md §10'da):
+> - **E1** korpus JSON süzme — bundle bütçenin **%31'inde**, kazanç 3,4 KB.
+> - **`setStrict(false)`** — kaldırılamaz; `Voice` ölçü başına değil *render
+>   sistemi* başına kuruluyor (§L1).
+> - **tanpura** sample'ları — üç yöntem de uzlaşmıyor, ölçülemeyen dosya
+>   yeniden yazılmaz (ADR 0001). Borç testte görünür.
+>
+> **Kök teşhis çözüldü:** "motorun metrik bağlamı yok" tespitiyle başlayan
+> teşhis G9'da kapandı — parser artık `rows.ts`'ten besleniyor, hiçbir satır
+> atılmıyor, ölçü doluluğu **%88,81 → %98,03**.
 
 ### Öncelik 1 · FAZ A — Ana motor · PLAN §3
 
@@ -816,9 +827,10 @@ bağlayıcı kuralı gereği birini keyfî seçemem.
          dilimi; `numBeats` de `Math.ceil(span)` ile yuvarlanıyor. Strict mod
          tick toplamının mertebeye **tam** eşitliğini ister — dilimlerde bu
          hiçbir zaman sağlanamaz.
-      2. **Veri:** ölçü doluluğu G7 sonrası **%88,81** (156.944 ölçüde
-         139.381; son ölçüler hariç). Ölçü başına voice'a geçilse bile
-         kalan ~%11 strict modda hata verirdi.
+      2. **Veri:** ölçü doluluğu G9 sonrası **%98,03** (G7 sonrası %88,81'di).
+         Ölçü başına voice'a geçilse bile kalan ~%2 strict modda hata verirdi.
+         *(Bu sayı iyileşti ama sonucu değiştirmiyor: 1. sebep tek başına
+         yeterli — sistem dilimi ölçüye eşit değil.)*
       Kaldırmak için önce voice'ların ölçü başına kurulması, sonra
       doluluğun %100'e çıkması gerekir — ikisi de ayrı iş.
 

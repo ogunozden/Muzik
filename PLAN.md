@@ -14,8 +14,9 @@
 ## 0. Durum özeti
 
 > **GÜNCEL DURUM (2026-07-27 · uygulama sonrası):**
-> **FAZ A (G0–G9) ✅ · FAZ B (B1–B7) ✅ · FAZ C (C1–C4 + C1.1/C4.1) ✅**
-> 122 dosya / **983 birim testi** + **23 e2e** (dev *ve* üretim derlemesi) yeşil.
+> **FAZ A (G0–G9) ✅ · FAZ B (B1–B7) ✅ · FAZ C (C1–C4 + C1.1/C4.1) ✅ ·
+> FAZ F (F0–F4) ✅ · E1 ölçüldü→yapılmadı ✅**
+> 126 dosya / **1033 birim testi** + **23 e2e** (dev *ve* üretim derlemesi) yeşil.
 >
 > **G9 ile göç tamamlandı:** parser artık `rows.ts`'ten besleniyor, hiçbir
 > satır atılmıyor. **Ölçü doluluğu %88,81 → %98,03**; olay akışı
@@ -23,13 +24,19 @@
 > ölçülebilir bir sonla kapandı.
 > Tarayıcı denetimleri: `score-engine-engraving` **0 hata**, `studio-follow` `ok`.
 >
-> **Ölçüm planı dört kez çürüttü** — dördü de kapılar sayesinde erken yakalandı:
-> `TICKS_PER_WHOLE` 40320 → **524160** · pivot `floor(offset)+1` **daha kötü**
-> (sorun formül değil eksen) · tempo `127+Bas` kuralı **%87,3** (reddedildi,
-> mu2'den okunuyor) · "mu2 tekrarı korur" örtüşmesi **%32** (adlandırılmadı).
+> **Ölçüm planı (ve beni) altı kez çürüttü** — altısı da kapılar sayesinde
+> yakalandı: `TICKS_PER_WHOLE` 40320 → **524160** · pivot `floor(offset)+1`
+> **daha kötü** (sorun formül değil eksen) · tempo `127+Bas` kuralı **%87,3**
+> (reddedildi, mu2'den okunuyor) · "mu2 tekrarı korur" örtüşmesi **%32**
+> (adlandırılmadı) · sample yeniden üretiminde **53 dosyada sessiz kuyruk**
+> (çıktı uzunluğu kaynağı aşıyordu) · tanpura için uydurduğum "tepe aralığı =
+> temel" gerekçesi (tepeler yazdırılınca **çöktü**; dem telleri oktav arayla).
 >
-> **Kalan:** yalnız FAZ D (stüdyo kaydı — kod işi değil), E1 (tetikleyici
-> beklemede) ve `setStrict(false)` ölçümü.
+> **Kalan:** yalnız **FAZ D** (stüdyo kaydı — kod işi değil).
+> E1 ölçüldü, tetikleyici ateşlenmediği için **yapılmadı** (§10).
+> `setStrict(false)` ölçüldü: **kaldırılamaz ve bu bir kusur değil** —
+> `Voice` ölçü başına değil *render sistemi* başına kuruluyor, sistem ise
+> ölçünün keyfî bir dilimi (TODO.md §L1).
 
 Aşağıdaki bölümler tarihsel plandır; her adımın altında **ne olduğu** ve
 ölçülen sonuç kayıtlıdır.

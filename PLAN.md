@@ -15,7 +15,7 @@
 
 > **GÜNCEL DURUM (2026-07-27 · uygulama sonrası):**
 > **FAZ A (G0–G9) ✅ · FAZ B (B1–B7) ✅ · FAZ C (C1–C4 + C1.1/C4.1) ✅ ·
-> FAZ F (F0–F4) ✅ · E1 ölçüldü→yapılmadı ✅**
+> FAZ F (F0–F5) ✅ · E1 ölçüldü→yapılmadı ✅**
 > 127 dosya / **1044 birim testi** + **23 e2e** (dev *ve* üretim derlemesi) yeşil.
 >
 > **G9 ile göç tamamlandı:** parser artık `rows.ts`'ten besleniyor, hiçbir
@@ -24,15 +24,19 @@
 > ölçülebilir bir sonla kapandı.
 > Tarayıcı denetimleri: `score-engine-engraving` **0 hata**, `studio-follow` `ok`.
 >
-> **Ölçüm planı (ve beni) altı kez çürüttü** — altısı da kapılar sayesinde
+> **Ölçüm planı (ve beni) yedi kez çürüttü** — yedisi de kapılar sayesinde
 > yakalandı: `TICKS_PER_WHOLE` 40320 → **524160** · pivot `floor(offset)+1`
 > **daha kötü** (sorun formül değil eksen) · tempo `127+Bas` kuralı **%87,3**
 > (reddedildi, mu2'den okunuyor) · "mu2 tekrarı korur" örtüşmesi **%32**
 > (adlandırılmadı) · sample yeniden üretiminde **53 dosyada sessiz kuyruk**
 > (çıktı uzunluğu kaynağı aşıyordu) · tanpura için uydurduğum "tepe aralığı =
-> temel" gerekçesi (tepeler yazdırılınca **çöktü**; dem telleri oktav arayla).
+> temel" gerekçesi (tepeler yazdırılınca **çöktü**; dem telleri oktav arayla) ·
+> "iki bağımsız yöntem uzlaşırsa doğrudur" (YIN ve HPS **birlikte** bir oktav
+> kaçabiliyor; ayırt eden kanıt spektrumda — F5).
 >
-> **Kalan:** yalnız **FAZ D** (stüdyo kaydı — kod işi değil).
+> **Kalan:** yalnız **FAZ D** (stüdyo kaydı — kod işi değil). Ney'in
+> CC BY-NC lisans borcu F5'te kapandı: ses, depodaki Art Libre soundfont'tan
+> yeniden üretildi.
 > E1 ölçüldü, tetikleyici ateşlenmediği için **yapılmadı** (§10).
 > `setStrict(false)` ölçüldü: **kaldırılamaz ve bu bir kusur değil** —
 > `Voice` ölçü başına değil *render sistemi* başına kuruluyor, sistem ise
@@ -712,6 +716,48 @@ başlığı ve betik yorumları):
   kusur dosyalara ulaşmadan yakalansın. Tepe aralığının iki dizi üst üste
   binince **alttakini** verdiği de burada sabit (tanpura'nın tam durumu).
 - **Risk:** orta. **Geri alma:** dosyalar git'te.
+
+### F5 · Ney lisans sebebiyle yeniden üretildi — **TAMAM**
+
+`ney/` tek başına bütün projeyi kısıtlıyordu: kaynağı **CC BY-NC 4.0** bir
+Freesound paketiydi, diğer bütün ses klasörleri ise Art Libre / CC-BY 4.0 ile
+ticarete açıktı.
+
+**Çözüm indirmeden geldi:** depoda zaten duran ve ticarete açık olan
+`all-samples/TURKISH-ARAB3.sf2` (Musical Artifacts 947, Art Libre) içinde
+**yedi ayrı ney/nay preset'i** bulundu. Yeni üretici
+`scripts/render-soundfont-instrument.mjs` + `scripts/lib/soundfont.mjs`
+(SF2 okuyucu) yazıldı; `scripts/build-ney-samples.mjs` **kaldırıldı** —
+çalıştırılması NC lisanslı içeriği sessizce geri getirirdi.
+
+| ölçüt | eski (CC BY-NC) | yeni (Art Libre) |
+|---|---|---|
+| ölçülebilen kaynak | 10 kayıt / **7 perde** | **22 bölge** |
+| kayıt aralığı | B3–Fs5 | **D3–C6** |
+| aralık dışı yuva | **16/36** | **2/36** |
+| en çok gerilme | ~11 yarım ton | **2,23 yarım ton** |
+| ticari kullanım | **kısıtlı** | **serbest** |
+
+**Ölçüm yine iki kez çürüttü:**
+1. SF2 başlığındaki kök perde güvenilmez — `NEY-YEN-1-C`in sekiz bölgesi de
+   tam **+2 oktav** sapmalı. Perde başlıktan değil sesten ölçülüyor.
+2. **YIN+HPS uzlaşması da yetmiyor:** ikisi *birlikte* bir oktav kaçabiliyor
+   (`Moss_NayB3` gerçekte 248,7 Hz iken 124,4 okundu). Kapalı döngü bunu
+   yakalayamaz, çünkü aynı yanlı dedektör hem kaynağı hem üretileni ölçer.
+   Ayırt eden kanıt spektrumda: `Moss_NayB3`in tepeleri 248'in tam katları ve
+   124'te **tepe yok**; `Moss_NayD4`ünkiler ise 298'in 1,5 katını içeriyor,
+   yani temel 149. `resolveFundamental` bu gözlemi kural hâline getirir.
+
+**Bedeli açıkça kayıtta:** yeni kaynağın pes bölgesinde temel frekans zayıf,
+uzlaşma oranı 1,00 → **0,81**. Sapan dosya **yok**; ölçülemeyen 7 dosya tepe
+aralığı ve doğrudan spektrum incelemesiyle ayrıca doğrulandı.
+
+> Denenen ve **işe yaramayan** yol da kayıtta: harmonik merdiven kapısını
+> *bütün* enstrümanlara genişletmek. Ölçüldü — bağlama/rebab/kanun'da
+> −1200…−10231 cent "çelişki" üretiyor (alt-harmonik belirsizliği), yani
+> sağlam dosyaları kırardı. `resolveFundamental` de nefesli ney için
+> türetilmiş bir kuraldır; telli/vurmalıda daha da kötüleştiriyor. İkisi de
+> **ney yoluna sınırlı** tutuldu.
 
 ### F2 · Kayıt dışı perde bildirilsin — **TAMAM (kapsamı daraltıldı, sebebi aşağıda)**
 

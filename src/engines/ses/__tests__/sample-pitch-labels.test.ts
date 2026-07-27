@@ -57,11 +57,21 @@ const SILENCE_FLOOR = 1e-4;
  */
 const INSTRUMENTS: Array<{name: string; verified: boolean; minAgreement: number; note?: string}> = [
   // Esikler 0,25 s pencereyle OLCULEN degerlerin biraz altina konuldu
-  // (olculen: kemence/ney/tambur/ud/lavta 1,00 · kanun 0,92 ·
-  //  miskal/santur 0,83 · baglama 0,64 · rebab 0,25 · tanpura 0,00).
+  // (olculen: kemence/tambur/ud/lavta 1,00 · kanun 0,92 · miskal/santur 0,83 ·
+  //  ney 0,81 · baglama 0,64 · rebab 0,25 · tanpura 0,00).
   {name: "kemence", verified: true, minAgreement: 0.9},
-  {name: "ney", verified: true, minAgreement: 0.9},
   {name: "tambur", verified: true, minAgreement: 0.9},
+  // ney lisans sebebiyle YENIDEN URETILDI (CC BY-NC -> Art Libre soundfont).
+  // Uzlasma 1,00 -> 0,81 DUSTU ve bu bilincli kabul edilen bir bedeldir:
+  // yeni kaynagin pes bolgesinde (Moss_Nay D3–G3) temel frekans cok zayif,
+  // bu yuzden YIN ile HPS 7 dosyada uzlasamiyor. **Sapan dosya yok.**
+  // Olculemeyen 7 dosya elde BIRAKILMADI, bagimsiz kanitla dogrulandi:
+  //   · 6'sinda tepe araligi etiketle 45 cent icinde ortusuyor,
+  //   · `C5`te aralik bir oktav pes okudu ama spektrum dogrudan bakildiginda
+  //     temel 524 Hz'de GUCLU (261'deki tepe alt-harmonik).
+  // Kiyas: eski Freesound ney'i 1,00 uzlasma veriyordu ama 36 yuvanin 16'si
+  // kayit araligi DISINDA, 11 yarim tona varan gerilmeyle uretilmisti.
+  {name: "ney", verified: true, minAgreement: 0.75},
   {name: "ud", verified: true, minAgreement: 0.9},
   {name: "lavta", verified: true, minAgreement: 0.9},
   {name: "kanun", verified: true, minAgreement: 0.85},

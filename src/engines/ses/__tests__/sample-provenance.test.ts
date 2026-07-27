@@ -13,10 +13,13 @@ import type {InstrumentType} from "../instruments";
  * KAYIT DISI PERDE GERCEK KAYIT DIYE SUNULMASIN (PLAN.md §10/F2)
  *
  * Her melodik klasorde 36 kromatik yuva var, ama kaynak paketler bu araligin
- * tamamini kaydetmemis. Ney'de olculen gercek kayit araligi B3–Fs5; alttaki
- * 11 ve ustteki 5 yuva en yakin kayittan GERILEREK uretiliyor. Gerilme
- * formantlari da kaydirdigi icin, gerilmis ses o perdenin gercek tinisi
- * degildir.
+ * tamamini kaydetmemis olabilir. Aralik disinda kalan yuva en yakin kayittan
+ * GERILEREK uretilir; gerilme formantlari da kaydirdigi icin o ses, o
+ * perdenin gercek tinisi DEGILDIR.
+ *
+ * Ney'de olculen kayit araligi **D3–C6**; 36 yuvadan yalniz C3 ve Cs3 disarida
+ * kaliyor. (Onceki Freesound kaynaginda aralik B3–Fs5 idi ve 16 yuva
+ * disaridaydi — kaynak degisince bu sayi 16'dan 2'ye dustu.)
  *
  * ── BU TEST NEYI SABITLEMIYOR ───────────────────────────────────────────
  * Enstrumanin ORGANOLOJIK ses sahasini iddia etmiyoruz — o musiki bilgisi
@@ -31,26 +34,27 @@ describe("Kayıt dışı perde bildirilmeli (F2)", () => {
   it("ney araligi olculen degerlerde", () => {
     const range = RECORDED_MELODIC_RANGES.ney;
 
-    // B3 = 59, Fs5 = 78. Olcum: Freesound 27726, 10 uzlasan kayit.
-    expect(range?.minMidi).toBe(59);
-    expect(range?.maxMidi).toBe(78);
-    expect(range?.evidence).toContain("27726");
+    // D3 = 50, C6 = 84. Olcum: TURKISH-ARAB3.sf2, 22 uzlasan bolge.
+    expect(range?.minMidi).toBe(50);
+    expect(range?.maxMidi).toBe(84);
+    expect(range?.evidence).toContain("TURKISH-ARAB3");
   });
 
   it("aralik icindeki perde kayit araliginda sayilir", () => {
-    expect(describeMelodicSampleUse(NEY, 59).kind).toBe("recorded-span"); // B3, tam sinir
+    expect(describeMelodicSampleUse(NEY, 50).kind).toBe("recorded-span"); // D3, tam sinir
     expect(describeMelodicSampleUse(NEY, 69).kind).toBe("recorded-span"); // A4
-    expect(describeMelodicSampleUse(NEY, 78).kind).toBe("recorded-span"); // Fs5, tam sinir
+    expect(describeMelodicSampleUse(NEY, 83).kind).toBe("recorded-span"); // B5, en tiz yuva
   });
 
   it("aralik disindaki perde mesafesiyle birlikte bildirilir", () => {
     const belowRange = describeMelodicSampleUse(NEY, 48); // C3
     expect(belowRange.kind).toBe("extrapolated");
-    if (belowRange.kind === "extrapolated") expect(belowRange.semitonesBeyond).toBe(11);
+    if (belowRange.kind === "extrapolated") expect(belowRange.semitonesBeyond).toBe(2);
 
-    const aboveRange = describeMelodicSampleUse(NEY, 83); // B5
-    expect(aboveRange.kind).toBe("extrapolated");
-    if (aboveRange.kind === "extrapolated") expect(aboveRange.semitonesBeyond).toBe(5);
+    // Ust sinir 36 yuvanin disinda kaldigi icin (C6 = 84 > B5 = 83) artik
+    // TIZ tarafta gerilmis yuva YOK. Kanit: kaynak yuva aralligini asiyor.
+    expect(describeMelodicSampleUse(NEY, 84).kind).toBe("recorded-span");
+    expect(describeMelodicSampleUse(NEY, 85).kind).toBe("extrapolated");
   });
 
   it("olculmemis enstruman icin cevap 'bilinmiyor' — 'sorun yok' DEGIL", () => {
@@ -73,15 +77,14 @@ describe("Kayıt dışı perde bildirilmeli (F2)", () => {
       .map((slot) => slot.midiNumber as number)
       .sort((left, right) => left - right);
 
-    // C3..As3 (48–58) ve G5..B5 (79–83) — toplam 16 yuva.
-    const expected = [...Array(11).keys()].map((i) => 48 + i).concat([79, 80, 81, 82, 83]);
-    expect(marked).toEqual(expected);
+    // Yalniz C3 ve Cs3 (48–49). Onceki kaynakta 16 yuva gerilmisti.
+    expect(marked).toEqual([48, 49]);
   });
 
   it("uyari yonu ve mesafeyi okunur bicimde soyluyor", () => {
-    expect(describeExtrapolation(NEY, 48)).toContain("11 yarım ton");
+    expect(describeExtrapolation(NEY, 48)).toContain("2 yarım ton");
     expect(describeExtrapolation(NEY, 48)).toContain("pes");
-    expect(describeExtrapolation(NEY, 83)).toContain("tiz");
+    expect(describeExtrapolation(NEY, 90)).toContain("tiz");
     expect(describeExtrapolation(NEY, 69)).toBeNull();
   });
 

@@ -32,15 +32,20 @@ export interface RecordedPitchRange {
  * Yalniz KAYNAGI OLCULMUS enstrumanlar burada. Eksik olan "sinirsiz" degil,
  * "bilinmiyor" demektir (bkz. `describeMelodicSampleUse`).
  *
- * `ney`: `all-samples/27726__bliind__ney-flute-sound-samples/` altindaki 13
- * kayit YIN+HPS uzlasmasiyla olculdu — 10'unda uzlasma saglandi, 7 benzersiz
- * perde cikti; en pes B3 (243,2 Hz), en tiz Fs5 (737,5 Hz).
+ * `ney`: `all-samples/TURKISH-ARAB3.sf2` icindeki `Moss_Nay` ve `NEY_05`
+ * preset'lerinin ornek bolgeleri olculdu (YIN+HPS uzlasmasi, ardindan
+ * harmonik dizi kanitiyla oktav cozumu) — 22 bolgede uzlasma saglandi;
+ * en pes D3 (148,8 Hz), en tiz C6 (1064,7 Hz).
+ *
+ * Onceki kaynak (Freesound 27726, CC BY-NC) B3–Fs5 kapsiyordu ve 36 yuvanin
+ * 16'si aralik disindaydi. Yeni kaynakta aralik disinda kalan yalniz C3 ve
+ * Cs3 — hem lisans hem kapsam iyilesti.
  */
 export const RECORDED_MELODIC_RANGES: Partial<Record<InstrumentType, RecordedPitchRange>> = {
   ney: {
-    minMidi: 59, // B3
-    maxMidi: 78, // Fs5
-    evidence: "Freesound paketi 27726 (_bliind), 10 uzlaşan kayıt · B3 243,2 Hz – Fs5 737,5 Hz",
+    minMidi: 50, // D3
+    maxMidi: 84, // C6
+    evidence: "TURKISH-ARAB3.sf2 · Moss_Nay + NEY_05, 22 uzlaşan bölge · D3 148,8 Hz – C6 1064,7 Hz",
   },
 };
 

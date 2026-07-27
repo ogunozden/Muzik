@@ -20,6 +20,10 @@
 > kayıtları). Kayıt gelince `public/samples/` altına konur ve
 > `sample-pitch-labels.test.ts` içeriği ölçüp adıyla karşılaştırır.
 >
+> **Lisans borcu kapandı (F5):** ney'in CC BY-NC kısıtı, ses depodaki Art
+> Libre soundfont'tan yeniden üretilerek kaldırıldı. Artık bütün ses
+> klasörleri ticarete açık.
+>
 > **Ölçülüp bilinçli yapılmayanlar** (körlemesine atlanmadı, tetikleyicisi
 > ateşlenmedi — gerekçeleri PLAN.md §10'da):
 > - **E1** korpus JSON süzme — bundle bütçenin **%31'inde**, kazanç 3,4 KB.
@@ -245,7 +249,8 @@ tick ekseninde olsun.
 
 ### Öncelik 5 · FAZ D — Ses kütüphanesi · PLAN §6 · *stüdyo işi*
 
-- [x] **D1** · Ney **10/36 → 36/36** · `scripts/build-ney-samples.mjs`
+- [x] **D1** · Ney **10/36 → 36/36** · *(o günkü üretici `build-ney-samples.mjs`;
+      F5'te lisans sebebiyle kaldırıldı, yerine soundfont üreticisi geçti)*
       · **Bu arada CİDDİ BİR KUSUR bulundu:** mevcut 10 dosyanın **5'i yanlış
       perde etiketiyle** duruyordu — `As4.wav` gerçekte **B3**, `C5.wav`
       gerçekte **Cs4**, `Cs4/D3/Ds4` de kaymış. Sessiz değil **duyulan** bir
@@ -258,9 +263,9 @@ tick ekseninde olsun.
       · **Yeni kapı:** `sample-pitch-labels.test.ts` her dosyanın *içeriğini*
       ölçüp adıyla karşılaştırıyor. Eski hatalı dosyalarda **5'ini de
       yakaladığı** doğrulandı; yenilerinde geçiyor.
-      · **Dürüst sınır (F2'de ölçüldü):** kayıt aralığı **B3–Fs5**; dışındaki
-      16 yuva (C3–As3, G5–B5) gerilerek üretildi — **sentetik**, gerçek kayıt
-      değil. Artık `/samples` sayfasında uyarı olarak görünüyor.
+      · **Dürüst sınır:** o kaynakta kayıt aralığı B3–Fs5'ti ve 16 yuva
+      gerilerek üretiliyordu. F5'te kaynak değişince aralık **D3–C6** oldu,
+      gerilmiş yuva **2**'ye düştü; ikisi de `/samples` sayfasında uyarılı.
 - [x] **F0/F1** · **Sample doğruluğu sistemik olarak denetlendi.**
       İki bağımsız yöntem (YIN + HPS) uzlaşması zorunlu kılındı
       (`scripts/lib/pitch-detect.mjs`). Uzlaşma yoksa **karar verilmiyor**.
@@ -291,6 +296,25 @@ tick ekseninde olsun.
       `hek` kaydı arandı, **yok**. `SampleSlot.derivedFrom` → API → `/samples`
       sayfasında "Türetilmiş ses — gerçek kayıt değil" uyarısı. Kapı, gerçek
       kayıt bulunduğunda **kırılacak** şekilde yazıldı.
+- [x] **F5** · **Ney lisans sebebiyle yeniden üretildi — NC kısıtı kalktı.**
+      Eski kaynak CC BY-NC 4.0'dı ve tek başına bütün projeyi kısıtlıyordu.
+      Çözüm indirmeden geldi: depodaki **Art Libre** lisanslı
+      `all-samples/TURKISH-ARAB3.sf2` içinde 7 ney/nay preset'i bulundu.
+      Yeni üretici `scripts/render-soundfont-instrument.mjs` + SF2 okuyucu
+      `scripts/lib/soundfont.mjs`; eski `build-ney-samples.mjs` **kaldırıldı**
+      (çalıştırılması NC içeriği sessizce geri getirirdi).
+      · kaynak 7 perde → **22 bölge** · aralık B3–Fs5 → **D3–C6**
+      · aralık dışı yuva **16 → 2** · en çok gerilme ~11 → **2,23** yarım ton
+      · **Ölçüm yine iki kez çürüttü:** SF2 başlığındaki kök perde güvenilmez
+        (`NEY-YEN-1-C` sekiz bölgede tam +2 oktav); ve YIN+HPS *birlikte* bir
+        oktav kaçabiliyor (`Moss_NayB3` 248,7 iken 124,4 okundu). Ayırt eden
+        kanıt spektrumda: tepeler adayın tam katları mı, yoksa 1,5 katını da
+        içeriyor mu. `resolveFundamental` bu gözlemin kuralı.
+      · **Bedeli kayıtta:** pes bölgede temel zayıf, uzlaşma 1,00 → **0,81**.
+        Sapan dosya yok; ölçülemeyen 7 dosya merdiven + spektrumla doğrulandı.
+      · **İşe yaramayan yol da kayıtta:** merdiven kapısını tüm enstrümanlara
+        genişletmek ölçüldü — bağlama/rebab/kanun'da −1200…−10231 cent sahte
+        çelişki üretiyor. Sağlam dosyaları kırardı; ney yoluna sınırlandı.
 - [x] **F4** · **Dev güvenlik borcu izleniyor.** `security-debt.test.ts` borcun
       kökünü `package-lock.json`'dan **çevrimdışı** okur (`npm audit` ağ ister,
       CI'da kırılgan olur). Borç azalırsa da büyürse de test kırılır.

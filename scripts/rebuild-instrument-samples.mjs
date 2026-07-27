@@ -153,7 +153,7 @@ function detectRobust(mono, rate) {
  * gibi ust harmonikleri cok guclu tinilerde (cevari koprusu) bu, spektrumun
  * esit araliklarini bozar — yani hem tiniyi hem OLCUMU bozar.
  */
-function lowPass(input, cutoffRatio) {
+export function lowPass(input, cutoffRatio) {
   if (cutoffRatio >= 0.5) return input;
   const taps = 63;
   const middle = (taps - 1) / 2;
@@ -181,7 +181,7 @@ function lowPass(input, cutoffRatio) {
   return output;
 }
 
-function resample(input, step, outputLength) {
+export function resample(input, step, outputLength) {
   const output = new Float32Array(outputLength);
   for (let i = 0; i < outputLength; i++) {
     const position = i * step;

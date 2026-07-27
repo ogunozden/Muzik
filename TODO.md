@@ -234,7 +234,25 @@ tick ekseninde olsun.
 
 ### Öncelik 5 · FAZ D — Ses kütüphanesi · PLAN §6 · *stüdyo işi*
 
-- [ ] **D1** · Ney kapsamı 10/36, `D3→B3` arası 9 yarım-ton delik — kayıt gerek
+- [x] **D1** · Ney **10/36 → 36/36** · `scripts/build-ney-samples.mjs`
+      · **Bu arada CİDDİ BİR KUSUR bulundu:** mevcut 10 dosyanın **5'i yanlış
+      perde etiketiyle** duruyordu — `As4.wav` gerçekte **B3**, `C5.wav`
+      gerçekte **Cs4**, `Cs4/D3/Ds4` de kaymış. Sessiz değil **duyulan** bir
+      hataydı: `samples.ts:224` dosya adını doğru varsayıp
+      `playbackRate = istenen/etiketlenen` hesaplıyor; etiket yanlışsa hız 1.0
+      kalıyor ve ney bir oktav+ pes çalıyordu.
+      · Yöntem: kaynak perdesi **ölçülür** (varsayılmaz), en yakın kaynak
+      seçilir, hedefe **tam oturana kadar** yeniden örneklenir
+      (kapalı döngü: üret → ölç → düzelt).
+      · **Yeni kapı:** `sample-pitch-labels.test.ts` her dosyanın *içeriğini*
+      ölçüp adıyla karşılaştırıyor. Eski hatalı dosyalarda **5'ini de
+      yakaladığı** doğrulandı; yenilerinde geçiyor.
+      · **Dürüst sınır:** paketin en pes kaydı B3 (242 Hz). C3–As3 bir oktava
+      varan gerilmeyle üretildi — **sentetik**, gerçek kayıt değil.
+      Neyin gerçek ses sahası da bu bölgeyi kapsamaz.
+- [ ] **D1.1** · Alt oktav (C3–As3) için **gerçek** kayıt — şu an gerilmiş.
+      Ney bu bölgeyi çalmadığı için düşük öncelikli; asıl çözüm bu yuvaları
+      hiç kullanmamak olabilir.
       *(kırpılacak kusur yok; ses 0 ms'de başlıyor)*
 - [ ] **D2** · `hek` gerçek kaydı *(şu an dum+tek toplamından türetiliyor)*
 

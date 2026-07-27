@@ -87,3 +87,43 @@ Source reference:
 - License linked by the artifact: `http://artlibre.org/licence/lal/en/`
 - Musical Artifacts artifact 764: `https://musical-artifacts.com/artifacts/764`
 - License linked by the artifact: `http://creativecommons.org/licenses/by/4.0/deed.en`
+
+## ney — ayri kaynak, ayri lisans (DIKKAT)
+
+`ney/` klasoru yukaridaki soundfont'lardan **gelmiyor**. Kaynagi gercek ney
+kayitlarindan olusan bir Freesound paketi:
+
+- Paket: `https://freesound.org/people/_bliind/packs/27726/`
+- Kaydeden: `_bliind` (`https://freesound.org/people/_bliind/`)
+- **Lisans: CC BY-NC 4.0** — `https://creativecommons.org/licenses/by-nc/4.0/`
+- Yerel kopya: `all-samples/27726__bliind__ney-flute-sound-samples/`
+
+**Iki sonucu var ve ikisi de baglayici:**
+
+1. **Atif zorunlu (BY).** Uygulamada ney sesi kullanildigi her yerde kaynak ve
+   kaydeden belirtilmelidir. Bu README o atfin kaydidir.
+2. **Ticari kullanim kisitli (NC).** Diger klasorler (Art Libre / CC-BY 4.0)
+   ticari kullanima acikken ney **degildir**. Proje ticarilesecekse ney
+   sesleri ya yeniden lisanslanmali ya da baska bir kaynakla degistirilmelidir.
+
+> Bu bilgi daha once bu dosyada **hic yazmiyordu**; ney sesleri kaynagi ve
+> lisansi belirtilmeden duruyordu. BY sarti zaten ihlal ediliyordu.
+
+### ney yuvalari nasil uretiliyor
+
+`node scripts/build-ney-samples.mjs`
+
+13 kaynak kayittan 36 kromatik yuva (C3..B5) uretir. Her yuva icin perdesi en
+yakin kaynak secilir ve hedef frekansa **tam oturana kadar** yeniden
+orneklenir (kapali dongu: uret → olc → duzelt).
+
+Sinirlar durustce:
+
+- Paketin en pes kaydi **B3 (242 Hz)**. C3–As3 araligi bir oktava varan
+  gerilme ile uretiliyor; ney'in gercek ses sahasi da zaten bu bolgeyi
+  kapsamaz. Alt oktav **sentetik gerilme**dir, gercek kayit degildir.
+- Paketteki benzersiz perde sayisi 8; kalan yuvalar bunlardan turetilmistir.
+
+`src/engines/ses/__tests__/sample-pitch-labels.test.ts` her dosyanin
+**icerigini** olcup adiyla karsilastirir — etiket/icerik ayrismasi bir daha
+sessizce giremez.

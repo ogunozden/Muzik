@@ -244,11 +244,13 @@ for (const file of walk(path.join(root, "src"))) {
 // aktif decomposition hedefidir (M8.1-M8.3) ve grandfather edilir; bu allowlist
 // yalniz kuculdukce kisalir (ratchet). YENI dosya 800'u asamaz.
 const MAX_LINES = 800;
+// H6 (2026-07-27): `studio/follow/page.tsx` (1024 -> 685) ve
+// `references/curation/page.tsx` (848 -> 559) bu listeden CIKARILDI — artik
+// normal 800 kuralina tabiler. Liste yalnizca kisalir; bir dosya buraya geri
+// eklenemez.
 const GRANDFATHERED_LARGE_FILES = new Map([
   // [dosya, tavan] — mevcut satirin ustune cikamaz; decomposition ile azalir.
   ["src/app/api/external-references/route.ts", 800],
-  ["src/app/studio/follow/page.tsx", 1025],
-  ["src/app/references/curation/page.tsx", 855],
   ["src/features/references/ReferencesCurationDetail.tsx", 810],
   ["src/engines/usul/data.ts", 810], // saf veri dosyasi (usul tanimlari)
   ["src/engines/makam/data.ts", 810], // saf veri dosyasi (makam tanimlari)

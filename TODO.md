@@ -58,8 +58,16 @@
       **16/20'si birden çok vuruş**, aralık 8–269 ms (ortanca 94) — flam
       kaydırılmış iki vuruştur, `hek` eşzamanlı. Uygun değil.
       Sonuç `provenance.json → hekSearch`te veri olarak duruyor.
-- [ ] **H6** · Büyük dosyalar: `studio/follow/page.tsx` **1024**,
-      `references/curation/page.tsx` **848** (ratchet tavanı 800).
+- [x] **H6** · **İkisi de tavanın altına indi ve grandfather listesinden
+      ÇIKARILDI:** `studio/follow/page.tsx` 1024 → **685**,
+      `references/curation/page.tsx` 848 → **559**.
+      · follow bir *render* yüküydü → 357 satırlık `<Panel>` ayrıldı
+        (`FollowScorePanel`); prop adları ebeveynle birebir tutulduğu için
+        **JSX tek karakter değişmedi**, tipler `ReturnType` ile türetildi.
+      · curation bir *mantık* yüküydü → 24 manifest tipi `curation-manifests.ts`e
+        taşındı; tamamen tip düzeyi, çalışma zamanı kodu taşınmadı.
+      · Kendi hatam typecheck'te yakalandı: `startBeat`/`title` prop yapılmıştı,
+        oysa ikisi de yalnız özellik erişimiydi.
 - [x] **H7** · **Ölçüldü ve eşikler yükseltildi:** 67/62/76/68 →
       **69/64/77/70**. İki ortam ayrı ölçüldü (yerel korpuslu 69,73/65,07/
       78,30/70,59 · CI korpussuz 69,47/64,83/78,30/70,40); eşik **CI**

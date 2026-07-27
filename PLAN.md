@@ -1004,18 +1004,37 @@ iç yapısı tarandı: 9 vurmalı preset, **354 benzersiz bölge adı**.
 Sonuç `provenance.json → hekSearch` içinde veri olarak duruyor; `hek` dum+tek
 türetimi olarak kalıyor ve `/samples` sayfasında görünür.
 
-### H6 · Yapısal borç — büyük dosyalar
+### H6 · Yapısal borç — büyük dosyalar — **TAMAM**
 
-Ratchet tavanı 800; iki dosya üstünde (grandfathered):
+| dosya | önce | sonra |
+|---|---|---|
+| `src/app/studio/follow/page.tsx` | 1024 | **685** |
+| `src/app/references/curation/page.tsx` | 848 | **559** |
 
-| dosya | satır |
-|---|---|
-| `src/app/studio/follow/page.tsx` | **1024** |
-| `src/app/references/curation/page.tsx` | **848** |
+İkisi de grandfather listesinden **tamamen çıkarıldı** — artık normal 800
+kuralına tabiler. Liste yalnızca kısalır.
 
-- Ratchet büyümeyi engelliyor, yani acil değil; ama ikisi de çekirdek akış.
-- **Kapı:** her ikisi ≤800; ratchet tavanı sıkılaştırılır.
-- **Risk:** orta (JSX taşıma). **Geri alma:** tek commit.
+**İki dosya iki farklı şekildeydi, çözümleri de farklı oldu:**
+
+- `follow/page.tsx` bir **render** yüküydü: sağ sütun daha önce panellere
+  ayrılmıştı, kalan ağırlık tek bir 357 satırlık `<Panel>`de toplanıyordu →
+  `parts/FollowScorePanel.tsx`.
+  Prop **adları ebeveyndeki değişken adlarıyla birebir** tutuldu, böylece JSX
+  gövdesi tek karakter değişmeden taşındı (projenin `CurationReviewSections`
+  deseni). Tipler elle yazılmadı, `ReturnType<typeof helper>` ile **türetildi**
+  — ikinci bir gerçek kaynak oluşmasın diye.
+- `curation/page.tsx` bir **mantık** yüküydü (JSX yalnız son 6 satır):
+  dosyanın üçte biri, sunucuda okunan JSON manifestlerinin **şekil
+  bildirimleriydi** → `curation-manifests.ts` (24 tip). Taşıma tamamen tip
+  düzeyinde; tek satır çalışma zamanı kodu taşınmadı.
+
+**Yol boyunca yakalanan kendi hatam:** ilk çıkarımda `startBeat` ve `title`
+prop yapılmıştı. İkisi de serbest değişken değil, yalnızca özellik erişimi
+(`event.startBeat`, `source.title`) ve bir JSX niteliğiydi — regex tabanlı
+çıkarım yanılmıştı. Typecheck yakaladı.
+
+**Doğrulama:** 1055 test yeşil · typecheck + lint temiz · mimari kapısı geçti ·
+iki sayfa da canlı tarayıcıda **konsol hatasız** açıldı.
 
 ### H7 · Coverage — **TAMAM (ölçüldü, sonra yükseltildi)**
 

@@ -4,6 +4,7 @@ import {
   MELODIC_INSTRUMENTS as MELODIC_INSTRUMENT_IDS,
   PERCUSSION_INSTRUMENTS as PERCUSSION_INSTRUMENT_IDS,
 } from "@/lib/app-constants";
+import {describeExtrapolation} from "./sample-provenance";
 
 export type SampleCategory = "melodic" | "percussion";
 
@@ -21,6 +22,23 @@ export interface SampleSlot {
   noteName?: string;
   symbol?: "dum" | "tek" | "ke" | "hek";
   isAccent?: boolean;
+  /**
+   * Dolu ise bu sample GERCEK BIR KAYIT DEGIL, baska sample'lardan
+   * turetilmistir; deger turetimin nasil yapildigini soyler.
+   *
+   * Turetmek mesru — ama iddia edilmemeli. Bu alan, turetilmis sesin
+   * kullanicıya gercek kayit gibi sunulmasini engellemek icin var
+   * (PLAN.md §10/F3).
+   */
+  derivedFrom?: string;
+  /**
+   * Dolu ise bu perde, kaynak kayitlarin OLCULEN araliginin disindadir; ses
+   * en yakin kayittan gerilerek uretilmistir (PLAN.md §10/F2).
+   *
+   * `derivedFrom`dan farki: orada ses baska SESLERDEN sentezlenir, burada
+   * gercek bir kayit vardir ama BASKA BIR PERDEDEN gerilmistir.
+   */
+  extrapolatedFrom?: string;
 }
 
 export interface MelodicSampleRef {
@@ -73,10 +91,12 @@ const PERCUSSION_SYMBOLS = [
   {symbol: "dum", name: "Dum"},
   {symbol: "tek", name: "Tek"},
   {symbol: "ke", name: "Ke"},
-  // `hek` iki elin birlikte vurusudur (Kudum kitabi s.14). Dosyalari
-  // `scripts/derive-hek-samples.mjs` ile dum+tek toplamindan TURETILIR;
-  // gercek hek kaydi bulunursa dogrudan uzerine yazilabilir (K4).
-  {symbol: "hek", name: "Hek"},
+  // `hek` iki elin birlikte vurusudur (Kudum kitabi s.14). Elimizdeki hicbir
+  // vurmali pakette gercek bir `hek` kaydi YOK (arandi, bulunamadi), bu yuzden
+  // dosyalar `scripts/derive-hek-samples.mjs` ile dum+tek toplamindan
+  // TURETILIR. Gercek kayit bulunursa uzerine yazilir ve `derivedFrom`
+  // kaldirilir (K4 · F3).
+  {symbol: "hek", name: "Hek", derivedFrom: "dum + tek toplamı"},
 ] as const;
 
 const NOTE_NAMES = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"] as const;
@@ -102,6 +122,7 @@ function makeMelodicSlots(): SampleSlot[] {
       const noteName = midiToSlotNoteName(midiNumber);
       const fileName = noteNameToFileName(noteName);
       const relativePath = `${instrument.folder}/${fileName}`;
+      const extrapolatedFrom = describeExtrapolation(instrument.id, midiNumber);
 
       slots.push({
         key: `${instrument.id}:${noteName}`,
@@ -115,6 +136,7 @@ function makeMelodicSlots(): SampleSlot[] {
         url: makeUrl(relativePath),
         midiNumber,
         noteName,
+        ...(extrapolatedFrom === null ? {} : {extrapolatedFrom}),
       });
     }
   }
@@ -126,7 +148,10 @@ function makePercussionSlots(): SampleSlot[] {
   const slots: SampleSlot[] = [];
 
   for (const instrument of PERCUSSION_SAMPLE_INSTRUMENTS) {
-    for (const {symbol, name} of PERCUSSION_SYMBOLS) {
+    for (const definition of PERCUSSION_SYMBOLS) {
+      const {symbol, name} = definition;
+      const derivedFrom = "derivedFrom" in definition ? definition.derivedFrom : undefined;
+
       for (const isAccent of [false, true]) {
         const suffix = isAccent ? "-accent" : "";
         const fileName = `${symbol}${suffix}.wav`;
@@ -144,6 +169,7 @@ function makePercussionSlots(): SampleSlot[] {
           url: makeUrl(relativePath),
           symbol,
           isAccent,
+          ...(derivedFrom === undefined ? {} : {derivedFrom}),
         });
       }
     }

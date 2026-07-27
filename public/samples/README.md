@@ -117,12 +117,17 @@ kayitlarindan olusan bir Freesound paketi:
 yakin kaynak secilir ve hedef frekansa **tam oturana kadar** yeniden
 orneklenir (kapali dongu: uret → olc → duzelt).
 
-Sinirlar durustce:
+Sinirlar durustce (YIN+HPS uzlasmasiyla **olculdu**, 2026-07-27):
 
-- Paketin en pes kaydi **B3 (242 Hz)**. C3–As3 araligi bir oktava varan
-  gerilme ile uretiliyor; ney'in gercek ses sahasi da zaten bu bolgeyi
-  kapsamaz. Alt oktav **sentetik gerilme**dir, gercek kayit degildir.
-- Paketteki benzersiz perde sayisi 8; kalan yuvalar bunlardan turetilmistir.
+- 13 kayittan **10'unda** iki yontem uzlasti; **7 benzersiz perde** cikti.
+  (Bu dosyada onceki sayi 8 yaziyordu — olcum 7 dedi, duzeltildi.)
+- Olculen kayit araligi: **B3 (243,2 Hz) – Fs5 (737,5 Hz)**, yani MIDI 59–78.
+- Bu araligin **disindaki 16 yuva** (C3–As3 ve G5–B5) en yakin kayittan
+  gerilerek uretilir. Alt uc bir oktava varan gerilmedir. Gerilme formantlari
+  da kaydirdigi icin bu yuvalar o perdenin **gercek tinisi degildir**.
+- Bu bilgi kod tarafinda `src/engines/ses/sample-provenance.ts` icinde veri
+  olarak durur ve `/samples` sayfasinda **"Gerilmis perde"** uyarisi olarak
+  gorunur — saklanmaz.
 
 `src/engines/ses/__tests__/sample-pitch-labels.test.ts` her dosyanin
 **icerigini** olcup adiyla karsilastirir — etiket/icerik ayrismasi bir daha

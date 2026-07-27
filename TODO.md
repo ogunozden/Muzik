@@ -247,9 +247,9 @@ tick ekseninde olsun.
       · **Yeni kapı:** `sample-pitch-labels.test.ts` her dosyanın *içeriğini*
       ölçüp adıyla karşılaştırıyor. Eski hatalı dosyalarda **5'ini de
       yakaladığı** doğrulandı; yenilerinde geçiyor.
-      · **Dürüst sınır:** paketin en pes kaydı B3 (242 Hz). C3–As3 bir oktava
-      varan gerilmeyle üretildi — **sentetik**, gerçek kayıt değil.
-      Neyin gerçek ses sahası da bu bölgeyi kapsamaz.
+      · **Dürüst sınır (F2'de ölçüldü):** kayıt aralığı **B3–Fs5**; dışındaki
+      16 yuva (C3–As3, G5–B5) gerilerek üretildi — **sentetik**, gerçek kayıt
+      değil. Artık `/samples` sayfasında uyarı olarak görünüyor.
 - [x] **F0/F1** · **Sample doğruluğu sistemik olarak denetlendi.**
       İki bağımsız yöntem (YIN + HPS) uzlaşması zorunlu kılındı
       (`scripts/lib/pitch-detect.mjs`). Uzlaşma yoksa **karar verilmiyor**.
@@ -258,16 +258,35 @@ tick ekseninde olsun.
       · **ney**: önceki düzeltmem kısmen yanlıştı (`B4` −202c, `C5` −214c);
         kapalı döngü kendi ölçüm hatasına yakınsıyordu. Uzlaşmaya bağlandı,
         artık 36/36 doğru.
-      · **lavta / tanpura**: ölçüm güvenilmez → **DOKUNULMADI**, testte
+      · **lavta**: 23 yuva yeniden üretildi → uzlaşma 0,44 → **1,00**
+      · **ud**: 10 yuva → 0,75 → **1,00** (bilinen `E5` sapması da kalktı)
+      · **tanpura**: üç yöntem de uzlaşmıyor → **DOKUNULMADI**, testte
         "doğrulanamıyor" olarak açıkça işaretli.
-      · Kapı 11 enstrümanın tamamına genişletildi.
-      *(kırpılacak kusur yok; ses 0 ms'de başlıyor)*
-- [ ] **D2** · `hek` gerçek kaydı *(şu an dum+tek toplamından türetiliyor)*
+      · Kapı 11 enstrümanın tamamına genişletildi; her enstrümanda **sapan 0**.
+      · **Sonradan bulunan ve düzeltilen iki kusur:** (1) yeniden üretim
+        sabit 1,6 s istiyordu, kaynak erken tükenince kalanı **sıfırla**
+        doluyordu — 53 dosyada sessiz kuyruk vardı, yeni kapı eklendi;
+        (2) betik doğrulanmayan çıktıyı da yazıp "üretildi" sayıyordu.
+      · Perde yukarı kaydırılırken **anti-alias alçak geçiren** eklendi.
+- [x] **F2** · **Kayıt dışı perde bildiriliyor.** Ney'in ölçülen kayıt
+      aralığı **B3–Fs5** (MIDI 59–78); dışındaki 16 yuva gerilmiş.
+      `sample-provenance.ts` + `/samples` sayfasında "Gerilmiş perde" uyarısı.
+      Ölçülmemiş enstrüman **"bilinmiyor"** döner — "sorun yok" değil.
+      *(Organolojik ses sahası iddia edilmedi: kaynak yok, ADR 0001.)*
+- [x] **F3 (D2)** · **`hek` türetilmişliği görünür.** Yerel paketlerde gerçek
+      `hek` kaydı arandı, **yok**. `SampleSlot.derivedFrom` → API → `/samples`
+      sayfasında "Türetilmiş ses — gerçek kayıt değil" uyarısı. Kapı, gerçek
+      kayıt bulunduğunda **kırılacak** şekilde yazıldı.
+- [x] **F4** · **Dev güvenlik borcu izleniyor.** `security-debt.test.ts` borcun
+      kökünü `package-lock.json`'dan **çevrimdışı** okur (`npm audit` ağ ister,
+      CI'da kırılgan olur). Borç azalırsa da büyürse de test kırılır.
 
 ### Öncelik 6 · FAZ E — Tetikleyici bekleyen · PLAN §7
 
-- [ ] **E1** · Korpus JSON süzme — gzip 3,4 KB kazanç (%0,14). **Tetikleyici:**
-      bundle bütçesi zorlanırsa
+- [x] **E1** · **Ölçüldü, yapılmadı.** Bundle 2,47 MB / 8 MB (**%31**), en
+      büyük chunk 0,47 MB / 1,5 MB. Kalan pay 5,53 MB; E1'in kazancı 3,4 KB
+      yani kalan payın ‰0,6'sı. **Tetikleyici ateşlenmedi** → planın kendi
+      kararı gereği yapılmadı. Yeniden bakılacak an: bütçenin %80'i.
 
 ---
 

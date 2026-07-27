@@ -661,46 +661,123 @@ YIN kısa pencerede temel frekansı kaçırıyor (attack transiyenti + zayıf te
   geçilmez, yanlış da düzeltilmez.
 - **Risk:** sıfır (yalnız ölçüm).
 
-### F1 · Yalnız kanıtlanan sapmaları düzelt
+### F1 · Yalnız kanıtlanan sapmaları düzelt — **TAMAM**
 
-- F0'da iki yöntemin hemfikir olduğu dosyalar için `build-*-samples.mjs`
-  yaklaşımını uygula (ney'de işe yaradı: kapalı döngü üret→ölç→düzelt).
-- **Kapı:** düzeltilen her dosya için önce/sonra Hz ve cent raporlanır;
-  `sample-pitch-labels.test.ts` kapsamı o enstrümana genişletilir.
-- **Risk:** orta. **Geri alma:** dosyalar git'te, tek commit.
+Üç yöntem (YIN · HPS · tepe aralığı), **en az ikisi uzlaşmadan karar yok**.
+`scripts/rebuild-instrument-samples.mjs` her yuvayı en yakın *sağlam* kaynaktan
+kapalı döngüyle üretir ve **yalnız doğrulananı** diske yazar.
 
-### F2 · Enstrümanın GERÇEK ses sahası bildirilsin
+| enstrüman | uzlaşma önce → sonra | sapan dosya |
+|---|---|---|
+| lavta | 0,44 → **1,00** | 0 |
+| ud | 0,75 → **1,00** | 0 |
+| bağlama | 0,39 → **0,64** | 0 |
+| rebab | 0,25 (oktav düzeltmesi) | 0 |
+| ney · kemençe · tambur | 1,00 | 0 |
+| kanun 0,92 · mıskal/santur 0,83 | değişmedi | 0 |
+| **tanpura** | **0,00** | ölçülemiyor → **dokunulmadı** |
 
-`ney` C3–As3 bir oktava varan gerilmeyle üretildi (D1.1) — ney o bölgeyi
-çalmaz. Aynısı diğer enstrümanlar için de geçerli olabilir.
+**Ölçüm planı üç kez çürüttü — üçü de kayıtta** (`sample-pitch-labels.test.ts`
+başlığı ve betik yorumları):
 
-- Her enstrüman için gerçek `minMidi`/`maxMidi` bildir.
-- `getNearestLoadedMelodicSample` saha dışında **uydurma sample seçmesin**;
-  ya en yakın gerçek sample'ı kullansın ya da sessiz kalsın — ama bunu
-  **bildirsin**.
-- **Kapı:** saha dışı istek geldiğinde davranış testle sabitlensin.
+1. *Serbest otokorelasyon* alt-harmoniğe kilitlendi; "beklenen perdede
+   korelasyon yüksek mi" kapısı ise **yanlış etiketli dosyayı onayladı**.
+2. *Yeniden üretim uzunluğu* sabit 1,6 s isteniyordu; kaynak `step` katı
+   hızla okunduğu için erken tükeniyor, kalan çerçeveler **sıfırla**
+   doluyordu — `tanpura/C5` sesin %14'ünden sonrası sessizdi (lavta 19,
+   ud 7, bağlama 3 dosya aynı). Ayrıca betik doğrulanmayan çıktıyı da yazıp
+   hepsini "üretildi" diye sayıyordu. İkisi de düzeltildi; **yeni kapı:**
+   *hiçbir dosyanın kuyruğu sessiz değil*.
+3. *Tanpura için "tepe aralığı = temel"* gerekçesi uydurulmuştu. Tepeler tek
+   tek yazdırılınca çöktü: `C3` tepeleri 132'nin **2,5 ve 3,5 katını** da
+   içeriyor — sinyalde bir oktav aşağıda ikinci bir dizi var (dem telleri
+   oktav arayla gerilir). Aralık f ile f/2 arasında belirsiz. Tepe aralığı
+   **üçüncü oy** olarak kaldı, hakem yapılmadı; tanpura dosyalarına
+   dokunulmadı ve borç testte görünür.
 
-### F3 · `hek` — türetilmiş olduğu görünür kalsın (D2)
+- **Yan düzeltme:** perde yukarı kaydırılırken **anti-alias alçak geçiren**
+  (pencerelenmiş sinc FIR) eklendi; yoksa Nyquist üstü içerik katlanıp
+  inharmonik gürültüye dönüşüyordu.
+- **Risk:** orta. **Geri alma:** dosyalar git'te.
 
-`hek` şu an dum+tek toplamından türetiliyor (K4). Gerçek kayıt yoksa bu
-meşru bir yaklaşımdır **ama iddia edilmemeli**.
+### F2 · Kayıt dışı perde bildirilsin — **TAMAM (kapsamı daraltıldı, sebebi aşağıda)**
 
-- Yerel vurmalı paketlerinde gerçek `hek` var mı ölç.
-- Yoksa: `derived: true` bilgisi tip yüzeyinde ve `/sesler` sayfasında
-  görünür olsun.
-- **Kapı:** türetilmiş sample'ın gerçek diye sunulmadığı testle sabitlensin.
+**Plan "enstrümanın gerçek ses sahası" diyordu; o iddia atılmadı.** Bir sazın
+organolojik ses sahası (neyin ahengi, bağlamanın düzeni) kaynak isteyen bir
+musiki bilgisidir; elimizde her enstrüman için böyle bir kaynak **yok** ve
+ADR 0001 uyarınca uydurulmaz. Onun yerine **ölçülebilen** şey bildirildi:
+kaynak kayıtların kapsadığı perde aralığı.
 
-### F4 · Dev güvenlik borcunu izlenebilir yap
+Ölçüm (`ney`, Freesound 27726, YIN+HPS uzlaşması):
 
-9 bulgu, yukarı akış kilidi (bkz. `docs/SECURITY-AUDIT.md`). Bekleyip ummak
-yerine **ölç**: `eslint-config-next` eklentilerini güncellediğinde ya da
-ESLint 10 uyumlu sürüm çıktığında haber ver.
+| ölçü | değer |
+|---|---|
+| uzlaşan kayıt | 10 / 13 |
+| benzersiz perde | **7** (README'de 8 yazıyordu — düzeltildi) |
+| kayıt aralığı | **B3 (243,2 Hz) – Fs5 (737,5 Hz)** = MIDI 59–78 |
+| aralık dışı yuva | **16** (C3–As3 ve G5–B5) |
 
-- **Kapı:** borç sayısı 9'un altına düşerse test uyarsın (belge güncellensin).
-- **Risk:** sıfır.
+- `sample-provenance.ts` → `RECORDED_MELODIC_RANGES` + `describeMelodicSampleUse`.
+  Ölçülmemiş enstrüman için cevap **"bilinmiyor"**, "sorun yok" değil — en
+  sinsi hata orada olurdu.
+- `SampleSlot.extrapolatedFrom` → API → `/samples` sayfasında **"Gerilmiş
+  perde — en yakın gerçek kayıttan 11 yarım ton pese gerildi"** uyarısı.
+- **Kapı:** `sample-provenance.test.ts` — 7 iddia; aralık sınırları (59 ve 78
+  dâhil), mesafe (11 pes / 5 tiz), işaretlenen tam 16 yuva, ve ölçülmemiş
+  enstrümanların **"unknown"** dönmesi.
 
-### E1 · Tetikleyici ölçülsün, körlemesine yapılmasın
+**Yapılmayan:** `getNearestLoadedMelodicSample`'ın 7 yarım tonluk transpoze
+sınırı değiştirilmedi. Bugünkü davranış zaten "en yakın gerçek sample'ı
+kullan, yoksa sentetiğe düş"; eksik olan **bildirme**ydi ve o kapatıldı.
+Sınırın kendisini değiştirmek için elimde ölçü yok.
 
-Korpus JSON süzme kazancı gzip **3,4 KB (%0,14)**. Plan "bundle bütçesi
-zorlanırsa" demişti. Bütçe payı ölçülür; tetikleyici **ateşlenmediyse
-yapılmaz** ve sebebi yazılır. Planın kendi kararını çiğnememek için.
+### F3 · `hek` — türetilmiş olduğu görünür kalsın (D2) — **TAMAM**
+
+Yerel vurmalı paketleri arandı: **gerçek `hek` kaydı yok** (`all-samples`
+altında `hek` geçen tek dosya bile bulunmadı). Dolayısıyla dum+tek türetimi
+kalıyor, ama artık **iddia edilmiyor**:
+
+- `SampleSlot.derivedFrom` alanı eklendi — türetim, veri olarak taşınıyor
+  (sembol adına bakan string kontrolüyle değil).
+- `/api/samples` alanı her iki dalda da dışarı veriyor (dosya var / yok).
+- `/samples` sayfası "**Türetilmiş ses** — gerçek kayıt değil, dum + tek
+  toplamı ile üretildi" uyarısını gösteriyor.
+- **Kapı:** `derived-sample-provenance.test.ts` — 6 iddia. Ters yönü de
+  sabitliyor: gerçek kayıttan gelen darplar türetilmiş **diye
+  işaretlenmemiş** olmalı. Ayrıca "gerçek hek kaydı yok" iddiası test
+  edilir; bir gün bulunursa test **kırılır** ve türetimi bırakmayı hatırlatır.
+
+### F4 · Dev güvenlik borcunu izlenebilir yap — **TAMAM**
+
+`security-debt.test.ts` borcu **çevrimdışı** izler. `npm audit` çağrılmadı:
+ağ ister, CI'da kırılgandır ve uzaktaki advisory veritabanı değiştiğinde
+sonuç *bizim değişikliğimiz olmadan* döner. Bunun yerine borcun **kökü**
+`package-lock.json`'dan okunur — deterministik ve belgede yazan sebebe bağlı.
+
+Ölçülen kök (2026-07-27): 4 adet iç içe `brace-expansion@1.1.16`, dördü de
+`eslint` zincirinde, hepsi `dev: true`. Üst düzey kopya zaten `5.0.8`.
+
+Test iki yönde de kırılır:
+- borç **azalırsa** (eslint zinciri `minimatch@3`ten kurtulursa) → belge
+  güncellensin, override yeniden denensin;
+- borç **büyürse** (açık sürüm üretim ağacına sızarsa) → gerçek regresyon.
+
+### E1 · Tetikleyici ölçülsün, körlemesine yapılmasın — **ÖLÇÜLDÜ · YAPILMADI**
+
+Ölçüm (`npm run audit:bundle-size`, 2026-07-27):
+
+| ölçü | değer | bütçe | kullanım |
+|---|---|---|---|
+| toplam client chunk | 2,47 MB | 8 MB | **%31** |
+| en büyük tek chunk | 0,47 MB | 1,5 MB | **%31** |
+
+Kalan pay **5,53 MB**. E1'in kazancı gzip **3,4 KB** — kalan payın
+**‰0,6**'sı. Tetikleyici ("bundle bütçesi zorlanırsa") **ateşlenmedi**.
+
+**Karar: yapılmadı.** Sebep, planın kendi gerekçesinin hâlâ geçerli olması:
+yeni üretilmiş dosya + derive betiği + senkron testi + kalıcı drift riski,
+ölçülen kazancı aşıyor. Tetikleyici ölçülmeden "yapmayalım" demek de
+"yapalım" demek kadar keyfî olurdu; ölçüldü, kayda geçti.
+
+Yeniden bakılacak an: `audit:bundle-size` bütçenin %80'ini geçtiğini
+raporladığında.

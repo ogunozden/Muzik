@@ -20,6 +20,19 @@ import {centsBetween, detectPitchConsensus, readWavMono} from "../../../../scrip
  *     ONAYLADI — harmonik zengin seste yarim periyot lag'inde de
  *     korelasyon yuksek cikiyor.
  *
+ *  3. UCUNCU yanilgi olcumde degil ONARIMDA idi: yeniden uretilen yuvalar
+ *     sabit 1,6 s uzunlukta isteniyordu, ama kaynak `step` kati hizla
+ *     okundugu icin erken tukeniyor ve kalan cerceveler SIFIRLA doluyordu.
+ *     `tanpura/C5` sesin %14'unden sonrasi sessizdi; lavta'da 19, ud'da 7,
+ *     baglama'da 3 dosya ayni sekilde kirikti. Ustelik betik dogrulanmayan
+ *     ciktiyi da yaziyor, sonra hepsini "uretildi" diye sayiyordu.
+ *
+ *  4. DORDUNCU yanilgi bir gerekce uydurmakti: `tanpura` icin "tepeler esit
+ *     aralikli, o halde aralik = temel" denip aralik yontemi TEK BASINA
+ *     hakem yapilmisti. Tepeler yazdirilinca gerekce coktu — `C3` tepeleri
+ *     132'nin 2,5 ve 3,5 kati da iceriyor, yani sinyalde bir oktav asagida
+ *     ikinci bir dizi var (dem telleri). Aralik f ile f/2 arasinda belirsiz.
+ *
  * Bu yuzden artik **iki bagimsiz yontem** (YIN + HPS) kullaniliyor ve
  * uyusmadiklarinda sonuc "bilmiyorum" oluyor. Bilmemek, yanlis bilmekten
  * iyidir — ozellikle dosya yeniden yazmak soz konusuysa.
@@ -28,6 +41,8 @@ import {centsBetween, detectPitchConsensus, readWavMono} from "../../../../scrip
 const SAMPLES_ROOT = path.join(process.cwd(), "public", "samples");
 const NOTE_NAMES = ["C", "Cs", "D", "Ds", "E", "F", "Fs", "G", "Gs", "A", "As", "B"];
 const TOLERANCE_CENTS = 45;
+/** Bunun altindaki genlik "sessiz" sayilir (24-bit tabaninin cok ustunde). */
+const SILENCE_FLOOR = 1e-4;
 
 /**
  * Enstruman basina beklenti — **olculdu, varsayilmadi**.
@@ -42,21 +57,21 @@ const TOLERANCE_CENTS = 45;
  */
 const INSTRUMENTS: Array<{name: string; verified: boolean; minAgreement: number; note?: string}> = [
   // Esikler 0,25 s pencereyle OLCULEN degerlerin biraz altina konuldu
-  // (olculen: kemence/ney/tambur 1,00 · kanun 0,92 · miskal/santur 0,83 ·
-  //  ud 0,75 · baglama 0,39 · rebab 0,25).
+  // (olculen: kemence/ney/tambur/ud/lavta 1,00 · kanun 0,92 ·
+  //  miskal/santur 0,83 · baglama 0,64 · rebab 0,25 · tanpura 0,00).
   {name: "kemence", verified: true, minAgreement: 0.9},
   {name: "ney", verified: true, minAgreement: 0.9},
   {name: "tambur", verified: true, minAgreement: 0.9},
+  {name: "ud", verified: true, minAgreement: 0.9},
+  {name: "lavta", verified: true, minAgreement: 0.9},
   {name: "kanun", verified: true, minAgreement: 0.85},
   {name: "miskal", verified: true, minAgreement: 0.75},
   {name: "santur", verified: true, minAgreement: 0.75},
-  {name: "ud", verified: true, minAgreement: 0.65, note: "E5 tek sapma — incelenmedi"},
-  // Bu ikisi bir oktav yanlistı; duzeltildi. Uzlasma orani DUSUK cunku
-  // yeniden ornekleme tiniyi degistirdi — ama olculebilen her dosya dogru.
-  {name: "baglama", verified: true, minAgreement: 0.3, note: "bir oktav pesti, duzeltildi"},
+  // Uzlasma orani DUSUK cunku yeniden ornekleme tiniyi degistirdi — ama
+  // olculebilen her dosya adiyla ayni perdede.
+  {name: "baglama", verified: true, minAgreement: 0.55},
   {name: "rebab", verified: true, minAgreement: 0.2, note: "bir oktav tizdi, duzeltildi"},
-  // Asagidakiler DOGRULANAMIYOR — dosyalara dokunulmadi.
-  {name: "lavta", verified: false, minAgreement: 0, note: "olcum guvenilmez (uzlasma 0,44)"},
+  // DOGRULANAMIYOR — dosyalara dokunulmadi. Gerekcesi asagida.
   {name: "tanpura", verified: false, minAgreement: 0, note: "hicbir dosyada uzlasma yok"},
 ];
 
@@ -121,6 +136,26 @@ describe("Sample etiketleri icerikle uyusmali (F1)", () => {
       expect(missing).toEqual([]);
     });
 
+    // Perde DOGRU olup dosya yine de bozuk olabilir: yeniden uretim sirasinda
+    // kaynak erken tukenip kalan cerceveler sifirla dolduruldugunda etiket ve
+    // perde tutar ama ses ortasinda BITER. Gercekten olan buydu — bu kapi
+    // konmadan once `tanpura/C5` sesin %14'unden sonrasi sessizdi.
+    it.skipIf(!exists)(`${instrument.name} — hicbir dosyanin kuyrugu sessiz degil`, () => {
+      const truncated: string[] = [];
+      for (const file of fs.readdirSync(folder).filter((name) => name.endsWith(".wav"))) {
+        const wav = readWavMono(fs.readFileSync(path.join(folder, file)));
+        if (!wav) continue;
+
+        let lastAudible = 0;
+        for (let i = 0; i < wav.mono.length; i++) {
+          if (Math.abs(wav.mono[i]) > SILENCE_FLOOR) lastAudible = i;
+        }
+        const filled = lastAudible / wav.mono.length;
+        if (filled < 0.9) truncated.push(`${file} %${(filled * 100).toFixed(0)}`);
+      }
+      expect(truncated).toEqual([]);
+    }, 60_000);
+
     if (!instrument.verified) {
       it.skipIf(!exists)(`${instrument.name} — DOGRULANAMIYOR (${instrument.note})`, () => {
         // Iddia: bu enstrumanda olcum hala guvenilmez. Bir gun guvenilir
@@ -136,11 +171,6 @@ describe("Sample etiketleri icerikle uyusmali (F1)", () => {
       const scan = scanInstrument(folder);
 
       expect(scan.agreed / scan.total).toBeGreaterThanOrEqual(instrument.minAgreement);
-      if (instrument.note?.includes("tek sapma")) {
-        // `ud/E5` bilinen tek sapma; kapiyi acmadan sabitlenir.
-        expect(scan.mismatches.length).toBeLessThanOrEqual(1);
-        return;
-      }
       expect(scan.mismatches).toEqual([]);
     }, 90_000);
   }

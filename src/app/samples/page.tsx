@@ -21,6 +21,10 @@ interface SampleSlotStatus {
   installed: boolean;
   size: number;
   updatedAt: string | null;
+  /** Dolu ise bu ses gerçek bir kayıt değil, türetilmiştir (PLAN.md §10/F3). */
+  derivedFrom?: string | null;
+  /** Dolu ise bu perde kaynak kayıtların dışında, gerilerek üretilmiştir (F2). */
+  extrapolatedFrom?: string | null;
 }
 
 interface SampleCoverageSummary {
@@ -61,6 +65,39 @@ function formatDate(value: string | null): string {
     dateStyle: "short",
     timeStyle: "short",
   }).format(new Date(value));
+}
+
+/**
+ * Bu ses gercek bir kayit mi? (PLAN.md §10/F2-F3)
+ *
+ * Iki ayri durum, ikisi de "bu perdenin gercek kaydi degil" demek:
+ *  - `derivedFrom`      : ses baska SESLERDEN sentezlendi (hek = dum+tek).
+ *  - `extrapolatedFrom` : gercek kayit var ama BASKA BIR PERDEDEN gerildi.
+ *
+ * Sayfada iki duzen var (dar ekranda kart, genis ekranda tablo). Uyari tek
+ * yerde yazilir ki ikisinden birinde unutulmasin — ilk denemede tam olarak
+ * bu oldu: uyari yalniz kart duzenine konmustu ve masaustunde gorunmuyordu.
+ */
+function ProvenanceNotice({slot}: {slot: SampleSlotStatus}) {
+  if (!slot.derivedFrom && !slot.extrapolatedFrom) return null;
+
+  const noticeClass =
+    "mt-2 rounded-sm border border-[var(--color-warning)] px-2 py-1 text-xs text-[var(--color-text-primary)]";
+
+  return (
+    <>
+      {slot.derivedFrom ? (
+        <p className={noticeClass}>
+          <strong>Türetilmiş ses</strong> — gerçek kayıt değil, {slot.derivedFrom} ile üretildi.
+        </p>
+      ) : null}
+      {slot.extrapolatedFrom ? (
+        <p className={noticeClass}>
+          <strong>Gerilmiş perde</strong> — {slot.extrapolatedFrom}.
+        </p>
+      ) : null}
+    </>
+  );
 }
 
 export default function SeslerPage() {
@@ -375,6 +412,8 @@ export default function SeslerPage() {
                     </span>
                   </div>
 
+                  <ProvenanceNotice slot={slot} />
+
                   <code className="mt-3 block break-all text-xs text-[var(--color-text-primary)]">{slot.relativePath}</code>
 
                   <div className={`mt-3 grid grid-cols-2 gap-2 text-xs ${tokens.colors.text.secondary}`}>
@@ -440,6 +479,7 @@ export default function SeslerPage() {
                       <td className="px-4 py-3">
                         <div className={`font-medium ${tokens.colors.text.primary}`}>{slot.label}</div>
                         <div className={`text-xs ${tokens.colors.text.secondary}`}>{slot.category === "melodic" ? "Melodik" : "Vurmalı"}</div>
+                        <ProvenanceNotice slot={slot} />
                       </td>
                       <td className="px-4 py-3">
                         <code className="text-xs text-[var(--color-text-primary)]">{slot.relativePath}</code>

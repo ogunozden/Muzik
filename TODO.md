@@ -44,6 +44,22 @@
       tahmini yanlıştı, ölçüldü.)* Kapı: dosya yereldeyse hash tutmalı; ayrıca
       her kaynağın `commercialUse` alanı **serbest** olmalı — kısıtlı bir
       kaynak yeniden eklenirse burada durur.
+- [x] **H8** · **Kayıtlı borç çözüldü — altından LİSANS İHLALİ çıktı.**
+      `bendir`/`kudum` kaynağı dalga biçimi korelasyonuyla bulundu: soundfont'tan
+      değil, iki CompMusic icra kaydından **tam kesit** (r = **1,0000**).
+      · Lisans **CC BY-NC 4.0** — atıf şartı hiçbir yerde yazılı değildi, yani
+        **ihlal ediliyordu**. README'ye işlendi ve testle bağlandı.
+      · Ticari kısıt ve `kudum` **varsayılan vurmalı** — ney'de kapattığım
+        sorunun aynısı, daha merkezî yerde.
+      · **Kapı yanlıştı:** "her kaynak ticarete açık olmalı" demek, kısıtlı
+        kaynağı *kaydetmemeye* teşvik eder. Yeni kural: kısıtlı kaynak
+        serbesttir ama görünür olmak **zorundadır** (atıf + gerekçe + sabit
+        sayı + README'de gerçekten yazılı olma kontrolü).
+      · `zilli-def` de ölçümle doğrulandı (r=1,0000). Kalan 6 vurmalı
+        eşleşmedi — ama bu yokluk kanıtı değil (sentez zinciri uygulanmış).
+      · Güven: `documented` 1 · **`measured` 3** · `claimed` 15 · **`unknown` 0**.
+      · **Sizde karar:** bendir için ticarete açık alternatif VAR (Art Libre
+        soundfont), kudum için YOK (113 preset tarandı).
 - [x] **H4** · **`public/samples/provenance.json`** — 20 klasörün tamamı
       kayıtlı: `documented` **1** · `claimed` **17** · `unknown` **2**.
       · **Yeni bulgu:** `unknown` olanlar `bendir` ve **`kudum`** — ve

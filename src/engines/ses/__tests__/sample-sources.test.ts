@@ -29,13 +29,17 @@ interface SourceRecord {
   readonly path: string;
   readonly sha256: string;
   readonly license: string;
-  readonly commercialUse: string;
+  readonly origin: string;
+  readonly commercialUse: "serbest" | "kisitli";
+  readonly attributionRequired?: boolean;
+  readonly attribution?: string;
+  readonly restrictionNote?: string;
 }
 interface FolderRecord {
   readonly sourceId: string | null;
   readonly presets: readonly string[] | null;
   readonly producer: string | null;
-  readonly confidence: "documented" | "claimed" | "unknown";
+  readonly confidence: "documented" | "measured" | "claimed" | "unknown";
 }
 
 const sources = JSON.parse(fs.readFileSync(path.join(SAMPLES_ROOT, "sources.json"), "utf8")) as {
@@ -60,10 +64,39 @@ describe("Ses kaynaklarının kimliği (H3)", () => {
     for (const source of sources.sources) {
       expect(source.license, `${source.id} lisanssiz`).toBeTruthy();
       expect(source.sha256, `${source.id} hash'siz`).toMatch(/^[0-9a-f]{64}$/);
-      // Projenin butun ses klasorleri ticarete acik olmali — ney'in CC BY-NC
-      // borcu F5'te tam bu yuzden kapatildi. Yeni bir kisitli kaynak
-      // eklenirse burada durur.
-      expect(source.commercialUse, `${source.id} ticari kullanimi kisitli`).toBe("serbest");
+      expect(["serbest", "kisitli"]).toContain(source.commercialUse);
+    }
+  });
+
+  it("KISITLI lisansli kaynak sessiz olamaz — atif ve gerekce sart", () => {
+    // ── COZULEN KUSUR ─────────────────────────────────────────────────────
+    // Bu test once "her kaynak ticarete acik OLMALI" diyordu. Yanlis kapiydi:
+    // kisitli kaynagi YASAKLAMAK, onu kaydetmemeye tesvik eder — yani sorunu
+    // gizler. Nitekim `kudum` ve `bendir` tam da boyle duruyordu: kaynaklari
+    // hicbir yerde yazili degildi ve CC BY-NC olduklari BILINMIYORDU.
+    // Atif sarti (BY) o sure boyunca ihlal ediliyordu.
+    //
+    // Dogru kapi: kisitli kaynak serbesttir ama GORUNUR olmak zorundadir.
+    const restricted = sources.sources.filter((source) => source.commercialUse === "kisitli");
+
+    for (const source of restricted) {
+      expect(source.attributionRequired, `${source.id} atif zorunlulugu yazilmamis`).toBe(true);
+      expect(source.attribution, `${source.id} atif metni yok`).toBeTruthy();
+      expect(source.restrictionNote, `${source.id} kisit gerekcesi yazilmamis`).toBeTruthy();
+    }
+
+    // Sayi sabit: yeni bir kisitli kaynak sessizce eklenemez.
+    expect(restricted.map((source) => source.id).sort()).toEqual([
+      "compmusic-bendir",
+      "compmusic-kudum",
+    ]);
+  });
+
+  it("kisitli kaynagin atfi README'de GERCEKTEN yazili", () => {
+    // Atif sarti belgeyle yerine getirilir; kayit dosyasinda durmasi yetmez.
+    const readme = fs.readFileSync(path.join(SAMPLES_ROOT, "README.md"), "utf8");
+    for (const source of sources.sources.filter((s) => s.attributionRequired)) {
+      expect(readme, `${source.id} atfi README'de yok`).toContain(source.origin);
     }
   });
 
@@ -104,19 +137,27 @@ describe("Her klasörün provenance kaydı (H4)", () => {
   });
 
   it("belgesizlik SAYILIYOR — sessizce artamaz", () => {
-    const counts = {documented: 0, claimed: 0, unknown: 0};
+    const counts = {documented: 0, measured: 0, claimed: 0, unknown: 0};
     for (const record of Object.values(provenance.folders)) counts[record.confidence]++;
 
     // 2026-07-27 durumu. Bu sayilar bir HEDEF degil, bir OLCUM: iyilestikce
     // (claimed -> documented) test kirilir ve guncellenmesi gerekir.
-    expect(counts).toEqual({documented: 1, claimed: 16, unknown: 2});
+    expect(counts).toEqual({documented: 1, measured: 3, claimed: 15, unknown: 0});
 
-    // `unknown` olanlar adiyla sabit: yeni bir klasor kayitsiz eklenemez.
+    // `unknown` KALMADI: `bendir` ve `kudum`un kaynagi dalga bicimi
+    // korelasyonuyla bulundu (r=1,0000'e kadar). Yeni bir klasor kayitsiz
+    // eklenirse bu sayi artar ve test kirilir.
     const unknown = Object.entries(provenance.folders)
       .filter(([, record]) => record.confidence === "unknown")
-      .map(([name]) => name)
-      .sort();
-    expect(unknown).toEqual(["bendir", "kudum"]);
+      .map(([name]) => name);
+    expect(unknown).toEqual([]);
+  });
+
+  it("`measured` olan klasor gecerli bir kaynaga baglanmis", () => {
+    for (const [folder, record] of Object.entries(provenance.folders)) {
+      if (record.confidence !== "measured") continue;
+      expect(record.sourceId, `${folder} olculdu deniyor ama kaynagi yok`).toBeTruthy();
+    }
   });
 
   it("`documented` olan klasorun ureticisi GERCEKTEN depoda", () => {

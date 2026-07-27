@@ -962,6 +962,51 @@ tek başına 206 MB — plandaki "56 MB" tahmini yanlıştı, ölçüldü.)
   ney'in CC BY-NC borcu F5'te tam bu yüzden kapatıldı; kısıtlı bir kaynak
   yeniden eklenirse burada durur.
 
+### H8 · Kayıtlı borç çözüldü — ve altından **lisans ihlali** çıktı
+
+H4 iki klasörü "kaynağı bilinmiyor" diye kaydetmişti: `bendir` ve `kudum`.
+Ölçümle arandı ve bulundu — ama bulunan şey beklediğimden ağırdı.
+
+**Yöntem:** dalga biçimi çapraz korelasyonu. Önce dört soundfont'un **1625
+bölgesi** tarandı; eşleşme çıkmadı. Sonra `all-samples/` içinde gözden
+kaçırdığım iki dosya fark edildi — biçimleri (2ch/44100/16bit) klasörlerle
+birebir aynıydı. Vuruş başlangıçları bulunup her aday konumda hizalı
+korelasyon hesaplandı:
+
+| klasör | kaynak | korelasyon |
+|---|---|---|
+| `kudum` | `140764__barisbozkurt__turkaksagi_kudum.wav` | dum **1,0000** · ke 0,9999 · dum-accent 0,9999 · tek 0,9801 |
+| `bendir` | `140395__barisbozkurt__curcuna_bendir.wav` | dum **1,0000** · tek **1,0000** · ke 0,9998 · tek-accent 0,9988 |
+
+`r = 1,0000` tahmin değil, **tam kesit** demek.
+
+**Ve lisansları CC BY-NC 4.0** (barisbozkurt · icra Eren Ergen · CompMusic,
+Universitat Pompeu Fabra). Yani:
+
+1. **Atıf şartı (BY) ihlal ediliyordu** — hiçbir yerde yazılı değildi.
+   README'ye işlendi ve testle bağlandı.
+2. **Ticari kullanım kısıtlı** — ve `kudum` uygulamanın **varsayılan
+   vurmalısı**. Ney'de kapattığım kısıtın aynısı, daha merkezî bir yerde.
+
+**Kapı yanlıştı, düzeltildi.** Test "her kaynak ticarete açık **olmalı**"
+diyordu. Bu yanlış kapı: kısıtlı kaynağı *yasaklamak*, onu kaydetmemeye teşvik
+eder — yani sorunu gizler. Nitekim `kudum`/`bendir` tam da böyle duruyordu.
+Yeni kural: kısıtlı kaynak serbesttir ama **görünür olmak zorundadır** —
+`attributionRequired`, `attribution`, `restrictionNote` şart, sayısı sabit, ve
+atfın README'de **gerçekten** yazılı olduğu ayrıca doğrulanıyor.
+
+**Yan bulgu:** `zilli-def` de ölçümle doğrulandı (`Darbuka & Riq / EMREATEF
+DUM`, r=1,0000). Kalan altı vurmalı eşleşmedi — ama bu yokluk kanıtı değil:
+soundfont'un sentez zincirinden geçmiş bir ses, ham bölgeyle birebir tutmaz.
+
+Güven dağılımı: `documented` 1 · **`measured` 3** · `claimed` 15 ·
+**`unknown` 0**.
+
+**Sizde bekleyen karar:** `bendir` için depoda ticarete açık alternatif **var**
+(Art Libre soundfont'ta `Bendir` ve `Syrian Bendir` preset'leri). `kudum` için
+**yok** — 113 preset tarandı, kudum preset'i hiç yok. Projeyi ticarileştirmek
+gündemdeyse bu iki klasör yeniden lisanslanmalı ya da değiştirilmeli.
+
 ### H4 · Sample provenance'ını 20 klasörün tamamına yay — **TAMAM**
 
 `public/samples/provenance.json` — her klasör için kaynak + preset + üretici +

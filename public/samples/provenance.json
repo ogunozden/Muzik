@@ -10,6 +10,8 @@
     "  claimed    — README preset ADINI yaziyor ama uretim parametreleri",
     "               (hangi bolge, ne kadar gerilme, hangi betik) kayitli degil.",
     "               Yani 'su preset'ten geldi' bir IDDIA; dogrulanmadi.",
+    "  measured   — kaynak OLCUMLE dogrulandi (dalga bicimi korelasyonu);",
+    "               uretim parametreleri hala kayitsiz olabilir.",
     "  unknown    — kaynagi hicbir yerde yazmiyor.",
     "",
     "`tanpura` 2026-07-27'de LISTEDEN CIKARILDI: 36 dosyanin 35'i yanlis perde",
@@ -39,23 +41,29 @@
     "davul": {"sourceId": "turkish-arab3", "presets": ["Eastern Percussion"], "producer": null, "confidence": "claimed"},
     "def": {"sourceId": "turkish-arab3", "presets": ["Riq_Full"], "producer": null, "confidence": "claimed"},
     "darbuka": {"sourceId": "turkish-arab3", "presets": ["Darbuka"], "producer": null, "confidence": "claimed"},
-    "zilli-def": {"sourceId": "turkish-arab3", "presets": ["Darbuka & Riq"], "producer": null, "confidence": "claimed"},
+    "zilli-def": {
+      "sourceId": "turkish-arab3",
+      "presets": ["Darbuka & Riq"],
+      "producer": null,
+      "confidence": "measured",
+      "note": "Dalga bicimi karsilastirmasiyla DOGRULANDI: `Darbuka & Riq / EMREATEF DUM` bolgesiyle r=1,0000."
+    },
     "kasik": {"sourceId": "turkish-arab3", "presets": ["Eastern Percussion"], "producer": null, "confidence": "claimed"},
     "zil": {"sourceId": "turkish-arab3", "presets": ["Eastern Percussion"], "producer": null, "confidence": "claimed"},
     "nakkare": {"sourceId": "turkish-arab3", "presets": ["Eastern Percussion"], "producer": null, "confidence": "claimed"},
     "bendir": {
-      "sourceId": null,
+      "sourceId": "compmusic-bendir",
       "presets": null,
       "producer": null,
-      "confidence": "unknown",
-      "note": "README kaynak eslemesinde YOK. Soundfont'ta `Bendir` ve `Syrian Bendir` preset'leri var ama klasorun onlardan geldigi DOGRULANMADI."
+      "confidence": "measured",
+      "note": "KAYNAK OLCUMLE BULUNDU. Soundfont'tan DEGIL, bir icra kaydindan kesilmis: `140395__barisbozkurt__curcuna_bendir.wav` (33,1 s, Curcuna usulu). Dalga bicimi korelasyonu dum r=1,0000 · tek r=1,0000 · ke r=0,9998 · tek-accent r=0,9988. LISANS: CC BY-NC 4.0 — ticari kullanim kisitli, atif zorunlu."
     },
     "kudum": {
-      "sourceId": null,
+      "sourceId": "compmusic-kudum",
       "presets": null,
       "producer": null,
-      "confidence": "unknown",
-      "note": "README kaynak eslemesinde YOK ve soundfont'ta `kudum` preset'i HIC YOK (113 preset tarandi). Bu, uygulamanin VARSAYILAN vurmalisi (`DEFAULT_PERCUSSION_INSTRUMENT`) — yani en cok duyulan ses, kaynagi en belirsiz olani."
+      "confidence": "measured",
+      "note": "KAYNAK OLCUMLE BULUNDU. Soundfont'ta `kudum` preset'i hic yok (113 preset tarandi) cunku klasor soundfont'tan gelmiyor: bir icra kaydindan kesilmis — `140764__barisbozkurt__turkaksagi_kudum.wav` (13,7 s, Turk Aksagi). Korelasyon dum r=1,0000 · ke r=0,9999 · dum-accent r=0,9999 · tek r=0,9801. LISANS: CC BY-NC 4.0 — ticari kullanim kisitli, atif zorunlu. Bu, uygulamanin VARSAYILAN vurmalisi."
     }
   },
   "hekSearch": {

@@ -145,6 +145,39 @@ sessizce geri getirirdi.
   icinde veri olarak durur ve `/samples` sayfasinda **"Gerilmis perde"**
   uyarisi olarak gorunur — saklanmaz.
 
+## kudum ve bendir — CompMusic kayitlari, CC BY-NC (DIKKAT)
+
+`kudum/` ve `bendir/` klasorleri soundfont'tan **gelmiyor**. Kaynaklari iki
+gercek icra kaydidir ve bu OLCUMLE bulundu (2026-07-27): tek vuruslar bu
+kayitlardan dogrudan kesilmis, dalga bicimi korelasyonu **r = 1,0000**'e kadar
+cikiyor.
+
+| klasor | kaynak | olculen korelasyon |
+|---|---|---|
+| `kudum` | [freesound.org/s/140764](https://freesound.org/s/140764/) — turkAksagi_kudum.wav (13,7 s) | dum **1,0000** · ke 0,9999 · dum-accent 0,9999 · tek 0,9801 |
+| `bendir` | [freesound.org/s/140395](https://freesound.org/s/140395/) — curcuna_bendir.wav (33,1 s) | dum **1,0000** · tek **1,0000** · ke 0,9998 · tek-accent 0,9988 |
+
+### Atif (BY sarti — zorunlu)
+
+- **Kaydeden:** `barisbozkurt` — <https://freesound.org/people/barisbozkurt/>
+- **Icra:** Eren Ergen · 23 Aralik 2011
+- **Proje:** CompMusic, Universitat Pompeu Fabra
+- **Lisans:** **CC BY-NC 4.0** — <https://creativecommons.org/licenses/by-nc/4.0/>
+
+> Bu atif daha once hicbir yerde YAZMIYORDU; klasorlerin kaynagi da bilinmiyordu.
+> BY sarti o sure boyunca ihlal ediliyordu.
+
+### Ticari kullanim KISITLI
+
+`kudum` uygulamanin **varsayilan vurmalisi** (`DEFAULT_PERCUSSION_INSTRUMENT`),
+yani en cok duyulan ses. Proje ticarilesecekse bu iki klasor ya yeniden
+lisanslanmali ya baska kaynakla degistirilmelidir.
+
+- `bendir` icin depoda ticarete acik alternatif VAR: Art Libre lisansli
+  `TURKISH-ARAB3.sf2` icinde `Bendir` ve `Syrian Bendir` preset'leri bulunuyor.
+- `kudum` icin alternatif YOK: soundfont'un 113 preset'i tarandi, `kudum`
+  preset'i hic yok.
+
 ## tanpura — PROJEDEN CIKARILDI (2026-07-27)
 
 Iki ayri sebep ust uste geldi:

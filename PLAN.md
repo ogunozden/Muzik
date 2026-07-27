@@ -1002,10 +1002,37 @@ soundfont'un sentez zincirinden geçmiş bir ses, ham bölgeyle birebir tutmaz.
 Güven dağılımı: `documented` 1 · **`measured` 3** · `claimed` 15 ·
 **`unknown` 0**.
 
-**Sizde bekleyen karar:** `bendir` için depoda ticarete açık alternatif **var**
-(Art Libre soundfont'ta `Bendir` ve `Syrian Bendir` preset'leri). `kudum` için
-**yok** — 113 preset tarandı, kudum preset'i hiç yok. Projeyi ticarileştirmek
-gündemdeyse bu iki klasör yeniden lisanslanmalı ya da değiştirilmeli.
+### H8.1 · `bendir` Art Libre'den yeniden üretildi — kısıttan çıktı
+
+`scripts/render-soundfont-percussion.mjs` yazıldı; kaynak `Syrian Bendir`
+preset'i (Art Libre, ticari kullanım serbest).
+
+**Eşleme tahmin değil, iki kanıta dayanıyor:** kaynağın kendi adlandırması
+(`bass` · `slp` · `riml` = rim **LEFT**) ve projenin otoritesi (Kudum kitabı
+s.14: *dum sağ el, tek/ke sol el*).
+
+| darp | bölge | ölçülen gerekçe |
+|---|---|---|
+| `dum` | `bass` | pes band **13,25** (en yüksek) · parlaklık 0,026 (en düşük) |
+| `tek` | `slp1` | orta-baskın (orta 4,73 / pes 2,00) |
+| `ke` | `riml` | "rim LEFT" = sol el · rms 0,0100, tek'ten (0,0168) **daha hafif** |
+
+Vurgular **gerçek dinamik katmanlardan** (`_p`/`_mf` → `_ff`) — kazanç
+artırmayla taklit değil. Çift tek katsayıyla normalize edilir ki kaynaktaki
+dinamik fark korunsun.
+
+**"Ev normuna uy" fikri ölçümle çürüdü:** mevcut kütüphanede 27 vurgu
+dosyasının **9'u kendi normalinden daha sessiz** (darbuka dum 0,35× ·
+zilli-def ke 0,32× · nakkare ke 0,46×). Yani uyulacak tutarlı bir norm yok;
+işi motorun 1,36× kazancı yapıyor. Bendir artık bu kuralın dışında.
+
+Güven dağılımı: `documented` **2** · `measured` 2 · `claimed` 15 · `unknown` 0.
+Kısıtlı kaynak: **1** (yalnız `compmusic-kudum`).
+
+**Sizde bekleyen karar — yalnız `kudum`:** ticari kullanım kısıtlı ve
+**varsayılan vurmalı**. Depoda alternatif YOK (113+ preset tarandı, `kudum`
+preset'i hiç geçmiyor); bendir'de kullanılan çözüm burada uygulanamaz.
+Ya dış kaynak (ticarete açık kudum kaydı) ya da yeniden lisanslama gerekiyor.
 
 ### H4 · Sample provenance'ını 20 klasörün tamamına yay — **TAMAM**
 

@@ -145,17 +145,20 @@ sessizce geri getirirdi.
   icinde veri olarak durur ve `/samples` sayfasinda **"Gerilmis perde"**
   uyarisi olarak gorunur — saklanmaz.
 
-## kudum ve bendir — CompMusic kayitlari, CC BY-NC (DIKKAT)
+## kudum — CompMusic kaydi, CC BY-NC (DIKKAT)
 
-`kudum/` ve `bendir/` klasorleri soundfont'tan **gelmiyor**. Kaynaklari iki
-gercek icra kaydidir ve bu OLCUMLE bulundu (2026-07-27): tek vuruslar bu
-kayitlardan dogrudan kesilmis, dalga bicimi korelasyonu **r = 1,0000**'e kadar
-cikiyor.
+`kudum/` klasoru soundfont'tan **gelmiyor**. Kaynagi gercek bir icra kaydidir
+ve bu OLCUMLE bulundu (2026-07-27): tek vuruslar kayittan dogrudan kesilmis,
+dalga bicimi korelasyonu **r = 1,0000**.
 
 | klasor | kaynak | olculen korelasyon |
 |---|---|---|
 | `kudum` | [freesound.org/s/140764](https://freesound.org/s/140764/) — turkAksagi_kudum.wav (13,7 s) | dum **1,0000** · ke 0,9999 · dum-accent 0,9999 · tek 0,9801 |
-| `bendir` | [freesound.org/s/140395](https://freesound.org/s/140395/) — curcuna_bendir.wav (33,1 s) | dum **1,0000** · tek **1,0000** · ke 0,9998 · tek-accent 0,9988 |
+
+> `bendir` de ayni kaydediciden gelen bir kayittan uretiliyordu
+> ([freesound.org/s/140395](https://freesound.org/s/140395/), r=1,0000). Ayni
+> gun **Art Libre** soundfont'tan yeniden uretilerek bu kisittan CIKARILDI —
+> asagidaki bendir bolumune bak.
 
 ### Atif (BY sarti — zorunlu)
 
@@ -170,13 +173,42 @@ cikiyor.
 ### Ticari kullanim KISITLI
 
 `kudum` uygulamanin **varsayilan vurmalisi** (`DEFAULT_PERCUSSION_INSTRUMENT`),
-yani en cok duyulan ses. Proje ticarilesecekse bu iki klasor ya yeniden
+yani en cok duyulan ses. Proje ticarilesecekse bu klasor ya yeniden
 lisanslanmali ya baska kaynakla degistirilmelidir.
 
-- `bendir` icin depoda ticarete acik alternatif VAR: Art Libre lisansli
-  `TURKISH-ARAB3.sf2` icinde `Bendir` ve `Syrian Bendir` preset'leri bulunuyor.
-- `kudum` icin alternatif YOK: soundfont'un 113 preset'i tarandi, `kudum`
-  preset'i hic yok.
+Depoda alternatif **YOK**: dort soundfont'un 113+ preset'i tarandi, `kudum`
+preset'i hic gecmiyor. `bendir`de kullanilan cozum burada uygulanamaz.
+
+## bendir — Art Libre'den YENIDEN URETILDI (2026-07-27)
+
+Ayni CC BY-NC kisitindan cikarildi. Yeni kaynak: `TURKISH-ARAB3.sf2` icindeki
+**`Syrian Bendir`** preset'i (Art Libre, ticari kullanim serbest).
+
+```
+node scripts/render-soundfont-percussion.mjs   --sf2 all-samples/TURKISH-ARAB3.sf2 --preset "Syrian Bendir" --out bendir   --map "dum=Bass_p/bass_ff,tek=slp1_mf/slp1_ff,ke=riml_mf/riml_ff"
+```
+
+**Esleme tahmin degil, iki kanita dayanir:**
+
+1. Kaynagin kendi adlandirmasi: `bass` · `slp` (slap) · `riml` (rim **LEFT**).
+2. Projenin otoritesi — "Turk Musikisinde Usuller ve Kudum" s.14:
+   **dum sag el** (kuvvetli), **tek/ke sol el** (hafif).
+
+| darp | bolge | olculen gerekce |
+|---|---|---|
+| `dum` | `bass` | pes band **13,25** (en yuksek) · parlaklik 0,026 (en dusuk) |
+| `tek` | `slp1` | orta-baskin (orta 4,73 / pes 2,00) |
+| `ke` | `riml` | "rim LEFT" = sol el · rms 0,0100, tek'ten (0,0168) **daha hafif** |
+
+**Vurgular gercek dinamik katmanlardan** (`_p`/`_mf` -> `_ff`), kazanc
+artirmayla taklit degil. Cift TEK katsayiyla normalize edilir ki kaynaktaki
+dinamik fark korunsun.
+
+> **Yan bulgu (ayri bir kusur):** mevcut vurmali kutuphanesinde 27 vurgu
+> dosyasinin **9'u kendi normalinden daha SESSIZ** (darbuka dum 0,35x ·
+> zilli-def ke 0,32x · nakkare ke 0,46x). Yani "vurgu" dosyalari buyuk olcude
+> keyfi; isi motorun 1,36x kazanci yapiyor. Bendir artik bu kuralin disinda —
+> vurgusu gercekten daha guclu bir icra.
 
 ## tanpura — PROJEDEN CIKARILDI (2026-07-27)
 

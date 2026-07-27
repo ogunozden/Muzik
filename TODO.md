@@ -58,8 +58,15 @@
       · `zilli-def` de ölçümle doğrulandı (r=1,0000). Kalan 6 vurmalı
         eşleşmedi — ama bu yokluk kanıtı değil (sentez zinciri uygulanmış).
       · Güven: `documented` 1 · **`measured` 3** · `claimed` 15 · **`unknown` 0**.
-      · **Sizde karar:** bendir için ticarete açık alternatif VAR (Art Libre
-        soundfont), kudum için YOK (113 preset tarandı).
+      · **bendir ÜRETİLDİ ve kısıttan çıktı** (H8.1): `Syrian Bendir` preset'i,
+        `render-soundfont-percussion.mjs`. Eşleme kaynağın adlandırmasına
+        (`bass`/`slp`/`riml`=rim LEFT) ve Kudum kitabı s.14'e dayanıyor;
+        vurgular gerçek dinamik katmanlardan (p/mf→ff).
+      · **"Ev normuna uy" fikri çürüdü:** 27 vurgu dosyasının **9'u kendi
+        normalinden daha sessiz** — uyulacak tutarlı norm yok.
+      · Güven: `documented` **2** · `measured` 2 · `claimed` 15 · `unknown` 0.
+      · **Sizde kalan tek karar — kudum:** kısıtlı ve varsayılan vurmalı,
+        depoda alternatif YOK. Dış kaynak ya da yeniden lisanslama gerekiyor.
 - [x] **H4** · **`public/samples/provenance.json`** — 20 klasörün tamamı
       kayıtlı: `documented` **1** · `claimed` **17** · `unknown` **2**.
       · **Yeni bulgu:** `unknown` olanlar `bendir` ve **`kudum`** — ve

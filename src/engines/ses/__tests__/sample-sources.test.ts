@@ -86,10 +86,10 @@ describe("Ses kaynaklarının kimliği (H3)", () => {
     }
 
     // Sayi sabit: yeni bir kisitli kaynak sessizce eklenemez.
-    expect(restricted.map((source) => source.id).sort()).toEqual([
-      "compmusic-bendir",
-      "compmusic-kudum",
-    ]);
+    // `compmusic-bendir` LISTEDEN CIKTI: `bendir` 2026-07-27'de Art Libre
+    // soundfont'tan yeniden uretildi ve o kaydi artik kullanmiyor. Geriye
+    // kalan tek kisit `kudum` — ve onun icin depoda alternatif YOK.
+    expect(restricted.map((source) => source.id).sort()).toEqual(["compmusic-kudum"]);
   });
 
   it("kisitli kaynagin atfi README'de GERCEKTEN yazili", () => {
@@ -142,7 +142,7 @@ describe("Her klasörün provenance kaydı (H4)", () => {
 
     // 2026-07-27 durumu. Bu sayilar bir HEDEF degil, bir OLCUM: iyilestikce
     // (claimed -> documented) test kirilir ve guncellenmesi gerekir.
-    expect(counts).toEqual({documented: 1, measured: 3, claimed: 15, unknown: 0});
+    expect(counts).toEqual({documented: 2, measured: 2, claimed: 15, unknown: 0});
 
     // `unknown` KALMADI: `bendir` ve `kudum`un kaynagi dalga bicimi
     // korelasyonuyla bulundu (r=1,0000'e kadar). Yeni bir klasor kayitsiz

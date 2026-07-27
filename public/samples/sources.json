@@ -68,20 +68,7 @@
       "commercialUse": "kisitli",
       "attributionRequired": true,
       "attribution": "Kayit: barisbozkurt (Freesound) · Icra: Eren Ergen · 23.12.2011 · CompMusic projesi, Universitat Pompeu Fabra",
-      "restrictionNote": "Ticari kullanim KISITLI. `kudum/` klasorunun kaynagi budur ve kudum uygulamanin VARSAYILAN vurmalisidir."
-    },
-    {
-      "id": "compmusic-bendir",
-      "path": "all-samples/140395__barisbozkurt__curcuna_bendir.wav",
-      "sha256": "04776a03c0881938dbe99159af1b5a200319eb1d93b209cd9fdb813d14921a61",
-      "bytes": 5845452,
-      "origin": "https://freesound.org/s/140395/",
-      "license": "CC BY-NC 4.0",
-      "licenseUrl": "https://creativecommons.org/licenses/by-nc/4.0/",
-      "commercialUse": "kisitli",
-      "attributionRequired": true,
-      "attribution": "Kayit: barisbozkurt (Freesound) · Icra: Eren Ergen · 23.12.2011 · CompMusic projesi, Universitat Pompeu Fabra",
-      "restrictionNote": "Ticari kullanim KISITLI. `bendir/` klasorunun kaynagi budur."
+      "restrictionNote": "Ticari kullanim KISITLI. `kudum/` klasorunun kaynagi budur ve kudum uygulamanin VARSAYILAN vurmalisidir. `bendir` ayni kaydediciden gelen bir kayittan uretiliyordu; 2026-07-27'de Art Libre soundfont'tan yeniden uretilerek bu kisittan CIKARILDI. kudum icin ayni cozum YOK: dort soundfont'un 113+ preset'inde `kudum` preset'i hic gecmiyor."
     }
   ]
 }

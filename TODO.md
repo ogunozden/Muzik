@@ -141,7 +141,15 @@ tick ekseninde olsun.
       · Ama usul başına **en sık** desen ders kitabı düzümüyle örtüşüyor —
       Aksak `22221`, Düyek `12122`, Aksaksemâî `212221`, Curcuna `21223`.
       Kanıt olarak sunulabilir, otorite olarak değil.
-- [ ] **B5** · Tekrar işaretleri (TXT açılmış 1,488×, mu2 koruyor)
+- [x] **B5** · Tekrar yapısı ölçüldü ve teste bağlandı · **planın "mu2 koruyor"
+      varsayımı çürütüldü.**
+      · **TXT tekrarları AÇAR:** tekrarı olan 1.977 eserin **%97,8'inde**
+      TXT, MusicXML'den uzun — oran medyanı **1,745×** (plan 1,488 demişti)
+      · **MusicXML tekrarı KORUR** (`<repeat direction>`, 9.932 işaret) ve
+      `importer.ts` bunu zaten okuyor (D2) → **otoritatif kaynak bu**
+      · **mu2 kod-21 tekrar DEĞİL:** MusicXML'le birebir örtüşme yalnız
+      **%32** (11.985 vs 9.932; fark ±3'e yayılıyor). Daha geniş bir yapısal
+      işaret sınıfı — "tekrar" olarak **adlandırılmadı**
 - [x] **B6** · **Kaynak regresyonu doğrulandı ve teste bağlandı.**
       v3: 382 kod-51 satırının **0'ında** `Soz1` var.
       v2: aynı alan **319/411 (%77,6)** satırda doluydu — README v2 madde 5

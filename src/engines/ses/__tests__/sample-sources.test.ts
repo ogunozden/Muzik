@@ -109,14 +109,14 @@ describe("Her klasörün provenance kaydı (H4)", () => {
 
     // 2026-07-27 durumu. Bu sayilar bir HEDEF degil, bir OLCUM: iyilestikce
     // (claimed -> documented) test kirilir ve guncellenmesi gerekir.
-    expect(counts).toEqual({documented: 1, claimed: 16, unknown: 3});
+    expect(counts).toEqual({documented: 1, claimed: 16, unknown: 2});
 
     // `unknown` olanlar adiyla sabit: yeni bir klasor kayitsiz eklenemez.
     const unknown = Object.entries(provenance.folders)
       .filter(([, record]) => record.confidence === "unknown")
       .map(([name]) => name)
       .sort();
-    expect(unknown).toEqual(["bendir", "kudum", "tanpura"]);
+    expect(unknown).toEqual(["bendir", "kudum"]);
   });
 
   it("`documented` olan klasorun ureticisi GERCEKTEN depoda", () => {

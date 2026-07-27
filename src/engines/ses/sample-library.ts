@@ -55,7 +55,6 @@ const SAMPLE_FOLDER_BY_INSTRUMENT_ID = {
   ney: "ney",
   ud: "ud",
   kemençe: "kemence",
-  tanpura: "tanpura",
   kanun: "kanun",
   bağlama: "baglama",
   tambur: "tambur",

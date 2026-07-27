@@ -6,18 +6,20 @@ import {SAMPLE_SLOTS} from "../sample-library";
 const samplesRoot = path.join(process.cwd(), "public", "samples");
 
 /**
- * BILINCLI OLARAK BOS BIRAKILAN KLASOR (PLAN.md §11.3)
+ * BILINCLI OLARAK BOS BIRAKILAN KLASORLER (PLAN.md §11.3)
  *
- * Eskiden burada `knownMissingNeySlots` vardi (ney'in 26 eksik yuvasi).
- * F5'te ney soundfont'tan yeniden uretildi ve **36/36 doldu**; liste bayatladi.
+ * Su an BOS — ve bu iyi haber. Tarihce, listenin ne ise yaradigini gosteriyor:
  *
- * Yerine gecen tek eksiklik `tanpura`: 36 dosyanin 35'i etiketiyle
- * uyusmuyordu ve kaynak preset'in dort bolgesinin hicbiri olculemiyor, yani
- * onarim imkansiz. Yanlis perde calan dosya, dosya olmamasindan KOTUDUR —
- * motor sample bulamayinca sentezleyiciye duser ve dogru perdeyi calar.
- * Bu yuzden dosyalar kaldirildi.
+ *  · Eskiden burada `knownMissingNeySlots` vardi (ney'in 26 eksik yuvasi).
+ *    F5'te ney soundfont'tan yeniden uretildi ve **36/36 doldu**.
+ *  · Sonra kisa sure `tanpura` yazdi: 36 dosyanin 35'i yanlis perde caliyordu
+ *    ve kaynak olculemedigi icin onarilamiyordu. Sonunda saz projeden
+ *    tamamen cikarildi (§11.7), klasor de gitti.
+ *
+ * Liste bos kalsa bile DURUYOR: bir klasorun sessizce bosalmasi asagidaki
+ * kapida durur ve buraya gerekce yazmayi zorunlu kilar.
  */
-const INTENTIONALLY_EMPTY_FOLDERS = new Set(["tanpura"]);
+const INTENTIONALLY_EMPTY_FOLDERS = new Set<string>();
 
 function walkFiles(dir: string): string[] {
   if (!existsSync(dir)) return [];

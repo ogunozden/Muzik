@@ -12,6 +12,10 @@
     "               Yani 'su preset'ten geldi' bir IDDIA; dogrulanmadi.",
     "  unknown    — kaynagi hicbir yerde yazmiyor.",
     "",
+    "`tanpura` 2026-07-27'de LISTEDEN CIKARILDI: 36 dosyanin 35'i yanlis perde",
+    "caliyordu, kaynak preset'in dort bolgesinin hicbiri olculemiyordu ve saz",
+    "zaten Hint sazidir (projede `tambur` var). Bkz. PLAN §11.7.",
+    "",
     "`unknown` olanlar gizlenmiyor; `sample-provenance` testi sayilarini",
     "sabitler, yani bir klasor sessizce belgesiz kalamaz."
   ],
@@ -32,14 +36,6 @@
     "santur": {"sourceId": "proteus3", "presets": ["Santur"], "producer": null, "confidence": "claimed"},
     "rebab": {"sourceId": "proteus3", "presets": ["Yesir Rebab"], "producer": null, "confidence": "claimed"},
     "miskal": {"sourceId": "proteus2", "presets": ["Pan Flute"], "producer": null, "confidence": "claimed"},
-    "tanpura": {
-      "sourceId": "proteus3",
-      "presets": ["Tamburas"],
-      "producer": null,
-      "confidence": "unknown",
-      "samplesRemoved": true,
-      "note": "SAMPLE'LARI KALDIRILDI. Olculdu: kaynak Proteus `Tamburas` preset'inin 4 bolgesinin HICBIRI olculemiyor ve klasordeki 36 dosyanin 35'i etiketiyle uyusmuyordu — yani onarim imkansiz. Yanlis perde calan dosya, dosya olmamasindan kotudur: motor sample bulamayinca sentezleyiciye duser ve DOGRU perdeyi calar. Enstruman listede kaldi. AYRI ve ACIK soru (urun karari): tanpura bir HINT sazidir ve projede zaten `tambur` var — listede durup durmayacagi kullanicinin karari, bkz. PLAN §11.7."
-    },
     "davul": {"sourceId": "turkish-arab3", "presets": ["Eastern Percussion"], "producer": null, "confidence": "claimed"},
     "def": {"sourceId": "turkish-arab3", "presets": ["Riq_Full"], "producer": null, "confidence": "claimed"},
     "darbuka": {"sourceId": "turkish-arab3", "presets": ["Darbuka"], "producer": null, "confidence": "claimed"},

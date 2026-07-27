@@ -5,7 +5,6 @@ export type InstrumentType =
   | "ney"
   | "ud"
   | "kemençe"
-  | "tanpura"
   | "kanun"
   | "bağlama"
   | "tambur"
@@ -100,22 +99,6 @@ export const INSTRUMENT_PROFILES: Record<InstrumentType, InstrumentProfile> = {
     ],
     vibratoRate: 7.2,
     vibratoDepth: 0.07,
-  },
-  tanpura: {
-    type: "melodic",
-    harmonics: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16],
-    harmonicGains: [1, 0.55, 0.38, 0.28, 0.2, 0.14, 0.1, 0.07, 0.05, 0.035, 0.022, 0.015, 0.01, 0.007, 0.005, 0.003],
-    attackTime: 0.08,
-    decayTime: 0.05,
-    sustainLevel: 0.95,
-    releaseTime: 0.8,
-    brightness: 0.38,
-    noiseAmount: 0.02,
-    formants: [
-      {frequency: 220, gain: 0.5, q: 2},
-      {frequency: 500, gain: 0.35, q: 2.5},
-      {frequency: 850, gain: 0.2, q: 3},
-    ],
   },
   kanun: {
     type: "melodic",

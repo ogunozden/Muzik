@@ -60,7 +60,7 @@ describe("Kayıt dışı perde bildirilmeli (F2)", () => {
   it("olculmemis enstruman icin cevap 'bilinmiyor' — 'sorun yok' DEGIL", () => {
     // En sinsi hata burada olurdu: olcmedigimiz enstrumani sessizce temiz
     // saymak. Bu testin varlik sebebi o.
-    for (const instrument of ["ud", "kanun", "tanpura", "lavta"] as InstrumentType[]) {
+    for (const instrument of ["ud", "kanun", "santur", "lavta"] as InstrumentType[]) {
       expect(describeMelodicSampleUse(instrument, 48).kind).toBe("unknown");
       expect(describeExtrapolation(instrument, 48)).toBeNull();
     }

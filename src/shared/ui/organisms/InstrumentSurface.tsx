@@ -10,7 +10,6 @@ type MelodicInstrument =
   | "ney"
   | "ud"
   | "kemençe"
-  | "tanpura"
   | "kanun"
   | "bağlama"
   | "tambur"
@@ -55,7 +54,6 @@ export const MELODIC_INSTRUMENT_SURFACES: Record<MelodicInstrument, SurfaceConfi
   ney: {name: "Ney", layout: "wind", tone: "oklch(72% 0.08 83)", accent: "oklch(43% 0.08 65)", detail: "oklch(30% 0.05 55)", stringCount: 7},
   ud: {name: "Ud", layout: "string", tone: "oklch(49% 0.11 45)", accent: "oklch(80% 0.10 78)", detail: "oklch(28% 0.06 38)", stringCount: 6},
   kemençe: {name: "Kemençe", layout: "bowed", tone: "oklch(43% 0.09 31)", accent: "oklch(75% 0.08 72)", detail: "oklch(24% 0.05 28)", stringCount: 3},
-  tanpura: {name: "Tanpura", layout: "zither", tone: "oklch(50% 0.08 88)", accent: "oklch(80% 0.10 96)", detail: "oklch(34% 0.06 76)", stringCount: 4},
   kanun: {name: "Kanun", layout: "zither", tone: "oklch(60% 0.11 79)", accent: "oklch(84% 0.12 94)", detail: "oklch(35% 0.08 58)", stringCount: 12},
   bağlama: {name: "Bağlama", layout: "string", tone: "oklch(48% 0.12 58)", accent: "oklch(78% 0.11 82)", detail: "oklch(29% 0.06 44)", stringCount: 7},
   tambur: {name: "Tambur", layout: "string", tone: "oklch(41% 0.08 52)", accent: "oklch(74% 0.10 78)", detail: "oklch(25% 0.05 44)", stringCount: 6},

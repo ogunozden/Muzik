@@ -79,15 +79,14 @@
 üretilseler en çok gerilme sırasıyla **16,02 · 14,23 · 6,96** yarım ton olurdu.
 Ney bir istisnaymış (2,23). Yeniden üretim bugün kusursuz olanı bozardı.
 
-**Tanpura — mühendislik kısmı çözüldü, ürün kısmı sizde.** 36 dosyanın 35'i
-yanlış perde çalıyordu ve kaynak preset'in dört bölgesinin hiçbiri ölçülemediği
-için onarım imkânsızdı. **Yanlış perde çalan dosya, dosya olmamasından
-kötüdür** — motor sample bulamayınca sentezleyiciye düşüyor ve *doğru* perdeyi
-çalıyor. Dosyalar **kaldırıldı**; enstrüman listede kaldı. Ölçülebilir bir
-kayıt gelirse kapı kırılır.
-Kalan **ürün** sorusu: tanpura bir Hint sazı ve projede zaten `tambur` var —
-enstrüman listesinde kalsın mı? Küratöryel yargı, ADR 0001 gereği sizde
-(PLAN §11.7).
+**Tanpura projeden ÇIKARILDI** (kullanıcı kararı). İki sebep üst üste geldi:
+36 dosyanın 35'i yanlış perde çalıyordu ve kaynak ölçülemediği için onarım
+imkânsızdı; ayrıca tanpura bir **Hint** sazı, projede zaten `tambur` var.
+Tip birleşimi, listeler, ses profili, klasör eşlemesi, görsel tanım ve
+provenance kaydı kaldırıldı — **melodik enstrüman 11 → 10**.
+**İleriye dönük kapı:** `public/samples/` altındaki her melodik klasör artık
+doğrulama listesinde olmak *zorunda* (KAPSAM iddiası). Tanpura'nın aylarca
+sessizce durabilmesinin sebebi bu kapının olmamasıydı.
 
 ---
 

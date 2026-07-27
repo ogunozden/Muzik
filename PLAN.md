@@ -1055,7 +1055,7 @@ duruyordu — çünkü yerel coverage koşusu H2'deki zaman aşımına takılıy
 
 ---
 
-### 11.7 Tanpura — mühendislik kısmı ÇÖZÜLDÜ, ürün kısmı sizde
+### 11.7 Tanpura — **PROJEDEN ÇIKARILDI** (kullanıcı kararı, 2026-07-27)
 
 **Mühendislik kararı (verildi ve uygulandı):** 36 dosyanın 35'i yanlış perde
 çalıyordu ve kaynak preset'in dört bölgesinin hiçbiri ölçülemediği için onarım

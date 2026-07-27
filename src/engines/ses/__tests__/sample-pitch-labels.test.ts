@@ -58,7 +58,7 @@ const SILENCE_FLOOR = 1e-4;
 const INSTRUMENTS: Array<{name: string; verified: boolean; minAgreement: number; note?: string}> = [
   // Esikler 0,25 s pencereyle OLCULEN degerlerin biraz altina konuldu
   // (olculen: kemence/tambur/ud/lavta 1,00 · kanun 0,92 · miskal/santur 0,83 ·
-  //  ney 0,81 · baglama 0,64 · rebab 0,25 · tanpura 0,00).
+  //  ney 0,81 · baglama 0,64 · rebab 0,25).
   {name: "kemence", verified: true, minAgreement: 0.9},
   {name: "tambur", verified: true, minAgreement: 0.9},
   // ney lisans sebebiyle YENIDEN URETILDI (CC BY-NC -> Art Libre soundfont).
@@ -81,31 +81,19 @@ const INSTRUMENTS: Array<{name: string; verified: boolean; minAgreement: number;
   // olculebilen her dosya adiyla ayni perdede.
   {name: "baglama", verified: true, minAgreement: 0.55},
   {name: "rebab", verified: true, minAgreement: 0.2, note: "bir oktav tizdi, duzeltildi"},
-  // `tanpura` bu listede DEGIL — dosyalari KALDIRILDI (asagida).
+  // `tanpura` PROJEDEN CIKARILDI (asagidaki nota bak).
 ];
 
 /**
- * TANPURA'NIN SAMPLE'LARI NEDEN KALDIRILDI (PLAN.md §11.3 / §11.7)
+ * `tanpura` 2026-07-27'de LISTEDEN CIKARILDI (PLAN.md §11.7).
  *
- * Uzun sure "dogrulanamiyor" diye isaretli durdu. Sonunda kaynaga bakildi ve
- * sorunun olcumde degil MALZEMEDE oldugu goruldu: kaynak Proteus `Tamburas`
- * preset'inin dort bolgesinin **hicbiri olculemiyor**, ve klasordeki 36
- * dosyanin 35'i etiketiyle uyusmuyordu.
+ * 36 dosyanin 35'i yanlis perde caliyordu ve kaynak Proteus `Tamburas`
+ * preset'inin dort bolgesinin HICBIRI olculemiyordu — yani onarim imkansizdi.
+ * Ayrica tanpura bir Hint sazidir; Turk muziginin dem sazi degildir ve
+ * projede zaten `tambur` var.
  *
- * Yani bu dosyalar sessiz bir borc degil, **duyulan bir kusurdu**: motor
- * dosya adini dogru varsayip `playbackRate = istenen / etiketlenen`
- * hesapladigi icin tanpura secildiginde yanlis perde caliyordu.
- *
- * Onarim imkansiz oldugu icin dosyalar kaldirildi. Enstruman listede KALDI:
- * motor sample bulamayinca sentezleyiciye duser (`SYNTHETIC_FALLBACK_ENABLED`,
- * varsayilan acik) ve sentez **dogru perdeyi** calar. Yanlis perde calan bir
- * dosya, dosya olmamasindan kotudur.
- *
- * Acik kalan AYRI soru (urun karari, muhendislik karari degil): tanpura bir
- * HINT sazidir ve projede zaten `tambur` var. Enstruman listesinde durup
- * durmayacagi kullanicinin karari — bkz. PLAN §11.7.
+ * Dosyalar, klasor ve enstruman kaydi kaldirildi.
  */
-const TANPURA_SAMPLES_REMOVED = true;
 
 function midiFromSlotName(name: string): number | null {
   const match = name.match(/^([A-G]s?)(-?\d)$/);
@@ -154,18 +142,30 @@ function scanInstrument(folder: string): Scan {
 }
 
 describe("Sample etiketleri icerikle uyusmali (F1)", () => {
-  it("tanpura klasorunde sample YOK — sentezleyiciye dusuyor", () => {
-    expect(TANPURA_SAMPLES_REMOVED).toBe(true);
+  it("KAPSAM: perde tasiyan her klasor bu testin icinde", () => {
+    // ── COZULEN RISK ──────────────────────────────────────────────────────
+    // Yukaridaki `INSTRUMENTS` listesi ELLE yazili. Birisi
+    // `public/samples/` altina yeni bir melodik klasor koyup listeye eklemeyi
+    // unutursa, o klasorun perdeleri HIC dogrulanmaz ve kimse fark etmez.
+    //
+    // Bu tam olarak `tanpura`da yasandi: klasor aylarca "dogrulanamiyor"
+    // etiketiyle durdu, 36 dosyanin 35'i yanlis perde caliyordu.
+    //
+    // Bu kapi listeyi klasorlerle KARSILASTIRIR: kapsam disi kalan melodik
+    // klasor olamaz.
+    const percussionFolders = new Set([
+      "kudum", "bendir", "davul", "def", "darbuka", "zilli-def", "kasik", "zil", "nakkare",
+    ]);
+    const covered = new Set(INSTRUMENTS.map((instrument) => instrument.name));
 
-    const folder = path.join(SAMPLES_ROOT, "tanpura");
-    const files = fs.existsSync(folder)
-      ? fs.readdirSync(folder).filter((name) => name.endsWith(".wav"))
-      : [];
+    const uncovered = fs
+      .readdirSync(SAMPLES_ROOT, {withFileTypes: true})
+      .filter((entry) => entry.isDirectory())
+      .map((entry) => entry.name)
+      .filter((name) => !percussionFolders.has(name) && !covered.has(name))
+      .sort();
 
-    // Gerekce yukarida. Bir gun OLCULEBILIR bir tanpura kaydi gelirse bu test
-    // kirilir ve enstrumani yeniden `INSTRUMENTS` listesine almak gerektigini
-    // hatirlatir.
-    expect(files).toEqual([]);
+    expect(uncovered).toEqual([]);
   });
 
   for (const instrument of INSTRUMENTS) {

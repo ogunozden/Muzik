@@ -82,9 +82,15 @@ tick ekseninde olsun.
       · **üçüncü kapı hata yakaladı:** konum önce olaylardan toplanıyordu,
       31.605 süreli kod-9-dışı satır atlandığı için bar çizgileri kayıyor ve
       bölünen nota %2,07 çıkıyordu; konum artık satırlardan yürünüyor
-- [ ] **G8** · Doğrulamayı totolojiden çıkar
-      *(`validator.ts:64-72` bugün hiç tetiklenemiyor; `quality.ts:36-44`
-      yanlış mertebeyle karşılaştırıyor)*
+- [x] **G8** · Doğrulama totolojiden çıktı
+      · `validator.ts` artık **bir sonraki ölçünün başlangıcıyla**
+      karşılaştırıyor (eskiden `measure.endBeat` zaten aynı event'lerin
+      `max`'ıydı — koşul matematiksel olarak sağlanamazdı)
+      · `quality.ts` artık ölçü içindeki **sürelerin toplamını** mertebeyle
+      karşılaştırıyor (eskiden `endBeat - startBeat` = ilk notadan son notaya
+      *yayılım*; ölçü başındaki/sonundaki boşluk görünmüyordu)
+      · yeni test dosyası ikisinin de **tetiklenebildiğini** kanıtlıyor —
+      geçen bir test, hiç tetiklenemeyen bir kontrol için de geçerdi
 
 ### Öncelik 2 · FAZ C/C1 — e2e blokajı · PLAN §5 · **kullanıcı eylemi**
 

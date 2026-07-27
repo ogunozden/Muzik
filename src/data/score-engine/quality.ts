@@ -33,13 +33,34 @@ function parseMeterQuarterBeats(meter: string): number | null {
   return numerator * (4 / denominator);
 }
 
+/**
+ * Olcunun NE KADARININ dolu oldugunu, yazili mertebeye gore olcer (G8).
+ *
+ * Eskiden `measure.endBeat - measure.startBeat` ile karsilastiriliyordu; ama
+ * ikisi de o olcunun KENDI event'lerinden turetiliyor (`canonical-score.ts`:
+ * `startBeat = min(...)`, `endBeat = max(...)`). Bu, "ilk notadan son notaya
+ * kadar olan aralik" demekti — olcunun BASINDAKI ya da SONUNDAKI bosluk
+ * gorunmuyordu. Yani metrik doluluk degil, event YAYILIMI olcuyordu.
+ *
+ * Simdi olcunun icindeki SURELERIN TOPLAMI mertebeyle karsilastiriliyor.
+ * Bu, `startBeat`/`endBeat`ten bagimsiz bir buyukluk: bar cizgisi bolmesi
+ * (G7) calismazsa ya da olcu numarasi yanlis atanirsa BURADA gorunur.
+ *
+ * Son olcu haric tutulur: eserlerin cogu tam olcuyle bitmez ve bu bir hata
+ * degildir (olculdu: kanonik uzunlugu tam olcuye oturan eser %75,8).
+ */
 function countMeasureSpanMismatches(document: CanonicalScoreDocument): number {
   const expectedQuarterBeats = parseMeterQuarterBeats(document.meter);
   if (!expectedQuarterBeats) return document.measures.length;
 
-  return document.measures.filter((measure) => {
-    const span = measure.endBeat - measure.startBeat;
-    return Math.abs(span - expectedQuarterBeats) > 0.001;
+  const durationByMeasure = new Map<string, number>();
+  for (const event of document.events) {
+    durationByMeasure.set(event.measureId, (durationByMeasure.get(event.measureId) ?? 0) + event.durationBeats);
+  }
+
+  return document.measures.slice(0, -1).filter((measure) => {
+    const filled = durationByMeasure.get(measure.id) ?? 0;
+    return Math.abs(filled - expectedQuarterBeats) > 0.001;
   }).length;
 }
 
@@ -71,10 +92,11 @@ export function evaluateCanonicalScoreQuality(document: CanonicalScoreDocument):
     },
     {
       id: "measure-duration-usul",
-      label: "Olcu duration/usul",
+      label: "Olcu doluluğu / mertebe",
       status: measureMismatches === 0 ? "pass" : "review",
       value: measureMismatches === 0 ? "uyumlu" : `${measureMismatches} review`,
-      detail: `${document.measures.length - measureMismatches}/${document.measures.length} olcu meter span ile uyumlu`,
+      // Son olcu haric tutuluyor (eserlerin cogu tam olcuyle bitmez).
+      detail: `${Math.max(0, document.measures.length - 1) - measureMismatches}/${Math.max(0, document.measures.length - 1)} olcu ${document.meter} mertebesini tam dolduruyor`,
     },
     {
       id: "pitch-vex-mapping",

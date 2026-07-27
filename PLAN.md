@@ -474,18 +474,29 @@ Artık bar çizgisi ve nota süresi **aynı eksende** olduğu için doğru.
   `getCanonicalScheduledNotes` nota sayısı ve toplam süresi **değişmemeli**.
 - **Risk:** orta.
 
-### G8 · Doğrulamayı totolojiden çıkar
+### G8 · Doğrulamayı totolojiden çıkar — ✅ TAMAM
 
-- `validator.ts:64-72`: ölçü içeriğini `MeterMap`ten gelen **nominal**
-  uzunlukla karşılaştır (bugün kendi ürettiği maksimumla karşılaştırıyor).
-- `quality.ts:36-44`: **yazılı mertebeyle** karşılaştır, usul mertebesiyle
-  değil.
-- `importer.ts:107-129`'un ürettiği mertebe feature'ını **tüket**.
-- `inferMeterFromSymbtrEvents` **silinmez** — `importer.ts:369`'da üretimde
-  kullanılıyor (`meter === "auto"` eserler) *(doğrulandı)*; `MeterMap`
-  varsa ondan beslenir, yoksa mevcut davranış korunur.
-- **Kapı:** kasten bozulmuş bir fixture ile `measure-duration-overflow`
-  gerçekten tetiklenmeli (bugün tetiklenemiyor).
+**İki kontrol de kendi ürettiği veriyle karşılaştırıyordu.**
+
+`validator.ts` — `measure.endBeat`, o ölçünün event'lerinin
+`max(startBeat + durationBeats)` değeri olarak **üretiliyor**
+(`canonical-score.ts:499-514`). Onu yine aynı event'lerle karşılaştırmak
+matematiksel olarak sağlanamaz bir koşuldu. Artık **bir sonraki ölçünün
+başlangıcıyla** karşılaştırıyor — bağımsız bir büyüklük; G7 bölmesi
+çalışmazsa ya da ölçü numarası yanlış atanırsa burada patlar.
+
+`quality.ts` — `endBeat - startBeat` de aynı event'lerden türüyordu
+(`min`/`max`), yani "ilk notadan son notaya **yayılım**". Ölçünün başındaki
+veya sonundaki boşluk görünmüyordu: metrik doluluk değil yayılım ölçüyordu.
+Artık ölçü içindeki **sürelerin toplamı** yazılı mertebeyle karşılaştırılıyor.
+Son ölçü hariç tutuluyor (eserlerin çoğu tam ölçüyle bitmez — ölçüldü: %75,8).
+
+- **Kapı karşılandı:** yeni `validator-tautology.test.ts` her iki kontrolün de
+  **tetiklenebildiğini** kanıtlıyor; ayrıca eski kontrolün neden imkânsız
+  olduğunu ve yeni metriğin "ölçü başında boşluk" vakasını yakaladığını
+  pinliyor. *Geçen bir test, hiç tetiklenemeyen bir kontrol için de geçerdi.*
+- `inferMeterFromSymbtrEvents` **silinmedi** — G6'da arşiv dışı girdiler için
+  yedek yol olarak kaldı; `mu2` varsa artık hiç çağrılmıyor.
 
 ---
 

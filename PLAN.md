@@ -630,3 +630,77 @@ Bu belgedeki her sayı aşağıdaki yöntemlerle üretildi. Yeniden üretilebili
   değişimi, anacrusis, tekrar işaretleri. İncelenmedi.
 - code-1, 4, 10, 11, 24, 28, 32, 43, 44'ün anlamı **çözülemedi** (B2).
 - 1 dosyanın mu2 karşılığı yok (`saba--miraciye--serbest`, sig `1/0`).
+
+---
+
+## 10. FAZ F — Sample doğruluğu, kalan borçlar (2026-07-27)
+
+> **Tetikleyen bulgu:** ney'de 5 dosyanın yanlış perde etiketiyle durduğu
+> ortaya çıktı (D1). Aynı tarama tüm melodik klasörlere uygulanınca **132
+> sample sapıyor** göründü. Ama sapmanın *yapısı* incelenince ölçümün
+> kendisinin bir kısım tınıda güvenilmez olduğu anlaşıldı.
+
+### F0 · Ölçümü önce güvenilir yap — **hiçbir dosyaya dokunmadan**
+
+Oktav kayması çıkarıldıktan sonra kalan sapmanın standart sapması:
+
+| enstrüman | kalan sd | ölçüm |
+|---|---|---|
+| tambur 8c · miskal 9c · kemençe 10c | dar | **güvenilir** |
+| ney 77c · bağlama 81c | orta | şüpheli |
+| kanun 112c · santur 137c · ud 143c · tanpura 173c · lavta 190c · rebab 241c | geniş | **güvenilmez** |
+
+150–240 cent belirsizlikle "bu dosya yanlış" denemez. Tellilerde/vurmalılarda
+YIN kısa pencerede temel frekansı kaçırıyor (attack transiyenti + zayıf temel).
+
+- **Yapılacak:** ikinci bağımsız yöntem (harmonic product spectrum) ekle;
+  yalnız **iki yöntem aynı sonucu verdiğinde** karar ver. Attack'i tınıya göre
+  atla, pencereyi uzat.
+- **Kapı:** her enstrüman için iki yöntemin uyuşma oranı raporlanır.
+  Uyuşma <%90 olan enstrüman **"doğrulanamıyor"** diye işaretlenir — sessizce
+  geçilmez, yanlış da düzeltilmez.
+- **Risk:** sıfır (yalnız ölçüm).
+
+### F1 · Yalnız kanıtlanan sapmaları düzelt
+
+- F0'da iki yöntemin hemfikir olduğu dosyalar için `build-*-samples.mjs`
+  yaklaşımını uygula (ney'de işe yaradı: kapalı döngü üret→ölç→düzelt).
+- **Kapı:** düzeltilen her dosya için önce/sonra Hz ve cent raporlanır;
+  `sample-pitch-labels.test.ts` kapsamı o enstrümana genişletilir.
+- **Risk:** orta. **Geri alma:** dosyalar git'te, tek commit.
+
+### F2 · Enstrümanın GERÇEK ses sahası bildirilsin
+
+`ney` C3–As3 bir oktava varan gerilmeyle üretildi (D1.1) — ney o bölgeyi
+çalmaz. Aynısı diğer enstrümanlar için de geçerli olabilir.
+
+- Her enstrüman için gerçek `minMidi`/`maxMidi` bildir.
+- `getNearestLoadedMelodicSample` saha dışında **uydurma sample seçmesin**;
+  ya en yakın gerçek sample'ı kullansın ya da sessiz kalsın — ama bunu
+  **bildirsin**.
+- **Kapı:** saha dışı istek geldiğinde davranış testle sabitlensin.
+
+### F3 · `hek` — türetilmiş olduğu görünür kalsın (D2)
+
+`hek` şu an dum+tek toplamından türetiliyor (K4). Gerçek kayıt yoksa bu
+meşru bir yaklaşımdır **ama iddia edilmemeli**.
+
+- Yerel vurmalı paketlerinde gerçek `hek` var mı ölç.
+- Yoksa: `derived: true` bilgisi tip yüzeyinde ve `/sesler` sayfasında
+  görünür olsun.
+- **Kapı:** türetilmiş sample'ın gerçek diye sunulmadığı testle sabitlensin.
+
+### F4 · Dev güvenlik borcunu izlenebilir yap
+
+9 bulgu, yukarı akış kilidi (bkz. `docs/SECURITY-AUDIT.md`). Bekleyip ummak
+yerine **ölç**: `eslint-config-next` eklentilerini güncellediğinde ya da
+ESLint 10 uyumlu sürüm çıktığında haber ver.
+
+- **Kapı:** borç sayısı 9'un altına düşerse test uyarsın (belge güncellensin).
+- **Risk:** sıfır.
+
+### E1 · Tetikleyici ölçülsün, körlemesine yapılmasın
+
+Korpus JSON süzme kazancı gzip **3,4 KB (%0,14)**. Plan "bundle bütçesi
+zorlanırsa" demişti. Bütçe payı ölçülür; tetikleyici **ateşlenmediyse
+yapılmaz** ve sebebi yazılır. Planın kendi kararını çiğnememek için.

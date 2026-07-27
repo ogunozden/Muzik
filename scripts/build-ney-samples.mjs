@@ -33,6 +33,7 @@
  */
 import fs from "node:fs";
 import path from "node:path";
+import {centsBetween, detectPitchConsensus, readWavMono} from "./lib/pitch-detect.mjs";
 
 const ROOT = process.cwd();
 const SOURCE_DIR = path.join(ROOT, "all-samples", "27726__bliind__ney-flute-sound-samples");
@@ -46,64 +47,6 @@ const SLOT_COUNT = 36;
 const OUTPUT_SECONDS = 1.6; // mevcut dosyalarla ayni
 const FADE_IN_SECONDS = 0.012;
 const FADE_OUT_SECONDS = 0.18;
-
-function readWav(file) {
-  const buffer = fs.readFileSync(file);
-  const channels = buffer.readUInt16LE(22);
-  const rate = buffer.readUInt32LE(24);
-  const bits = buffer.readUInt16LE(34);
-
-  let offset = 12;
-  while (offset < buffer.length - 8) {
-    const id = buffer.toString("ascii", offset, offset + 4);
-    const size = buffer.readUInt32LE(offset + 4);
-    if (id === "data") {
-      const bytesPerSample = bits / 8;
-      const frames = Math.floor(size / (bytesPerSample * channels));
-      const mono = new Float32Array(frames);
-      for (let i = 0; i < frames; i++) {
-        const p = offset + 8 + i * bytesPerSample * channels;
-        let value = 0;
-        if (bits === 24) value = ((buffer[p + 2] << 24) | (buffer[p + 1] << 16) | (buffer[p] << 8)) / 2147483648;
-        else if (bits === 16) value = buffer.readInt16LE(p) / 32768;
-        else if (bits === 32) value = buffer.readInt32LE(p) / 2147483648;
-        mono[i] = value;
-      }
-      return {mono, rate};
-    }
-    offset += 8 + size + (size % 2);
-  }
-  throw new Error(`data chunk yok: ${file}`);
-}
-
-/** Autocorrelation ile temel frekans. Varsayim yok — olcum. */
-function detectFundamental(mono, rate) {
-  const start = Math.floor(mono.length * 0.35);
-  const length = Math.min(Math.floor(rate * 0.5), mono.length - start);
-  const x = mono.subarray(start, start + length);
-
-  let mean = 0;
-  for (let i = 0; i < length; i++) mean += x[i];
-  mean /= length;
-
-  let energy = 0;
-  for (let i = 0; i < length; i++) energy += (x[i] - mean) ** 2;
-
-  const minLag = Math.floor(rate / 1200);
-  const maxLag = Math.floor(rate / 110);
-  let bestLag = -1;
-  let bestScore = 0;
-  for (let lag = minLag; lag <= maxLag; lag++) {
-    let sum = 0;
-    for (let i = 0; i + lag < length; i++) sum += (x[i] - mean) * (x[i + lag] - mean);
-    const score = sum / energy;
-    if (score > bestScore) {
-      bestScore = score;
-      bestLag = lag;
-    }
-  }
-  return bestLag > 0 ? {hz: rate / bestLag, confidence: bestScore} : null;
-}
 
 function midiToFrequency(midi) {
   return 440 * Math.pow(2, (midi - 69) / 12);
@@ -169,21 +112,35 @@ function writeWav24Stereo(file, mono, rate) {
 }
 
 // ── 1) Kaynaklarin perdesini OLC ────────────────────────────────────────
+// IKI YONTEM UZLASMASI ZORUNLU.
+//
+// Bu betigin ONCEKI surumu tek dedektore (YIN) guveniyordu ve YANLIS yuvalar
+// uretti: `B4` -202 cent, `C5` -214 cent. Sebep ince: kapali dongu, urettigi
+// sesi kaynagi olcen dedektorun KENDISIYLE dogruluyordu. Kaynak perdesi
+// yanlis olcuLdugunde hata dongu icinde birbirini goturuyor, gercekte
+// kaliyordu. Klasik asiri uyum.
+//
+// Artik YIN (zaman alani) ve HPS (frekans alani) hemfikir degilse kaynak
+// REFERANS OLARAK KULLANILMAZ.
 const sources = [];
 for (const file of fs.readdirSync(SOURCE_DIR).filter((name) => name.endsWith(".wav")).sort()) {
-  const {mono, rate} = readWav(path.join(SOURCE_DIR, file));
-  const detected = detectFundamental(mono, rate);
-  if (!detected || detected.confidence < 0.8) {
-    console.warn(`[atlandi] ${file} — perde guveni dusuk`);
+  const wav = readWavMono(fs.readFileSync(path.join(SOURCE_DIR, file)));
+  if (!wav) continue;
+
+  const detected = detectPitchConsensus(wav.mono, wav.rate);
+  if (!detected.agreed || detected.hz === null) {
+    const yin = detected.yin === null ? "?" : detected.yin.toFixed(1);
+    const hps = detected.hps === null ? "?" : detected.hps.toFixed(1);
+    console.warn(`[atlandi] ${file} — YIN ${yin} Hz ile HPS ${hps} Hz uyusmuyor`);
     continue;
   }
-  sources.push({file, mono, rate, hz: detected.hz, confidence: detected.confidence});
+  sources.push({file, mono: wav.mono, rate: wav.rate, hz: detected.hz});
 }
 
-if (sources.length === 0) throw new Error("kaynak kayit bulunamadi");
-console.log(`kaynak kayit: ${sources.length}`);
+if (sources.length === 0) throw new Error("uzlasilan kaynak kayit yok");
+console.log(`uzlasilan kaynak kayit: ${sources.length}`);
 for (const source of sources) {
-  console.log(`  ${source.file.padEnd(30)} ${source.hz.toFixed(1).padStart(7)} Hz  guven=${source.confidence.toFixed(2)}`);
+  console.log(`  ${source.file.padEnd(30)} ${source.hz.toFixed(1).padStart(7)} Hz`);
 }
 
 // ── 2) Her yuvayi en yakin kaynaktan URET ───────────────────────────────
@@ -195,43 +152,60 @@ for (let index = 0; index < SLOT_COUNT; index++) {
   const targetHz = midiToFrequency(midi);
   const name = slotName(midi);
 
-  // Perde olarak en yakin kaynak (oktav farki cent cinsinden olculur).
-  let best = sources[0];
-  let bestDistance = Infinity;
-  for (const source of sources) {
-    const distance = Math.abs(1200 * Math.log2(targetHz / source.hz));
-    if (distance < bestDistance) {
-      bestDistance = distance;
-      best = source;
-    }
-  }
+  // Adaylar perde yakinligina gore sirali. TEK adayla yetinmiyoruz: bir
+  // kaynaktan uretilen ses DOGRULANAMAZSA sirdaki aday denenir. Onceki
+  // surumde dongu dogrulayamayinca SESSIZCE kabul ediyordu ve `Fs4` -197
+  // cent ile diske yaziliyordu.
+  const candidates = [...sources].sort(
+    (left, right) =>
+      Math.abs(centsBetween(targetHz, left.hz)) - Math.abs(centsBetween(targetHz, right.hz)),
+  );
 
-  const outputFrames = Math.floor(best.rate * OUTPUT_SECONDS);
-  // Kararli bolgeden basla (uflemenin ilk gurultusunu atla).
-  const startFrame = Math.floor(best.mono.length * 0.2);
-  const usable = best.mono.subarray(startFrame);
-
-  // KAPALI DONGU: tek seferlik perde olcumune GUVENME.
-  //
-  // Kaynaklarda vibrato var; hangi 0,5 s pencerenin olculdugune gore tespit
-  // 50 centten fazla oynayabiliyor (en dusuk guvenli kayit `ney-11`de bir
-  // yarim tonluk sapma uretmisti). Bu yuzden urettigimiz sesi YENIDEN OLCUP
-  // adimi duzeltiyoruz; hedefe oturana kadar tekrar.
-  let step = targetHz / best.hz;
+  let best = null;
   let rendered = null;
   let achievedCents = null;
+  let verified = false;
 
-  for (let attempt = 0; attempt < 6; attempt++) {
-    const needed = Math.ceil(outputFrames * step) + 4;
-    const slice = usable.subarray(0, Math.min(needed, usable.length));
-    rendered = resample(slice, step, outputFrames);
+  for (const candidate of candidates.slice(0, 4)) {
+    const outputFrames = Math.floor(candidate.rate * OUTPUT_SECONDS);
+    const startFrame = Math.floor(candidate.mono.length * 0.2);
+    const usable = candidate.mono.subarray(startFrame);
 
-    const measured = detectFundamental(rendered, best.rate);
-    if (!measured) break;
-    achievedCents = 1200 * Math.log2(measured.hz / targetHz);
-    if (Math.abs(achievedCents) <= 6) break;
-    // Olculen sapma kadar adimi duzelt.
-    step *= targetHz / measured.hz;
+    let attemptStep = targetHz / candidate.hz;
+    let attemptRendered = null;
+    let attemptCents = null;
+    let attemptVerified = false;
+
+    // KAPALI DONGU — dogrulamasi da UZLASMALI.
+    for (let attempt = 0; attempt < 6; attempt++) {
+      const needed = Math.ceil(outputFrames * attemptStep) + 4;
+      const slice = usable.subarray(0, Math.min(needed, usable.length));
+      attemptRendered = resample(slice, attemptStep, outputFrames);
+
+      const measured = detectPitchConsensus(attemptRendered, candidate.rate);
+      if (!measured.agreed || measured.hz === null) break;
+
+      attemptCents = centsBetween(measured.hz, targetHz);
+      if (Math.abs(attemptCents) <= 10) {
+        attemptVerified = true;
+        break;
+      }
+      attemptStep *= targetHz / measured.hz;
+    }
+
+    // Ilk adayin ciktisini yedek olarak tut, ama DOGRULANANI tercih et.
+    if (best === null || attemptVerified) {
+      best = candidate;
+      rendered = attemptRendered;
+      achievedCents = attemptCents;
+      verified = attemptVerified;
+    }
+    if (attemptVerified) break;
+  }
+
+  if (!verified) {
+    const shown = achievedCents === null ? "olculemedi" : `${achievedCents.toFixed(0)} cent`;
+    console.warn(`[DOGRULANMADI] ${name} <- ${best.file} (${shown}) — dosya yazildi ama kapi gecmedi`);
   }
 
   // Normalize + fade
@@ -254,7 +228,8 @@ for (let index = 0; index < SLOT_COUNT; index++) {
     targetHz: Number(targetHz.toFixed(2)),
     source: best.file,
     sourceHz: Number(best.hz.toFixed(2)),
-    shiftCents: Math.round(1200 * Math.log2(step)),
+    shiftCents: Math.round(centsBetween(targetHz, best.hz)),
+    verified,
     residualCents: achievedCents === null ? null : Math.round(achievedCents),
   });
 }

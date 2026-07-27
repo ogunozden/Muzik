@@ -250,9 +250,17 @@ tick ekseninde olsun.
       · **Dürüst sınır:** paketin en pes kaydı B3 (242 Hz). C3–As3 bir oktava
       varan gerilmeyle üretildi — **sentetik**, gerçek kayıt değil.
       Neyin gerçek ses sahası da bu bölgeyi kapsamaz.
-- [ ] **D1.1** · Alt oktav (C3–As3) için **gerçek** kayıt — şu an gerilmiş.
-      Ney bu bölgeyi çalmadığı için düşük öncelikli; asıl çözüm bu yuvaları
-      hiç kullanmamak olabilir.
+- [x] **F0/F1** · **Sample doğruluğu sistemik olarak denetlendi.**
+      İki bağımsız yöntem (YIN + HPS) uzlaşması zorunlu kılındı
+      (`scripts/lib/pitch-detect.mjs`). Uzlaşma yoksa **karar verilmiyor**.
+      · **bağlama**: ölçülebilen 24/24 dosya tam bir oktav **pes**ti → düzeltildi
+      · **rebab**: ölçülebilen 24/24 dosya tam bir oktav **tiz**di → düzeltildi
+      · **ney**: önceki düzeltmem kısmen yanlıştı (`B4` −202c, `C5` −214c);
+        kapalı döngü kendi ölçüm hatasına yakınsıyordu. Uzlaşmaya bağlandı,
+        artık 36/36 doğru.
+      · **lavta / tanpura**: ölçüm güvenilmez → **DOKUNULMADI**, testte
+        "doğrulanamıyor" olarak açıkça işaretli.
+      · Kapı 11 enstrümanın tamamına genişletildi.
       *(kırpılacak kusur yok; ses 0 ms'de başlıyor)*
 - [ ] **D2** · `hek` gerçek kaydı *(şu an dum+tek toplamından türetiliyor)*
 

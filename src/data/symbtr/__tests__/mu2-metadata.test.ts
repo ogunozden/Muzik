@@ -212,6 +212,12 @@ describe("buildTempoMap (B7) — kirpilmis BPM KESIN gibi sunulmaz", () => {
     expect(mu2Sourced).toBeGreaterThan(1500);
     // KANIT: mu2, TXT'nin 7-bit sinirini asan tempolari tasiyor.
     expect(aboveClipFromMu2).toBeGreaterThan(0);
+
+    // mu2 yolu BASKIN olmali: olculdu — 2.121 isaret mu2'den, 427'si TXT
+    // yedeginden geliyor ve bunlarin 174'u kirpik. Yani belirsiz deger
+    // azinlikta ve `clipped` ile ISARETLI; kesin gibi sunulmuyor.
+    expect(mu2Sourced).toBeGreaterThan(txtClipped * 5);
+    expect(txtClipped).toBeGreaterThan(0);
   });
 });
 

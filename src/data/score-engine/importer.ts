@@ -2,6 +2,7 @@ import fs from "node:fs";
 import path from "node:path";
 import type {PieceDefinition} from "@/data/pieces/hicazkarPesrev";
 import {HICAZKAR_PESREV} from "@/data/pieces/hicazkarPesrev";
+import {splitEventsAtBarlines} from "@/data/symbtr/barline-split";
 import {readMu2WrittenMeter} from "@/data/symbtr/meter-map";
 import {parseSymbtrScore, type SymbtrScoreEvent} from "@/data/symbtr/parser";
 import type {CanonicalScoreDocument, CanonicalSourceFeature} from "./canonical-score";
@@ -387,7 +388,11 @@ function readLocalWrittenMeter(piece: PieceDefinition): {numerator: number; deno
 export function parseSymbtrToCanonical(input: SymbtrCanonicalImportInput): SymbtrCanonicalImportResult {
   const piece = input.piece ?? USER_SYMBTR_PIECE;
   const writtenMeter = input.writtenMeter !== undefined ? input.writtenMeter : readLocalWrittenMeter(piece);
-  const events = parseSymbtrScore(input.raw, piece.bpm, piece.playbackAhenk?.koma53Offset ?? 0, {writtenMeter});
+  const parsed = parseSymbtrScore(input.raw, piece.bpm, piece.playbackAhenk?.koma53Offset ?? 0, {writtenMeter});
+  // GRAVUR yolu: bar cizgisini asan notalar bolunur ve bagla isaretlenir (G7).
+  // CALMA yolu bu fonksiyondan gecmez (`follow/page.tsx` dogrudan
+  // `parseSymbtrScore` cagirir), dolayisiyla duyulan nota sayisi degismez.
+  const events = splitEventsAtBarlines(parsed, input.raw, writtenMeter).events;
   // Mertebe biliniyorsa TAHMIN ETME. `inferMeterFromSymbtrEvents` yalniz `mu2`
   // bulunamayan (arsiv disi) girdiler icin kalir.
   const resolvedMeter = writtenMeter

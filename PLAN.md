@@ -437,7 +437,32 @@ yeniden üretilebilir) kayıtları siler. `human-reviewed` / `visual-regression`
 kayıtları **silinmez** — bayat sayılır ve `staleBasisKeptForReview` ile
 raporlanır. İnsan emeği sessizce atılmaz.
 
-### G7 · L1 — bar-aşan nota bölme + bağ
+### G7 · L1 — bar-aşan nota bölme + bağ — ✅ TAMAM
+
+`src/data/symbtr/barline-split.ts`. Daha önce denenip **geri alınmıştı**:
+ölçü ızgarası `Offset` sütunundan tahmin ediliyordu ve o sütun kendi içinde
+tutarsızdı, bölme noktaları saçma yerlere düşüyordu. G6'dan sonra ızgara
+yazılı mertebeden yürünüyor — blokaj kalktı.
+
+**Üç kapı, 2999 eserde:**
+
+1. **Toplam süre değişmedi** — 0 eserde sapma.
+2. **Çalınan nota sayısı değişmedi** — 0 eserde sapma (bağlı parçalar tek
+   nota sayılır). Çalma yolu (`follow/page.tsx`) zaten `parseSymbtrScore`'u
+   doğrudan çağırıyor; bölme yalnız gravür/kanonik yolda.
+3. **Bölünen nota sayısı, bağımsız ölçümle BİREBİR aynı: 5.984 (%0,51).**
+
+**Üçüncü kapı bir hata yakaladı.** İlk uygulamada konum, olayların
+sürelerinden toplanıyordu — ama `parseSymbtrScore` yalnız kod-9 üretiyor.
+Korpustaki **31.605 süreli kod-9-dışı satır** atlandığı için ilk böyle
+satırdan sonraki **tüm** bar çizgileri kayıyordu ve bölünen nota **%2,07**
+çıkıyordu. Konum artık satırlardan (`rowAdvance().canonical`) yürünüyor ve
+iki bağımsız hesap **tam olarak** buluşuyor. Bu, göçün başındaki teşhisin
+son adımda yeniden karşımıza çıkması — ve kapının işini yapması.
+
+---
+
+#### G7 · özgün plan notu
 
 Artık bar çizgisi ve nota süresi **aynı eksende** olduğu için doğru.
 

@@ -101,10 +101,29 @@ describe("ScoreEngine SymbTr importer and validator", () => {
       writtenMeter: {numerator: 4, denominator: 4},
     });
 
-    // 7 tam nota / (4/4 = 1 tam nota) = 7 olcu -> sonraki nota 8. olcude.
-    expect(result.document.events[1]).toMatchObject({
+    // 7 tam nota / (4/4 = 1 tam nota) = 7 olcu. G7 bolmesi devreye girer:
+    // nota YEDI parcaya bolunur ve bagla birlestirilir.
+    const parts = result.document.events.filter((event) => event.tie !== null);
+    expect(parts).toHaveLength(7);
+    expect(parts.map((event) => event.tie)).toEqual([
+      "start",
+      "continue",
+      "continue",
+      "continue",
+      "continue",
+      "continue",
+      "stop",
+    ]);
+    expect(parts.map((event) => event.measureId)).toEqual(
+      [1, 2, 3, 4, 5, 6, 7].map((measure) => `score:devri-kebir-written-meter:m${measure}`),
+    );
+
+    // Bolme sure yaratmaz: sonraki nota hala 28. vurusta ve 8. olcude.
+    const last = result.document.events[result.document.events.length - 1];
+    expect(last).toMatchObject({
       measureId: "score:devri-kebir-written-meter:m8",
       startBeat: 28,
+      tie: null,
     });
   });
 

@@ -482,7 +482,10 @@ export function buildCanonicalScoreFromSymbtrEvents(
       duration: event.duration,
       isRest: event.isRest,
       ornament: null,
-      tie: null,
+      // Bar cizgisi bolmesinden gelen bag (G7). Kaynakta yazili baglar
+      // `sourceFeatures` uzerinden ayrica tasiniyor; bu alan GRAVUR icin
+      // bolunmus parcalari birlestirir.
+      tie: event.barlineTie,
       slur: null,
       evidenceId: evidence.id,
       verificationState: "symbolic-confirmed" as const,

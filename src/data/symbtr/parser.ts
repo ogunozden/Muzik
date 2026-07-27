@@ -43,6 +43,12 @@ export interface SymbtrScoreEvent {
   measureIndex: number | null;
   /** `measureIndex`in hangi tabandan geldigi — ortulu kalmaz. */
   measureIndexBasis: MeasureIndexBasis;
+  /**
+   * Bar cizgisi bolmesinin bag isareti (G7). `null` = bolunmemis nota.
+   * Yalniz `splitEventsAtBarlines` doldurur; `parseSymbtrScore` her zaman
+   * `null` uretir — calma yolu butun notalari gorur.
+   */
+  barlineTie: "start" | "continue" | "stop" | null;
   isMeasureEnd: boolean;
   isRest: boolean;
 }
@@ -239,6 +245,7 @@ export function parseSymbtrScore(
         offsetUnits,
         measureIndex,
         measureIndexBasis,
+        barlineTie: null,
         isMeasureEnd,
         isRest,
       });

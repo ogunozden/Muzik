@@ -74,9 +74,14 @@ tick ekseninde olsun.
       empty-import dry-run, verification manifest)
       · yeni kapı: temizlik yalnız **makine üretimi** kayıtları siler;
       `human-reviewed`/`visual-regression` emeği silinmez, raporlanır
-- [ ] **G7** · L1: bar-aşan nota bölme + bağ · **gerçek kapsam G4'te ölçüldü:
-      5.787 nota (%0,50)**; ölçü doluluğu %93,13 → ~%99. Çalma nota sayısı ve
-      toplam süresi DEĞİŞMEMELİ
+- [x] **G7** · L1 bar-aşan nota bölme + bağ · `barline-split.ts`
+      · **5.984 nota (%0,51) bölündü** — bağımsız ölçümle birebir aynı
+      · toplam süre 0 eserde değişti · çalınan nota sayısı 0 eserde değişti
+      · bölme yalnız **gravür** yolunda; çalma yolu `parseSymbtrScore`'u
+      doğrudan çağırdığı için etkilenmiyor
+      · **üçüncü kapı hata yakaladı:** konum önce olaylardan toplanıyordu,
+      31.605 süreli kod-9-dışı satır atlandığı için bar çizgileri kayıyor ve
+      bölünen nota %2,07 çıkıyordu; konum artık satırlardan yürünüyor
 - [ ] **G8** · Doğrulamayı totolojiden çıkar
       *(`validator.ts:64-72` bugün hiç tetiklenemiyor; `quality.ts:36-44`
       yanlış mertebeyle karşılaştırıyor)*

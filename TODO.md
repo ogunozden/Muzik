@@ -5,9 +5,9 @@
 >
 > | ne | neyi bekliyor | tetiklenince ne olur |
 > |---|---|---|
-> | **FAZ D** · stüdyo kaydı | gerçek enstrüman kayıtları | `public/samples/` altına konur, `sample-pitch-labels.test.ts` içeriği ölçüp adıyla karşılaştırır |
-> | **`hek` gerçek kaydı** | iki elin birlikte vuruşunu taşıyan bir kayıt | türetilmiş dosyanın üzerine yazılır, `derivedFrom` kalkar (H10: mevcut kayıttan **ayırt edilemedi**) |
-> | **10 `claimed` klasör** | ölçülebilir kaynak eşleşmesi | `provenance.json` `measured`a geçer (bugün: `baglama`·`lavta`·`santur`·`rebab`·`davul`·`def`·`darbuka`·`kasik`·`zil`·`nakkare`) |
+> | **FAZ D** · stüdyo kaydı | gerçek enstrüman kayıtları | `public/samples/` altına konur; giriş yolu **H12'de tamamlandı** — yüklenen dosya artık kaynak iddiasının kapsamı dışında görünüyor |
+> | **`hek` gerçek kaydı** | iki elin birlikte vuruşunu taşıyan bir kayıt | H13: mevcut kayıtta **ölçüldü ve yok**; dağılım sürekli, hiçbir eşik ayıramaz |
+> | **4 `claimed` klasör** | ölçülebilir kaynak eşleşmesi | H14: 10 → **4** (`lavta`·`santur`·`rebab`·`kasik`); 6 klasör daha `measured` oldu |
 >
 > **E1** (korpus JSON süzme) ölçüldü ve bilinçli yapılmadı: bundle bütçenin
 > **%31**'inde, kazanç 3,4 KB. Tetikleyici = bütçenin %80'i.
@@ -186,6 +186,57 @@
         import'u, knip ölü export'u görüyor; biri temizlenince öteki yeni
         bulgu üretiyor. Artık **yakınsayana kadar** birlikte koşuluyor.
         Sonuç: `typography.ts` tümüyle ölüydü, silindi.
+
+- [x] **H12** · **FAZ D giriş yolu tamamlandı — sessiz bir yanlış iddia kapatıldı.**
+      `provenance.json` bir KLASÖRÜN kaynağını anlatır, ama iddia o anki
+      DOSYALARA aittir. `/samples`ten bir dosya yüklendiğinde dosya değişiyor,
+      kayıt olduğu gibi kalıyordu: beklenen stüdyo kayıtları geldiğinde
+      uygulama onlar için hâlâ *"soundfont'tan üretildi"* diyecekti.
+      · `manifest.json` (432 dosya, sha256) + API'de `matchesManifest` +
+        ekranda "Kaynak kaydı bu dosyayı kapsamıyor" uyarısı.
+      · Çözüm **kayıt tutmak değil ölçmek**: çalışma zamanında kanıt dosyasına
+        yazılmıyor, diskteki dosya hash'le karşılaştırılıyor.
+      · CI kapısı `samples:manifest:check`; kırılma yolu denendi (dosya
+        bozuldu → kırmızı, geri alındı → yeşil).
+- [x] **H13** · **`hek` — ölçüldü ve YOK. İki kez yanlış ölçmüştüm.**
+      · **1. deneme (H10):** yükselme süresi. Kontrol olarak `dum` da 0 ms/0 ms
+        verdi → ölçüt ayırt edici değildi, "sonuçsuz" yazıldı.
+      · **2. deneme:** 135 Hz ve 275 Hz'i "iki kâse" sandım. Üç aday kontrolü
+        4,5× aştı, gecikmeleri 0–1 ms'ydi; **"hek bulundu" diyecektim** ve
+        @32,18s'i kesip dosyaya yazmıştım bile. Kontrol ölçümü çürüttü:
+        **her darp** (dum/tek/ke) iki tepe gösteriyor, oran hep ~1,87 —
+        bunlar iki kâse değil, **tek davulun iki modu**. 275 Hz, tek'in
+        ikinci modu. "Denge" iki eli değil, vuruş YERİNİ ölçüyordu.
+      · **Doğru ölçüm:** kâseler 134,38 Hz ve 146,25 Hz — yalnızca **12 Hz**
+        ayrı (180 ms pencerede 2,1 çözünürlük birimi, ayırt edilebilir).
+        Ölçüt `log2(|tek| / |dum|)`.
+      · **Sonuç:** yazdığım "en iyi aday" @32,18s **−5,28** çıktı — *her
+        gerçek dum'dan daha dum*. Dosya geri alındı. 86 vuruşun dağılımı
+        **sürekli** (−6…+4,5), 0 civarında ayrı küme yok: vuruş yeri/şiddeti
+        eğimi sürekli değiştirdiği için hiçbir eşik `hek`'i ayıramaz.
+      · Bu, "ölçemedim" değil **"ölçtüm, bu kayıtta yok"** sonucudur.
+- [x] **H14** · **`claimed` 10 → 4.** Önceki tarama iki yönden eksikti:
+      · **Dosyaların yarısı taranmamıştı** — `sources.json` dört soundfont
+        listeliyordu, diskte **on** var. Yeni tarama **3.299 bölge**.
+      · **Hız farkı hesaba katılmamıştı.** Melodik dosya bölgenin *yeniden
+        örneklenmiş* hâlidir; ham korelasyon yalnız oran 1,0 olan dosyada
+        tutar. Log-frekans ekseninde yeniden örnekleme bir *ötelemedir* —
+        kaydırma araması hem hızı hem benzerliği tek geçişte verir.
+      · **Yeni ölçülenler:** `baglama` 1,0000 · `davul` 1,0000 · `def` 1,0000 ·
+        `darbuka` 0,9999 · `zil` 1,0000 · `nakkare` 1,0000 ·
+        `miskal` **1,0000** (`Ney / NyeFlute B2`, hız 0,2898).
+      · Güven: `documented` 3 · **`measured` 12** · `claimed` 4 · `unknown` 0.
+      · **Kendi aramamın sınırı ölçüldü:** `miskal` geniş taramada 0,71
+        verdi, hedefli aramada 1,0000. Yani negatif sonuç "arşivde yok"
+        değil, **"bu aramada bulunamadı"**tır.
+- [x] **H15** · **Tarama bir İÇERİK kusuru ortaya çıkardı.** `davul` ve `zil`
+      aynı bölgeyle (`74=Big Gong`) aynı hızda 1,0000 verdi. Doğrudan kıyas:
+      `davul/dum-accent.wav` ile `zil/dum-accent.wav` ilk 0,35 s'de **birebir
+      aynı** (r=1,000000, eşit tepe genliği); yalnız uzunluk farklı
+      (1,40 s / 1,60 s). **Hash kapısı bunu kaçırmıştı** — ses aynılığı bayt
+      aynılığı gerektirmiyor. Üç ikiz çift `duplicateAudit`te açık duruyor;
+      `sample-duplicates.test.ts` hem bayt hem dalga biçimi düzeyinde bakıyor
+      ve listeye yenisinin eklenmesini engelliyor: kusur **büyüyemez**.
 
 **Çürütülen fikir (kayda geçsin):** "ney'de işe yaradı, 19 klasöre de uygula."
 Ölçüldü — kemençe/tambur/ud bugün **1,00** uzlaşmada; kaynaktan yeniden

@@ -25,6 +25,13 @@ interface SampleSlotStatus {
   derivedFrom?: string | null;
   /** Dolu ise bu perde kaynak kayıtların dışında, gerilerek üretilmiştir (F2). */
   extrapolatedFrom?: string | null;
+  /**
+   * Dosya, commit'li manifestodaki hash'i tutuyor mu?
+   *
+   * `false` ise dosya değişmiştir (tipik olarak buradan yüklenmiştir) ve
+   * klasörün kaynak kaydı **bu dosyayı kapsamaz**. `null` = manifestoda yok.
+   */
+  matchesManifest?: boolean | null;
 }
 
 interface SampleCoverageSummary {
@@ -91,7 +98,7 @@ function formatDate(value: string | null): string {
  * bu oldu: uyari yalniz kart duzenine konmustu ve masaustunde gorunmuyordu.
  */
 function ProvenanceNotice({slot}: {slot: SampleSlotStatus}) {
-  if (!slot.derivedFrom && !slot.extrapolatedFrom) return null;
+  if (!slot.derivedFrom && !slot.extrapolatedFrom && slot.matchesManifest !== false) return null;
 
   const noticeClass =
     "mt-2 rounded-sm border border-[var(--color-warning)] px-2 py-1 text-xs text-[var(--color-text-primary)]";
@@ -106,6 +113,13 @@ function ProvenanceNotice({slot}: {slot: SampleSlotStatus}) {
       {slot.extrapolatedFrom ? (
         <p className={noticeClass}>
           <strong>Gerilmiş perde</strong> — {slot.extrapolatedFrom}.
+        </p>
+      ) : null}
+      {slot.matchesManifest === false ? (
+        <p className={noticeClass}>
+          <strong>Kaynak kaydı bu dosyayı kapsamıyor</strong> — dosya depodaki
+          sürümden farklı (bu ekrandan yüklenmiş olabilir). Klasörün
+          &quot;kaynak&quot; bilgisi bu ses için geçerli değildir.
         </p>
       ) : null}
     </>

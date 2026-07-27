@@ -1,0 +1,1744 @@
+{
+  "$comment": [
+    "COMMIT'LI SES DOSYALARININ KIMLIGI.",
+    "",
+    "`provenance.json` bir klasorun kaynagini anlatir; bu dosya o iddianin",
+    "HANGI dosyalar icin gecerli oldugunu sabitler. Diskteki dosya buradaki",
+    "sha256'yi tutmuyorsa provenance kaydi onu KAPSAMAZ — arayuz bunu",
+    "'kullanici dosyasi' olarak gosterir.",
+    "",
+    "Uretici: scripts/build-sample-manifest.mjs (npm run samples:manifest).",
+    "Ses dosyalari bilerek degistiyse birlikte yeniden uretilir."
+  ],
+  "fileCount": 432,
+  "files": {
+    "baglama/A3.wav": {
+      "sha256": "9caa64a5fe8cbb9add2fa4712415a09166499e31edcedcfc86f69be1ff0dae01",
+      "bytes": 34398
+    },
+    "baglama/A4.wav": {
+      "sha256": "181aed731f5e1b0645af6534073f60f63377d0537cddb731b88bc0f9232d3f0a",
+      "bytes": 36114
+    },
+    "baglama/A5.wav": {
+      "sha256": "3f6c336169bc40c787d33ed36f2a96add74bdd3a211a9ca8d8d4a924f35a7bf9",
+      "bytes": 18056
+    },
+    "baglama/As3.wav": {
+      "sha256": "ee3fb682ec78c4799740d82cdb6846258eebcf42cbce94fb6c09d89ea40658d7",
+      "bytes": 32470
+    },
+    "baglama/As4.wav": {
+      "sha256": "ac8ec8d79321136c5d04204f46f7e77a4e2ec306dd442848650db729a8cd3296",
+      "bytes": 34090
+    },
+    "baglama/As5.wav": {
+      "sha256": "a7f3886689dfae002177b2cdab24b25e0425581730dfbe9878bee11d7b31be11",
+      "bytes": 34078
+    },
+    "baglama/B3.wav": {
+      "sha256": "ca1adb577aa04689a7c296fc537350d9487972e6a8393276a9b08ae7328346c7",
+      "bytes": 30650
+    },
+    "baglama/B4.wav": {
+      "sha256": "d1093350d0adbfaf75993458df5a330687a041ca2677bad8735a008062c4336b",
+      "bytes": 32178
+    },
+    "baglama/B5.wav": {
+      "sha256": "40030f83a4a5d813bb2c2a8c8655a3a6d2d7e04d0d013a390a92bee56ddbd90a",
+      "bytes": 16090
+    },
+    "baglama/C3.wav": {
+      "sha256": "fca7a207ec1bcb96081fab7ac5831de5c4eea2678e59fdb5630884ae31d882cd",
+      "bytes": 57822
+    },
+    "baglama/C4.wav": {
+      "sha256": "f465b46d860b479c69c1e53b811cd077fdb5e30c470f24dcf18d9ba30737f5a7",
+      "bytes": 28932
+    },
+    "baglama/C5.wav": {
+      "sha256": "a15640f549f8f0530aa2ebb219919cb61e3dceac1b9591c77336490c963fa8b5",
+      "bytes": 30376
+    },
+    "baglama/Cs3.wav": {
+      "sha256": "8d1c06662c9cab8c67dc3264dd6381861eb64960cca6b2478a3ce47d1ee44b78",
+      "bytes": 54580
+    },
+    "baglama/Cs4.wav": {
+      "sha256": "e10e975225a5d791c621dd7f183114665a1f8b4e31e7b596afffbd2c277221ce",
+      "bytes": 27358
+    },
+    "baglama/Cs5.wav": {
+      "sha256": "768af51d4ddc284f996b2f61bb2ec8b3c0e61fa2fd76d4fbcd5c4838885d1452",
+      "bytes": 28732
+    },
+    "baglama/D3.wav": {
+      "sha256": "ceee7eb36b7069cc58c1e6f4ccef223e3d4318c2eae23abcbc5199ed40b591fe",
+      "bytes": 51518
+    },
+    "baglama/D4.wav": {
+      "sha256": "6bfe5292cdb538442be8d9495e24d9893e41a66902231008fa0998e0a5b3dc79",
+      "bytes": 24976
+    },
+    "baglama/D5.wav": {
+      "sha256": "2f50e012e96280126330540bcf481b5ad9da6c35b188d4ebe7f58e1529e8a660",
+      "bytes": 27030
+    },
+    "baglama/Ds3.wav": {
+      "sha256": "37cab078f54b9df5682868d785706da701b7bc232f5b6bd801c6692da827c3ce",
+      "bytes": 48630
+    },
+    "baglama/Ds4.wav": {
+      "sha256": "6c085a431c17ae4a480be5d94e748e4b345b7204d535c37eb8306636a91eb683",
+      "bytes": 23518
+    },
+    "baglama/Ds5.wav": {
+      "sha256": "64ca1db9fac55d51a5e982a997d9882a60c789792ee6559587306786e5104acd",
+      "bytes": 25550
+    },
+    "baglama/E3.wav": {
+      "sha256": "07e22744679befcaaf090e8fa5f618547829a7aa298ed08dec53628639e214b6",
+      "bytes": 45902
+    },
+    "baglama/E4.wav": {
+      "sha256": "f064f2e1d29599e514c65fbe046d37760151fbefd22462178830f62d3f20ba4e",
+      "bytes": 22256
+    },
+    "baglama/E5.wav": {
+      "sha256": "ee39531d746ce6e78853912d3c5a63822b9c8e09da82845f95d243b02e9824ba",
+      "bytes": 24086
+    },
+    "baglama/F3.wav": {
+      "sha256": "a652156c4978875d30f46f70e340422ee54f7525d93e8d2b6799958a388091a8",
+      "bytes": 43328
+    },
+    "baglama/F4.wav": {
+      "sha256": "f99dc88d2b164c7aea2cd32dd062af2328a8b948e79e7c963bb42a6ea5d6d74e",
+      "bytes": 41904
+    },
+    "baglama/F5.wav": {
+      "sha256": "3887e525fd8dee61de9246d617a7f32e6e1f5b83650c7b6ce07c2f0d388389df",
+      "bytes": 22736
+    },
+    "baglama/Fs3.wav": {
+      "sha256": "22cdde60a2f32dee8b30d8de91492e8582c61bcc2ec8f0122bb4bfd3bd6cf88c",
+      "bytes": 40900
+    },
+    "baglama/Fs4.wav": {
+      "sha256": "65543a798c64441c1e87520a5d09bd7791b3a699f3d077ef302045e2cddd44fe",
+      "bytes": 43576
+    },
+    "baglama/Fs5.wav": {
+      "sha256": "c3e25821d3e161a3a818427c6b44a695df357ea1809e92266924d53fdbb81c47",
+      "bytes": 21462
+    },
+    "baglama/G3.wav": {
+      "sha256": "d929ef3c5218aa148fc236b7bfd89cb33ea08c823e67003871cdc856be117e40",
+      "bytes": 38606
+    },
+    "baglama/G4.wav": {
+      "sha256": "3f232736f32a8da6ceebf8a88a0f6af4cc045da0a100aa1d3c5b07ba33d81cf2",
+      "bytes": 40532
+    },
+    "baglama/G5.wav": {
+      "sha256": "4a873408fb213b6b574f2866a807ddb8df40f8e9fc0e6be97233c2a36e213852",
+      "bytes": 20260
+    },
+    "baglama/Gs3.wav": {
+      "sha256": "3dd0fc61e54b6672ba7e2ff23598c16b4b55c99397bd748593e38e657bce0dbd",
+      "bytes": 36442
+    },
+    "baglama/Gs4.wav": {
+      "sha256": "6b27acf6ba1228aee5e3e99b92ae8c49b71895d03724ea7cce2c8d870a5ab0b5",
+      "bytes": 38260
+    },
+    "baglama/Gs5.wav": {
+      "sha256": "6cabd26d30a70ad367c00b47742a69bc49542ab5aaa11bb1473cf5d087f6c50f",
+      "bytes": 19126
+    },
+    "bendir/dum-accent.wav": {
+      "sha256": "17d17955cb87ab729a8a5f6cd34f4add2656306abd2650a48debd7e7b7344d21",
+      "bytes": 44144
+    },
+    "bendir/dum.wav": {
+      "sha256": "926651fc71337fcc5da5e0fa533eaa882cb9d65d0a30f7c1e7636569c898bdda",
+      "bytes": 44144
+    },
+    "bendir/hek-accent.wav": {
+      "sha256": "cbb9fdb0c1db83165e5df0719a3ddf07c41891dbb40bc44877f9bcf812bc4cc4",
+      "bytes": 44144
+    },
+    "bendir/hek.wav": {
+      "sha256": "d9246110d8edaa0aab372bbceaf2f099e11062a07f76586c6664acdc581f0056",
+      "bytes": 44144
+    },
+    "bendir/ke-accent.wav": {
+      "sha256": "c79baa4600c7fe75b22e6100d4ed65d73a2e49c2490e470e6ce75c1626f9ec65",
+      "bytes": 44144
+    },
+    "bendir/ke.wav": {
+      "sha256": "d1c2a30b473ff09dc45b64e9ea2a1ca7cab0ea172e44fddc075055377d13eec1",
+      "bytes": 44144
+    },
+    "bendir/tek-accent.wav": {
+      "sha256": "ed8e393bd2c18ebba92638c81cc67acdf92f26f2941f693fa69cf05413d2ab9d",
+      "bytes": 44144
+    },
+    "bendir/tek.wav": {
+      "sha256": "e08745cc796e8a24cf590e6952ee29c8c2652abb2e81a9a763efe43c427c74d1",
+      "bytes": 37576
+    },
+    "darbuka/dum-accent.wav": {
+      "sha256": "c5dde85088aaa6ba2accba02a58fa45c7ba481cb2995ea07ca3a8d4a1d8ee7a7",
+      "bytes": 36588
+    },
+    "darbuka/dum.wav": {
+      "sha256": "ec533e489969293b37c17dc81f8093530ecc3d15da093d734de67566f6d23710",
+      "bytes": 40510
+    },
+    "darbuka/hek-accent.wav": {
+      "sha256": "cde2cfb5ed5a999316dc6322022b7f4147f2906cdb51d02d6f73d059490fdbad",
+      "bytes": 54782
+    },
+    "darbuka/hek.wav": {
+      "sha256": "cc2fde6e91ac0760f8d9f67edee176e45af808e6dcae3307599acbd9b92b0e3b",
+      "bytes": 40476
+    },
+    "darbuka/ke-accent.wav": {
+      "sha256": "c43d7af8cd7d9d5603582a0e2c6f030eac7f28b42ca55405fb9d3269a16c1fe9",
+      "bytes": 38558
+    },
+    "darbuka/ke.wav": {
+      "sha256": "1c99ee865cd19a6c9ffb5119b1ded950e4d933c5b641f0366d5e1b50f61bf961",
+      "bytes": 12026
+    },
+    "darbuka/tek-accent.wav": {
+      "sha256": "0396dd4f504eb4e115eb879e03573a63464ca1e86662c8575ddc1efd87412a69",
+      "bytes": 54816
+    },
+    "darbuka/tek.wav": {
+      "sha256": "01efd27842d2e5a8582eed9c93e76388dbad5a7a97108276c260b2cba4a992b7",
+      "bytes": 30930
+    },
+    "davul/dum-accent.wav": {
+      "sha256": "cfb41f836aef87dabf342c91e17c80c4a90448660f555e1d0b5775dd002534f4",
+      "bytes": 123558
+    },
+    "davul/dum.wav": {
+      "sha256": "02376fa83ab6d3dcfdfa9f8855f043fc71793d6bf32e5ea06b9015b1e839b693",
+      "bytes": 105918
+    },
+    "davul/hek-accent.wav": {
+      "sha256": "05625d47e1777f9edaa908b261a6356645b4d303db9e53cfdaf749a36b13c07c",
+      "bytes": 123524
+    },
+    "davul/hek.wav": {
+      "sha256": "a0dbfc0e1cb479a2bcdbd5964c589059a8f533aa4a98b016ed68bb1ea99ec07d",
+      "bytes": 105884
+    },
+    "davul/ke-accent.wav": {
+      "sha256": "0c244859bf365c74e54e5d3db396a4217d22200d78239feb28f5e2887e8274c2",
+      "bytes": 61470
+    },
+    "davul/ke.wav": {
+      "sha256": "8bc34634fface5a303844b2537fb3db719ddf78a495a841dc1deada8e29ad601",
+      "bytes": 70638
+    },
+    "davul/tek-accent.wav": {
+      "sha256": "ea4714c4e2ee4e88b4f88ad1db250c5b2fffc39b3f17d616cc1fdd6e2577ee39",
+      "bytes": 46210
+    },
+    "davul/tek.wav": {
+      "sha256": "8255c7cd902a4a13fc4d88e2b421afe5c080c5809d88c08c1409cd72d342a0d1",
+      "bytes": 26332
+    },
+    "def/dum-accent.wav": {
+      "sha256": "cad5816373fe0bac405a329019af1c0b647148272db77b4080973e5df2745be5",
+      "bytes": 88278
+    },
+    "def/dum.wav": {
+      "sha256": "ae0f7a33edc17301015078ea5f99d1958be265b5c0a91fc972eeb5a3441e9862",
+      "bytes": 62166
+    },
+    "def/hek-accent.wav": {
+      "sha256": "76e4d5ff882b8066d3e5ea243f912f9f0c23e12e898fd71511feca8e85e44577",
+      "bytes": 88244
+    },
+    "def/hek.wav": {
+      "sha256": "7204a56099b4302eb7f6ae6514466c423f680bc66eac267d90787c9ad9312178",
+      "bytes": 69856
+    },
+    "def/ke-accent.wav": {
+      "sha256": "cc2cfdbb937b25aa98257797f99c45c0abeb281d322e2f5aa9082d7e0631770e",
+      "bytes": 26188
+    },
+    "def/ke.wav": {
+      "sha256": "0c244859bf365c74e54e5d3db396a4217d22200d78239feb28f5e2887e8274c2",
+      "bytes": 61470
+    },
+    "def/tek-accent.wav": {
+      "sha256": "fcc5f3b14970a32a2919902b6e1945113078faca3c29476361ee17ed325589af",
+      "bytes": 21542
+    },
+    "def/tek.wav": {
+      "sha256": "bab175da142b780c8dc549cb9a913bd08e6604eb5918b5804051e71ec0d2304c",
+      "bytes": 69890
+    },
+    "kanun/A3.wav": {
+      "sha256": "1fe0c6769b59ab555e455b31faa52fc6f2423f6bf35a0ef95a0e6b0478b73e74",
+      "bytes": 132064
+    },
+    "kanun/A4.wav": {
+      "sha256": "eb752d02df71e98f531f314f60de2b4d25e7b0dae081746f12a102ffb7673a2e",
+      "bytes": 98978
+    },
+    "kanun/A5.wav": {
+      "sha256": "14ca52c03f0c0378a84e4f11d26d949c00584b5eb69352a814b9abb7a4e48fad",
+      "bytes": 109232
+    },
+    "kanun/As3.wav": {
+      "sha256": "ead93a116c0fc2915e790b337a712cdc78a1f2a4746d8cda8a773460c28c1739",
+      "bytes": 150018
+    },
+    "kanun/As4.wav": {
+      "sha256": "5da7bdccbe6d66710a36f7ad9fcbc4a598cfe47c19a0b8c6513ec559b6db603f",
+      "bytes": 93428
+    },
+    "kanun/As5.wav": {
+      "sha256": "0acee62e4e2f3068b7b608c5cf4b0609ef312512c1f08d40ebc6566d30815107",
+      "bytes": 103108
+    },
+    "kanun/B3.wav": {
+      "sha256": "868efc312dd6a49dc7d1efbc10bb9346d1733ebe97e953848aae425b34da789d",
+      "bytes": 150018
+    },
+    "kanun/B4.wav": {
+      "sha256": "ccc983d081cce27913d16eb46fe829fb273c80d72a1c6a4cd690b25f618ac3d2",
+      "bytes": 135526
+    },
+    "kanun/B5.wav": {
+      "sha256": "63f582da20e8d561e3afb67ba954e7f468650b02ee58046d70744e58a04acffd",
+      "bytes": 99532
+    },
+    "kanun/C3.wav": {
+      "sha256": "61ebd69c7a076e3ef4da024abb8f6107198ec002c5f3d0eddc358daf5eb2a79e",
+      "bytes": 148930
+    },
+    "kanun/C4.wav": {
+      "sha256": "0264aad2b67b00a6399e8b208cc0e0b50eeb9528b2250df3e56b39ceb1a48b20",
+      "bytes": 150018
+    },
+    "kanun/C5.wav": {
+      "sha256": "8c97a561e378f3f0f10eda510828b3eaad389a09359552692ca65aa2c20ddcaa",
+      "bytes": 129262
+    },
+    "kanun/Cs3.wav": {
+      "sha256": "694aa1068badb59fa4a4c101d6a9adec15043d4e0403ee6b7c50d440ec2db6ef",
+      "bytes": 140578
+    },
+    "kanun/Cs4.wav": {
+      "sha256": "343809a637d65e3b6035c2e116f96d73260291f4d07a8084a5e6fc87efc764b0",
+      "bytes": 150018
+    },
+    "kanun/Cs5.wav": {
+      "sha256": "de76bd7d2b33fc465b1e479c3b6ed9d8541e3b1197f4f8e12448c0553c01b8d9",
+      "bytes": 122014
+    },
+    "kanun/D3.wav": {
+      "sha256": "bfcba6995e9e715d1bf057595404648a8c56f3a8abe417f181ff281851266500",
+      "bytes": 142910
+    },
+    "kanun/D4.wav": {
+      "sha256": "47e07e66189b05a26981615e749c14118cbcac5fe846ac93155985ee4521535e",
+      "bytes": 150018
+    },
+    "kanun/D5.wav": {
+      "sha256": "505e444ee94a20e266f0ead7654515ad228caa56930d4e3cec3238b51e76e2d6",
+      "bytes": 78660
+    },
+    "kanun/Ds3.wav": {
+      "sha256": "28428374c22b776f3f97b5ef4cf1739c4d824558da09011bbb8a835e5c07b409",
+      "bytes": 150018
+    },
+    "kanun/Ds4.wav": {
+      "sha256": "2a926310cc45487bd0afc56a0e28c23045f14a2fa0b7d2ab555a84939c6dcd05",
+      "bytes": 150018
+    },
+    "kanun/Ds5.wav": {
+      "sha256": "1873d17d8c8d0befc40a5acf0355e145f01ffb84ee30b8df503b5f9eb728ddb3",
+      "bytes": 74250
+    },
+    "kanun/E3.wav": {
+      "sha256": "ecb65c0cee46617623c1b9a7d879ba3565ae00d78396b2bf6aa9418903f5268d",
+      "bytes": 150018
+    },
+    "kanun/E4.wav": {
+      "sha256": "b962c82131c3d3fa3ea2cc1f6300b6813ebd69bca8307449833f7f5c2a225d76",
+      "bytes": 150018
+    },
+    "kanun/E5.wav": {
+      "sha256": "0cd0ea9ab8e99dfa158f8c17e63667286d1c855a733b0638383926c142fb4f08",
+      "bytes": 111190
+    },
+    "kanun/F3.wav": {
+      "sha256": "2a54b1cbdc54a506ebd9bd300a7040c8f08c7ae1efe1b92fddbdf8acdf7716d8",
+      "bytes": 150018
+    },
+    "kanun/F4.wav": {
+      "sha256": "7825034e1623126eed5de51b43b16d49bb4f71fb277bc4121a7bd20c44f2190a",
+      "bytes": 142888
+    },
+    "kanun/F5.wav": {
+      "sha256": "f33d4a859d9adfa78608031bc951f4760759e36fef516576fd406243d75e745c",
+      "bytes": 117384
+    },
+    "kanun/Fs3.wav": {
+      "sha256": "ec4691193c9d3b8da88d30569014c19e26b9593545ae64073ff22579a97c7072",
+      "bytes": 150018
+    },
+    "kanun/Fs4.wav": {
+      "sha256": "d0d92ed075c911ddd71ece8424203b61766749b4200e0f48c8bc5f1530a08ce7",
+      "bytes": 134874
+    },
+    "kanun/Fs5.wav": {
+      "sha256": "73c42476815b05c547427b62977f095d10a4f836f2e1de8023557298d4fe8bb0",
+      "bytes": 110802
+    },
+    "kanun/G3.wav": {
+      "sha256": "c373728d468374172ae3c8faf7500fd3c6679451dade1ef7b0ecb6c2704bc647",
+      "bytes": 150018
+    },
+    "kanun/G4.wav": {
+      "sha256": "4c4855686c980fbe967295688db5900377336d98dbe17f8a79abc6a92232d7d5",
+      "bytes": 142310
+    },
+    "kanun/G5.wav": {
+      "sha256": "bf18967539bfca0b4a933974c7393305a69fa348b46a34566f5745a2dff37f59",
+      "bytes": 103172
+    },
+    "kanun/Gs3.wav": {
+      "sha256": "97a3485cc13f964c440c843825d3ab762d0a28eab87d09784193e7e03ed97379",
+      "bytes": 150018
+    },
+    "kanun/Gs4.wav": {
+      "sha256": "3bce460b8f6826e30ac70f8c0c3340c55938c353b2ecbdfb1eb1b29c8a34eac0",
+      "bytes": 134328
+    },
+    "kanun/Gs5.wav": {
+      "sha256": "da70f8e066dab6c0e9b26c440ca87dcfe58b655432d84160eae4394c8207d0e8",
+      "bytes": 97388
+    },
+    "kasik/dum-accent.wav": {
+      "sha256": "dacd41b2c72287c696192bdf88ba5a5d9b2c71275b0b8ab3c7458a38a7554343",
+      "bytes": 21070
+    },
+    "kasik/dum.wav": {
+      "sha256": "065f4c3d07760c120b3fa6f6cb117074c6686b3742ad8c149d50449095a3088a",
+      "bytes": 21070
+    },
+    "kasik/hek-accent.wav": {
+      "sha256": "9b1ee3de56a1361448b0143b906239c2848f463f0af55e6a65222fae6ebe0bb5",
+      "bytes": 21036
+    },
+    "kasik/hek.wav": {
+      "sha256": "c7cdccca021d2c591b9ffe79f5128ade0431decd05547e2a18eb88bfdbe26c15",
+      "bytes": 21036
+    },
+    "kasik/ke-accent.wav": {
+      "sha256": "80274634b2f2540606687a1fdee8a0de7f1b6207bad1558d8572208dc8013bd2",
+      "bytes": 21070
+    },
+    "kasik/ke.wav": {
+      "sha256": "409938f04d63cffdc17ba0a0e8dc50cdf6a27890934667a5b4c8f6c0615c1b71",
+      "bytes": 21070
+    },
+    "kasik/tek-accent.wav": {
+      "sha256": "7e3aec2bdf08fa1cbc13b6684338ac0546b91ca31261d0b953a7b2a628baa528",
+      "bytes": 21070
+    },
+    "kasik/tek.wav": {
+      "sha256": "ca1de914ed6390398e29c0dfc01a6c703840433e4673a19e39e34cca01f145ed",
+      "bytes": 21070
+    },
+    "kemence/A3.wav": {
+      "sha256": "9d385bd085494025402175149b336c9be0572115997c7fd83008dbc2849b4b6b",
+      "bytes": 150018
+    },
+    "kemence/A4.wav": {
+      "sha256": "8c56225cb2e6e79af61bef33ac731e9770646d5ea9c5b11c450aa323bfb900b0",
+      "bytes": 115544
+    },
+    "kemence/A5.wav": {
+      "sha256": "bcf659b89d5dfe60d0b70042ad9c4905709bf82bd28c789503f557d4324f9571",
+      "bytes": 145578
+    },
+    "kemence/As3.wav": {
+      "sha256": "a43ada8bb5534edb4411cf262ff3dce9ef329575a3553990f18a8c740fdef0ac",
+      "bytes": 150018
+    },
+    "kemence/As4.wav": {
+      "sha256": "61ef6dd1b4f645b9175e1879ba165c1b3f82a37480028b84fc770c8ba0c6ddbd",
+      "bytes": 109066
+    },
+    "kemence/As5.wav": {
+      "sha256": "db9ae1af239a2b19cdaa2c9c7b468901bd7818d760cf00112d45f370f6a12bc1",
+      "bytes": 137412
+    },
+    "kemence/B3.wav": {
+      "sha256": "cdb51c95bf389f789c873e578fa06c01620a7492d53b2d42fa2cec80c1396388",
+      "bytes": 150018
+    },
+    "kemence/B4.wav": {
+      "sha256": "cc6b1e075dfa4ce814c63747909f84d36be8f377dcea9c39377d8341c98fe61e",
+      "bytes": 150018
+    },
+    "kemence/B5.wav": {
+      "sha256": "d4853996c5b6ad4fd96fa95b730c7367fea8b45028b058eb40d7ec8cb4812dbe",
+      "bytes": 129704
+    },
+    "kemence/C3.wav": {
+      "sha256": "ede97868ba96cee7ab652c589496101b51c46498bcd3bd7a919345aa74ab992f",
+      "bytes": 150018
+    },
+    "kemence/C4.wav": {
+      "sha256": "be240ebf3340a5bfd2f949fecdc4b3cb79954d719ff0bc9ecc2cbd64622e7970",
+      "bytes": 146318
+    },
+    "kemence/C5.wav": {
+      "sha256": "b05c34c28316540c709f11cc9dc31667ca709b40735c39807703ed1105da2f95",
+      "bytes": 150018
+    },
+    "kemence/Cs3.wav": {
+      "sha256": "acbd68cd2e4b388deae9d1e2ff9a1a0ddbf2cfd2fc2e7a2b34f86a5c1decfdf5",
+      "bytes": 150018
+    },
+    "kemence/Cs4.wav": {
+      "sha256": "e263b48d1eb74c01e304de36587afe50c0147c54e9aea41723bc2349acdd9e6c",
+      "bytes": 138108
+    },
+    "kemence/Cs5.wav": {
+      "sha256": "c116226c57bfc219b64ba94a7b2485ee2b41f91e9bb91d00c70f9a6453eb2052",
+      "bytes": 144748
+    },
+    "kemence/D3.wav": {
+      "sha256": "6fe89b6c885e87143f11d96b5bd14baa28885a35f0f4a1767779cdc19dc1dcc7",
+      "bytes": 150018
+    },
+    "kemence/D4.wav": {
+      "sha256": "4066f12926bcce15736753737678b6946ae886b81ca83630cc03962617aa1d18",
+      "bytes": 130362
+    },
+    "kemence/D5.wav": {
+      "sha256": "cd493b0bd6b7517abd95e9e5721314964b278cffbb42d27757f30f526d9b1c50",
+      "bytes": 136628
+    },
+    "kemence/Ds3.wav": {
+      "sha256": "7a83f6d024ab98e6303598542a726532421f381e08da0ecff5b4d0a6e66d5a23",
+      "bytes": 150018
+    },
+    "kemence/Ds4.wav": {
+      "sha256": "dd35fc27913f7cb50597bfc19e8555d9991890023288ea596f747d8889232e0b",
+      "bytes": 123050
+    },
+    "kemence/Ds5.wav": {
+      "sha256": "412114f7372db3100bb9d0f8968e99eb933f46938481ad9fd1f819839eecf25d",
+      "bytes": 143782
+    },
+    "kemence/E3.wav": {
+      "sha256": "929ce58b2c2d6a14638c4d963a6ee3364ca6677eae9e5cbab628e3887c401bbe",
+      "bytes": 150018
+    },
+    "kemence/E4.wav": {
+      "sha256": "72c76e2157f7a15809b9c61bd86849705ab30c56b224ec8fb915c7380e797652",
+      "bytes": 116148
+    },
+    "kemence/E5.wav": {
+      "sha256": "0b1aea9d67c860e851ea4c2802cfd53b3c48d9b48d1a04f25ead2669ea084625",
+      "bytes": 135718
+    },
+    "kemence/F3.wav": {
+      "sha256": "c9e638991e5b128086a50b12b8578d54c993e023f00fc306b8d4a886a360100a",
+      "bytes": 150018
+    },
+    "kemence/F4.wav": {
+      "sha256": "0b713f85225621c46ff38a41e93ba17a21e73a07aaa4cea68b03979ac7f2f08b",
+      "bytes": 109636
+    },
+    "kemence/F5.wav": {
+      "sha256": "f700a8b544bda4f5bf5fc3537fee6289e00cec8de91fe9c736eb54f016e1c65b",
+      "bytes": 150018
+    },
+    "kemence/Fs3.wav": {
+      "sha256": "e3294b37780e5861b0a69f2babdb55ee2d1b3ef3522605beaf8a23ab9e1be555",
+      "bytes": 150018
+    },
+    "kemence/Fs4.wav": {
+      "sha256": "c8f0af4d6ed18f24fab42c3aa1dec58fcedcdaf3d683f8b9c9920e6822f502b7",
+      "bytes": 103484
+    },
+    "kemence/Fs5.wav": {
+      "sha256": "9b502c960a8a0875b4b8410e6db403766c62a8342f25eaae636c7f9f0998c9c5",
+      "bytes": 146096
+    },
+    "kemence/G3.wav": {
+      "sha256": "839ea7eec2927b42a4b0c726c30d93e0a56ad6fffca65dc60bf321752755f0b9",
+      "bytes": 150018
+    },
+    "kemence/G4.wav": {
+      "sha256": "9dcd4047340166f4ab8bdb9d8f565c1f72b53a835b771e76800440972392c214",
+      "bytes": 112456
+    },
+    "kemence/G5.wav": {
+      "sha256": "af626ed7237cee2080f1eac576da6a6bca8d9eef36cbba6fb6f33ae701fe45d8",
+      "bytes": 150018
+    },
+    "kemence/Gs3.wav": {
+      "sha256": "fef1fdc52718c8630023d6b4611394362e39421f66ee3d66641137719f28751b",
+      "bytes": 150018
+    },
+    "kemence/Gs4.wav": {
+      "sha256": "9c041f10fb6d55f50bb9942580d948110505d87946e3cb5b374f8442df094e75",
+      "bytes": 106150
+    },
+    "kemence/Gs5.wav": {
+      "sha256": "de31c25706cdcf5eef2ff865549f9b38cc5ab1d19560253d00c1befd0a3b54a6",
+      "bytes": 150018
+    },
+    "kudum/dum-accent.wav": {
+      "sha256": "320a208cadae50051ae10cee997e1a4cb93e0742762c6dd7aaab0bac6718b944",
+      "bytes": 22094
+    },
+    "kudum/dum.wav": {
+      "sha256": "c1ce96d806e6a736412f13ad9bed6809a84f242cd7e8a34d37d405dd388a00c8",
+      "bytes": 22094
+    },
+    "kudum/hek-accent.wav": {
+      "sha256": "ca0d71073e476ec1849d50c3a38d54eebac78f63dc7666efccc8ffa1b6aed05f",
+      "bytes": 22094
+    },
+    "kudum/hek.wav": {
+      "sha256": "96d147ce2799f4cf37b36ee4b9d3d45f15651f126856e0c585e2fc8b5cc4674c",
+      "bytes": 22094
+    },
+    "kudum/ke-accent.wav": {
+      "sha256": "153e506f928215d4f192ae2ca340e6de2bf61dc1aaff372dd0983c844c108a39",
+      "bytes": 22094
+    },
+    "kudum/ke.wav": {
+      "sha256": "5fba37498e8776ce82406818bfeb3fc34215c511e180f78519fe2965b0613c2b",
+      "bytes": 22094
+    },
+    "kudum/tek-accent.wav": {
+      "sha256": "46f3b33ea8a937881206e6e65d46be8a59cc514d122fa346f6cd3e2b5b4505ef",
+      "bytes": 22094
+    },
+    "kudum/tek.wav": {
+      "sha256": "7728fc10ccb13980ce1054791f9f84ba105c4f08061d72cb0b06f4467e83a0b7",
+      "bytes": 22094
+    },
+    "lavta/A3.wav": {
+      "sha256": "fd8c50c3f8ab09d5d082b95f6631957d323bf0313faaadcc7d43cb6f5da8b672",
+      "bytes": 150018
+    },
+    "lavta/A4.wav": {
+      "sha256": "cbd962cf0c2f148e358f5365dcdd525939fd9cac6de453c4361ba47206172c8d",
+      "bytes": 100788
+    },
+    "lavta/A5.wav": {
+      "sha256": "c00118915d7fb3e1b3f3b7fa0bc07d42e7e89cbcee148d353c4efbb7bcd5ae5f",
+      "bytes": 50416
+    },
+    "lavta/As3.wav": {
+      "sha256": "01465483328e6ef6c2a0febad73ff14f8b48b85d6eef407f7de0518b738402d4",
+      "bytes": 141164
+    },
+    "lavta/As4.wav": {
+      "sha256": "aed023550a34fb3893a1a4dd19665287577cc26014ee8cd345a0ff0900a888de",
+      "bytes": 95134
+    },
+    "lavta/As5.wav": {
+      "sha256": "50d43c7965ce2c708ac09bce0fd207ac73cf3563bde3b0de9595ce14a7979242",
+      "bytes": 47588
+    },
+    "lavta/B3.wav": {
+      "sha256": "3ca3f1aa79f5a24fb347969e5b1be4ab00e6932deba6561efe0a40a9f0be20dd",
+      "bytes": 141164
+    },
+    "lavta/B4.wav": {
+      "sha256": "8f94b0fddc9399eed96050de526d07d9c119a2968cc1560ed993644e09b30606",
+      "bytes": 89798
+    },
+    "lavta/B5.wav": {
+      "sha256": "ba86d417bdbaa12fd4ca512a6d741b514bf0dc9c8415aec1d1c48805254a3797",
+      "bytes": 44920
+    },
+    "lavta/C3.wav": {
+      "sha256": "fbd2c9f014a56da541d50e89a6110192699f0c1f03246a28a0b664e6b05f52ac",
+      "bytes": 150018
+    },
+    "lavta/C4.wav": {
+      "sha256": "13691021a437fab4b3b3927c8f7880049376665f29a6cb19ad83ae9b0b363ecb",
+      "bytes": 150018
+    },
+    "lavta/C5.wav": {
+      "sha256": "5b6f2ec0f1ca75604d270e7cf4497dadb598b88f7f2231532d0f0606d3775ff5",
+      "bytes": 84760
+    },
+    "lavta/Cs3.wav": {
+      "sha256": "7af6757bbb3711ed3840f84680b799934e46cb13b71695ce714197992d6520c7",
+      "bytes": 150018
+    },
+    "lavta/Cs4.wav": {
+      "sha256": "fe6fff522b8052afa85a049b6762942aba402103eb08f01467cb9b75a7e5b514",
+      "bytes": 150018
+    },
+    "lavta/Cs5.wav": {
+      "sha256": "ea14cf91b1e2aaef39969738b1f7b720272ab2c7e573916053593da606658f88",
+      "bytes": 80006
+    },
+    "lavta/D3.wav": {
+      "sha256": "2267a81076f09a55ce3b6d17ef618ba85642f4c307addca2122a3239248e62b5",
+      "bytes": 150018
+    },
+    "lavta/D4.wav": {
+      "sha256": "ca80a6af820144f40f7e49acf7607a5adf9f8a4cfc87dad2bd17106849682e4a",
+      "bytes": 150018
+    },
+    "lavta/D5.wav": {
+      "sha256": "5524aa403294da1fc96e4245dfffd4d53d9bc194492ab5904a27ab253868bfa6",
+      "bytes": 75518
+    },
+    "lavta/Ds3.wav": {
+      "sha256": "ea28a0bfd0f04b25898ea6a52372b64fda67efe4e09368519d5606aa3e8ae8f5",
+      "bytes": 150018
+    },
+    "lavta/Ds4.wav": {
+      "sha256": "976ec3aee1af6ef7d9db99f1308463211993200ee7b77a479cec1aa3f21615ad",
+      "bytes": 141164
+    },
+    "lavta/Ds5.wav": {
+      "sha256": "51ea60a1db126979342694232a235272edceeec71055cbf95ebab9a6ab697ad5",
+      "bytes": 71282
+    },
+    "lavta/E3.wav": {
+      "sha256": "93372fb05b31926c3093cb98becc82aebd53b30b9ef5f9399c00d9ee68358e5a",
+      "bytes": 150018
+    },
+    "lavta/E4.wav": {
+      "sha256": "9c452a8de7e2be6803541d2cc9a17f522b2434587010996282c2ac7de3b7dc90",
+      "bytes": 134522
+    },
+    "lavta/E5.wav": {
+      "sha256": "7fa28c824f93015106b9f38ed46e76e5eec0c9bd9bbc8ef1fe11eb1cd89e5206",
+      "bytes": 67282
+    },
+    "lavta/F3.wav": {
+      "sha256": "7020e38449f626f58f05646e7fe8d58a7e9e5a7d8f04a8bac5d522f09845a479",
+      "bytes": 150018
+    },
+    "lavta/F4.wav": {
+      "sha256": "ce189d2abf7572d600941654784b54117f47b794ae99d86bfd64b79cee6c4ae8",
+      "bytes": 126974
+    },
+    "lavta/F5.wav": {
+      "sha256": "760bbea918bf97be8b12c742ea6a88d0806140e7093db9d40dab4eb219fe4128",
+      "bytes": 63508
+    },
+    "lavta/Fs3.wav": {
+      "sha256": "f6ffe73e27e463a19d26060168449408adf46c14a5864e6ee6678e6657703143",
+      "bytes": 150018
+    },
+    "lavta/Fs4.wav": {
+      "sha256": "e2fd1fa97cdd380c7a64d1cab943421704d7720ab0f0a5c40c93bb5d701d0b25",
+      "bytes": 119850
+    },
+    "lavta/Fs5.wav": {
+      "sha256": "38ab5a12baa363b9b738aa354b443757f992020d08347edb1308488d34b51585",
+      "bytes": 59946
+    },
+    "lavta/G3.wav": {
+      "sha256": "bb405fc34560375955f70e79cf7a275cc834aac76c615d9c61eeaa99c383a259",
+      "bytes": 150018
+    },
+    "lavta/G4.wav": {
+      "sha256": "16d2c32b3bef452ac7417fc9e9b3819ce18a847cb6e6f63c0cb5b16daf2363ed",
+      "bytes": 113126
+    },
+    "lavta/G5.wav": {
+      "sha256": "83707ab08fbe4344176c1c61aebba9c946e81c529ac41bf3eaccbdac56b9731e",
+      "bytes": 56584
+    },
+    "lavta/Gs3.wav": {
+      "sha256": "b693c71061bf844062b7115941c36d37230b5c737acb954bb652291c4bae4d05",
+      "bytes": 150018
+    },
+    "lavta/Gs4.wav": {
+      "sha256": "d0f60c66b859741a9588c0926e542b496992f6d04210205775d7817faa4045cd",
+      "bytes": 106780
+    },
+    "lavta/Gs5.wav": {
+      "sha256": "8f9541907174102276a80f993f107df69c5d703268b25719902c741e83a58117",
+      "bytes": 53412
+    },
+    "miskal/A3.wav": {
+      "sha256": "d7d6e2edd9e307645f39fe30237feb4793e741aa7e642dada2c43ddf4a498355",
+      "bytes": 150018
+    },
+    "miskal/A4.wav": {
+      "sha256": "dce7bc139ab976f495de87d492700a05d2a1d19fd29831aa018f31bf6a6eb456",
+      "bytes": 129880
+    },
+    "miskal/A5.wav": {
+      "sha256": "b731733825544dadd630371bb319dfbac6d3ff3c5ae502e9c218855d1397e347",
+      "bytes": 24594
+    },
+    "miskal/As3.wav": {
+      "sha256": "fd13eba8d84a642442838e76d50d8ee3d06295c6eb265e3823d8c126c7925f60",
+      "bytes": 150018
+    },
+    "miskal/As4.wav": {
+      "sha256": "a3ebe7435fe2b479cc9850ae5ccc67c89e428231437eb80d8713304bc17dfcda",
+      "bytes": 122594
+    },
+    "miskal/As5.wav": {
+      "sha256": "4ff9d99cdb5d9bec7fd50183e2299518d9c73c6e8218bb9af49b4e425f573e40",
+      "bytes": 23216
+    },
+    "miskal/B3.wav": {
+      "sha256": "3000fc8d41119b5b95a6bc3d8a16a0316dbfceb256ec8a82a45eba9c44ddaeaa",
+      "bytes": 150018
+    },
+    "miskal/B4.wav": {
+      "sha256": "6888237c3edbf8e3d211b542b94dc5f73f9ae3a0276e0e617e41a50436faa098",
+      "bytes": 115720
+    },
+    "miskal/B5.wav": {
+      "sha256": "738974178054880db6ec99b0a0495ea411b2860daa9bac7855634b9c5209dede",
+      "bytes": 21918
+    },
+    "miskal/C3.wav": {
+      "sha256": "f79a6094ed93aeb02694e5d8555f458c16cf53b46ff524689e946f3cb72f46d5",
+      "bytes": 150018
+    },
+    "miskal/C4.wav": {
+      "sha256": "e12c02605219ab3014e7ed18eeb1e10f4d74f90ba8d889686e70a4c041c970ed",
+      "bytes": 150018
+    },
+    "miskal/C5.wav": {
+      "sha256": "81e1485bf5a47930b887855c47ea42f8ea68bcad1448aedd5da0e20b531cda1c",
+      "bytes": 109228
+    },
+    "miskal/Cs3.wav": {
+      "sha256": "a1081a606b46f61d4f456e9d3aa184f95fd3d5875d85af11f28fa955964d60b6",
+      "bytes": 150018
+    },
+    "miskal/Cs4.wav": {
+      "sha256": "87940141c08aeb7ab2d16c97dddc864a11fc9f5149581dc05ff50feb9f363625",
+      "bytes": 150018
+    },
+    "miskal/Cs5.wav": {
+      "sha256": "f7072466e93ba844fcdf54b0d33dc6b47998ea1b693b36c152d17a8483e5fbb7",
+      "bytes": 103102
+    },
+    "miskal/D3.wav": {
+      "sha256": "d922a43bdca542dc87b781822d92a19818a6d615139cdbe131594104d6644837",
+      "bytes": 150018
+    },
+    "miskal/D4.wav": {
+      "sha256": "0e8592c0567166c01bf60b9a54e597fc644bb4b262872f9f6682dcd914b52932",
+      "bytes": 150018
+    },
+    "miskal/D5.wav": {
+      "sha256": "cc6ac43a47e1e0d1e0a10127fd6606341627f668c6f559d790c4449212d7c0be",
+      "bytes": 36808
+    },
+    "miskal/Ds3.wav": {
+      "sha256": "d78e917820c9bb8d472314e019839d6d1b6b21c746bf05d2b4768e8886f887b8",
+      "bytes": 150018
+    },
+    "miskal/Ds4.wav": {
+      "sha256": "062d04ed47767426f3086ebc6b8d7a1eb349b78023fd201ecf0eaf70e0508428",
+      "bytes": 150018
+    },
+    "miskal/Ds5.wav": {
+      "sha256": "e5da41143630312ef79efbdd688fd15e42fb020921f9ca1a54baf85895349a41",
+      "bytes": 34748
+    },
+    "miskal/E3.wav": {
+      "sha256": "70271ef9af9eda36793676d04320b06f2f52f326de9b2b6c8ba28e984d903cab",
+      "bytes": 150018
+    },
+    "miskal/E4.wav": {
+      "sha256": "106ba394016139ce5adb861882447135ab0d4fbddc91017e207b98443744489e",
+      "bytes": 150018
+    },
+    "miskal/E5.wav": {
+      "sha256": "d15e39e809777f9b2680e4321da00397d5b5d79b1f2d025416ead10ccd18806b",
+      "bytes": 32802
+    },
+    "miskal/F3.wav": {
+      "sha256": "f77bfcacaf2256fa53a557bb2ac82f08c761b583520fdc7bac1544208a3f2308",
+      "bytes": 150018
+    },
+    "miskal/F4.wav": {
+      "sha256": "139dff142f3fcdb1d27ea53af6c0715c7d89a77db83b1ec6cd4e3fe43d36d655",
+      "bytes": 150018
+    },
+    "miskal/F5.wav": {
+      "sha256": "e834250253a836cc107b4ed9251865a34ba97ff07837a7ecb6de8348b56a2074",
+      "bytes": 30966
+    },
+    "miskal/Fs3.wav": {
+      "sha256": "53d6c4a676f3036e8571fa374cb9b4cfaec02a7ec93dc18c930d7d13b5ac133d",
+      "bytes": 150018
+    },
+    "miskal/Fs4.wav": {
+      "sha256": "5b86359c25dd52d5ecd84a68b193a7bc6906a52d72fe597e03d6475cc04c8e48",
+      "bytes": 150018
+    },
+    "miskal/Fs5.wav": {
+      "sha256": "d33d2c10c73903dcf703ec7044d8d9d34bb4ba452048b20a56be4c49232c2fb5",
+      "bytes": 29230
+    },
+    "miskal/G3.wav": {
+      "sha256": "016b99a753418d83717ff6b148484ee6767d4b0336d802f8a04baaa32469f251",
+      "bytes": 150018
+    },
+    "miskal/G4.wav": {
+      "sha256": "de1aaeb5f785d3089d3788a62ba3f67e402f4e7cfb246720f41d159dd6311585",
+      "bytes": 145776
+    },
+    "miskal/G5.wav": {
+      "sha256": "4f8ee6f7f9bed79874cbc52b33fc82799fb76bd107bf583bc7e83f1dc6e82254",
+      "bytes": 27596
+    },
+    "miskal/Gs3.wav": {
+      "sha256": "d248eda9b4c5c6a48c0df818fa446eaf84616d5053352ef3ef9fb4aa5ddef719",
+      "bytes": 150018
+    },
+    "miskal/Gs4.wav": {
+      "sha256": "cb239bafb09e796dbac92bab3f8944a440432162220c748e4ecf50629e1329ce",
+      "bytes": 137600
+    },
+    "miskal/Gs5.wav": {
+      "sha256": "09fda0f5e66fc04220cb353f25b6b3c71f0958fe6c7036de4aaf639d41804757",
+      "bytes": 26050
+    },
+    "nakkare/dum-accent.wav": {
+      "sha256": "48b3f21dda49f4cf19483a71ecf29dc0d902cd291827398e6a191ef2e5277fd2",
+      "bytes": 77080
+    },
+    "nakkare/dum.wav": {
+      "sha256": "6489b55848dc0d52ff46069f545a69395e10f1c89a8bb186febce2c0e30d05d5",
+      "bytes": 59438
+    },
+    "nakkare/hek-accent.wav": {
+      "sha256": "a24e250e9aae23c7e615c4d3d1fecefb5454d9d97ebe8fd68f54b56546497e3c",
+      "bytes": 77046
+    },
+    "nakkare/hek.wav": {
+      "sha256": "9cf32778e1ecc7ab254acf660d946b4ad27a1ea18760fc096715793a5deabf42",
+      "bytes": 59404
+    },
+    "nakkare/ke-accent.wav": {
+      "sha256": "65c1e04b5f8fd6807a52d9d553cc004f0e8cdfa3e6b8e1c1ceb49233577243d9",
+      "bytes": 28258
+    },
+    "nakkare/ke.wav": {
+      "sha256": "f13778fe6a1c9b91ba1bab3b795447b8553e10297f76c609442929d4ab27c014",
+      "bytes": 20106
+    },
+    "nakkare/tek-accent.wav": {
+      "sha256": "65c1e04b5f8fd6807a52d9d553cc004f0e8cdfa3e6b8e1c1ceb49233577243d9",
+      "bytes": 28258
+    },
+    "nakkare/tek.wav": {
+      "sha256": "21d816923f930f8203574edb6d182aeb48298d17e58c7b749cd9084653fa7f25",
+      "bytes": 9398
+    },
+    "ney/A3.wav": {
+      "sha256": "a879af8a1995c42ef4f1172d4f1586cefcb6a875fd3cdadd14c7d5b9c7431b1c",
+      "bytes": 280370
+    },
+    "ney/A4.wav": {
+      "sha256": "0328e0332a697405dcc7b69607a3786470e2e188af3791014177b116acb9d9f4",
+      "bytes": 354104
+    },
+    "ney/A5.wav": {
+      "sha256": "32b745040deb349d052229c08397b2f53f4890b5b6c2283586b84a259341b910",
+      "bytes": 423404
+    },
+    "ney/As3.wav": {
+      "sha256": "63894c09a5709785794d5f4d43ba7ea5658faa610430635d42a3ef89b92cf315",
+      "bytes": 264632
+    },
+    "ney/As4.wav": {
+      "sha256": "4048f106f6d4ebde2a8dc15c57285dd5be351441147170df048e9b013386822e",
+      "bytes": 417800
+    },
+    "ney/As5.wav": {
+      "sha256": "9c37c8377cd1ce2081217013f69e314458dff9aa28f9bef6fabadc5cc199a2a2",
+      "bytes": 423404
+    },
+    "ney/B3.wav": {
+      "sha256": "7ef07371fcd92e21625f4b8ae3c9218a3799163ee4b54df72925d20546dfe401",
+      "bytes": 248012
+    },
+    "ney/B4.wav": {
+      "sha256": "c307e7f89f205c0966cde66b6ca986ebb75576ff64f38384d1a15d1804334ab0",
+      "bytes": 394352
+    },
+    "ney/B5.wav": {
+      "sha256": "1a515df30bc3b8e1cc393a1b922cec44857ec9f4798fe2450ff4854a60f2df44",
+      "bytes": 423404
+    },
+    "ney/C3.wav": {
+      "sha256": "e9c9ed916dcc113a8be65c99933d35f6ce311adda8e53d78c640a15a2804b42f",
+      "bytes": 423404
+    },
+    "ney/C4.wav": {
+      "sha256": "132749807fb1676a521fb39bedf47190d4ebfbd64df48a14b1fabb6afd0c8502",
+      "bytes": 234098
+    },
+    "ney/C5.wav": {
+      "sha256": "76fa0db8fa809e55f8d509725e19c8c11e0738b3e338800b9577f38fc631d1cc",
+      "bytes": 390236
+    },
+    "ney/Cs3.wav": {
+      "sha256": "3067df70a5221e262e76da59f231d73ae5186424cbe1466636922d2a98723343",
+      "bytes": 423404
+    },
+    "ney/Cs4.wav": {
+      "sha256": "423421e8fcc0da5ccfe96c0a820b554b2b86702a2c5308bfb9012939027e5e06",
+      "bytes": 368906
+    },
+    "ney/Cs5.wav": {
+      "sha256": "43ffb89a9bd222261138b5eb811aac8700a6668233ee3731a696f53a6d77d92a",
+      "bytes": 368336
+    },
+    "ney/D3.wav": {
+      "sha256": "390ec08bd70047342b885346358d6bfff70d3e62a68d460e829b3d962ca90d9d",
+      "bytes": 423404
+    },
+    "ney/D4.wav": {
+      "sha256": "db6a9c418dfd526085cb992a611dd52c697901067b17c850a6f00b2d73b9ecf1",
+      "bytes": 348200
+    },
+    "ney/D5.wav": {
+      "sha256": "5c37c2b75a8c19944ae211f398b8bdf585f3ba512c8651a746830d80baebb699",
+      "bytes": 394628
+    },
+    "ney/Ds3.wav": {
+      "sha256": "7ba557447027c1597b72f9c0ac3a92f790a7d1c7d028a7a81e65e59a9ac6f42c",
+      "bytes": 423404
+    },
+    "ney/Ds4.wav": {
+      "sha256": "6da891685408142a01ad7ce28b370ba8e1a61c250cfbaebdbe78bcf73e54ab1c",
+      "bytes": 328664
+    },
+    "ney/Ds5.wav": {
+      "sha256": "715bf916e3f33f8754e1ca605d0a7f80e0e7aa5787d13ae6dec34b6f47769b2d",
+      "bytes": 372482
+    },
+    "ney/E3.wav": {
+      "sha256": "77ae7aaa4aeb166016dbee496503f31a12bda115dc63c3d289b03af81cc2e7a1",
+      "bytes": 423404
+    },
+    "ney/E4.wav": {
+      "sha256": "b770f75e10f6363285424832bb0575dab11f7c0d08b5d1b0909ebb892b9db2c7",
+      "bytes": 332918
+    },
+    "ney/E5.wav": {
+      "sha256": "3d89055a39a622a61db8775cdbc1c8d9690c4b21ffb19f783c4cf9355054fb21",
+      "bytes": 332444
+    },
+    "ney/F3.wav": {
+      "sha256": "04c567229af110e9e0da6ec8e3d7fd0f66a69693c3a336e2c477e3d69e9563ae",
+      "bytes": 423404
+    },
+    "ney/F4.wav": {
+      "sha256": "be3eeac6a34d6aba953c9b3bfcc8dce9484847c148a22d85b4a26c481b901dda",
+      "bytes": 396554
+    },
+    "ney/F5.wav": {
+      "sha256": "a9314e1034a1c84782a06c1f4196832b0d20f6997d0cf88190010d046ec05f1a",
+      "bytes": 338936
+    },
+    "ney/Fs3.wav": {
+      "sha256": "bea5ac5299f1c5ece6ee568ef93bc7ad245697a8aa5808fb7f8a42aae2ca9afe",
+      "bytes": 460844
+    },
+    "ney/Fs4.wav": {
+      "sha256": "2832cfcd08bc1af2b17e521767c8ce529729c626ba8a91bb1852c8ab65646647",
+      "bytes": 423404
+    },
+    "ney/Fs5.wav": {
+      "sha256": "9430996f0ddada9f3405f6e766def8033f3e828b91ba1916ba1c953bdacf130e",
+      "bytes": 319916
+    },
+    "ney/G3.wav": {
+      "sha256": "e07bc950813a17bb4e3e7d11e1293905b0feeb9c64a2baf1c9b9c384ad5b0eb5",
+      "bytes": 423404
+    },
+    "ney/G4.wav": {
+      "sha256": "dc96961e46f6480f34271e1322fbdcdbbecb2fdc884658060d83aab607f6b8b0",
+      "bytes": 397460
+    },
+    "ney/G5.wav": {
+      "sha256": "c7373fef49a29d5c6ae6468f0442cdbe0a2163d457b39157698183dedc300074",
+      "bytes": 301964
+    },
+    "ney/Gs3.wav": {
+      "sha256": "fcdddfb3d603be10d8bc6f04089843387403eef469bdb3126fb3085a3b57696e",
+      "bytes": 423404
+    },
+    "ney/Gs4.wav": {
+      "sha256": "d83583261440f0cfb7deb71ac28028259e01edda0cf0edb6008b779627bf0f10",
+      "bytes": 375158
+    },
+    "ney/Gs5.wav": {
+      "sha256": "6c17b0ebe172e7673885adf06dab13716f835765bdac4084ab790cf4b55b1818",
+      "bytes": 423404
+    },
+    "rebab/A3.wav": {
+      "sha256": "ba3a9b78fb48f7116e4e4a0aa99084d35e011015c8491ba11b16e5ff2c83dbca",
+      "bytes": 96388
+    },
+    "rebab/A4.wav": {
+      "sha256": "52dd636114f60ee181bc95630277ab91aa9932e2c16ba7d5ab33458a41438f94",
+      "bytes": 24164
+    },
+    "rebab/A5.wav": {
+      "sha256": "4c8ce7f971debdb57ad09a732c414c9719296caf075c67e0d1339eba2b12ca01",
+      "bytes": 9854
+    },
+    "rebab/As3.wav": {
+      "sha256": "9804aff4569ba5c576b08e44b04464367510ec69d1cc20e40a844ca5d2e69579",
+      "bytes": 90980
+    },
+    "rebab/As4.wav": {
+      "sha256": "a09249b856ad8b9b53db7edda9e4657d7989dba0839fbe600bf5870152c9c5ce",
+      "bytes": 45512
+    },
+    "rebab/As5.wav": {
+      "sha256": "13b1ce55277b56d860cab5e035ad9fd2fb25fe454a9a6850453d3da6f1efccd0",
+      "bytes": 9306
+    },
+    "rebab/B3.wav": {
+      "sha256": "d8dbfbd465f4bfee6e85f01b31688685a15a1d10d56370bd7c86ca4030abf882",
+      "bytes": 85876
+    },
+    "rebab/B4.wav": {
+      "sha256": "da63c7aae575de6f23b6ff443ee52e099de2ff1ebeaad531c5daf43d4c7128c7",
+      "bytes": 21536
+    },
+    "rebab/B5.wav": {
+      "sha256": "d23eab3366c7d3169edad6ae8b4b968db53e91f31e321c40ec4fba51b7b36551",
+      "bytes": 8788
+    },
+    "rebab/C3.wav": {
+      "sha256": "5c153a9f102b9fc63387f18a0071df4b28e7f0ac0e002742e4e6f88dd67e2e2e",
+      "bytes": 162072
+    },
+    "rebab/C4.wav": {
+      "sha256": "e578300864726995c5ae34472e5f7216c7c3f0087cf8d7405121800ce774ed8e",
+      "bytes": 81060
+    },
+    "rebab/C5.wav": {
+      "sha256": "5f983823fb1780da3a3df8642627d47fa1a1df5f537d204331cd3dc70a6100a3",
+      "bytes": 40552
+    },
+    "rebab/Cs3.wav": {
+      "sha256": "3aaa42ac18c566c9480ad9eabe569613dbf0e4da1b7da8e20242e8dbcf442fd8",
+      "bytes": 152980
+    },
+    "rebab/Cs4.wav": {
+      "sha256": "4768c7db284aed7d9f4bb84bb5c83ff39b0ba8d3a77d25435cc3e55fbe1bd662",
+      "bytes": 76512
+    },
+    "rebab/Cs5.wav": {
+      "sha256": "79a633e802a63c43e82b5509e288ffcb431ac03c182d8ee9075cf333c8aed41c",
+      "bytes": 38276
+    },
+    "rebab/D3.wav": {
+      "sha256": "c31921c447081d3b6c97df8da966cd3b27ecdcffd78462f896eb98fdcc7ecfcb",
+      "bytes": 144392
+    },
+    "rebab/D4.wav": {
+      "sha256": "c2f1058a7de6cfab830b7a6ae069fdedbd3da7fc1644ac273befe437a76a1d01",
+      "bytes": 72220
+    },
+    "rebab/D5.wav": {
+      "sha256": "ba2c38becb97ca4acb3946b7e98d63601ea2470fb9a5dfa85a52d290a345f2e2",
+      "bytes": 18122
+    },
+    "rebab/Ds3.wav": {
+      "sha256": "5f596a749b6af3fa6efbbaade5ca9700912ea618c9c9d68f2c3a21c7b4fa85da",
+      "bytes": 136292
+    },
+    "rebab/Ds4.wav": {
+      "sha256": "56edb2503d091129118c68cb5ab622580ad2e23a80959d6723b8481f48d9386b",
+      "bytes": 68168
+    },
+    "rebab/Ds5.wav": {
+      "sha256": "4140f0d38a2c07fe045c9b8316139f49d1ffd2e7cea9a2b2d4b729db715e5f04",
+      "bytes": 27696
+    },
+    "rebab/E3.wav": {
+      "sha256": "314b812595f33e252f132aeb55b0491a5eb54d79b7951701288021fad603236f",
+      "bytes": 128644
+    },
+    "rebab/E4.wav": {
+      "sha256": "8c4e43b79c0613726b5f5b6491b0d910c4f9028b84c1453fbcbc52da005f2583",
+      "bytes": 64344
+    },
+    "rebab/E5.wav": {
+      "sha256": "0a6b5e6347f7a6f7efc6e2e7d57d2f4df78082b1f97959fe83dec498151db213",
+      "bytes": 26144
+    },
+    "rebab/F3.wav": {
+      "sha256": "e315d2972baefe71accd52f55a077698c8db85129d2aa5f33be09708a48a71ab",
+      "bytes": 121428
+    },
+    "rebab/F4.wav": {
+      "sha256": "7eb10e91622b9c0cfb8b295d5b2885b247482c26ee199f9ed8d9597e8a7fc419",
+      "bytes": 30424
+    },
+    "rebab/F5.wav": {
+      "sha256": "5437596c0dc981e72b01d55fe7e3a7fd1a92de346355e6d15124dbd7137e1bf3",
+      "bytes": 12396
+    },
+    "rebab/Fs3.wav": {
+      "sha256": "90519b4361861d18e77318eb4a47f277b6382d3a9dee98560e5e9fc83b930f02",
+      "bytes": 114612
+    },
+    "rebab/Fs4.wav": {
+      "sha256": "f7aad3cbb5843e1eddda5a7c4a89e5eff49cddecfe22fa84342b6ab416a5eb54",
+      "bytes": 28720
+    },
+    "rebab/Fs5.wav": {
+      "sha256": "9cee2eb36305cd56f3b62a2ae6946770bc50df4d88631cdbf40c2d5312d1bccf",
+      "bytes": 23296
+    },
+    "rebab/G3.wav": {
+      "sha256": "901c201e78b4665b761baf5d6b2b9ce1933ae453a1c424ddefdce07abd12c0d0",
+      "bytes": 108184
+    },
+    "rebab/G4.wav": {
+      "sha256": "c40c7f40a8ed17028c7090c4fd8304438eade68e9f0159a775d7610774e934c9",
+      "bytes": 54116
+    },
+    "rebab/G5.wav": {
+      "sha256": "83731031bb863af40e93d8eb0db9113571da9ff017daa3fd8c44d026b81d8835",
+      "bytes": 11052
+    },
+    "rebab/Gs3.wav": {
+      "sha256": "3b10e58afbb7828fefd8cd75f35476e363bf6a5e1195bf0382cda68ecc869bc3",
+      "bytes": 102116
+    },
+    "rebab/Gs4.wav": {
+      "sha256": "5771e7176e2230cc120d5e9bb45e2cba92103692143594e10aa8414740934f31",
+      "bytes": 25596
+    },
+    "rebab/Gs5.wav": {
+      "sha256": "0102a64899ebd370d914529d823ef379f802fbba906a0c15d7084d31b3f873de",
+      "bytes": 10436
+    },
+    "santur/A3.wav": {
+      "sha256": "fee4f03122496a6ce6e559f7c420db31783141acf6362d20cfbff18c8453a281",
+      "bytes": 150018
+    },
+    "santur/A4.wav": {
+      "sha256": "1277d1d662768b25927081dd5715edbac2f3e987e98f844896fd63f8f4d227f5",
+      "bytes": 56240
+    },
+    "santur/A5.wav": {
+      "sha256": "48ecfe154dbcd5dcd98933e1a5d172e431c99f24c1384c70e537936a0fca694c",
+      "bytes": 150018
+    },
+    "santur/As3.wav": {
+      "sha256": "5c3b228173815580a10376bfda775ca709ffa8b14c4426f39de16279f02a9ca3",
+      "bytes": 150018
+    },
+    "santur/As4.wav": {
+      "sha256": "c36b6801edbffeb66dbc41f71d295277cb471476d1d61f8495e4f25957f377b7",
+      "bytes": 53088
+    },
+    "santur/As5.wav": {
+      "sha256": "5e3c17a7b7069b84dfa57e50f67a0609709949f98354a6dce63aa2dcd6e73ce9",
+      "bytes": 150018
+    },
+    "santur/B3.wav": {
+      "sha256": "262a43470d99211b2dd4237e593b7fe7da395827f48ead41f7940bf0df7c0bd7",
+      "bytes": 150018
+    },
+    "santur/B4.wav": {
+      "sha256": "d7c6f36755d00418f8c8d374e3775cef90dcf277ad2dbca93350ed77cb92036c",
+      "bytes": 50112
+    },
+    "santur/B5.wav": {
+      "sha256": "30899e89949bd31b912b5b9a9a4068f57954213656e5e4754d843b4c47ac18e4",
+      "bytes": 150018
+    },
+    "santur/C3.wav": {
+      "sha256": "1c7ad49668b32facbe3c020731c5a228398043fd393c44db833f1240d3187680",
+      "bytes": 150018
+    },
+    "santur/C4.wav": {
+      "sha256": "d47e33c6b7c673647c696c55cc3ddb112acc35562ba1e36454d0d416882e28de",
+      "bytes": 150018
+    },
+    "santur/C5.wav": {
+      "sha256": "faf43620c40f6c89608a0825c20f70522bafafcb4a09a6aee6f701a309f7873b",
+      "bytes": 47304
+    },
+    "santur/Cs3.wav": {
+      "sha256": "5295b2017a52d64ac59b9a458257b7a8dfe50bb894e9dedc99d07ec09b21a250",
+      "bytes": 150018
+    },
+    "santur/Cs4.wav": {
+      "sha256": "f06363a807c2a1f56b2d722563a1e2aeb58f6fc6ff5beed6e37f925d98658c3f",
+      "bytes": 150018
+    },
+    "santur/Cs5.wav": {
+      "sha256": "b99655be01dedff6e735efa754abeba5372713adeeb3a34fd9f690102fe00fb1",
+      "bytes": 44654
+    },
+    "santur/D3.wav": {
+      "sha256": "a6a4104b2893644fcc285dbf344fb511fd97f930d50e3b42a2e7cde233b3b308",
+      "bytes": 150018
+    },
+    "santur/D4.wav": {
+      "sha256": "13184372562f6d7b45df74e0bf406e807bd31431e182bb2585faf289ad3c673e",
+      "bytes": 150018
+    },
+    "santur/D5.wav": {
+      "sha256": "0332b681316974feedef28036c27a3e5627363ae4afbf11fdd896351af584dcb",
+      "bytes": 42152
+    },
+    "santur/Ds3.wav": {
+      "sha256": "f99be6287424c8d084ffb192a3f6f54ebf379901b80fae99ddd541754f24acc4",
+      "bytes": 150018
+    },
+    "santur/Ds4.wav": {
+      "sha256": "68a9cfc628f528c53631786939bb4d6e23c924b59da1451e22ce8133ec3b131b",
+      "bytes": 150018
+    },
+    "santur/Ds5.wav": {
+      "sha256": "7ea341c45fc36b1864f36815070592ac9c75ca1e3b8864e30bcb7f8258f6641f",
+      "bytes": 39790
+    },
+    "santur/E3.wav": {
+      "sha256": "00cbdac650470f79bc8ea61ffb920771b69218f4d82dfe237615c4ca537906a5",
+      "bytes": 150018
+    },
+    "santur/E4.wav": {
+      "sha256": "a67cd37da03a15542d14c68b33f494ceef0011f747883d35c9937a9058d0c707",
+      "bytes": 150018
+    },
+    "santur/E5.wav": {
+      "sha256": "07dd85113360ad17061195282f48b4d001b7470fae6085d4ea90009cb8a3f202",
+      "bytes": 37562
+    },
+    "santur/F3.wav": {
+      "sha256": "9c6d45647b0a7573de0f27f1da050ea56f5d6527423008d862c57088ae1b1845",
+      "bytes": 150018
+    },
+    "santur/F4.wav": {
+      "sha256": "c717deed44be1350c5ed6ddecf186c3a1ee170fe79fcc98ff3e245e956eeca55",
+      "bytes": 150018
+    },
+    "santur/F5.wav": {
+      "sha256": "57579284b530e20d826ca3072c6917ffe7393aa96b6753c2d49907a8a5c42ad3",
+      "bytes": 35458
+    },
+    "santur/Fs3.wav": {
+      "sha256": "7fee05ae8dfe72b2eb8780ed3d2e4bb1e32ed4208f1da8b9853adf1941378a4f",
+      "bytes": 150018
+    },
+    "santur/Fs4.wav": {
+      "sha256": "b98fca1d70400bae16bf732d303b369b7f422a24509cb12864514416b61506c2",
+      "bytes": 150018
+    },
+    "santur/Fs5.wav": {
+      "sha256": "90edcfa227fa47ddd6415c98a0e17cb57bf4117ef62b3146b4c6340208c4e296",
+      "bytes": 33472
+    },
+    "santur/G3.wav": {
+      "sha256": "e1a8c368f2e4ad375151e714ed45f24283400724c632038a21916c281d526b30",
+      "bytes": 150018
+    },
+    "santur/G4.wav": {
+      "sha256": "688398675c073849ac364f2fab6a7bdb7db663dd89533a09498a1633bca53498",
+      "bytes": 63118
+    },
+    "santur/G5.wav": {
+      "sha256": "9350e40beef11ab3213686e4e462a06e13015ae32afffdf424a9bf6986c9e8cc",
+      "bytes": 31598
+    },
+    "santur/Gs3.wav": {
+      "sha256": "13cda167c7441ba7f1b72f80f340dffbfdac3588f0f2c98bd8374b5f5e814378",
+      "bytes": 150018
+    },
+    "santur/Gs4.wav": {
+      "sha256": "7902e437402cba0298bfb95d8b780fec2a6180d51e483ffa7ebd400fbbbb02f5",
+      "bytes": 59580
+    },
+    "santur/Gs5.wav": {
+      "sha256": "f502c80802e9c7a5f0460f599ac58e4dc91fa6c4f88935502304b7029edf142e",
+      "bytes": 29828
+    },
+    "tambur/A3.wav": {
+      "sha256": "f9ac4dba83d7b88b7fa9bf5c5bcd46600e6bfbd2ffae99d9bddf0e7b6b249833",
+      "bytes": 167658
+    },
+    "tambur/A4.wav": {
+      "sha256": "9158fc6b9af7ffad144ee4ef883ce18cbd70c98fd61a10b2c39dab7dd054943f",
+      "bytes": 167658
+    },
+    "tambur/A5.wav": {
+      "sha256": "5025825b2d4882acd0521f8cefb869fb70969c9b548c2e1974e8813dd4f5dd34",
+      "bytes": 133694
+    },
+    "tambur/As3.wav": {
+      "sha256": "f2bd220cdfdba07fdf9adb0b98aab085460181f4a5ae7b6f7ccd86bebc3153e8",
+      "bytes": 167658
+    },
+    "tambur/As4.wav": {
+      "sha256": "2434d8565aa2de73f0af8cce9b2e4bfc37b45dc2fa4c94349f69d76c33253bf2",
+      "bytes": 167658
+    },
+    "tambur/As5.wav": {
+      "sha256": "d12705537395e636c0540feac9e052c1f4081cf8f10bafbc9aaa35d96a1147f5",
+      "bytes": 126194
+    },
+    "tambur/B3.wav": {
+      "sha256": "85fe1295b93c18359b9da8eda381bb0f66d4cb34e5385de6f4997169a35f01f9",
+      "bytes": 167658
+    },
+    "tambur/B4.wav": {
+      "sha256": "e672ac9c27c5d81cadd61099d1ba83d414ea36e5d4887d6181fa4d2e053bd380",
+      "bytes": 167658
+    },
+    "tambur/B5.wav": {
+      "sha256": "67658857087d19e713e511d93f8c642ba359c8e6510efd99b831331106928b16",
+      "bytes": 119116
+    },
+    "tambur/C3.wav": {
+      "sha256": "c8e8aa2a9fddfaadb6f08213f980233084c2122db26fb6fafc5a83f0ca20e736",
+      "bytes": 167658
+    },
+    "tambur/C4.wav": {
+      "sha256": "a9b45ac7a7566deb567aac0cf0a729db675ed45742350aab8ce6cfd4b94120da",
+      "bytes": 167658
+    },
+    "tambur/C5.wav": {
+      "sha256": "84f83f1dcaaeb4549ae3e62f8d128a5098a6d7c86c1857d15fb22bd824e215bf",
+      "bytes": 167658
+    },
+    "tambur/Cs3.wav": {
+      "sha256": "22ef2e4663a03c33ac1312fd04caed9914acdb3c660e8a012281663968c34f6f",
+      "bytes": 167658
+    },
+    "tambur/Cs4.wav": {
+      "sha256": "197d5691f43146a075014335453a166683cf74a13a8291fe1ff9e3c6f1f1026d",
+      "bytes": 167658
+    },
+    "tambur/Cs5.wav": {
+      "sha256": "0f1125e3f30305ea66cd6702d32af03c7ed031b4cddf6bab96ec2b625a5d0f43",
+      "bytes": 167658
+    },
+    "tambur/D3.wav": {
+      "sha256": "a1595f6f3d74b30c29f55d4a46da58e1e13fb53c527840063f9c697d61136ef0",
+      "bytes": 167658
+    },
+    "tambur/D4.wav": {
+      "sha256": "45d483c4929d46af65a3694642070905890c53b5d9499b7de9dce0b7e50ba6ae",
+      "bytes": 167658
+    },
+    "tambur/D5.wav": {
+      "sha256": "5544b259e572030f226f9bf634f5caafdf2a86a3c7aaf027d739746f47e957e5",
+      "bytes": 167658
+    },
+    "tambur/Ds3.wav": {
+      "sha256": "1f454d5bad79c3162b80a1e299b684160dfdf757de5e93342a79d09ccdef2eb4",
+      "bytes": 167658
+    },
+    "tambur/Ds4.wav": {
+      "sha256": "9bb28d192a71d575357d053b13cc23208e5c6b8f81ace62858d446b4607b0ac6",
+      "bytes": 167658
+    },
+    "tambur/Ds5.wav": {
+      "sha256": "8d9c35f75354ac0051cc3ea15bf891b79f196b137179739cbbbe527b5f6bc5d2",
+      "bytes": 167658
+    },
+    "tambur/E3.wav": {
+      "sha256": "a199ef33bca1929b813b2c06ac5633e311b287a57568d61e2967e77a693dc12b",
+      "bytes": 167658
+    },
+    "tambur/E4.wav": {
+      "sha256": "d642f3728a176de04825a5bc332b52dfdb80f8e2975db7b7b566578c25043c5e",
+      "bytes": 167658
+    },
+    "tambur/E5.wav": {
+      "sha256": "03bb46c0dfc689c9878156ffbd0a6f9f5772bddba5603ae083d0f6e305abf270",
+      "bytes": 167658
+    },
+    "tambur/F3.wav": {
+      "sha256": "d82767519f380cae4b63e29b56368836b9a6723796151c72910d538e8a735c51",
+      "bytes": 167658
+    },
+    "tambur/F4.wav": {
+      "sha256": "74516641cf70a24d8572ce58be979a9fad35fe9257c672f21ee1624c56688143",
+      "bytes": 162844
+    },
+    "tambur/F5.wav": {
+      "sha256": "02e24f7686d6828057b8e655cd4f2916f9754c278199f7a4665626cf8bf5a5e6",
+      "bytes": 167658
+    },
+    "tambur/Fs3.wav": {
+      "sha256": "b5b0bf3fe17a054f4aa02c9785d8056ac2db807a1a94f0d7a2e2557ade0038c2",
+      "bytes": 167658
+    },
+    "tambur/Fs4.wav": {
+      "sha256": "6797dabd1d3574518fdf7795b01383ad1f7da36b4348dd4108935dffedfaa1c1",
+      "bytes": 167658
+    },
+    "tambur/Fs5.wav": {
+      "sha256": "46a9a31d7a8d7ec75ebe9405d5c8552caa3bc75eea396b9ce5bb558da08b7c1c",
+      "bytes": 158974
+    },
+    "tambur/G3.wav": {
+      "sha256": "d510f0aaf3edcdce83697a0d4cd1f7ece34032bccf3712e78f5e77d087f7ff0e",
+      "bytes": 167658
+    },
+    "tambur/G4.wav": {
+      "sha256": "89389707d2cc68b670f187d51b944d4e3f7d187f4247e5779f8358a8ec8fc410",
+      "bytes": 167658
+    },
+    "tambur/G5.wav": {
+      "sha256": "2e83686d148763c9c44340475279a39ebcfc7edb303fbf5679629aa50627f931",
+      "bytes": 150056
+    },
+    "tambur/Gs3.wav": {
+      "sha256": "7d3c5ddc36ae2f622abc69d2555297e90f655c4ea971d1f244b270dd550aa202",
+      "bytes": 167658
+    },
+    "tambur/Gs4.wav": {
+      "sha256": "f7dc31413af166f9bbc16566c81de56fa9499f2d01ffc48fd95b8f2588471d6f",
+      "bytes": 167658
+    },
+    "tambur/Gs5.wav": {
+      "sha256": "dc3b591fd3bfab72a7a5039f954394b472a26cba18fd44cb6fcb114bad891c6b",
+      "bytes": 141638
+    },
+    "ud/A3.wav": {
+      "sha256": "76d25f38d5767273e0e242ca79e1bc8c562c5c54f03948c6b978f4fc55110968",
+      "bytes": 111998
+    },
+    "ud/A4.wav": {
+      "sha256": "4b58a7a3bd0b5edf1a4174ebd3571a7cc6b6a48b028b48ca9f2c31ec1bfc53a3",
+      "bytes": 70970
+    },
+    "ud/A5.wav": {
+      "sha256": "db3564f488af049ae9a9a5ba1dadcc5bccc25cc7faef1e328c474658dfb11440",
+      "bytes": 39506
+    },
+    "ud/As3.wav": {
+      "sha256": "fdd637b42797ac0237839964900be44442a33907670157809b560523270fe311",
+      "bytes": 105718
+    },
+    "ud/As4.wav": {
+      "sha256": "61323e47a311075063c8b7521727fa9b9d6e3e3118ea71a223a3440e109606c7",
+      "bytes": 66992
+    },
+    "ud/As5.wav": {
+      "sha256": "ee0bbb206063f2d8240fdb6a72409e9385e95095faf8b1c5d9e6f825f2a113ed",
+      "bytes": 37290
+    },
+    "ud/B3.wav": {
+      "sha256": "0ba60b7b3bf70778f68d4f24719939e2b692f3661f72f87cf17d626f00b60791",
+      "bytes": 91070
+    },
+    "ud/B4.wav": {
+      "sha256": "c49cc1c7fe5248ecdf533fc93b476493ef08d6f5b4a214abd048584df3aba553",
+      "bytes": 63206
+    },
+    "ud/B5.wav": {
+      "sha256": "fa8716f0fa1aab8d857eda1a703425a7e635d31df74f91fc9e61cf95bb8b0a12",
+      "bytes": 35200
+    },
+    "ud/C3.wav": {
+      "sha256": "7fe4245163fe62ef70c4e97d58cb305054bead698e85f438833d5b1b08bc1421",
+      "bytes": 136210
+    },
+    "ud/C4.wav": {
+      "sha256": "0b138ab0af895a8649e5548eb8a1ea218b90c798ccd74875c113a100eaaf7871",
+      "bytes": 106304
+    },
+    "ud/C5.wav": {
+      "sha256": "a36c4500f0d13be03318a04b2053891f10812c71383d713bd34767a67c4bfc1f",
+      "bytes": 59742
+    },
+    "ud/Cs3.wav": {
+      "sha256": "eb3eab46cc3020a5842383711f4f0ec17dd1281384b8ed21a057fb3a9a6e0b4e",
+      "bytes": 128570
+    },
+    "ud/Cs4.wav": {
+      "sha256": "38f2d1a73700bc8e7c379a98debc8053b56d086800eb802f22b06b54349a65e9",
+      "bytes": 100342
+    },
+    "ud/Cs5.wav": {
+      "sha256": "0b64c679bb5de69572dde1e5e0875c2eff5c6bbbe44a75b6e3252e4fd6690193",
+      "bytes": 56392
+    },
+    "ud/D3.wav": {
+      "sha256": "cffca56ac89ae5919fbc10807287d4617fc84ddcf17c874dac9024e9cc7bf540",
+      "bytes": 121358
+    },
+    "ud/D4.wav": {
+      "sha256": "5e3da894a0a93afb4e2d9e28b081c2fea64946b08a052e044a065432dfc6b811",
+      "bytes": 92668
+    },
+    "ud/D5.wav": {
+      "sha256": "3af750e4e6cc0cf86811301f2b1053ae12385b5173302dc876ff56bf7faffc21",
+      "bytes": 59172
+    },
+    "ud/Ds3.wav": {
+      "sha256": "ceb72e0e6e3534896fed721a51dbdf787258b543e5134bb2a4d797910510c5a7",
+      "bytes": 114552
+    },
+    "ud/Ds4.wav": {
+      "sha256": "471e791aee6069693c7519ba550dedd6a5e971eea7320dfc04a8d3ba0d8c4cd6",
+      "bytes": 87472
+    },
+    "ud/Ds5.wav": {
+      "sha256": "d7ee921d010b6de56c8d6d45f1fc2454e875f799a4897b42ad8e16958e1d6551",
+      "bytes": 55856
+    },
+    "ud/E3.wav": {
+      "sha256": "5deec7bb879e8449138d9ffbcc5fa926d9394d2bfe532c772ec332d4de96401d",
+      "bytes": 108440
+    },
+    "ud/E4.wav": {
+      "sha256": "d0ebadc5fd3de8aa1b1a72043127aceeab2ae62510788ba7d0c4ec14932b38c8",
+      "bytes": 101038
+    },
+    "ud/E5.wav": {
+      "sha256": "cc94e5a2517cc27b449518de15bd7961f0f14746ab39b1ba3b653f1cb89c0f5c",
+      "bytes": 52718
+    },
+    "ud/F3.wav": {
+      "sha256": "c19133292cc99b538336adb1024dfe4cf5155b5242794079103e2e3b60ae7e1b",
+      "bytes": 121150
+    },
+    "ud/F4.wav": {
+      "sha256": "735e2634b90d5dec088fc3a83ed394d1a63d91b251e09607ba924b679a9ed1a8",
+      "bytes": 127578
+    },
+    "ud/F5.wav": {
+      "sha256": "133215515cc13e59637cce23434dc8c4b9221ea6c3915876fee524ea7b697a4d",
+      "bytes": 49762
+    },
+    "ud/Fs3.wav": {
+      "sha256": "cee410f6dfa390d463d3392125dec2fa427b3ab8533be2ea5bd9116e06e0fcb5",
+      "bytes": 114354
+    },
+    "ud/Fs4.wav": {
+      "sha256": "09a1a193d89064eb1fa5d7c768530ccd6665903c29230829e3dbc663b12601eb",
+      "bytes": 120422
+    },
+    "ud/Fs5.wav": {
+      "sha256": "f76a7117f753aeba763e25ef4899a3fe5f78aafcb21b3557f1bf58748d67a57d",
+      "bytes": 46972
+    },
+    "ud/G3.wav": {
+      "sha256": "00d63f26ffd1cca0cfb11e57c1777e4c4cb64711136d88a9e212130e7ad2fc73",
+      "bytes": 107300
+    },
+    "ud/G4.wav": {
+      "sha256": "71b5d62bdbdfdeeca7894ec10f561854b3dd96967b7f2c12884e3f96cbe890bf",
+      "bytes": 64602
+    },
+    "ud/G5.wav": {
+      "sha256": "9e229ad1ae96eef823fecdc4fd38129374058786ba84c5c9cbcb23984bbf1609",
+      "bytes": 44338
+    },
+    "ud/Gs3.wav": {
+      "sha256": "ed97c56084511d5cca1052086441cdb7a4d409a945a9ab000710342adce0066e",
+      "bytes": 101284
+    },
+    "ud/Gs4.wav": {
+      "sha256": "1c65cb35003f623915b95093c7bc9d9e6f060eeaa1f3121fd0f4f79eca29dcfe",
+      "bytes": 60982
+    },
+    "ud/Gs5.wav": {
+      "sha256": "47d21342c4309aa8248951be5ee103a7caa7fa47cf3c64ea2e92e2f94b19e120",
+      "bytes": 41852
+    },
+    "zil/dum-accent.wav": {
+      "sha256": "f83f22d0d64809c8e6f6db0b96cb0e5235b986034049572ffbab54db0866a0a2",
+      "bytes": 141198
+    },
+    "zil/dum.wav": {
+      "sha256": "65a9540199cc8a23be64ab690a6b347c8e85d34c4780b22cb029b9122f5dc63c",
+      "bytes": 123558
+    },
+    "zil/hek-accent.wav": {
+      "sha256": "cb17b0b15c393d3f68ec6f23782b6a4610df5a2871a5d762fcf337a32c4db32d",
+      "bytes": 141164
+    },
+    "zil/hek.wav": {
+      "sha256": "8c89a3ae205f79825e02068222da90e480fee552500d4896f9c17f53434502a3",
+      "bytes": 123524
+    },
+    "zil/ke-accent.wav": {
+      "sha256": "d11177117f76d6e26fcc9c6879a3c6dbc60d7d314e82ccbc45ce60598c602601",
+      "bytes": 123558
+    },
+    "zil/ke.wav": {
+      "sha256": "01e175c24067720e2114fcfe56ed68a854d1e7ce5042b66645785af6d9ac49b6",
+      "bytes": 79458
+    },
+    "zil/tek-accent.wav": {
+      "sha256": "307cec640041e3d7c2b58fb6bff361e512781b8d9094e2ef4ac2b7f354654b4c",
+      "bytes": 114738
+    },
+    "zil/tek.wav": {
+      "sha256": "c84a8c2229d1212ad3709fd89c073150a4c03d691611bd99a8ffd42d85dea622",
+      "bytes": 88278
+    },
+    "zilli-def/dum-accent.wav": {
+      "sha256": "568bd428df64adfe9ead9182751120a8ce555937be04c3ce313547a4f7d17dbd",
+      "bytes": 97098
+    },
+    "zilli-def/dum.wav": {
+      "sha256": "4431a1b4bed5a7a38936b6b9d46e7b351970a031af1a9d732622a9394b2750f2",
+      "bytes": 15754
+    },
+    "zilli-def/hek-accent.wav": {
+      "sha256": "6767d81a5f2efeb6d24cf2647ba8b3ca0c6eb0d33d6f7cae513009e8ae75dee6",
+      "bytes": 97064
+    },
+    "zilli-def/hek.wav": {
+      "sha256": "b8cb3f046b6905b2e664dc1db8fe72d8988591f6ddb740b8c7feab516a9c0782",
+      "bytes": 21554
+    },
+    "zilli-def/ke-accent.wav": {
+      "sha256": "553eff1c7fe5c93c6e6e32004bd1d7eb018f2d1e3648bc46f748b148aedcd513",
+      "bytes": 55340
+    },
+    "zilli-def/ke.wav": {
+      "sha256": "8b1d57c3625d8d2e9ec72511bbf1297a19d72716267b4a49ec18e76e02f3a2c1",
+      "bytes": 12808
+    },
+    "zilli-def/tek-accent.wav": {
+      "sha256": "062cc78fc833ff62bff3b6c726c7809e530cb0d41ef389a0e26d8c0041a96f99",
+      "bytes": 19178
+    },
+    "zilli-def/tek.wav": {
+      "sha256": "5cbfdd5bc40f2b2f34711cca073f6ccc17cc25cddfda962712634f50f374a4c2",
+      "bytes": 21588
+    }
+  }
+}

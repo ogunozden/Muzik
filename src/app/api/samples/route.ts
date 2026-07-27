@@ -1,3 +1,4 @@
+import crypto from "node:crypto";
 import {mkdir, readFile, stat, unlink, writeFile} from "node:fs/promises";
 import path from "node:path";
 import {SAMPLE_SLOT_BY_KEY, SAMPLE_SLOTS} from "@/engines/ses/sample-library";
@@ -38,6 +39,31 @@ function resolveSlotPath(relativePath: string): string {
   return resolved;
 }
 
+/**
+ * Commit'li ses dosyalarinin hash kimligi (`manifest.json`).
+ *
+ * `provenance.json` bir KLASORUN kaynagini anlatir, ama iddia aslinda o anki
+ * DOSYALARA aittir. `/samples` sayfasindan bir dosya yuklendiginde dosya
+ * degisir, provenance kaydi ise oldugu gibi kalirdi — yani yuklenen bir
+ * studyo kaydi icin uygulama hala "soundfont'tan uretildi" derdi.
+ *
+ * Manifest bunu OLCUYLE cozer: hash tutmuyorsa kaynak kaydi o dosyayi
+ * kapsamiyor demektir. Calisma zamaninda kanit dosyasina yazmak gerekmez.
+ */
+let manifestCache: Record<string, {sha256: string}> | null = null;
+
+async function readSampleManifest(): Promise<Record<string, {sha256: string}>> {
+  if (manifestCache) return manifestCache;
+  try {
+    const raw = await readFile(path.join(SAMPLES_ROOT, "manifest.json"), "utf8");
+    manifestCache = (JSON.parse(raw) as {files?: Record<string, {sha256: string}>}).files ?? {};
+  } catch {
+    // Manifest yoksa dosyalar "kapsam disi" DEGIL, "bilinmiyor" sayilir.
+    manifestCache = {};
+  }
+  return manifestCache;
+}
+
 async function getSlotStatus(slotKey: string) {
   const slot = SAMPLE_SLOT_BY_KEY.get(slotKey);
   if (!slot) return null;
@@ -46,6 +72,12 @@ async function getSlotStatus(slotKey: string) {
 
   try {
     const fileStat = await stat(filePath);
+    const manifest = await readSampleManifest();
+    const expected = manifest[slot.relativePath]?.sha256;
+    const actual = expected
+      ? crypto.createHash("sha256").update(await readFile(filePath)).digest("hex")
+      : null;
+
     return {
       key: slot.key,
       category: slot.category,
@@ -65,6 +97,9 @@ async function getSlotStatus(slotKey: string) {
       installed: fileStat.isFile(),
       size: fileStat.size,
       updatedAt: fileStat.mtime.toISOString(),
+      // null = manifestoda kayitli degil (bilinmiyor). false = dosya
+      // degismis; klasorun kaynak kaydi BU dosyayi kapsamiyor.
+      matchesManifest: expected ? actual === expected : null,
     };
   } catch {
     return {
@@ -86,6 +121,7 @@ async function getSlotStatus(slotKey: string) {
       installed: false,
       size: 0,
       updatedAt: null,
+      matchesManifest: null,
     };
   }
 }
@@ -175,6 +211,7 @@ export async function POST(request: Request) {
   await mkdir(path.dirname(filePath), {recursive: true});
   await writeFile(filePath, Buffer.from(arrayBuffer));
 
+  // Yukleme sonrasi dosya artik manifestoyu tutmaz; durum bunu yansitmali.
   const status = await getSlotStatus(slot.key);
   return Response.json({slot: status});
 }

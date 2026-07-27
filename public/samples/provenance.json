@@ -64,8 +64,15 @@
       "presets": [
         "BAGLMACE"
       ],
-      "producer": null,
-      "confidence": "claimed"
+      "producer": "scripts/identify-sample-provenance.mjs",
+      "confidence": "measured",
+      "measuredZone": {
+        "preset": "BAGLMACE",
+        "zone": "MS000000",
+        "correlation": 1.0,
+        "playbackRate": 1.0,
+        "sampleFile": "C3.wav"
+      }
     },
     "tambur": {
       "sourceId": "turkish-arab3",
@@ -105,33 +112,62 @@
       "presets": [
         "NEY_05"
       ],
-      "producer": null,
+      "producer": "scripts/identify-sample-provenance.mjs",
       "confidence": "measured",
-      "note": "NEY_05 / 03 bolgesiyle r=0,9760 (E4). BULGU: README 'Proteus Pan Flute' diyordu, OLCUM CURUTTU — kaynak bir NEY preset'i. Yani miskal yerine ney tinisi caliyor. (miskal ile `ney` klasoru AYNI DEGIL: korelasyon 0,01 — ney F5'te yeniden orneklenerek uretildi.)"
+      "note": "OLCULDU: kaynak bir NEY preset'i (`Ney / NyeFlute B2`, r=1,0000, hiz 0,2898). README once 'Proteus Pan Flute' diyordu — CURUDU. Miskal yuvasi ney tinisi caliyor.",
+      "measuredZone": {
+        "preset": "Ney",
+        "zone": "NyeFlute B2",
+        "correlation": 1.0,
+        "playbackRate": 0.2898,
+        "sampleFile": "B3.wav"
+      }
     },
     "davul": {
       "sourceId": "turkish-arab3",
       "presets": [
         "Eastern Percussion"
       ],
-      "producer": null,
-      "confidence": "claimed"
+      "producer": "scripts/identify-sample-provenance.mjs",
+      "confidence": "measured",
+      "measuredZone": {
+        "preset": "Eastern Percussion",
+        "zone": "74=Big Gong",
+        "correlation": 1.0,
+        "playbackRate": 0.771,
+        "sampleFile": "dum-accent.wav"
+      },
+      "note": "OLCULDU: `Eastern Percussion / 74=Big Gong`. DIKKAT — `zil` klasoru AYNI bolgeden geliyor ve `dum-accent.wav` dosyalari ilk 0,35 s'de BIREBIR AYNI (r=1,000000, ayni tepe genligi); yalniz kuyruk uzunluklari farkli (1,40 s / 1,60 s). Davul ile zil ayni sesi caliyor; ikisi de gong. Bu bir ICERIK kusuru, kaynak kaydi degil."
     },
     "def": {
       "sourceId": "turkish-arab3",
       "presets": [
         "Riq_Full"
       ],
-      "producer": null,
-      "confidence": "claimed"
+      "producer": "scripts/identify-sample-provenance.mjs",
+      "confidence": "measured",
+      "measuredZone": {
+        "preset": "Eastern Percussion",
+        "zone": "Deff Slap",
+        "correlation": 1.0,
+        "playbackRate": 0.4172,
+        "sampleFile": "dum-accent.wav"
+      }
     },
     "darbuka": {
       "sourceId": "turkish-arab3",
       "presets": [
         "Darbuka"
       ],
-      "producer": null,
-      "confidence": "claimed"
+      "producer": "scripts/identify-sample-provenance.mjs",
+      "confidence": "measured",
+      "measuredZone": {
+        "preset": "PRC:DARBUKA 1.3",
+        "zone": "DARBUK tok-R",
+        "correlation": 0.9999,
+        "playbackRate": 1.0884,
+        "sampleFile": "dum-accent.wav"
+      }
     },
     "zilli-def": {
       "sourceId": "turkish-arab3",
@@ -155,16 +191,31 @@
       "presets": [
         "Eastern Percussion"
       ],
-      "producer": null,
-      "confidence": "claimed"
+      "producer": "scripts/identify-sample-provenance.mjs",
+      "confidence": "measured",
+      "measuredZone": {
+        "preset": "Eastern Percussion",
+        "zone": "74=Big Gong",
+        "correlation": 1.0,
+        "playbackRate": 0.771,
+        "sampleFile": "dum-accent.wav"
+      },
+      "note": "OLCULDU: `Eastern Percussion / 74=Big Gong`. DIKKAT — `zil` klasoru AYNI bolgeden geliyor ve `dum-accent.wav` dosyalari ilk 0,35 s'de BIREBIR AYNI (r=1,000000, ayni tepe genligi); yalniz kuyruk uzunluklari farkli (1,40 s / 1,60 s). Davul ile zil ayni sesi caliyor; ikisi de gong. Bu bir ICERIK kusuru, kaynak kaydi degil."
     },
     "nakkare": {
       "sourceId": "turkish-arab3",
       "presets": [
         "Eastern Percussion"
       ],
-      "producer": null,
-      "confidence": "claimed"
+      "producer": "scripts/identify-sample-provenance.mjs",
+      "confidence": "measured",
+      "measuredZone": {
+        "preset": "Eastern Percussion",
+        "zone": "59=Tabla Tun",
+        "correlation": 1.0,
+        "playbackRate": 0.771,
+        "sampleFile": "dum-accent.wav"
+      }
     },
     "bendir": {
       "sourceId": "turkish-arab3",
@@ -228,16 +279,79 @@
     },
     "conclusion": "Kaynak paketlerde gercek bir `hek` kaydi YOK. `hek` dum+tek toplamindan turetilmeye devam eder ve bu `/samples` sayfasinda gorunur kalir.",
     "kudumRecordingProbe": {
-      "date": "2026-07-27",
-      "question": "Yeni CC BY kudum kaydinda (58,5 s) gercek bir `hek` (iki elin BIRLIKTE vurusu) var mi?",
-      "measured": [
-        "257 vurus basindan 41'i yalitilmis sayildi.",
-        "Ayirt edici olcut: `dum`un temeli 134 Hz, `tek`inki 191 Hz.",
-        "Iki temeli de neredeyse esit guclukte tasiyan iki aday bulundu: 13,61 s (denge 0,97) ve 25,64 s (0,94) — kiyasla dum 0,03, tek 0,52, ke 0,47.",
-        "Ayirt edici ikinci test denendi: iki el ayni anda vurduysa iki bandin YUKSELISI eszamanli, tek vurus + sempatik rezonansta ikincisi gecikmeli olmali. Test AYIRT ETMEDI — `dum`da bile iki bant 0 ms'de yukseliyor; bu frekanslarda 8 ms'lik pencerenin cozunurlugu soruyu cevaplamiyor."
+      "verdict": "bulunamadi",
+      "previousVerdict": "sonucsuz (H10) — olcut yanlisti, veri degil",
+      "producer": "scripts/probe-hek-in-recording.mjs",
+      "source": "all-samples/115397__xserra__kudum.wav",
+      "whatWasWrongBefore": [
+        "1. deneme (H10): yukselme suresi farki. Kontrol olarak dum'un kendisi de",
+        "   0 ms/0 ms verdi — kaseler kuplajli, olcut ayirt edici degildi.",
+        "2. deneme: 135 Hz ve 275 Hz 'iki kase' sanildi. Uc aday kontrolu 4,5 kat",
+        "   asti, 'hek bulundu' denecekti. Kontrol olcumu curuttu: HER darp",
+        "   (dum/tek/ke) iki tepe gosteriyor ve oran hep ~1,87 — bunlar iki kase",
+        "   degil, TEK davulun iki modu. 275 Hz tek'in ikinci modu."
       ],
-      "conclusion": "SONUCSUZ. Kudum'un iki kazani birlikte monte ve guclu kuplajli; 'iki el birlikte' ile 'tek vurus + kuplaj' elimizdeki kanitla ayrilamiyor. `hek` dum+tek toplamindan TURETILMEYE devam eder.",
-      "wouldSettleIt": "Vurusu ADIYLA etiketleyen bir kaynak (soundfont'un `Bendir Dum`/`Bendir Tek` gibi) ya da icracinin/kaydin notasyonu."
+      "correctMeasurement": {
+        "dumKettleHz": 134.38,
+        "tekKettleHz": 146.25,
+        "separationHz": 11.88,
+        "windowSeconds": 0.18,
+        "resolutionHz": 5.56,
+        "metric": "log2(|tek kasesi| / |dum kasesi|)"
+      },
+      "result": {
+        "strikesAnalyzed": 86,
+        "distribution": "SUREKLI — iki tepeli DEGIL",
+        "detail": "Egim -6 ile +4,5 arasina yayiliyor; 0 civarinda ayri bir kume yok.",
+        "why": "Vurus yeri ve siddeti egimi surekli degistiriyor; hicbir esik hek'i ayiramaz."
+      },
+      "conclusion": "Bu kayitta `hek` ayirt edilemiyor. Turetilmis dosya yerinde kalir (ADR 0001).",
+      "nearMiss": "Ilk (yanlis) olcumle @32.18s kesilip yazilmisti; dogru olcumde o vurus log2=-5.28, yani HER GERCEK dum'dan daha dum cikti. Dosya geri alindi."
     }
+  },
+  "duplicateAudit": {
+    "$comment": [
+      "AYNI SESI CALAN FARKLI KLASORLER.",
+      "",
+      "Hash karsilastirmasi yetmez: iki dosya ayni kayittan farkli uzunlukta",
+      "kesilmisse hash'leri tutmaz ama ses AYNIDIR. Bu yuzden dosyalarin ilk",
+      "0,2 saniyesi normalize korelasyonla karsilastirilir."
+    ],
+    "method": "ilk 0,2 s, normalize capraz korelasyon, esik r > 0,9999",
+    "pairsCompared": "ayni dosya adini tasiyan tum klasor ciftleri",
+    "findings": [
+      {
+        "files": [
+          "davul/dum-accent.wav",
+          "zil/dum-accent.wav"
+        ],
+        "correlation": 1.0,
+        "peakRatio": 1.0,
+        "lengths": [
+          "1,40 s",
+          "1,60 s"
+        ],
+        "meaning": "Ayni kayit, farkli uzunlukta kesilmis. Davul ve zil ayni sesi caliyor.",
+        "status": "acik kusur — gercek davul/zil kaydi gelince duzelir (FAZ D)"
+      },
+      {
+        "files": [
+          "davul/ke-accent.wav",
+          "def/ke.wav"
+        ],
+        "correlation": 1.0,
+        "meaning": "Bayt duzeyinde ayni (manifest hash'i yakaladi).",
+        "status": "acik kusur"
+      },
+      {
+        "files": [
+          "nakkare/ke-accent.wav",
+          "nakkare/tek-accent.wav"
+        ],
+        "correlation": 1.0,
+        "meaning": "Ayni klasor icinde ke ve tek vurgulari ayirt edilemiyor.",
+        "status": "acik kusur"
+      }
+    ]
   }
 }

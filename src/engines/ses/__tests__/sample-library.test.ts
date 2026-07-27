@@ -62,13 +62,17 @@ describe("sample asset inventory", () => {
       .sort();
 
     expect(extras).toEqual([]);
-    // WAV disinda YALNIZ bu uc dosya bulunabilir. Liste kasitli olarak
+    // WAV disinda YALNIZ bu dort dosya bulunabilir. Liste kasitli olarak
     // dardir: klasore sizacak baska bir sey (yedek, .DS_Store, gecici cikti)
     // burada durur.
     //   README.md       — kaynak/lisans anlatimi
     //   sources.json    — kaynak arsivlerin kimligi + lisansi (H3)
     //   provenance.json — her klasorun uretim kaydi + hek aramasi (H4/H5)
-    expect(nonWav).toEqual(["README.md", "provenance.json", "sources.json"]);
+    //   manifest.json   — hangi DOSYALARIN o kaynak kaydina dahil oldugu.
+    //                     Provenance klasoru anlatir; yuklenen bir dosya
+    //                     klasoru degistirmedigi icin iddia sessizce yanlis
+    //                     dosyayi kapsiyordu. Manifest bunu olcumle keser.
+    expect(nonWav).toEqual(["README.md", "manifest.json", "provenance.json", "sources.json"]);
   });
 
   it("keeps installed wav files non-empty and decodable as RIFF/WAVE assets", () => {

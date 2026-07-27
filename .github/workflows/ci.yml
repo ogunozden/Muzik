@@ -30,6 +30,11 @@ jobs:
       # ikisini de cozuyor. Kapi olmadan olu kod SESSIZCE birikiyor —
       # 14 olu dosya ve 100+ olu export tam da boyle birikmisti.
       - run: npm run lint:dead-code
+      # Ses dosyasi kimlik kapisi: `provenance.json` bir KLASORUN kaynagini
+      # anlatir, ama iddia o anki DOSYALARA aittir. Manifest bayatlarsa
+      # degismemis dosyalar "kapsam disi" gorunur ve dogru kaynak bilgisi
+      # sessizce gecersiz olur.
+      - run: npm run samples:manifest:check
       - run: npm run typecheck
       - run: npm run test:run
         env:

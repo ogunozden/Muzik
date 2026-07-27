@@ -92,12 +92,37 @@ Yukaridaki esleme bir IDDIA listesidir. Dalga bicimi karsilastirmasiyla
 | `kanun` | Kanun (Original) / EMREKANUNC3 | **1,0000** |
 | `tambur` | Tanbur / EMRE MT 4C | **1,0000** |
 | `zilli-def` | Darbuka & Riq / EMREATEF DUM | **1,0000** |
-| `miskal` | NEY_05 / 03 | 0,9760 |
+| `miskal` | **Ney / NyeFlute B2** | **1,0000** |
+| `baglama` | BAGLMACE / MS000000 | **1,0000** |
+| `davul` | Eastern Percussion / 74=Big Gong | **1,0000** |
+| `def` | Eastern Percussion / Deff Slap | **1,0000** |
+| `darbuka` | PRC:DARBUKA 1.3 / DARBUK tok-R | **0,9999** |
+| `zil` | Eastern Percussion / 74=Big Gong | **1,0000** |
+| `nakkare` | Eastern Percussion / 59=Tabla Tun | **1,0000** |
 
-`baglama` · `santur` · `lavta` · `rebab` · `darbuka` · `davul` · `def` ·
-`kasik` · `zil` · `nakkare` eslesmedi. Bu **yokluk kanit degil**: soundfont'un
-sentez zincirinden (zarf/filtre) gecmis bir ses, ham bolgeyle birebir tutmaz.
-Onlarin kaynagi iddia olarak kalir.
+Kalan dört klasör (`lavta` · `santur` · `rebab` · `kasik`) bu aramada
+bulunamadı. Bu **yokluk kanıtı değil** — üstelik aramanın kaçırabildiği
+ölçüldü: `miskal` geniş taramada 0,71 verdi, hedefli aramada **1,0000**
+çıktı (iki oktav kaydırma gerekiyordu). Yani "bulunamadı" = *bu aramada
+bulunamadı*, "arşivde yok" değil.
+
+En yakın adaylar: `rebab` 0,87 (Bowed Psaltry, hız 0,65) · `santur` 0,71
+(Proteus3 **Santur** preset'i, hız 0,65) · `lavta` 0,71 (KISAKOL-MI) ·
+`kasik` 0,18.
+
+### AYNI SESİ ÇALAN İKİ ENSTRÜMAN (açık kusur)
+
+Tarama bir kusuru ortaya çıkardı: `davul` ve `zil` **aynı** soundfont
+bölgesiyle (`74=Big Gong`) aynı hızda 1,0000 verdi. Doğrudan kıyas:
+
+    davul/dum-accent.wav  ==  zil/dum-accent.wav
+    ilk 0,35 s üzerinden r = 1,000000, tepe genlikleri eşit
+    uzunluklar 1,40 s / 1,60 s  -> aynı kayıt, farklı kesim
+
+Hash kapısı bunu **kaçırmıştı** (kuyrukları farklı olduğu için baytlar
+tutmuyor). Üç ikiz çift `provenance.json → duplicateAudit`te açık duruyor ve
+`sample-duplicates.test.ts` listeye yenisinin eklenmesini engelliyor —
+kusur büyüyemez, ancak gerçek kayıt gelince (FAZ D) küçülür.
 
 **Iki iddia olcumle duzeltildi:**
 
@@ -270,3 +295,31 @@ olmasini zorunlu kilar. Yani boyle bir klasor bir daha sessizce duramaz.
 `src/engines/ses/__tests__/sample-pitch-labels.test.ts` her dosyanin
 **icerigini** olcup adiyla karsilastirir — etiket/icerik ayrismasi bir daha
 sessizce giremez.
+
+---
+
+## Bir kayıt yüklendiğinde ne olur (FAZ D girişi)
+
+`provenance.json` bir **klasörün** kaynağını anlatır. Ama iddia klasöre değil,
+o anki **dosyalara** aittir. `/samples` sayfasından bir dosya yüklendiğinde
+dosya değişir, kaynak kaydı olduğu gibi kalırdı — yani beklenen stüdyo
+kayıtları geldiğinde uygulama onlar için hâlâ *"soundfont'tan üretildi"*
+diyecekti. Kaynağı **yanlış** bildiren bir ekran.
+
+`manifest.json` bunu kayıt tutarak değil **ölçerek** çözer: her commit'li
+dosyanın sha256'sı orada durur, API diskteki dosyayla karşılaştırır.
+
+| durum | `matchesManifest` | ekranda |
+|---|---|---|
+| dosya depodaki sürüm | `true` | klasörün kaynak bilgisi geçerli |
+| dosya değişmiş (yüklenmiş) | `false` | **"Kaynak kaydı bu dosyayı kapsamıyor"** |
+| manifestoda yok | `null` | bilinmiyor |
+
+Kayıt kalıcı olarak benimsenecekse:
+
+```bash
+npm run samples:manifest
+```
+
+sonra `provenance.json` elle güncellenir (kim kaydetti, hangi enstrüman, hangi
+lisans). Manifest CI'da denetlenir (`samples:manifest:check`) — bayat kalamaz.

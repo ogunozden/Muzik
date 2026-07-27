@@ -1325,3 +1325,80 @@ Eşikler 69/64/77/70 → **70/65/79/71** (CI payı bırakılarak aşağı yuvarl
 
 `0 hata · 0 uyarı` — typecheck, eslint, knip, mimari guardrail, 1.047 test
 (korpus kapıları dahil), build, bundle bütçesi, `npm audit` (0 açık).
+
+
+---
+
+### H12–H15 · "Dış girdi bekliyor" denen üç işin ikisinde eksik olan ÖLÇÜMDÜ
+
+Üç iş "kayıt gelmeden çözülemez" diye kapatılmıştı. İkisinde eksik olan kayıt
+değil, benim ölçümümdü.
+
+#### H13 · `hek` — iki kez yanlış ölçtüm, üçüncüde cevap çıktı
+
+**2. denemede "bulundu" diyecektim.** Üç aday tek-el kontrolünü 4,5 kat aşmış,
+gecikmeleri 0–1 ms çıkmıştı; @32,18s'i kesip `kudum/hek.wav`a yazmıştım bile.
+Yayınlamadan önce bantların gerçekten iki kâse olup olmadığına baktım:
+
+| darp | alt tepe | üst tepe | oran |
+|---|---|---|---|
+| dum @20,05 | 133,00 | 246,75 | 1,855 |
+| tek @23,36 | 145,75 | 274,00 | 1,880 |
+| ke @28,52 | 145,50 | 273,75 | 1,881 |
+
+**Her darp iki tepe gösteriyordu ve oran hep ~1,87.** Bunlar iki kâse değil,
+tek davulun iki modu; 275 Hz tek'in ikinci modu. "Denge" iki eli değil vuruş
+yerini ölçüyordu.
+
+Gerçek kâseler **134,38** ve **146,25 Hz** — 12 Hz ayrı. Doğru ölçütle
+(`log2(|tek|/|dum|)`) yazdığım aday **−5,28** çıktı: *her gerçek dum'dan daha
+dum*. Dosya geri alındı.
+
+86 vuruşun dağılımı **sürekli** (−6…+4,5), 0 civarında ayrı küme yok. Vuruş
+yeri ve şiddeti eğimi sürekli değiştirdiği için hiçbir eşik `hek`'i ayıramaz.
+Sonuç "ölçemedim" değil, **"ölçtüm, bu kayıtta yok"**.
+
+#### H14 · `claimed` 10 → 4
+
+Önceki taramanın iki eksiği vardı:
+
+1. **Dosyaların yarısı taranmamıştı.** `sources.json` dört soundfont
+   listeliyordu; diskte **on** var. Yeni tarama 3.299 bölge.
+2. **Hız farkı yoktu.** Melodik dosya bölgenin yeniden örneklenmiş hâlidir;
+   ham korelasyon yalnız oranı 1,0 olan dosyada tutar. Çözüm: log-frekans
+   ekseninde yeniden örnekleme bir **ötelemedir**, dolayısıyla kaydırma
+   araması hız ile benzerliği tek geçişte verir.
+
+Ölçülen: `baglama` · `davul` · `def` · `zil` · `nakkare` 1,0000 · `darbuka`
+0,9999 · `miskal` **1,0000** (`Ney / NyeFlute B2`, hız 0,2898).
+
+**Aramamın sınırı da ölçüldü:** `miskal` geniş taramada 0,71, hedefli aramada
+1,0000 verdi. Negatif sonuç "arşivde yok" değil, **"bu aramada bulunamadı"**.
+
+Yol boyunca iki kez kendi betiğimi çürüttüm: "alfabetik ortadaki dosya" seçimi
+`Ds3` veriyordu (perde ölçülemiyor → hız araması hiç çalışmadı), ve tek dosya
+seçmek kırılgandı — `zilli-def` seçime göre 1,0000 da veriyor 0,60 da.
+
+#### H15 · Tarama bir içerik kusuru ortaya çıkardı
+
+`davul` ve `zil` aynı bölgeyle aynı hızda 1,0000 verdi. Doğrudan kıyas:
+`davul/dum-accent.wav` ile `zil/dum-accent.wav` ilk 0,35 s'de **birebir aynı**
+(r=1,000000, eşit tepe); yalnız uzunluk farklı. Davul ile zil aynı sesi
+çalıyor, ikisi de gong.
+
+**Hash kapısı bunu kaçırmıştı** — ses aynılığı bayt aynılığı gerektirmiyor.
+`sample-duplicates.test.ts` artık iki düzeyde de bakıyor ve bilinen üç çifte
+yenisinin eklenmesini engelliyor: kusur büyüyemez, ancak kayıt gelince küçülür.
+
+#### H12 · FAZ D girişi — sessiz bir yanlış iddia kapatıldı
+
+`provenance.json` bir **klasörün** kaynağını anlatır; iddia ise o anki
+**dosyalara** aittir. `/samples`ten bir dosya yüklendiğinde dosya değişiyor,
+kayıt olduğu gibi kalıyordu — beklenen stüdyo kayıtları geldiğinde uygulama
+onlar için hâlâ "soundfont'tan üretildi" diyecekti.
+
+`manifest.json` (432 dosya, sha256) bunu kayıt tutarak değil **ölçerek**
+çözer; API `matchesManifest` döner, ekran "Kaynak kaydı bu dosyayı kapsamıyor"
+der. CI kapısı `samples:manifest:check`, kırılma yolu denendi.
+
+**Son durum:** `documented` 3 · `measured` **12** · `claimed` 4 · `unknown` 0.

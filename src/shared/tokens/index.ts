@@ -21,9 +21,12 @@ export const tokens = {
       hover: "hover:bg-[var(--color-primary-600)] text-white",
       light: "bg-[var(--color-primary-100)] text-[var(--color-primary-700)]",
     },
+    // WCAG AA: `--color-secondary-500` (#925d00) uzerinde KOYU metin 3,28
+    // veriyordu (esik 4,5) — axe taramasi yakaladi. Beyaz metin ayni zeminde
+    // 5,54 veriyor; marka rengi degismeden esik asiliyor.
     secondary: {
-      base: "bg-[var(--color-secondary-500)] text-[var(--color-text-primary)]",
-      hover: "hover:bg-[var(--color-secondary-600)] text-[var(--color-text-primary)]",
+      base: "bg-[var(--color-secondary-500)] text-white",
+      hover: "hover:bg-[var(--color-secondary-600)] text-white",
     },
     accent: {
       base: "bg-[var(--color-accent)] text-white",

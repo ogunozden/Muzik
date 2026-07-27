@@ -41,6 +41,19 @@ export function UnifiedLayout({children}: UnifiedLayoutProps) {
       >
         İçeriğe geç
       </a>
+      {/*
+        Iceriğe atlama baglantisi (WCAG 2.4.1 Bypass Blocks).
+        Klavye kullanicisi her sayfada onlarca nav baglantisini tek tek
+        gecmek zorunda kalmasin diye ILK odaklanabilir oge olmali.
+        Gorsel olarak gizli; yalniz odaklanınca gorunur.
+      */}
+      <a
+        href="#main-content"
+        className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-[100] focus:rounded-md focus:bg-[var(--color-bg-surface)] focus:px-4 focus:py-2 focus:text-[var(--color-text-primary)] focus:shadow-lg focus:outline focus:outline-2 focus:outline-offset-2 focus:outline-[var(--color-primary-500)]"
+      >
+        Ana içeriğe geç
+      </a>
+
       {/* Header */}
       <header
         className="sticky top-0 z-50"
@@ -77,7 +90,7 @@ export function UnifiedLayout({children}: UnifiedLayoutProps) {
                     key={item.id}
                     href={item.href ?? "/"}
                     className={`shrink-0 rounded-md px-3 py-1.5 text-sm transition-all duration-150 ${
-                      isActive ? "bg-white/20 font-medium text-white" : "text-white/80 hover:bg-white/10 hover:text-white"
+                      isActive ? "bg-white/15 font-medium text-white" : "text-white/80 hover:bg-white/10 hover:text-white"
                     }`}
                     aria-current={isActive ? "page" : undefined}
                   >
@@ -95,7 +108,7 @@ export function UnifiedLayout({children}: UnifiedLayoutProps) {
                 <details key={item.id} className="group relative shrink-0">
                   <summary
                     className={`flex cursor-pointer list-none items-center gap-1.5 rounded-md px-3 py-1.5 text-sm transition-all duration-150 ${
-                      hubActive ? "bg-white/20 font-medium text-white" : "text-white/80 hover:bg-white/10 hover:text-white"
+                      hubActive ? "bg-white/15 font-medium text-white" : "text-white/80 hover:bg-white/10 hover:text-white"
                     }`}
                     aria-current={hubActive ? "true" : undefined}
                   >

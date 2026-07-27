@@ -113,7 +113,9 @@
   /* Text - Koyu kahve tonları */
   --color-text-primary: oklch(20% 0.02 45);
   --color-text-secondary: oklch(40% 0.02 45);
-  --color-text-tertiary: oklch(55% 0.02 45);
+  /* WCAG AA payi: 55% degeri yuzey (#f8f5ee) uzerinde 4,499 veriyordu —
+     esigin BINDE BIR altinda. 52% ile 4,9'a cikiyor. */
+  --color-text-tertiary: oklch(52% 0.02 45);
   --color-text-disabled: oklch(70% 0.01 45);
   --color-text-inverse: oklch(100% 0 0);
   --color-text-accent: var(--color-primary-600);

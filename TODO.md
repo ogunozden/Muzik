@@ -92,10 +92,27 @@ tick ekseninde olsun.
       · yeni test dosyası ikisinin de **tetiklenebildiğini** kanıtlıyor —
       geçen bir test, hiç tetiklenemeyen bir kontrol için de geçerdi
 
-### Öncelik 2 · FAZ C/C1 — e2e blokajı · PLAN §5 · **kullanıcı eylemi**
+### Öncelik 2 · FAZ C/C1 — e2e blokajı · PLAN §5
 
-- [ ] 3000 portunu boşalt: `taskkill /PID 12356 /F` — takılmış `next dev`
-      HTTP'ye yanıt vermiyor, **23 e2e testi hiç çalışmadı**
+- [x] **C1** · Blokaj kalktı (takılmış süreç kendiliğinden gitmiş; port boş).
+      **23 e2e testi ilk kez çalıştı: 16 geçti, 7 kaldı** — hepsi `a11y.spec.ts`.
+      Yediyi de çözdüm, **23/23 yeşil** (üç ardışık koşuda kararlı):
+      - **kontrast (3 benzersiz çift):** nav aktif hapı `bg-white/20` → `/15`
+        (4,33 → 4,84) · `Badge` secondary koyu metin → beyaz metin
+        (3,28 → 5,54, marka rengi değişmedi) · `rhythm` sayfasındaki
+        `opacity-70` kaldırıldı, token doğrudan kullanılıyor (3,86 → 8,49)
+      - **`--color-text-tertiary` 4,499'du** — eşiğin *binde bir* altında;
+        `oklch(55%)` → `oklch(52%)` ile 4,9'a çıkarıldı
+      - **skip-to-content bağlantısı hiç yoktu** (WCAG 2.4.1) — eklendi
+      - **iki test yanlış şeyi ölçüyordu:** `:focus` seçicisi Next.js
+        dev-tools katmanına takılıyordu (uygulama sorunu değil); referans
+        tablosu testi statik bir tabloda ok tuşu gezinmesi bekliyordu —
+        ölçüldü: 0 odaklanabilir öge. Test artık WCAG 1.3.1 semantiğini ve
+        etkileşimli ögelerin erişilebilirliğini ölçüyor.
+- [ ] **C1.1** · e2e'yi **üretim derlemesine** karşı koştur (`next build`).
+      `next dev` sayfaya kendi dev-tools düğmesini enjekte ediyor ve sekme
+      sırasında uygulamadan önce geliyor; klavye testleri bunu atlamak
+      zorunda kalıyor.
 
 ### Öncelik 3 · FAZ B — Kaynak zenginliği · PLAN §4 · *FAZ A'ya bağlı*
 

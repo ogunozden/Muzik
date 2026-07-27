@@ -256,7 +256,9 @@ export default function UsulPage() {
             <span>Vurgu: {getUsulGrouping(selectedUsulObj).join("+")}</span>
             {selectedUsulObj.defaultBpm ? <span>Tempo: ~{selectedUsulObj.defaultBpm}</span> : null}
             {selectedUsulObj.velvele?.length ? <span>Velvele: var</span> : null}
-            <span className="ml-auto opacity-70">{USUL_DATA.length} usûl</span>
+            {/* `opacity-70` metni zemine karistiriyordu: kontrast 3,86 (esik 4,5).
+                Token dogrudan kullanilinca 8,49. Saydamlik yerine RENK. */}
+            <span className="ml-auto text-[var(--color-text-secondary)]">{USUL_DATA.length} usûl</span>
           </div>
         )}
 

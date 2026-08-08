@@ -106,6 +106,10 @@
   --color-bg-surface: oklch(100% 0 0);
   --color-bg-elevated: oklch(99% 0.005 85);
   --color-bg-muted: oklch(95% 0.01 85);
+  /* Uygulama yukleme spinneri (providers.tsx) */
+  --color-loading-bg: #FAF5F0;
+  --color-loading-track: #E8D5C4;
+  --color-loading-accent: #8B5A2B;
   --color-background: var(--color-bg-base);
   --color-surface: var(--color-bg-surface);
   --color-elevated: var(--color-bg-elevated);
@@ -151,6 +155,7 @@
   --color-success-light: oklch(92% 0.08 145);
   --color-success: oklch(55% 0.12 145);
   --color-success-dark: oklch(45% 0.12 145);
+  --color-success-600: oklch(50% 0.12 145); /* Success pill/button zemini (AA) */
   
   /* Info - Yumuşak mavi */
   --color-info-light: oklch(92% 0.08 230);

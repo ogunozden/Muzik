@@ -23,6 +23,24 @@
 
 ---
 
+## 🔧 2026-08-08 — Derin analiz dalga kuyruğu (yeni açık işler)
+
+> 2026-08-08 derin analizinde bulunan, kod/veri/indeks/doküman katmanlarına
+> yayılan açık işler. Wave 1 (hardcode renkler → token katmanı + korpus test
+> timeout kapısı + flaky playback testi determinizmi) bu turda tamamlandı ve
+> commit'lendi; aşağısı **kalan** işlerdir.
+
+| ID | Açık iş | Kök neden / neden açık | Öncelik / tetikleyici |
+|---|---|---|---|
+| W2.1 | `/studio` kayıtlı-nota playback imleci duvar saatiyle (`performance.now`) ilerliyor; ritim + score-engine `heardContextTime` (ses saati) kullanıyor | D6 deseni `/studio`'ya taşınmadı; çıkış gecikmesi (~53 ms) + saat sürüklenmesi senkronu bozar | P1 · Dalga 2: ses saatine hizala |
+| W2.2 | Test çıktısında jsdom `canvas.getContext` gürültüsü (~200 satır) | canvas paketi yok; test setup'ında no-op stub yok | P3 · Dalga 2 |
+| W3.1 | GitNexus indeksi HEAD'in 3 commit gerisinde + FTS indeksleri eksik | analiz sonrası reindex yapılmadı | P2 · `gitnexus analyze --repair-fts` |
+| W3.2 | TODO'nun eski "Öncelik" listesinde G9 hâlâ açık görünüyor; kodda `rows.ts` geçişi TAMAM | doküman senkronu (başlık bayat) | P3 · başlık güncelle |
+| W3.3 | Verovio ana renderer hedefi; paket kurulu değil (VexFlow geçici) | koşullu borç (`PRODUCT_ARCHITECTURE.md`) | Tetikleyici: Verovio geçiş kararı |
+| W4.1 | Verified PDF ölçü kutusu manifesti boş (0 kutu) | insan/görsel onay gerektirir (`UX_UI_COMPLETION_AUDIT.md`) | Dış girdi |
+| W4.2 | Kürasyonlu harici kaynak coverage 22/3000 | insan kürasyon backlog'u (`audit:external-references`) | Dış girdi |
+| W4.3 | FAZ D stüdyo kayıtları, `hek` gerçek kaydı, 4 `claimed` sample klasörü | dış girdi (üst tablo) | Dış girdi |
+
 ## ✅ FAZ H — TAMAM (H1–H11 kapandı, 2026-07-27) · PLAN §11
 
 > **"Kod işi kalmadı" dediğim doğruydu ama eksikti:** kendi TODO'ma bakarak

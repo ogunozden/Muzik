@@ -4,6 +4,7 @@ import {describe, expect, it} from "vitest";
 import {readMu2DarpGroupings, summarizeDarpGroupings} from "../darp-grouping";
 import {decodeWindows1254} from "../encoding";
 import {readMu2Metadata} from "../mu2-metadata";
+import {CORPUS_TIMEOUT_MS} from "./corpus-gate";
 
 const CORPUS = path.join(process.cwd(), "symb", "SymbTr-3.0");
 const CORPUS_V2_TXT = path.join(process.cwd(), "symb", "SymbTr-2.0.0", "txt");
@@ -87,7 +88,7 @@ describe("readMu2DarpGroupings (B4)", () => {
     // Duyek'te 100'den fazla farkli desen var — bu yuzden `USUL_DATA`nin
     // kanonik duzumu bu sayilarla DEGISTIRILMIYOR.
     expect((byUsul.get("Düyek")?.size ?? 0)).toBeGreaterThan(100);
-  });
+  }, CORPUS_TIMEOUT_MS);
 });
 
 describe("B6 — kod-51 usul adi v3'te KAYBOLMUS (korpus regresyonu)", () => {
@@ -108,7 +109,7 @@ describe("B6 — kod-51 usul adi v3'te KAYBOLMUS (korpus regresyonu)", () => {
 
     expect(rows).toBe(382);
     expect(named).toBe(0);
-  });
+  }, CORPUS_TIMEOUT_MS);
 
   it("v2: ayni alan 319/411 satirda DOLUYDU — README v2 madde 5 dogruydu", () => {
     if (!fs.existsSync(CORPUS_V2_TXT)) return;
@@ -129,5 +130,5 @@ describe("B6 — kod-51 usul adi v3'te KAYBOLMUS (korpus regresyonu)", () => {
     // %77,6 -> %0. Bu bir KAYNAK regresyonu; motorun hatasi degil.
     // Telafi: usul adi artik `mu2` kod-51'den okunuyor (`usul-map.ts`).
     expect(named / rows).toBeGreaterThan(0.75);
-  });
+  }, CORPUS_TIMEOUT_MS);
 });

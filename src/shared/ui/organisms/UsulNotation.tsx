@@ -14,6 +14,7 @@
 
 import React, {forwardRef, useId, useImperativeHandle, useRef} from "react";
 import type {UsulSymbol} from "@/types";
+import {USUL_NOTATION_COLORS} from "@/shared/tokens/visual-palettes";
 
 /**
  * Darbin (1-tabanli, kesirli olabilir) porte uzerindeki YATAY MERKEZI.
@@ -56,17 +57,8 @@ export interface UsulNotationHandle {
   clearProgress: () => void;
 }
 
-const COLORS = {
-  staff: "#8D6E63",
-  grid: "#D7CCC8",
-  dum: "#8B4513",
-  tek: "#2E5D4B",
-  ke: "#9E7540",
-  playing: "#D84315",
-  playhead: "#D84315",
-  beatNumber: "#8D6E63",
-  label: "#5D4037",
-};
+/** Renk paleti merkezi tanimdan gelir (ENGINEERING_RULESET: hardcode yok). */
+const COLORS = USUL_NOTATION_COLORS;
 
 const SYMBOL_STYLES: Record<string, {color: string; label: string; position: number}> = {
   // position: orta cizgiden yarim-aralik adimi (pozitif = yukari).

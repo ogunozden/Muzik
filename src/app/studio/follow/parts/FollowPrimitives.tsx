@@ -20,7 +20,7 @@ export function Pill({
 }) {
   const toneClass =
     tone === "success"
-      ? "bg-[#388E3C] text-white"
+      ? "bg-[var(--color-success-600)] text-white"
       : tone === "secondary"
         ? "border border-[var(--color-border-base)] text-[var(--color-text-primary)]"
         : "bg-[var(--color-primary-500)] text-white";

@@ -9,19 +9,17 @@ const stopAllMock = vi.hoisted(() => vi.fn());
  * AudioContext'ten okunur (getOutputTimestamp / outputLatency); jsdom'da
  * AudioContext yok.
  *
- * DUVAR SAATI kullanmiyoruz: tam suite yuku altinda rAF frame'leri aclik
- * cekince test flaky oluyordu. Her cagride sabit bir adim ilerleten sayac,
- * imlecin ilerledigini planlayiciya bagimli olmadan dogrular.
+ * KOK NEDEN (2026-08-08): onceki surum konumu rAF KARE SAYISIYLA adimliyordu
+ * (`calls * 0.25`) ve 1400ms'lik waitFor, tam suite yuku altinda kare acligi
+ * cekince flaky kaliyordu. Artik konum GERCEK GECEN SUREDEN turer: rAF yalniz
+ * render tetikler, imlecin degeri kare sayisina bagli degildir — gec kalmis
+ * tek bir kare bile dogru konumu yazar. Timeout da 5s'e cikarildi.
  */
-const HEARD_STEP_SECONDS = 0.25;
-const heardClock = vi.hoisted(() => ({calls: 0}));
+const heardClock = vi.hoisted(() => ({startedAt: 0}));
 
 vi.mock("@/engines/ses/engine", () => ({
   playArrangement: playArrangementMock,
-  getHeardPlaybackPosition: () => {
-    heardClock.calls += 1;
-    return heardClock.calls * HEARD_STEP_SECONDS;
-  },
+  getHeardPlaybackPosition: () => Math.max(0, (performance.now() - heardClock.startedAt) / 1000),
   stopAll: stopAllMock,
 }));
 
@@ -29,7 +27,7 @@ describe("CanonicalScorePrototype", () => {
   beforeEach(() => {
     playArrangementMock.mockClear();
     stopAllMock.mockClear();
-    heardClock.calls = 0;
+    heardClock.startedAt = performance.now();
   });
 
   afterEach(() => {
@@ -106,7 +104,7 @@ describe("CanonicalScorePrototype", () => {
 
     await waitFor(() => expect(playArrangementMock).toHaveBeenCalled());
     await waitFor(() => expect(screen.getByText("score-engine-demo:hicazkar-pesrev:m1:n3")).toBeDefined(), {
-      timeout: 1400,
+      timeout: 5000,
     });
   });
 });

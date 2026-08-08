@@ -85,10 +85,13 @@ describe("Korpus kapıları görünür olmalı (H1)", () => {
         const lines = source.split("\n");
 
         for (let index = 0; index < lines.length; index++) {
-          if (!lines[index].includes("skipIf(!hasCorpus)")) continue;
+          const line = lines[index];
+          const isSkipIfGate = line.includes("skipIf(!hasCorpus)");
+          const isBareItLine = /^\s*it\(/.test(line) && !line.trimStart().startsWith("//");
+          if (!isSkipIfGate && !isBareItLine) continue;
 
           // Bu `it(...)` blogunun kapanisini bul ve timeout tasiyor mu bak.
-          const indent = lines[index].length - lines[index].trimStart().length;
+          const indent = line.length - line.trimStart().length;
           const plainClose = `${" ".repeat(indent)}});`;
           const timedClose = `${" ".repeat(indent)}}, CORPUS_TIMEOUT_MS);`;
 
@@ -96,7 +99,13 @@ describe("Korpus kapıları görünür olmalı (H1)", () => {
           while (cursor < lines.length && lines[cursor] !== plainClose && lines[cursor] !== timedClose) {
             cursor++;
           }
-          if (lines[cursor] === plainClose) missing.push(`${file}:${index + 1}`);
+          const block = lines.slice(index, cursor + 1).join("\n");
+          // skipIf kapilari her zaman korpus kapisidir; cıplak `it(` bloklari
+          // yalniz `readdirSync` + CORPUS kullaniyorsa korpus dongusudur
+          // (2026-08-08: mu2-metadata/darp-grouping erken-return korumali
+          // kapilari meta-kapidan kaciyordu — bu genisletme onlari yakalar).
+          const isCorpusLoop = isSkipIfGate || (block.includes("readdirSync(") && block.includes("CORPUS"));
+          if (isCorpusLoop && lines[cursor] === plainClose) missing.push(`${file}:${index + 1}`);
         }
       }
     }

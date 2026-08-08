@@ -6,6 +6,7 @@ import {decodeWindows1254} from "../encoding";
 import {MU2_METADATA_CODES, readMu2Metadata} from "../mu2-metadata";
 import {SYMBTR_COLUMNS, readSymbtrRows} from "../rows";
 import {buildTempoMap, readMu2TempoDeclarations, tempoAt} from "../tempo-map";
+import {CORPUS_TIMEOUT_MS} from "./corpus-gate";
 
 const FIXTURE_MU2 = path.join(__dirname, "..", "..", "score-engine", "__tests__", "fixtures", "symbtr", "mu2");
 const FIXTURE_TXT = path.join(__dirname, "..", "..", "score-engine", "__tests__", "fixtures", "symbtr", "txt");
@@ -112,7 +113,7 @@ describe("readMu2Metadata (B3) — kunye artik okunuyor", () => {
     // degisimlerinde geciyor (bkz. `usul-map.ts`). Iki sayi ayri seyler.
     expect(usuls.size).toBeGreaterThanOrEqual(120);
     expect(makams.has("Acemaşîrân")).toBe(true);
-  });
+  }, CORPUS_TIMEOUT_MS);
 });
 
 describe("buildTempoMap (B7) — kirpilmis BPM KESIN gibi sunulmaz", () => {
@@ -218,7 +219,7 @@ describe("buildTempoMap (B7) — kirpilmis BPM KESIN gibi sunulmaz", () => {
     // azinlikta ve `clipped` ile ISARETLI; kesin gibi sunulmuyor.
     expect(mu2Sourced).toBeGreaterThan(txtClipped * 5);
     expect(txtClipped).toBeGreaterThan(0);
-  });
+  }, CORPUS_TIMEOUT_MS);
 });
 
 describe("fixture'lar — kunye ve tempo birlikte", () => {

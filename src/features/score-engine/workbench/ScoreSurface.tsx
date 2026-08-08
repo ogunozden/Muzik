@@ -9,6 +9,7 @@ import {
 } from "@/data/score-engine/notation";
 import type {CanonicalScoreDocument, CanonicalScoreEvent} from "@/data/score-engine/canonical-score";
 import {tokens} from "@/shared/tokens";
+import {SCORE_SURFACE_COLORS} from "@/shared/tokens/visual-palettes";
 import {findRenderSystemForEvent} from "../score-layout";
 import {
   EVIDENCE_BOTTOM_GAP,
@@ -475,7 +476,7 @@ export function ScoreSurface({
           const segnoSystem = systemLayouts.find((layout) => layout.eventIds.includes(segnoMarker.eventId));
           if (segnoSystem) {
             context.save();
-            context.setFillStyle("#1e40af");
+            context.setFillStyle(SCORE_SURFACE_COLORS.segnoInk);
             context.setFont("Arial", 14);
             context.fillText(segnoGlyph, segnoSystem.x - 12, segnoSystem.y + STAVE_TOP_IN_SYSTEM - 6);
             context.restore();
@@ -517,9 +518,9 @@ export function ScoreSurface({
       <div
         className="relative"
         style={{
-          backgroundColor: "#fffefd",
+          backgroundColor: SCORE_SURFACE_COLORS.paper,
           backgroundImage: visibleLayers.grid
-            ? "linear-gradient(#f0ebe4 1px, transparent 1px), linear-gradient(90deg, #f0ebe4 1px, transparent 1px)"
+            ? `linear-gradient(${SCORE_SURFACE_COLORS.paperGrid} 1px, transparent 1px), linear-gradient(90deg, ${SCORE_SURFACE_COLORS.paperGrid} 1px, transparent 1px)`
             : undefined,
           backgroundSize: "34px 34px",
           height: `${surfaceHeight}px`,
@@ -548,8 +549,8 @@ export function ScoreSurface({
               width={Math.max(activeSystemLayout.width - 8, 24)}
               height={STAVE_HEIGHT + 36}
               rx="6"
-              fill="#f8eee6"
-              stroke="#9a4f2e"
+              fill={SCORE_SURFACE_COLORS.activeSystemFill}
+              stroke={SCORE_SURFACE_COLORS.staffStroke}
               strokeWidth="1.4"
               opacity="0.72"
             />
@@ -575,20 +576,20 @@ export function ScoreSurface({
         >
           {visibleLayers.measureLabels &&
             systemLayouts.map((layout) => (
-              <text key={layout.id} x={layout.x + 12} y={layout.y + STAVE_TOP_IN_SYSTEM - 24} fill="#87644b" fontSize="12">
+              <text key={layout.id} x={layout.x + 12} y={layout.y + STAVE_TOP_IN_SYSTEM - 24} fill={SCORE_SURFACE_COLORS.systemLabel} fontSize="12">
                 {getSystemLabel(layout)}
               </text>
             ))}
           {visibleLayers.measureLabels && (
             <g data-testid="score-usul-label">
-              <text x={SCORE_PADDING_X + 12} y={SURFACE_HEADER_HEIGHT + STAVE_TOP_IN_SYSTEM - 46} fill="#5f2b13" fontSize="12" fontWeight="700">
+              <text x={SCORE_PADDING_X + 12} y={SURFACE_HEADER_HEIGHT + STAVE_TOP_IN_SYSTEM - 46} fill={SCORE_SURFACE_COLORS.headerLabel} fontSize="12" fontWeight="700">
                 USUL: {document.usul} · {document.meter}
               </text>
             </g>
           )}
           {visibleLayers.measureLabels && (
             <g data-testid="score-key-signature-policy">
-              <text x={SCORE_PADDING_X + 224} y={SURFACE_HEADER_HEIGHT + STAVE_TOP_IN_SYSTEM - 46} fill="#5f2b13" fontSize="12" fontWeight="700">
+              <text x={SCORE_PADDING_X + 224} y={SURFACE_HEADER_HEIGHT + STAVE_TOP_IN_SYSTEM - 46} fill={SCORE_SURFACE_COLORS.headerLabel} fontSize="12" fontWeight="700">
                 KEY: {formatKeySignaturePolicy(document)}
               </text>
             </g>
@@ -602,11 +603,11 @@ export function ScoreSurface({
                   width={Math.max(68, marker.label.length * 7 + 20)}
                   height="24"
                   rx="12"
-                  fill="#fffefd"
-                  stroke="#9a4f2e"
+                  fill={SCORE_SURFACE_COLORS.paper}
+                  stroke={SCORE_SURFACE_COLORS.staffStroke}
                   strokeWidth="1.1"
                 />
-                <text x={marker.x + 10} y={marker.y - 1} fill="#5f2b13" fontSize="12" fontWeight="700">
+                <text x={marker.x + 10} y={marker.y - 1} fill={SCORE_SURFACE_COLORS.headerLabel} fontSize="12" fontWeight="700">
                   {marker.label}
                 </text>
               </g>
@@ -618,11 +619,11 @@ export function ScoreSurface({
                 x2={activePosition.x}
                 y1={(activeSystemLayout?.y ?? 0) + STAVE_TOP_IN_SYSTEM - 22}
                 y2={(activeSystemLayout?.y ?? 0) + STAVE_TOP_IN_SYSTEM + STAVE_HEIGHT + 24}
-                stroke="#2f8a45"
+                stroke={SCORE_SURFACE_COLORS.active}
                 strokeWidth="2.4"
                 strokeLinecap="round"
               />
-              <circle cx={activePosition.x} cy={activePosition.y} r="19" fill="none" stroke="#2f8a45" strokeWidth="4" />
+              <circle cx={activePosition.x} cy={activePosition.y} r="19" fill="none" stroke={SCORE_SURFACE_COLORS.active} strokeWidth="4" />
             </g>
           )}
           {visibleLayers.cursor && activePosition && activeEvent && activeCallout && (
@@ -633,18 +634,18 @@ export function ScoreSurface({
                 width="104"
                 height="26"
                 rx="13"
-                fill="#fffefd"
-                stroke="#2f8a45"
+                fill={SCORE_SURFACE_COLORS.paper}
+                stroke={SCORE_SURFACE_COLORS.active}
                 strokeWidth="1.3"
               />
-              <text x={activeCallout.x + 13} y={activeCallout.y + 17} fill="#2f8a45" fontSize="12" fontWeight="700">
+              <text x={activeCallout.x + 13} y={activeCallout.y + 17} fill={SCORE_SURFACE_COLORS.active} fontSize="12" fontWeight="700">
                 {formatNotationLabel(activeEvent.pitch.solfege)}
               </text>
               <text
                 x={activePosition.x}
                 y={activePosition.labelY}
                 textAnchor="middle"
-                fill="#2f8a45"
+                fill={SCORE_SURFACE_COLORS.active}
                 fontSize="12"
                 fontWeight="700"
               >
@@ -654,8 +655,8 @@ export function ScoreSurface({
           )}
           {visibleLayers.evidence && source && (
             <g>
-              <rect x="54" y={surfaceHeight - EVIDENCE_BOTTOM_GAP + 6} width="326" height="20" rx="10" fill="#f8eee6" stroke="#d9c8b8" />
-              <text x="68" y={surfaceHeight - EVIDENCE_BOTTOM_GAP + 20} fill="#72513b" fontSize="12">
+              <rect x="54" y={surfaceHeight - EVIDENCE_BOTTOM_GAP + 6} width="326" height="20" rx="10" fill={SCORE_SURFACE_COLORS.evidenceFill} stroke={SCORE_SURFACE_COLORS.evidenceStroke} />
+              <text x="68" y={surfaceHeight - EVIDENCE_BOTTOM_GAP + 20} fill={SCORE_SURFACE_COLORS.evidenceText} fontSize="12">
                 {source.kind} · source {formatPercent(source.confidence.source)} · pitch {formatPercent(source.confidence.pitch)}
               </text>
             </g>

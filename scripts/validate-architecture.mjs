@@ -275,6 +275,23 @@ for (const file of walk(path.join(root, "src"))) {
   }
 }
 
+// Hardcode renk literal'i kapisi (ENGINEERING_RULESET: "Hardcode yok").
+// Bilesenlerde #hex / rgb( / oklch( literal'i yazilmaz; tek kaynak
+// shared/tokens + lib/design-system (tema tanimlari) katmanidir.
+const COLOR_LITERAL_PATTERN = /#[0-9a-fA-F]{3,8}\b|rgb\(|oklch\(/;
+for (const file of walk(path.join(root, "src"))) {
+  const rel = file.relativePath;
+  if (rel.includes("__tests__") || rel.endsWith(".generated.json") || rel.endsWith(".css")) continue;
+  if (!/\.(ts|tsx)$/.test(rel)) continue;
+  if (rel.startsWith("src/shared/tokens/") || rel.startsWith("src/lib/design-system/")) continue;
+  const lines = fs.readFileSync(file.fullPath, "utf8").split("\n");
+  lines.forEach((line, index) => {
+    if (COLOR_LITERAL_PATTERN.test(line)) {
+      failures.push(`Color literal in component (move to shared/tokens): ${rel}:${index + 1}`);
+    }
+  });
+}
+
 if (failures.length > 0) {
   console.error("Architecture guardrails failed:");
   for (const failure of failures) {

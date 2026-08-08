@@ -21,15 +21,15 @@ function LoadingFallback() {
         alignItems: "center",
         justifyContent: "center",
         minHeight: "100vh",
-        backgroundColor: "#FAF5F0",
+        backgroundColor: "var(--color-loading-bg)",
       }}
     >
       <div
         style={{
           width: 40,
           height: 40,
-          border: "4px solid #E8D5C4",
-          borderTopColor: "#8B5A2B",
+          border: "4px solid var(--color-loading-track)",
+          borderTopColor: "var(--color-loading-accent)",
           borderRadius: "50%",
           animation: "spin 1s linear infinite",
         }}
@@ -63,7 +63,7 @@ function HydrationSafeProvider({ children }: { children: ReactNode }) {
       <div
         style={{
           minHeight: "100vh",
-          backgroundColor: "#FAF5F0",
+          backgroundColor: "var(--color-loading-bg)",
         }}
       />
     );

@@ -14,6 +14,7 @@ import {
 import verificationData from "../layout-verification.generated.json";
 
 const HICAZKAR_CATALOG_ID = "hicazkar--pesrev--devrikebir----tanburi_buyuk_osman_bey";
+const UNREVIEWED_CATALOG_ID = "acem--ilahi--duyek--aldanma_dunya--zekai_dede";
 const VERIFIED_CATALOG_ID = "acem--seyir--sofyan--1--erol_bingol";
 
 describe("SymbTr PDF layout candidates", () => {
@@ -56,23 +57,33 @@ describe("SymbTr PDF layout candidates", () => {
     expect(coverage.totalCatalogEntries).toBe(3000);
     expect(coverage.extractedEntries).toBeGreaterThan(1);
     expect(coverage.candidateEntries).toBeGreaterThan(1);
-    // G6.1 sonrasi: kutular `meter-walk-v2` tabaniyla YENIDEN dogrulandi.
-    // Pivot sirasinda 0'a dusmuslerdi (G5 valfi); simdi 546 girdi / 19.064
-    // kutu ile geri geldiler — eskisinden (520 / 18.334) fazla.
-    expect(coverage.verifiedMeasureBoxEntries).toBe(546);
+    // G6.1 + W4.1 yazimi sonrasi: kutular `meter-walk-v2` tabaniyla yeniden
+    // dogrulandi; 2026-08-08 onarim yazimi ek girisler ekledi
+    // (written-expanded-v1 dahil) — sayi 546'dan buyuk olmali.
+    expect(coverage.verifiedMeasureBoxEntries).toBeGreaterThan(546);
     expect(coverage.unresolvedCandidateEntries).toBeGreaterThanOrEqual(0);
   });
 
-  it("keeps Hicazkar candidates unreviewed when candidate-to-TXT ratio exceeds tolerance", () => {
-    const layout = getSymbTrPdfLayout(HICAZKAR_CATALOG_ID);
-    console.log('[DEBUG] layout exists:', !!layout, 'candidates:', layout?.summary?.measureCandidateCount);
-    const boxes = getSymbTrVerifiedPdfMeasureBoxes(HICAZKAR_CATALOG_ID);
-    console.log('[DEBUG] verified boxes:', boxes?.length);
+  it("keeps low-confidence entries unreviewed — yalniz kanit zarfini gecenler verified olur", () => {
+    const layout = getSymbTrPdfLayout(UNREVIEWED_CATALOG_ID);
+    expect(layout).not.toBeNull();
+    const boxes = getSymbTrVerifiedPdfMeasureBoxes(UNREVIEWED_CATALOG_ID);
     expect(boxes.length).toBe(0);
-    const status = getSymbTrPdfLayoutVerificationStatus(HICAZKAR_CATALOG_ID);
+    const status = getSymbTrPdfLayoutVerificationStatus(UNREVIEWED_CATALOG_ID);
     expect(status.candidateCount).toBeGreaterThan(0);
     expect(status.verifiedMeasureBoxCount).toBe(0);
     expect(status.status).toBe("unreviewed-candidates");
+  });
+
+  it("W4.1 onarim yazimi sonrasi Hicazkar pesrev verified oldu (written-expanded veya meter-walk)", () => {
+    const boxes = getSymbTrVerifiedPdfMeasureBoxes(HICAZKAR_CATALOG_ID);
+    expect(boxes.length).toBeGreaterThan(0);
+    const verification = verificationData.entries[HICAZKAR_CATALOG_ID];
+    expect(RUNTIME_ACCEPTED_MEASURE_INDEX_BASES).toContain(verification?.measureIndexBasis);
+    for (const box of boxes) {
+      expect(box.confidence).toBe("verified");
+      expect(box.measureIndex).toBeGreaterThanOrEqual(1);
+    }
   });
 
   it("auto-verifies entries with matching candidate-to-TXT measure count via symbtr-txt-aligned", () => {
@@ -107,10 +118,11 @@ describe("measureIndexBasis — pivot emniyet valfi (G5)", () => {
   it("dogrulanmis girdilerin HEPSI tabanini kaydediyor (cikarim degil, KAYIT)", () => {
     const entries: Array<{measureIndexBasis?: string}> = Object.values(verificationData.entries);
 
-    // G6.1 sonrasi: 546 girdi, hepsi yurunmus izgara tabaninda.
-    expect(entries.length).toBe(546);
+    // G6.1 + W4.1 yazimi sonrasi: 624 girdi; her biri tabanini KAYDEDIYOR
+    // (cikarim degil) ve taban motorun kabul ettigi kumede.
+    expect(entries.length).toBeGreaterThan(546);
     for (const entry of entries) {
-      expect(entry.measureIndexBasis).toBe(CURRENT_MEASURE_INDEX_BASIS);
+      expect(RUNTIME_ACCEPTED_MEASURE_INDEX_BASES).toContain(entry.measureIndexBasis);
     }
   });
 

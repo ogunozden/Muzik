@@ -314,7 +314,10 @@ const AUDIT_EXPRESSION = String.raw`
     localSymbTrSources: hasText("Yerel SymbTr kaynakları"),
     externalSources: hasText("Kaynak") && has("SymbTr v3 Zenodo") && has("MTG/SymbTr GitHub"),
     pdfCandidateSafety: hasText("PDF vektör ölçü adayları") && hasText("Bu veriler kesin ölçü kutusu olarak işaretlenmez"),
-    verifiedPdfStatus: hasText("Doğrulanmış PDF ölçü kutusu: 0") || hasText("Doğrulanmış PDF ölçü kutusu: 1"),
+    // W4.1 sonrasi UI gercek kutu sayisini gosterir:
+    // "Dogrulanmis PDF olcu kutusu: {n} · durum {status}."
+    // Sabit 0/1 eslesmesi bayat kaldi; sayidan bagimsiz durum satirini dogrula.
+    verifiedPdfStatus: hasText("Doğrulanmış PDF ölçü kutusu:") && has("· durum "),
     sampleFallback: hasText("sample yok, sentez kullanılır") || hasText("Sample"),
     instrumentControls: Boolean(melodicSelect) && Boolean(percussionSelect) && addMelodicClicked && percussionChanged,
     catalogSearch: Boolean(catalogSearch) && (hasText("aldanma dunya") || has("aldanma_dunya") || hasText("Aldanma Dunya")),

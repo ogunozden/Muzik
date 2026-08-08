@@ -9,7 +9,7 @@ event log'a yazilir." Bu yuzden otomasyon, LLM tahmini degil; **olculebilir
 kanit + deterministik kural** uzerine kurulur. Insan, yalnizca kanitin
 belirsiz kaldigi noktada ve daraltilmis bir onay yuzeyinde devreye girer.
 
-## 1. W4.1 — PDF olcu kutulari (1259 giris adayi, ~65 bin kutu karari)
+## 1. W4.1 — PDF olcu kutulari (624 giris verified / 20.594 kutu; 1.181 giris adayi)
 
 ### Kok bulgu (2026-08-08 olcumu)
 
@@ -65,6 +65,27 @@ icinde, tum keep'ler dogru**. Manifeste YAZMA ise operatör onayı gerektirir
 (import kapisi `alignmentEvidence` zarfini zorunlu tutuyor); onay sonrasi
 `npm run import:symbtr-measure-verification` akisi kullanilir.
 
+### Manifeste yazma (W4.1 — KAPANDI, 2026-08-08)
+
+Operatör onayi verildi; 116 import-ready giris (84 meter-walk-v2 + 32
+written-expanded-v1) `--write` ile manifeste yazildi:
+
+- Manifest: **624 giris / 20.594 kutu** (592 meter-walk-v2 + 32
+  written-expanded-v1; 32'sinde `writtenMeasureMapping` zarfı var).
+- Kapilar: `verify:symbtr-layout-review-import` errors `[]` (dry-run
+  outputEntryCount 624, manifest sha256 degismedi); `verify:symbtr-measures`
+  errors `[]` (624 verified / 20.594 kutu, 1.181 unresolved aday).
+- Testler: layout.test.ts yeni sayimlara guncellendi (coverage >546, her entry
+  basis `RUNTIME_ACCEPTED_MEASURE_INDEX_BASES` icinde; Hicazkar pesrev artık
+  verified, unreviewed örneği acem--ilahi--duyek--aldanma_dunya--zekai_dede).
+- Artefaktlar tazelendi: aligner raporu (116 high / 932 medium / 1.747 low,
+  storedMismatch 12.863), import-ready (116 giris), review template + batch
+  plan (1.805 giris / 65.299 satir), repair-proposals (624 giris: 12.008
+  replace / 2.864 keep / 5.722 review / 459 add, writeReady 84).
+- Runtime: `audit:prod-cycle` OK — studio-follow denetiminin eski `: 0`/`: 1`
+  eslesmesi gercek sayiya (`· durum {status}`) guncellendi; desktop+mobile
+  verifiedPdfStatus true.
+
 ### Kalan teknoloji gereksinimleri
 
 | Gereksinim | Neden | Oncelik |
@@ -92,7 +113,7 @@ icinde, tum keep'ler dogru**. Manifeste YAZMA ise operatör onayı gerektirir
 Sonuc: kalan %23,3 uyumsuzluk, isaret-duzeyi deterministik otomasyonla
 cozulemiyor; tam muzikal yorum (insan/uzman) veya kaynak duzeltmesi gerektirir.
 | **Medium girislere on-doldurma**: review template'i alignment'dan gelen `suggestedMeasureIndex` ile doldur | Insan isini "65 bin karar"dan "medyan-delta spot-kontrolu"ne indirir | P2 |
-| **14.694 uyumsuz kutu onariminin UYGULANMASI**: `repair-proposals.json` uretildi (13.651 replace + 4.677 review); demote/replace islemi operatör onayı sonrasi import kapisindan gecer | Veri butunlugu: yanlis "verified" veri, kurasyon/arastirma kararlarini kirletir | P1 (onay bekliyor) |
+| **Uyumsuz kutu onariminin UYGULANMASI**: `repair-proposals.json` tazelendi (624 giris: 12.008 replace / 2.864 keep / 5.722 review / 459 add, writeReady 84); replace uygulamasi verified veriyi degistirir — operatör karari olmadan import kapisindan gecirilmez | Veri butunlugu: yanlis "verified" veri, kurasyon/arastirma kararlarini kirletir | P1 (operatör karar yüzeyi) |
 
 ## 2. W4.2 — 2978 harici kaynak kurasyonu
 
@@ -137,6 +158,18 @@ deterministik elendi — daha ozel URL veya demotion icin insan kurasyonu).
 Kalan 5 grup `conflict`/`deferred` statüsünde — tasarim geregi insan
 karari bekler; kosucu bunlarda donmez.
 
+### Duplicate-URL demotion (W4.2b — KAPANDI, 2026-08-08)
+
+`scripts/demote-duplicate-url-candidates.mjs` eklendi: accepted-ready cache
+satirlari URL kimligine gore deterministik ayrilir (kazanan: en yuksek
+evidence.score; esitlikte catalogId — `dedupeAcceptedCandidatesByIdentity`
+ile ayni mantik). 37 satir → 18 kazanan; 19 kaybeden `conflict`'e demote
+edildi (`reason: duplicate-url-identity-excluded`, kazanan + `demotedAt`
+kayitli; liste: `output/external-source-discovery/duplicate-url-demote-list.json`).
+`conflict`, kosucunun AUTO_VERIFIABLE_STATUSES disindadir — schedule AYNI
+kaldi: 0 parti, 0 kalan, 18 accepted, duplicateUrlExcludedCount 0. Kalan
+insan yuzeyi yalnizca 5 conflict/deferred gruptur.
+
 ## 3. W4.3 — Ses kaynak dogrulama (hek, 4 claimed klasor)
 
 ### Kok durum (2026-08-08 olcumu)
@@ -157,10 +190,15 @@ sonucu verdi: mevcut kayitta ayri bir cift-vurus yok.
 
 ## 4. W3.1 — GitNexus FTS (environment)
 
-4 deneme + `gitnexus doctor`: uzanti INIYOR ama Node SQLite `LOAD` edemiyor
-(ABI/platform kısiti). Kod tarafi cozumu yok; gereksinim: Node veya GitNexus
-sürümü yukseltilince `node .gitnexus/run.cjs analyze --repair-fts` tekrar
-denenir (TODO W3.1'de kayitli).
+5 deneme + `gitnexus doctor` (2026-08-08): `node .gitnexus/run.cjs analyze
+--repair-fts` → "Cannot repair FTS indexes: the LadybugDB FTS extension is
+unavailable (not pre-installed and could not be installed on this machine)".
+Doctor: FTS "available" gosterir, native `lbugjs.node` yuklenir, ancak analyze
+sureci `load-only` (offline) politikayla calisir ve "LOAD fts failed after
+successful INSTALL" ile uzantiyi Node SQLite'a yukleyemez; VECTOR bu platformda
+kapalidir (semantic = exact-scan). Kod tarafi cozumu yok — CERVESEL:
+Node/GitNexus surumu veya makine yukleme politikasi degisince
+`node .gitnexus/run.cjs analyze --repair-fts` tekrar denenir (TODO W3.1).
 
 ## 5. W3.3 — Verovio (kosullu)
 

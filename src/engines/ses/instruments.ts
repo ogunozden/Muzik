@@ -413,11 +413,12 @@ export function playPercussionSymbolScheduled(
   startTime: number,
   beatDuration: number,
   percussionInstrument?: InstrumentType,
+  gainScale: number = 1,
 ): boolean {
   const context = getAudioContext();
   if (!context || !getMasterGain()) return false;
 
-  if (scheduleSampledPercussionHit(context, symbol, isAccent, startTime, beatDuration, percussionInstrument)) {
+  if (scheduleSampledPercussionHit(context, symbol, isAccent, startTime, beatDuration, percussionInstrument, gainScale)) {
     return true;
   }
 
@@ -440,6 +441,8 @@ export interface RhythmLoopController {
    * sonrasi yeni tempoya olceklenir — dikissiz gecis (bkz. seamlessRetuneStart).
    */
   retune: (nextBpm: number) => void;
+  /** Canli master volume (0..1); dongu cikis dugumune yumusak rampa uygular. */
+  setVolume: (volume: number) => void;
   stop: () => void;
 }
 
@@ -603,6 +606,12 @@ export async function startRhythmLoop(
       startAtCtx = seamlessRetuneStart(nextHitTime, nextCycle, beats, nextHitBeatOffset, beatSeconds);
       // cycleIndex/hitIndex ayni muzikal konumu gosterir (semboller degismedi,
       // schedule uzunlugu ve sirasi ayni); sonraki pump yeni tempoda planlar.
+    },
+    setVolume: (volume) => {
+      const next = Number.isFinite(volume) ? Math.min(1, Math.max(0, volume)) : 1;
+      // Yumusak rampa: ani tik sesi olmadan cikis dugumune uygulanir (D10
+      // deseniyle ayni dugum — yalnizca BU donguyu etkiler).
+      loopGain.gain.setTargetAtTime(next, context.currentTime, 0.05);
     },
     stop: () => {
       stopped = true;

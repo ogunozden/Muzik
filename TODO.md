@@ -40,6 +40,7 @@
 | W3.4 ✅ | Tüm sayfalardaki 21 select'e `id`/`name` eklendi (Chrome a11y issue kapandı) | commit `3bde375` | KAPANDI (2026-08-08) |
 | W3.5 ✅ | `nanoid <3.3.17` prod açığı kapatıldı (3.3.18); `audit:prod-cycle` uçtan uca YEŞİL (ok=true) | commit `3bde375`; prod-cycle summary | KAPANDI (2026-08-08) |
 | W3.6 ✅ | `/exercises` UnifiedLayout'a sarıldı (guardrails:layout kırmızısı kapandı) | commit `3bde375` | KAPANDI (2026-08-08) |
+| W3.7 ✅ | Çalma kontrolcüleri: master volume (studio/follow/rhythm, localStorage kalıcı) + follow katmanlarında Solo/Sessiz | commit (2026-08-08) | KAPANDI — ürün kabul kriteri "volume çalışır" karşılandı |
 | W4.1 | Verified PDF ölçü kutusu: review template 2026-08-08'de güncel sayımlarla yeniden üretildi (kapılar yeşil); 546 giriş/19064 kutu verified, 1259 giriş aday | insan/görsel onay gerektirir | Dış girdi |
 | W3.3 | Verovio ana renderer hedefi; paket kurulu değil (VexFlow geçici) | koşullu borç (`PRODUCT_ARCHITECTURE.md`) | Tetikleyici: Verovio geçiş kararı |
 | W4.1 | Verified PDF ölçü kutusu manifesti boş (0 kutu) | insan/görsel onay gerektirir (`UX_UI_COMPLETION_AUDIT.md`) | Dış girdi |

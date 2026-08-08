@@ -35,6 +35,8 @@ export type ScheduledPercussionHit = {
   symbol: PercussionSymbol;
   isAccent?: boolean;
   percussionInstrument?: InstrumentType;
+  /** Vurus bazli gain olcegi (1 = normal). Master volume ile carpilir. */
+  gainScale?: number;
 };
 
 export type RhythmSymbolInput = {
@@ -45,6 +47,15 @@ export type RhythmSymbolInput = {
   /** Velvele dolgu vurusu (ana darba denk gelmeyen) — susleme kismasi icin. */
   isOrnament?: boolean;
 };
+
+export interface PlaybackGainOptions {
+  /** 0..1 master volume carpani (1 = tam). Tutarli sekilde kirpilir. */
+  gainScale?: number;
+}
+
+function clampGainScale(value: number | undefined): number {
+  return typeof value === "number" && Number.isFinite(value) ? Math.min(1, Math.max(0, value)) : 1;
+}
 
 export async function initAudio(): Promise<boolean> {
   return initAudioBase();
@@ -175,6 +186,7 @@ export async function startRhythmLoop(
 export async function playSequence(
   notes: ScheduledNote[],
   instrument: InstrumentType = "ud",
+  options: PlaybackGainOptions = {},
 ): Promise<ArrangementPlayback> {
   const ok = await initAudio();
   if (!ok) return NO_PLAYBACK;
@@ -185,6 +197,7 @@ export async function playSequence(
   const instruments = Array.from(new Set(notes.map((note) => note.instrument ?? instrument)));
   await Promise.all(instruments.map((noteInstrument) => preloadInstrumentSamples(noteInstrument)));
 
+  const gainScale = clampGainScale(options.gainScale);
   const baseTime = context.currentTime + 0.02;
 
   for (const note of notes) {
@@ -193,7 +206,7 @@ export async function playSequence(
       note.midiNumber,
       note.instrument ?? instrument,
       note.duration,
-      note.gain ?? 0.2,
+      (note.gain ?? 0.2) * gainScale,
       noteStartTime,
       note.targetFrequency,
     );
@@ -224,6 +237,7 @@ export async function playArrangement(
   notes: ScheduledNote[],
   percussionHits: ScheduledPercussionHit[] = [],
   fallbackInstrument: InstrumentType = "ud",
+  options: PlaybackGainOptions = {},
 ): Promise<ArrangementPlayback> {
   const ok = await initAudio();
   if (!ok) return NO_PLAYBACK;
@@ -251,6 +265,7 @@ export async function playArrangement(
     ),
   );
 
+  const gainScale = clampGainScale(options.gainScale);
   const baseTime = context.currentTime + 0.04;
 
   for (const note of notes) {
@@ -258,7 +273,7 @@ export async function playArrangement(
       note.midiNumber,
       note.instrument ?? fallbackInstrument,
       note.duration,
-      note.gain ?? 0.2,
+      (note.gain ?? 0.2) * gainScale,
       baseTime + note.startTime,
       note.targetFrequency,
     );
@@ -271,6 +286,7 @@ export async function playArrangement(
       baseTime + hit.startTime,
       hit.beatDuration,
       hit.percussionInstrument,
+      (hit.gainScale ?? 1) * gainScale,
     );
   }
 

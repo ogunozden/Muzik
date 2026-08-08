@@ -28,6 +28,7 @@ import {UnifiedLayout} from "@/shared/ui/layout/UnifiedLayout";
 import {USUL_DATA, getUsulBeatDuration, getUsulGrouping} from "@/engines/usul/data";
 import type {InstrumentType} from "@/engines/ses/engine";
 import {startRhythmLoop, stopAll, type RhythmLoopController} from "@/engines/ses/engine";
+import {VolumeControl, usePlaybackVolume} from "@/shared/ui/organisms/VolumeControl";
 import type {UsulNotationHandle} from "@/shared/ui/organisms/UsulNotation";
 import {useEditorStore} from "@/store/editorStore";
 import {INSTRUMENTS, PERCUSSION_INSTRUMENTS} from "@/lib/app-constants";
@@ -83,6 +84,7 @@ export default function UsulPage() {
   const [currentSymbolIndex, setCurrentSymbolIndex] = useState(-1);
   const [cycleCount, setCycleCount] = useState(0);
   const [syncOffsetMs, setSyncOffsetMs] = useState(0);
+  const [volume, setVolume] = usePlaybackVolume();
   const isPlayingRef = useRef(false);
   const isLoopRef = useRef(true);
   const cursorRafRef = useRef<number | null>(null);
@@ -162,6 +164,7 @@ export default function UsulPage() {
     }
 
     loopControllerRef.current = controller;
+    controller.setVolume(volume);
     isPlayingRef.current = true;
     activeIndexRef.current = 0;
     cycleCountRef.current = 1;
@@ -205,7 +208,7 @@ export default function UsulPage() {
       cursorRafRef.current = requestAnimationFrame(tick);
     };
     cursorRafRef.current = requestAnimationFrame(tick);
-  }, [bpm, isVelveleEnabled, selectedPercussionInstrument, selectedUsulObj, stopRhythm]);
+  }, [bpm, isVelveleEnabled, selectedPercussionInstrument, selectedUsulObj, stopRhythm, volume]);
 
   useEffect(() => {
     if (!selectedUsulObj) setSelectedUsul("sofyan");
@@ -286,7 +289,7 @@ export default function UsulPage() {
           className="mb-6"
         />
 
-        <PageSurface className="mb-6 grid gap-4 p-5 sm:grid-cols-[2fr_2fr_1fr] sm:items-end">
+        <PageSurface className="mb-6 grid gap-4 p-5 sm:grid-cols-[2fr_2fr_1fr_1fr] sm:items-end">
           <LabeledSelect
             label={t("makam.instrument")}
             ariaLabel={t("makam.selectInstrument")}
@@ -344,6 +347,13 @@ export default function UsulPage() {
               </label>
             )}
           </div>
+          <VolumeControl
+            volume={volume}
+            onVolumeChange={(next) => {
+              setVolume(next);
+              loopControllerRef.current?.setVolume(next);
+            }}
+          />
         </PageSurface>
 
         {/* Ses-gorsel kalibrasyonu: sistem gecikmesi cihazdan cihaza degistigi

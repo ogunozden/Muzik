@@ -20,6 +20,12 @@ export interface FollowLayersPanelProps {
   onChangePercussionLayer: () => void;
   onRemoveMelodicLayer: (id: string) => void;
   onRemovePercussionLayer: (id: string) => void;
+  /** Sessize alinan katman id'leri (master volume'dan bagimsiz). */
+  mutedLayerIds: readonly string[];
+  /** Yalniz calan katman id'si; null = solo yok. */
+  soloLayerId: string | null;
+  onToggleMuteLayer: (id: string) => void;
+  onToggleSoloLayer: (id: string) => void;
   melodicLayers: readonly PieceLayer[];
   percussionLayers: readonly PiecePercussionLayer[];
   layerMessage: string | null;
@@ -39,6 +45,10 @@ export function FollowLayersPanel({
   onChangePercussionLayer,
   onRemoveMelodicLayer,
   onRemovePercussionLayer,
+  mutedLayerIds,
+  soloLayerId,
+  onToggleMuteLayer,
+  onToggleSoloLayer,
   melodicLayers,
   percussionLayers,
   layerMessage,
@@ -108,26 +118,78 @@ export function FollowLayersPanel({
         {melodicLayers.map((layer) => (
           <div key={layer.id} className="flex items-center justify-between gap-3 rounded-md border border-[var(--color-border-subtle)] px-3 py-2 text-sm">
             <span>{layer.label} · ezgi</span>
-            <button
-              type="button"
-              onClick={() => onRemoveMelodicLayer(layer.id)}
-              disabled={melodicLayers.length <= 1}
-              className="text-[var(--color-error)] disabled:opacity-40"
-            >
-              Kaldır
-            </button>
+            <span className="flex items-center gap-2">
+              <button
+                type="button"
+                aria-pressed={soloLayerId === layer.id}
+                onClick={() => onToggleSoloLayer(layer.id)}
+                className={`rounded-md border px-2 py-1 text-xs ${
+                  soloLayerId === layer.id
+                    ? "border-[var(--color-primary-500)] bg-[var(--color-primary-50)] text-[var(--color-primary-700)]"
+                    : "border-[var(--color-border-default)] text-[var(--color-text-secondary)]"
+                }`}
+              >
+                Solo
+              </button>
+              <button
+                type="button"
+                aria-pressed={mutedLayerIds.includes(layer.id)}
+                onClick={() => onToggleMuteLayer(layer.id)}
+                className={`rounded-md border px-2 py-1 text-xs ${
+                  mutedLayerIds.includes(layer.id)
+                    ? "border-[var(--color-error)] bg-[var(--color-error-light)] text-[var(--color-error-dark)]"
+                    : "border-[var(--color-border-default)] text-[var(--color-text-secondary)]"
+                }`}
+              >
+                Sessiz
+              </button>
+              <button
+                type="button"
+                onClick={() => onRemoveMelodicLayer(layer.id)}
+                disabled={melodicLayers.length <= 1}
+                className="text-[var(--color-error)] disabled:opacity-40"
+              >
+                Kaldır
+              </button>
+            </span>
           </div>
         ))}
         {percussionLayers.map((layer) => (
           <div key={layer.id} className="flex items-center justify-between gap-3 rounded-md border border-[var(--color-border-subtle)] px-3 py-2 text-sm">
             <span>{layer.label} · vuruş</span>
-            <button
-              type="button"
-              onClick={() => onRemovePercussionLayer(layer.id)}
-              className="text-[var(--color-error)]"
-            >
-              Kaldır
-            </button>
+            <span className="flex items-center gap-2">
+              <button
+                type="button"
+                aria-pressed={soloLayerId === layer.id}
+                onClick={() => onToggleSoloLayer(layer.id)}
+                className={`rounded-md border px-2 py-1 text-xs ${
+                  soloLayerId === layer.id
+                    ? "border-[var(--color-primary-500)] bg-[var(--color-primary-50)] text-[var(--color-primary-700)]"
+                    : "border-[var(--color-border-default)] text-[var(--color-text-secondary)]"
+                }`}
+              >
+                Solo
+              </button>
+              <button
+                type="button"
+                aria-pressed={mutedLayerIds.includes(layer.id)}
+                onClick={() => onToggleMuteLayer(layer.id)}
+                className={`rounded-md border px-2 py-1 text-xs ${
+                  mutedLayerIds.includes(layer.id)
+                    ? "border-[var(--color-error)] bg-[var(--color-error-light)] text-[var(--color-error-dark)]"
+                    : "border-[var(--color-border-default)] text-[var(--color-text-secondary)]"
+                }`}
+              >
+                Sessiz
+              </button>
+              <button
+                type="button"
+                onClick={() => onRemovePercussionLayer(layer.id)}
+                className="text-[var(--color-error)]"
+              >
+                Kaldır
+              </button>
+            </span>
           </div>
         ))}
       </div>

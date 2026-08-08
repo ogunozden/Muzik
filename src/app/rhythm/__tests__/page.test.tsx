@@ -8,6 +8,7 @@ const loopControllerMock = vi.hoisted(() => ({
   getPositionBeats: vi.fn(() => 0.5),
   getCycleCount: vi.fn(() => 1),
   getOutputLatencySeconds: vi.fn(() => 0),
+  setVolume: vi.fn(),
   stop: vi.fn(),
 }));
 const startRhythmLoopMock = vi.hoisted(() => vi.fn(async () => loopControllerMock));

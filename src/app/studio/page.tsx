@@ -10,6 +10,7 @@ import { MAKAM_DATA, snapMidiToMakamFrequency } from "@/engines/makam/data";
 import { USUL_DATA } from "@/engines/usul/data";
 import { midiToNoteName, noteNameToMidi } from "@/engines/nota/data";
 import {getHeardPlaybackPosition, playSequence, stopAll} from "@/engines/ses/engine";
+import {VolumeControl, usePlaybackVolume} from "@/shared/ui/organisms/VolumeControl";
 import type { InstrumentType } from "@/engines/ses/engine";
 import { INSTRUMENTS, MELODIC_INSTRUMENTS } from "@/lib/app-constants";
 import { NotaEvent } from "@/types";
@@ -67,6 +68,7 @@ function InstrumentSurfaceSkeleton() {
 function NotaEditorPage() {
   const { t, i18n } = useTranslation();
   const [saveMessage, setSaveMessage] = useState<string | null>(null);
+  const [volume, setVolume] = usePlaybackVolume();
 
   // Zustand State
   const {
@@ -195,7 +197,7 @@ function NotaEditorPage() {
       };
     });
 
-    const {durationSeconds, baseTime} = await playSequence(scheduledNotes, selectedInstrument);
+    const {durationSeconds, baseTime} = await playSequence(scheduledNotes, selectedInstrument, {gainScale: volume});
     if (durationSeconds <= 0) {
       if (playbackRef.current) cancelAnimationFrame(playbackRef.current);
       setIsPlaying(false);
@@ -217,7 +219,7 @@ function NotaEditorPage() {
       setIsPlaying(false);
       setPlaybackPosition(-1);
     }, (durationSeconds + 0.5) * 1000);
-  }, [recordedNotes, isPlaying, selectedInstrument, setIsPlaying, setPlaybackPosition]);
+  }, [recordedNotes, isPlaying, selectedInstrument, volume, setIsPlaying, setPlaybackPosition]);
 
   const stopPlayback = useCallback(() => {
     if (playbackRef.current) cancelAnimationFrame(playbackRef.current);
@@ -544,6 +546,7 @@ function NotaEditorPage() {
                             {t("notaEditor.timelineDescription")}
                           </p>
                         </div>
+                        <VolumeControl volume={volume} onVolumeChange={setVolume} />
                       </div>
                       <div className="overflow-x-auto">
                         <PianoRollViewer

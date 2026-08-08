@@ -330,6 +330,56 @@ describe("EserTakipPage", () => {
     expect(firstEventGainTotal).toBeLessThanOrEqual(0.34);
   });
 
+  it("solo modda yalniz secilen ezgi katmani planlanir", async () => {
+    render(<EserTakipPage />);
+
+    await screen.findAllByText("Fa♯4/5");
+    fireEvent.click(screen.getAllByRole("button", {name: "Solo"})[1]);
+    fireEvent.click(screen.getByRole("button", {name: "Parçayı çal"}));
+
+    await waitFor(() => expect(playArrangementMock).toHaveBeenCalled());
+    const calls = playArrangementMock.mock.calls as unknown as [Array<{instrument: string}>][];
+    const scheduledNotes = calls[0][0];
+
+    expect(scheduledNotes.length).toBeGreaterThan(0);
+    expect(new Set(scheduledNotes.map((note) => note.instrument)).size).toBe(1);
+  });
+
+  it("sessize alinan ezgi katmani planlamaya girmez", async () => {
+    render(<EserTakipPage />);
+
+    await screen.findAllByText("Fa♯4/5");
+    fireEvent.click(screen.getAllByRole("button", {name: "Sessiz"})[0]);
+    fireEvent.click(screen.getByRole("button", {name: "Parçayı çal"}));
+
+    await waitFor(() => expect(playArrangementMock).toHaveBeenCalled());
+    const calls = playArrangementMock.mock.calls as unknown as [Array<{instrument: string}>][];
+    const scheduledNotes = calls[0][0];
+
+    expect(scheduledNotes.length).toBeGreaterThan(0);
+    expect(scheduledNotes.some((note) => note.instrument === "ud")).toBe(false);
+  });
+
+  it("master volume nota gainlerini olcekler", async () => {
+    render(<EserTakipPage />);
+
+    await screen.findAllByText("Fa♯4/5");
+    const slider = screen.getByRole("slider", {name: "Ses seviyesi"}) as HTMLInputElement;
+    fireEvent.change(slider, {target: {value: "50"}});
+    fireEvent.click(screen.getByRole("button", {name: "Parçayı çal"}));
+
+    await waitFor(() => expect(playArrangementMock).toHaveBeenCalled());
+    const calls = playArrangementMock.mock.calls as unknown as [Array<{gain: number}>][];
+    const scheduledNotes = calls[0][0];
+
+    // Ilk ezgi katmani ud: tam gain 0.2 * mix scale; %50 ses belirgin dusurur.
+    expect(scheduledNotes[0].gain).toBeLessThan(0.2);
+    expect(scheduledNotes[0].gain).toBeGreaterThan(0.04);
+
+    // Sonraki testler tam seste kalir.
+    fireEvent.change(slider, {target: {value: "100"}});
+  });
+
   it("schedules the default piece with the reference ahenk and Devr-i Kebir darb starts", async () => {
     render(<EserTakipPage />);
 

@@ -31,6 +31,7 @@ import {FollowCuePanel} from "./parts/FollowCuePanel";
 import {FollowLayersPanel} from "./parts/FollowLayersPanel";
 import {FollowPieceAddPanel} from "./parts/FollowPieceAddPanel";
 import {StudioTabs} from "@/features/studio/StudioTabs";
+import {VolumeControl, usePlaybackVolume} from "@/shared/ui/organisms/VolumeControl";
 import {
   ADDED_MELODIC_LAYER_GAIN,
   DEFAULT_PIECE,
@@ -87,6 +88,11 @@ export default function EserTakipPage() {
   const [sampleError, setSampleError] = useState<string | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [playbackPosition, setPlaybackPosition] = useState(0);
+  const [volume, setVolume] = usePlaybackVolume();
+  /** Katman bazli sessize alma (id listesi). */
+  const [mutedLayerIds, setMutedLayerIds] = useState<string[]>([]);
+  /** Yalniz bu katman calar; tekrar tiklayinca temizlenir. */
+  const [soloLayerId, setSoloLayerId] = useState<string | null>(null);
 
   const animationRef = useRef<number | null>(null);
   const stopTimerRef = useRef<number | null>(null);
@@ -483,15 +489,30 @@ export default function EserTakipPage() {
   const playPiece = useCallback(async () => {
     if (!usul || isPlaying || events.length === 0 || melodicLayers.length === 0) return;
 
+    const mutedSet = new Set(mutedLayerIds);
+    const activeMelodicLayers = soloLayerId
+      ? melodicLayers.filter((layer) => layer.id === soloLayerId)
+      : melodicLayers.filter((layer) => !mutedSet.has(layer.id));
+    // Solo secili ama katman kaldirilmis/aktif degilse sessiz olmayanlara
+    // donulur; hicbir katman kalmadiysa calma baslamaz.
+    const effectiveMelodicLayers =
+      activeMelodicLayers.length > 0
+        ? activeMelodicLayers
+        : melodicLayers.filter((layer) => !mutedSet.has(layer.id));
+    const activePercussionLayers = soloLayerId
+      ? percussionLayers.filter((layer) => layer.id === soloLayerId)
+      : percussionLayers.filter((layer) => !mutedSet.has(layer.id));
+    if (effectiveMelodicLayers.length === 0 && activePercussionLayers.length === 0) return;
+
     stopAll();
     setIsPlaying(true);
     setPlaybackPosition(0);
 
-    const melodicGainScale = getMelodicGainScale(melodicLayers);
+    const melodicGainScale = getMelodicGainScale(effectiveMelodicLayers);
     const notes = events
       .filter((event) => !event.isRest && event.midiNumber !== null)
       .flatMap((event) =>
-        melodicLayers.map((layer) => ({
+        effectiveMelodicLayers.map((layer) => ({
           midiNumber: event.midiNumber!,
           targetFrequency: event.targetFrequency ?? undefined,
           startTime: event.startTime + layer.delay,
@@ -501,7 +522,7 @@ export default function EserTakipPage() {
         })),
       );
 
-    const percussionHits = percussionLayers.flatMap((percussionLayer) =>
+    const percussionHits = activePercussionLayers.flatMap((percussionLayer) =>
       Array.from({length: Math.ceil(totalBeats / usul.beats)}).flatMap((_, cycleIndex) =>
         playbackUsulHits
           .filter((symbol): symbol is typeof symbol & {symbol: PercussionSymbol} => symbol.symbol !== "")
@@ -521,7 +542,12 @@ export default function EserTakipPage() {
       ),
     );
 
-    const {durationSeconds, baseTime} = await playArrangement(notes, percussionHits, melodicLayers[0].instrument);
+    const {durationSeconds, baseTime} = await playArrangement(
+      notes,
+      percussionHits,
+      effectiveMelodicLayers[0]?.instrument ?? "ud",
+      {gainScale: volume},
+    );
 
     if (durationSeconds <= 0) {
       stopPlayback();
@@ -544,12 +570,25 @@ export default function EserTakipPage() {
     events,
     isPlaying,
     melodicLayers,
+    mutedLayerIds,
     percussionLayers,
     playbackUsulHits,
+    soloLayerId,
     stopPlayback,
     totalBeats,
     usul,
+    volume,
   ]);
+
+  const toggleMuteLayer = useCallback((layerId: string) => {
+    setMutedLayerIds((current) =>
+      current.includes(layerId) ? current.filter((id) => id !== layerId) : [...current, layerId],
+    );
+  }, []);
+
+  const toggleSoloLayer = useCallback((layerId: string) => {
+    setSoloLayerId((current) => (current === layerId ? null : layerId));
+  }, []);
 
   return (
     <UnifiedLayout>
@@ -624,6 +663,8 @@ export default function EserTakipPage() {
 
             <TempoControl bpm={bpm} onBpmChange={handleBpmChange} />
 
+            <VolumeControl volume={volume} onVolumeChange={setVolume} />
+
             <FollowPieceAddPanel
               pieceLibrary={pieceLibrary}
               selectedPieceId={selectedPiece.id}
@@ -656,6 +697,10 @@ export default function EserTakipPage() {
               onChangePercussionLayer={addPercussionLayer}
               onRemoveMelodicLayer={removeMelodicLayer}
               onRemovePercussionLayer={removePercussionLayer}
+              mutedLayerIds={mutedLayerIds}
+              soloLayerId={soloLayerId}
+              onToggleMuteLayer={toggleMuteLayer}
+              onToggleSoloLayer={toggleSoloLayer}
               melodicLayers={melodicLayers}
               percussionLayers={percussionLayers}
               layerMessage={layerMessage}

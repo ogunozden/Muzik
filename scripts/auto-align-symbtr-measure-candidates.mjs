@@ -25,7 +25,7 @@ import {existsSync, mkdirSync, readFileSync, writeFileSync} from "node:fs";
 import path from "node:path";
 import {fileURLToPath} from "node:url";
 import {getSymbTrLayoutCandidateFingerprint} from "./lib/symbtr-layout-fingerprint.mjs";
-import {buildWrittenMeasureRanges, expandWrittenMeasures} from "./lib/symbtr-pdf-note-anchor.mjs";
+import {buildWrittenMeasureRanges, expandWrittenMeasuresGuided} from "./lib/symbtr-pdf-note-anchor.mjs";
 
 const ROOT = process.cwd();
 const LAYOUT_PATH = path.join(ROOT, "src", "data", "symbtr", "layout.generated.json");
@@ -532,7 +532,7 @@ function main() {
             readWrittenMeter(existsSync(mu2Path) ? readFileSync(mu2Path, "latin1") : "")
               ?? {numerator: 4, denominator: 4},
           ).measures.length;
-          const guided = expandWrittenMeasures(readFileSync(xmlPath, "utf8"), {targetLength: walkCount});
+          const guided = expandWrittenMeasuresGuided(readFileSync(xmlPath, "utf8"), {targetLength: walkCount});
           if (guided.expanded.length > 0) writtenMapping = guided;
         }
       }

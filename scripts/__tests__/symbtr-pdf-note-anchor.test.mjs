@@ -4,6 +4,7 @@ import {
   calibrateRowsSequential,
   countSymbTrEvents,
   expandWrittenMeasures,
+  expandWrittenMeasuresGuided,
   extractNoteAnchors,
   extractTextRuns,
   interpolateBeatToX,
@@ -258,5 +259,22 @@ describe("symbtr-pdf-note-anchor", () => {
     const guided = expandWrittenMeasures(xml, {targetLength: 11});
     expect(guided.expanded).toEqual([1, 2, 3, 4, 5, 6, 7, 8, 3, 4, 5]);
     expect(guided.dsEndGuided).toBe(true);
+  });
+
+  it("expandWrittenMeasuresGuided DS bolumunu ic tekrarsiz (after-raw) cozer", () => {
+    const measures = [1, 2, 3, 4, 5, 6, 7, 8, 9].map((number) =>
+      `<measure number="${number}"><note><pitch><step>C</step></pitch><duration>1</duration></note></measure>`,
+    );
+    // 3. olcude segno + fwd; 4. olcude bwd (ic tekrar 3..4); 9. olcude dalsegno
+    measures[2] = measures[2].replace("<measure number=\"3\">", "<measure number=\"3\"><barline location=\"right\"><repeat direction=\"forward\"/></barline><direction><direction-type><segno/></direction-type><sound segno=\"segno\"/></direction>");
+    measures[3] = measures[3].replace("<measure number=\"4\">", "<measure number=\"4\"><barline location=\"right\"><repeat direction=\"backward\" times=\"2\"/></barline>");
+    measures[8] = measures[8].replace("<measure number=\"9\">", "<measure number=\"9\"><direction><direction-type><words>D.S.</words></direction-type><sound dalsegno=\"segno\"/></direction>");
+    const xml = `<score-partwise><part id="P1">${measures.join("")}</part></score-partwise>`;
+    // Plain: 1-9 (fwd 3..4 ikinci kez) + DS 3-9 = 10 + 7 = 17.
+    // Walk 12 ise: DS bolumu 3..5 (3 olcu), ic tekrarsiz -> 1..4,3,4,5..9 + 3,4,5 = 14? Degil; hedefe gore cozum:
+    // once = 1..9 ile 3..4 tekrari = 10; DS sonu = 3 + (12-10) - 1 = 4 -> 3..4 raw = 2 -> 12 ✓
+    const result = expandWrittenMeasuresGuided(xml, {targetLength: 12});
+    expect(result.expanded.length).toBe(12);
+    expect(result.guidedMode).toContain("ds-guided");
   });
 });

@@ -139,13 +139,11 @@ export function countWrittenEventsFromMusicXml(xmlText) {
  * isaretlenmemistir; segno'dan baslayip eserin sonuna kadar calan varsayim
  * fazla uzatir (2026-08-08 olcumu: 1.215 over-expansion vakasi).
  */
-export function expandWrittenMeasures(xmlText, {targetLength = null} = {}) {
+function parseMusicXmlMeasures(xmlText) {
   const parts = [...xmlText.matchAll(/<part[^>]*id="([^"]*)"[\s\S]*?<\/part>/g)];
   const partBody = parts[0]?.[0] ?? xmlText;
   const measureBlocks = [...partBody.matchAll(/<measure\b[^>]*>([\s\S]*?)<\/measure>/g)];
-  if (measureBlocks.length === 0) return {expanded: [], firstExpandedIndexByWritten: {}, writtenMeasureCount: 0, navigation: "none"};
-
-  const measures = measureBlocks.map((block, index) => {
+  return measureBlocks.map((block, index) => {
     const body = block[1];
     const number = Number(block[0].match(/number="(\d+)"/)?.[1] ?? index + 1);
     const fwdMatch = body.match(/<repeat direction="forward"[^>]*>/);
@@ -164,48 +162,65 @@ export function expandWrittenMeasures(xmlText, {targetLength = null} = {}) {
       dalsegno,
     };
   });
+}
 
-  function expandRepeats(range) {
-    const sequence = [];
-    const stack = [];
-    let index = 0;
-    let iterations = 0;
-    while (index < range.length && iterations < 100000) {
-      iterations += 1;
-      const measure = range[index];
-      const pass = stack.length > 0 ? stack[stack.length - 1].pass : 1;
-      if (measure.ending === 1 && pass > 1) {
-        index += 1;
-        continue;
-      }
-      if (measure.ending === 2 && pass === 1) {
-        index += 1;
-        continue;
-      }
-      sequence.push(measure.number);
-      if (measure.fwd) {
-        // Bolge zaten aciksa (geri donus bu olcuye geldiyse) fwd tekrar
-        // push edilmez; aksi halde sonsuz dongu olusur (location="left"
-        // fwd olcusune geri donuste).
-        const openTop = stack[stack.length - 1];
-        const alreadyOpen = openTop && openTop.startIndex === index;
-        if (!alreadyOpen) {
-          stack.push({startIndex: index + (measure.fwdAtCurrent ? 0 : 1), pass: 1, times: 2});
-        }
-      }
-      if (measure.bwdTimes !== null) {
-        const top = stack.pop() ?? {startIndex: 0, pass: 1, times: measure.bwdTimes};
-        const times = measure.bwdTimes ?? top.times;
-        if (top.pass < times) {
-          stack.push({...top, pass: top.pass + 1});
-          index = top.startIndex;
-          continue;
-        }
-      }
+function expandRepeatsRange(measures, {withRepeats = true} = {}) {
+  if (!withRepeats) return measures.map((measure) => measure.number);
+  const sequence = [];
+  const stack = [];
+  let index = 0;
+  let iterations = 0;
+  while (index < measures.length && iterations < 100000) {
+    iterations += 1;
+    const measure = measures[index];
+    const pass = stack.length > 0 ? stack[stack.length - 1].pass : 1;
+    if (measure.ending === 1 && pass > 1) {
       index += 1;
+      continue;
     }
-    return sequence;
+    if (measure.ending === 2 && pass === 1) {
+      index += 1;
+      continue;
+    }
+    sequence.push(measure.number);
+    if (measure.fwd) {
+      // Bolge zaten aciksa (geri donus bu olcuye geldiyse) fwd tekrar
+      // push edilmez; aksi halde sonsuz dongu olusur (location="left"
+      // fwd olcusune geri donuste).
+      const openTop = stack[stack.length - 1];
+      const alreadyOpen = openTop && openTop.startIndex === index;
+      if (!alreadyOpen) {
+        stack.push({startIndex: index + (measure.fwdAtCurrent ? 0 : 1), pass: 1, times: 2});
+      }
+    }
+    if (measure.bwdTimes !== null) {
+      const top = stack.pop() ?? {startIndex: 0, pass: 1, times: measure.bwdTimes};
+      const times = measure.bwdTimes ?? top.times;
+      if (top.pass < times) {
+        stack.push({...top, pass: top.pass + 1});
+        index = top.startIndex;
+        continue;
+      }
+    }
+    index += 1;
   }
+  return sequence;
+}
+
+function buildMapping(baseSequence, writtenMeasureCount) {
+  const firstExpandedIndexByWritten = {};
+  baseSequence.forEach((writtenMeasure, index) => {
+    if (!(writtenMeasure in firstExpandedIndexByWritten)) {
+      // Motorun measureIndex uzayi 1-bazlidir (walk olculeri 1..N).
+      firstExpandedIndexByWritten[writtenMeasure] = index + 1;
+    }
+  });
+  return {firstExpandedIndexByWritten, writtenMeasureCount};
+}
+
+export function expandWrittenMeasures(xmlText, {targetLength = null} = {}) {
+  const measures = parseMusicXmlMeasures(xmlText);
+  if (measures.length === 0) return {expanded: [], firstExpandedIndexByWritten: {}, writtenMeasureCount: 0, navigation: "none"};
 
   const segnoIndex = measures.findIndex((measure) => measure.segno);
   const dalsegnoIndex = measures.findIndex((measure) => measure.dalsegno);
@@ -213,10 +228,10 @@ export function expandWrittenMeasures(xmlText, {targetLength = null} = {}) {
   let baseSequence;
   let dsEndGuided = false;
   if (!hasDs) {
-    baseSequence = expandRepeats(measures);
+    baseSequence = expandRepeatsRange(measures);
   } else {
-    const before = expandRepeats(measures.slice(0, dalsegnoIndex + 1));
-    const after = expandRepeats(measures.slice(segnoIndex));
+    const before = expandRepeatsRange(measures.slice(0, dalsegnoIndex + 1));
+    const after = expandRepeatsRange(measures.slice(segnoIndex));
     baseSequence = [...before, ...after];
     if (
       targetLength !== null &&
@@ -228,7 +243,7 @@ export function expandWrittenMeasures(xmlText, {targetLength = null} = {}) {
       const sectionLength = targetLength - before.length;
       const guidedEndIndex = sectionLength > 0 ? segnoIndex + sectionLength - 1 : -1;
       if (guidedEndIndex >= segnoIndex && guidedEndIndex < measures.length && sectionLength > 0) {
-        const guidedAfter = expandRepeats(measures.slice(segnoIndex, guidedEndIndex + 1));
+        const guidedAfter = expandRepeatsRange(measures.slice(segnoIndex, guidedEndIndex + 1));
         if (before.length + guidedAfter.length === targetLength) {
           baseSequence = [...before, ...guidedAfter];
           dsEndGuided = true;
@@ -240,21 +255,74 @@ export function expandWrittenMeasures(xmlText, {targetLength = null} = {}) {
     ? (measures.some((measure) => measure.bwdTimes !== null || measure.fwd) ? "both" : "ds")
     : (measures.some((measure) => measure.bwdTimes !== null || measure.fwd) ? "repeat" : "none");
 
-  const firstExpandedIndexByWritten = {};
-  baseSequence.forEach((writtenMeasure, index) => {
-    if (!(writtenMeasure in firstExpandedIndexByWritten)) {
-      // Motorun measureIndex uzayi 1-bazlidir (walk olculeri 1..N).
-      firstExpandedIndexByWritten[writtenMeasure] = index + 1;
-    }
-  });
   return {
     expanded: baseSequence,
-    firstExpandedIndexByWritten,
-    writtenMeasureCount: measures.length,
+    ...buildMapping(baseSequence, measures.length),
     navigation,
     dsEndGuided,
     dalsegnoMeasure: hasDs ? measures[dalsegnoIndex].number : null,
     segnoMeasure: hasDs ? measures[segnoIndex].number : null,
+  };
+}
+
+/**
+ * WALK-REHBERLI acilim (kalan %40,5 uyumsuzluk icin): yapisal yorumlari
+ * aday olarak uretir ve TXT walk uzunluguna BIREBIR esleseni secer.
+ * Adaylar: her segno konumu x {once, sonra} segmenti {tekrarlı, ham} +
+ * DS-sonu walk'a gore cozumlu varyantlar. Hicbiri eslesmezse plain sonuc
+ * doner (uyumsuzluk korunur, uydurma yok).
+ */
+export function expandWrittenMeasuresGuided(xmlText, {targetLength}) {
+  const plain = expandWrittenMeasures(xmlText, {targetLength});
+  if (!Number.isInteger(targetLength) || targetLength <= 0 || plain.expanded.length === targetLength) {
+    return plain;
+  }
+  const measures = parseMusicXmlMeasures(xmlText);
+  if (measures.length === 0) return plain;
+  const dalsegnoIndex = measures.findIndex((measure) => measure.dalsegno);
+  const hasDs = dalsegnoIndex > 0;
+  const candidates = [];
+  const modes = [
+    {beforeRepeats: true, afterRepeats: true, label: "both-expanded"},
+    {beforeRepeats: true, afterRepeats: false, label: "after-raw"},
+    {beforeRepeats: false, afterRepeats: true, label: "before-raw"},
+    {beforeRepeats: false, afterRepeats: false, label: "both-raw"},
+  ];
+  if (hasDs) {
+    const segnoIndexes = measures
+      .map((measure, index) => (measure.segno ? index : -1))
+      .filter((index) => index >= 0 && index < dalsegnoIndex);
+    for (const segnoIndex of segnoIndexes.length ? segnoIndexes : [0]) {
+      for (const mode of modes) {
+        const before = expandRepeatsRange(measures.slice(0, dalsegnoIndex + 1), {withRepeats: mode.beforeRepeats});
+        const after = expandRepeatsRange(measures.slice(segnoIndex), {withRepeats: mode.afterRepeats});
+        candidates.push({sequence: [...before, ...after], mode: `${mode.label}:segno-${segnoIndex + 1}`});
+        // DS-sonu walk'a gore cozumlu
+        const sectionLength = targetLength - before.length;
+        const guidedEndIndex = sectionLength > 0 ? segnoIndex + sectionLength - 1 : -1;
+        if (guidedEndIndex >= segnoIndex && guidedEndIndex < measures.length && sectionLength > 0) {
+          const guidedAfter = expandRepeatsRange(measures.slice(segnoIndex, guidedEndIndex + 1), {
+            withRepeats: mode.afterRepeats,
+          });
+          candidates.push({sequence: [...before, ...guidedAfter], mode: `${mode.label}:ds-guided:segno-${segnoIndex + 1}`});
+        }
+      }
+    }
+  } else {
+    candidates.push({sequence: expandRepeatsRange(measures), mode: "both-expanded"});
+    candidates.push({sequence: expandRepeatsRange(measures, {withRepeats: false}), mode: "both-raw"});
+  }
+  const exact = candidates.find((candidate) => candidate.sequence.length === targetLength);
+  if (!exact) return plain;
+  return {
+    expanded: exact.sequence,
+    ...buildMapping(exact.sequence, measures.length),
+    writtenMeasureCount: measures.length,
+    navigation: plain.navigation,
+    dsEndGuided: exact.mode.includes("ds-guided"),
+    guidedMode: exact.mode,
+    dalsegnoMeasure: plain.dalsegnoMeasure,
+    segnoMeasure: plain.segnoMeasure,
   };
 }
 

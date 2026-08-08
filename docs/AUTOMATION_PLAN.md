@@ -44,6 +44,27 @@ on-doldurulmus import dosyasi; **dry-run import gecti** (1.676 yeni kutu,
 (rapor yolu + medyan delta <= 4 + confidence high) zorunlu tutuyor —
 eski otomasyonun acigi boylece kapatildi.
 
+### Uygulanan onarim onerisi (W4.1b — bu tur)
+
+`--repair-proposal` bayragi ile kutu-bazli siniflandirma eklendi:
+`output/symbtr-layout-review/repair-proposals.json` (546 verified giris,
+fingerprint kapisi gecti; 0 dislama):
+
+| Sinif | Kutu sayisi | Anlam |
+|---|---|---|
+| `replace` | 13.651 | Ayni olcu, farkli aday — yeni aday geometrik kanitli |
+| `keep` | 736 | Stored kutu yeni hizalama ile ayni |
+| `review` | 4.677 | Kanit yok (3.634 no-new-box) veya yeni atama beklenen aralik disinda (1.043, `hint` tasir) |
+| `add` | 636 | Yeni hizalama stored manifestte olmayan olcuyu kapsiyor |
+
+Toplam 19.064 stored kutu eksiksiz siniflandi (13.651+736+4.677=19.064).
+Yalnizca `replace`'ler yazma onerisidir; `review`'ler insan/gorsel onaya kalir.
+Dogrulama: 3 ornek giris (acem seyir sofyan, evic Devr-i Kebir pesrev, hicazkar
+pesrev muhammes) bagimsiz geometriyle kontrol edildi — **125/125 replace onerisi
+icinde, tum keep'ler dogru**. Manifeste YAZMA ise operatör onayı gerektirir
+(import kapisi `alignmentEvidence` zarfini zorunlu tutuyor); onay sonrasi
+`npm run import:symbtr-measure-verification` akisi kullanilir.
+
 ### Kalan teknoloji gereksinimleri
 
 | Gereksinim | Neden | Oncelik |
@@ -51,7 +72,7 @@ eski otomasyonun acigi boylece kapatildi.
 | **Nota-anchor cikarici**: PDF vektor katmanindan staff satirlarina nota basi x-konumlarini da cikar (yalniz dikey cizgiler degil) | Esit-bolusum kapasitesi yaklasiktir; anchor'lar olcu sinirlarini KESIN yapar (`note-anchor-percent`, `visual-map.ts`'te zaten tanimli dogrulanmis yontem) | P1 |
 | **Anchor esleyici**: cikarilan nota baslarini SymbTr event sirasiyla esle → satir icin sparse beat→x kalibrasyonu → olcu sinirlari enterpolasyonu | W4.1'in "kesin" kademesi; 770 medium + 1.940 low girisin cogunu high'a tasir | P1 |
 | **Medium girislere on-doldurma**: review template'i alignment'dan gelen `suggestedMeasureIndex` ile doldur | Insan isini "65 bin karar"dan "medyan-delta spot-kontrolu"ne indirir | P2 |
-| **14.694 uyumsuz kutu onarimi**: mevcut verified manifestteki uyumsuz kutulari demote edip yeni hizalayiciyla yeniden uret | Veri butunlugu: yanlis "verified" veri, kurasyon/arastirma kararlarini kirletir | P1 |
+| **14.694 uyumsuz kutu onariminin UYGULANMASI**: `repair-proposals.json` uretildi (13.651 replace + 4.677 review); demote/replace islemi operatör onayı sonrasi import kapisindan gecer | Veri butunlugu: yanlis "verified" veri, kurasyon/arastirma kararlarini kirletir | P1 (onay bekliyor) |
 
 ## 2. W4.2 — 2978 harici kaynak kurasyonu
 
@@ -66,8 +87,35 @@ devamli kosucu mevcut.
 
 | Gereksinim | Neden | Oncelik |
 |---|---|---|
-| **Zamanlanmis devamli kosucu**: `continue` partilerini duzenli araliklarla (ornek gunluk) kosan ve coverage artifact'ini ilerleten bir scheduler komutu | Tarama tamamlaninca accepted-import-ready havuzu buyur; geri kalan tek insan isi `needs-review` celiskileri olur | P1 |
-| **Deterministik otomatik kabul esigi**: matcher skoru = 1.0 + provider profili + HTTPS + dedupe + metadata tamligi olan adaylar icin `accepted-import-ready`'ye dogrudan gecis kurali (LLM yok; mevcut alanlardan) | Insan onay yuzeyini yalniz celiskili/eksik-kanit satirlarina indirir | P2 |
+| **Zamanlanmis devamli kosucu** ✅: `verify:external-source-providers:schedule` (4x25 grup, throttle-ms 1000). Cache-bazli kaldigi-yer (offset sayisi degil), parti arasi throttle, offline/stall algilama (`network-outage` / `deterministic-failures`), 0 kalanla aninda terminasyon | Uygulandi; Windows Gorev Zamanlayici veya CI cron ile gunluk cagrilabilir | P1 — TAMAM |
+| **Deterministik otomatik kabul esigi** ✅: skor >= esik + completeEvidence + HTTPS profil + URL-kimligi dedupe (en yuksek skor kazanir) — LLM yok, mevcut alanlardan | `provider-verification-accepted-import-ready.json` kumulatif manifest; import dry-run gecti | P2 — TAMAM |
+
+### W4.2 kosu sonuclari (2026-08-08, bu tur)
+
+Kosucudaki kok hatalar bulundu ve duzeltildi:
+
+1. **Offset bugi:** devamli kosucu "cache sayisini" sirali indeks olarak
+   kullaniyordu; cache seti listenin on eki olmadigi icin ayni 25 grup
+   tekrar tekrar isleniyor, coverage 2.904'te takiliyordu. Yerine
+   `excludeCached` secimi (yalniz cache'siz gruplar) geldi.
+2. **ogm-materyal connector kusuru:** `respectRateLimit`/`rateLimitState`
+   parametreleri alinmiyordu → 25 grupta ReferenceError. Duzeltildi.
+3. **Bos sorgu:** baslik+besteci bos gruplarda IA URL'si `null` oluyor,
+   `fetch(null)` hatasi her partide tekrarliyordu. Deterministik
+   `deferred: internet-archive-empty-query` + cache'e yazim eklendi.
+4. **Politika siniri:** archive.org ~479KB JSON donuyordu; `maxResponseBytes`
+   262144 → 786432 (olculebilir ihtiyac: 479.240).
+5. **TDZ:** `warnings` dizisi strateji-kesfinin try/catch'inden SONRA
+   tanimlaniyordu (catch tetiklenirse ReferenceError). Onune alindi.
+6. **Kabul manifesti kaybi:** her parti manifesti uzerine yaziyordu; son
+   partide 0 kabul cikinca onceki kabul edilenler siliniyordu. Kumulatif
+   birlestirme + cache'ten deterministik yeniden kurulum eklendi.
+
+Sonuc: otomatik dogrulanabilir backlog **2.973/2.973 (%100)** siniflandi;
+18 accepted-ready aday import dry-run'dan gecti (19 duplicate-URL aday
+deterministik elendi — daha ozel URL veya demotion icin insan kurasyonu).
+Kalan 5 grup `conflict`/`deferred` statüsünde — tasarim geregi insan
+karari bekler; kosucu bunlarda donmez.
 
 ## 3. W4.3 — Ses kaynak dogrulama (hek, 4 claimed klasor)
 

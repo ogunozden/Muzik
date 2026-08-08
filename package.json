@@ -84,6 +84,7 @@
     "verify:external-source-intake": "node scripts/verify-external-source-intake-import.mjs --summary-output output/external-reference-coverage/source-intake-accepted-import-dry-run.json",
     "verify:external-source-providers": "node scripts/verify-external-source-providers.mjs --provider all --limit 25 --rows 3",
     "verify:external-source-providers:continue": "node scripts/run-provider-verification-batches.mjs --provider all --batches 1 --limit 25 --rows 3",
+    "verify:external-source-providers:schedule": "node scripts/run-provider-verification-batches.mjs --provider all --batches 4 --limit 25 --rows 3 --throttle-ms 1000",
     "verify:symbtr-layout-review-import": "node scripts/verify-symbtr-layout-review-import.mjs --summary-output output/symbtr-layout-review/layout-verification-empty-import-dry-run.json",
     "verify:symbtr-measures": "node scripts/validate-symbtr-layout-verification.mjs --summary-output output/symbtr-layout-review/layout-verification-summary.json",
     "verify:symbtr-measures:aligned": "node scripts/verify-pdf-measures-symbtr-aligned.mjs"

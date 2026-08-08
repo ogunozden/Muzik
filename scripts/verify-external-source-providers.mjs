@@ -2,6 +2,7 @@ import {existsSync, mkdirSync, readFileSync, writeFileSync} from "node:fs";
 import path from "node:path";
 import {fileURLToPath} from "node:url";
 import {runImport} from "./import-external-reference-candidates.mjs";
+import {getReferenceIdentity} from "./import-external-reference-candidates.mjs";
 import {buildDiscoveryIdentity, buildCatalogSearchQuery} from "./discovery/query-builder.mjs";
 import {normalizeText, slugify} from "./lib/external-source-matcher.mjs";
 import {buildArchiveSearchUrlWithStrategy, findBestStrategy} from "./lib/strategy-engine.mjs";
@@ -13,7 +14,7 @@ const DEFAULT_POLICY_PATH = "src/data/references/external-source-discovery-polic
 const DEFAULT_PROVIDER = "internet-archive";
 const DEFAULT_LIMIT = "25";
 const DEFAULT_CHECKED_AT = "2026-06-01";
-const DEFAULT_STATUSES = ["needs-review", "deferred", "conflict"];
+export const DEFAULT_STATUSES = ["needs-review", "deferred", "conflict"];
 const RATE_LIMIT_DISABLED_VALUES = new Set(["0", "false", "off", "no"]);
 const INTERNET_ARCHIVE_ADVANCED_SEARCH_URL = "https://archive.org/advancedsearch.php";
 
@@ -126,7 +127,7 @@ function providerPolicies(policy, providerOption) {
   return providerIds.map((providerId) => providerPolicy(policy, providerId));
 }
 
-function sortGroupsForVerification(groups) {
+export function sortGroupsForVerification(groups) {
   const statusRank = new Map([["needs-review", 0], ["deferred", 1], ["conflict", 2]]);
   return [...groups].sort((left, right) => {
     const statusDelta = (statusRank.get(left.status) ?? 9) - (statusRank.get(right.status) ?? 9);
@@ -227,7 +228,7 @@ function scoreArchiveDoc(group, doc, policyOverrides) {
   };
 }
 
-function buildAcceptedCandidate({group, doc, checkedAt, score}) {
+export function buildAcceptedCandidate({group, doc, checkedAt, score}) {
   const sourceId = slugify(["archive", doc.identifier, group.catalog?.title].filter(Boolean).join(" ")).split("-").slice(0, 12).join("-");
   return {
     catalogId: group.catalogId,
@@ -258,6 +259,29 @@ function buildAcceptedCandidate({group, doc, checkedAt, score}) {
   };
 }
 
+/**
+ * Kabul adaylarini URL kimligine gore DETERMINISTIK dedupe eder: ayni kaynak
+ * URL'sine birden fazla kabul adayi isaret edemez (import kapisinin kurali).
+ * Kazanan: en yuksek evidence.score; esitlikte catalogId (localeCompare).
+ */
+export function dedupeAcceptedCandidatesByIdentity(candidates) {
+  const byIdentity = new Map();
+  for (const candidate of candidates) {
+    const identity = getReferenceIdentity(candidate.source);
+    const score = Number(candidate.evidence?.score ?? 0);
+    const existing = byIdentity.get(identity);
+    const existingScore = existing ? Number(existing.evidence?.score ?? 0) : -1;
+    if (
+      !existing ||
+      score > existingScore ||
+      (score === existingScore && String(candidate.catalogId).localeCompare(String(existing.catalogId)) < 0)
+    ) {
+      byIdentity.set(identity, candidate);
+    }
+  }
+  return [...byIdentity.values()].sort((left, right) => String(left.catalogId).localeCompare(String(right.catalogId)));
+}
+
 async function verifyInternetArchiveGroup({group, provider, checkedAt, timeoutMs, maxResponseBytes, rows, cache, rateLimitState, respectRateLimit, acceptedThreshold}) {
   const query = buildCatalogSearchQuery(group);
   const cacheKey = buildDiscoveryIdentity(group.catalogId, provider.id, query);
@@ -266,6 +290,21 @@ async function verifyInternetArchiveGroup({group, provider, checkedAt, timeoutMs
 
   const scoringOverrides = provider.scoringOverrides;
   const searchUrl = buildArchiveSearchUrl(group, rows);
+  if (!searchUrl) {
+    // Ayirt edici sorgu uretilemiyor (baslik + besteci bos). Ag istegi YOK;
+    // deterministik deferred sonuc cache'e yazilir — boylece her partide
+    // yeniden denenmez ve coverage "classified" sayar (2026-08-08: 2 grup
+    // "Failed to parse URL from null" ile her partide takiliyordu).
+    const deferred = buildDeferredProviderResult({
+      group,
+      provider,
+      checkedAt,
+      reason: "internet-archive-empty-query",
+      candidate: null,
+    });
+    cache.entries = {...(cache.entries ?? {}), [deferred.cacheKey]: deferred};
+    return deferred;
+  }
   await enforceProviderRateLimit(provider, rateLimitState, respectRateLimit);
   const fetched = await fetchJson(searchUrl, {timeoutMs, maxResponseBytes});
   const docs = Array.isArray(fetched?.response?.docs) ? fetched.response.docs : [];
@@ -494,6 +533,7 @@ export async function runProviderVerification({
   outDir = DEFAULT_OUT_DIR,
   policyPath = DEFAULT_POLICY_PATH,
   respectRateLimit = true,
+  excludeCached = false,
 } = {}) {
   const policy = readJson(policyPath, "discovery policy");
   const providers = providerPolicies(policy, providerId);
@@ -504,14 +544,11 @@ export async function runProviderVerification({
   );
   const parsedLimit = parseLimit(limit);
   const parsedOffset = Math.max(0, Number(offset) || 0);
-  const selectedGroups = groups.slice(
-    parsedOffset,
-    Number.isFinite(parsedLimit) ? parsedOffset + parsedLimit : undefined,
-  );
   const timeoutMs = Number(policy.timeoutMs ?? 8000);
   const maxResponseBytes = Number(policy.maxResponseBytes ?? 262144);
+  const warnings = [];
 
-  if (parsedOffset === 0 && providers.some((p) => p.id === "internet-archive")) {
+  if (!excludeCached && parsedOffset === 0 && providers.some((p) => p.id === "internet-archive")) {
     try {
       const catalogIds = groups.map((g) => g.catalogId);
       await findBestStrategy(providers.map((p) => [p.id, p]), catalogIds, rows, { timeoutMs, maxResponseBytes });
@@ -526,8 +563,26 @@ export async function runProviderVerification({
   const cachePath = path.join(outDir, "provider-verification-cache.json");
   const cache = readJson(cachePath, "provider verification cache", {version: 1, entries: {}});
   const evidence = [];
-  const warnings = [];
   const rateLimitState = {lastRequestAtByProvider: new Map()};
+
+  // Devamli kosucu (excludeCached): yalnizca hic cache'lenmemis gruplari secer.
+  // Cache seti sirali listenin on eki olmak zorunda OLMADIGI icin offset olarak
+  // cache sayisi kullanilamaz; aksi halde cache'li gruplar sonsuza dek yeniden
+  // islenir ve coverage ilerlemez (2026-08-08 olcumunde 74 grup takilmisti).
+  const cachedCatalogIds = new Set(
+    Object.values(cache.entries ?? {})
+      .filter((row) => row.providerProfileId === "internet-archive")
+      .map((row) => row.catalogId),
+  );
+  const firstUncachedIndex = groups.findIndex((group) => !cachedCatalogIds.has(group.catalogId));
+  const selectedGroups = excludeCached
+    ? groups
+        .filter((group) => !cachedCatalogIds.has(group.catalogId))
+        .slice(0, Number.isFinite(parsedLimit) ? parsedLimit : undefined)
+    : groups.slice(
+        parsedOffset,
+        Number.isFinite(parsedLimit) ? parsedOffset + parsedLimit : undefined,
+      );
 
   for (const provider of providers) {
     const providerAcceptedThreshold = Number(provider.acceptedThreshold ?? policy.acceptedThreshold ?? 92);
@@ -547,13 +602,18 @@ export async function runProviderVerification({
           acceptedThreshold: providerAcceptedThreshold,
         }));
       } catch (error) {
-        warnings.push(`${provider.id}:${group.catalogId}: ${error instanceof Error ? error.message : String(error)}`);
+        const message = error instanceof Error ? error.message : String(error);
+        warnings.push(`${provider.id}:${group.catalogId}: ${message}`);
         evidence.push({
           catalogId: group.catalogId,
           providerProfileId: provider.id,
           connector: provider.connector,
           status: "deferred",
           statusReason: "provider-request-failed",
+          failureKind:
+            /(HTTP \d+|fetch failed|aborted|timed?\s?out|ECONNREFUSED|ENOTFOUND|EAI_AGAIN|response too large|network)/i.test(message)
+              ? "network"
+              : "connector",
           checkedAt,
           resultCount: 0,
           best: null,
@@ -567,6 +627,24 @@ export async function runProviderVerification({
   const acceptedReady = evidence
     .filter((row) => row.status === "accepted-ready" && row.best?.identifier)
     .map((row) => buildAcceptedCandidate({group: row, doc: row.best, checkedAt, score: row.best.confidence.score}));
+  // Kabul manifesti KUMULATIF'tir: her parti koşusu mevcut manifesti
+  // üzerine yazmaz, catalogId bazinda birlestirir. Aksi halde kabul edilmis
+  // adaylar, sonraki bir partide 0 kabul cikinca kaybolurdu (2026-08-08
+  // olcumu: 3 accepted-ready aday, bos partinin manifestiyle silinmisti).
+  const existingAcceptedManifest = readJson(
+    path.join(outDir, "provider-verification-accepted-import-ready.json"),
+    "accepted import ready manifest",
+    null,
+  );
+  const mergedCandidates = Array.isArray(existingAcceptedManifest?.candidates)
+    ? [...existingAcceptedManifest.candidates]
+    : [];
+  for (const candidate of acceptedReady) {
+    const existingIndex = mergedCandidates.findIndex((candidateItem) => candidateItem.catalogId === candidate.catalogId);
+    if (existingIndex >= 0) mergedCandidates[existingIndex] = candidate;
+    else mergedCandidates.push(candidate);
+  }
+  const dedupedCandidates = dedupeAcceptedCandidatesByIdentity(mergedCandidates);
   const acceptedManifest = {
     version: 1,
     type: "external-source-provider-verification-accepted-import-ready",
@@ -578,15 +656,17 @@ export async function runProviderVerification({
       acceptedOnlyAfterValidation: true,
     },
     summary: {
-      acceptedReadyCount: acceptedReady.length,
+      acceptedReadyCount: dedupedCandidates.length,
       directAutoAttachCount: 0,
       providerProfileIds: providers.map((provider) => provider.id),
     },
-    candidates: acceptedReady,
+    candidates: dedupedCandidates,
   };
   const coverage = buildProviderCoverage({groups, providers, evidence, cache, generatedAt, policy});
   const internetArchiveCoverage = coverage.byProvider.find((row) => row.providerProfileId === "internet-archive");
-  const nextOffset = Number.isFinite(parsedLimit)
+  const nextOffset = excludeCached
+    ? (firstUncachedIndex === -1 ? groups.length : firstUncachedIndex)
+    : Number.isFinite(parsedLimit)
     ? Math.max(parsedOffset + parsedLimit, Number(internetArchiveCoverage?.verifiedOrClassifiedGroupCount ?? 0))
     : groups.length;
   writeJson(cachePath, cache);
@@ -629,6 +709,8 @@ export async function runProviderVerification({
     offset: parsedOffset,
     limit: Number.isFinite(parsedLimit) ? parsedLimit : "all",
     selectedStatuses: [...allowedStatuses],
+    excludeCached,
+    selectedUncachedGroupCount: selectedGroups.filter((group) => !cachedCatalogIds.has(group.catalogId)).length,
     providerCount: providers.length,
     resultCount: evidence.reduce((sum, row) => sum + Number(row.resultCount ?? 0), 0),
     acceptedReadyCount: acceptedReady.length,
@@ -643,6 +725,7 @@ export async function runProviderVerification({
     byProviderProfile: countBy(evidence, (row) => row.providerProfileId),
     byStatus: countBy(evidence, (row) => row.status),
     byStatusReason: countBy(evidence, (row) => row.statusReason),
+    byFailureKind: countBy(evidence.filter((row) => row.failureKind), (row) => row.failureKind),
     artifacts: {
       evidence: toProjectPath(path.join(outDir, "provider-verification-evidence.json")),
       acceptedImportReady: toProjectPath(path.join(outDir, "provider-verification-accepted-import-ready.json")),

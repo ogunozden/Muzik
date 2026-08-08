@@ -1,5 +1,10 @@
 import {describe, expect, it} from "vitest";
-import {buildMeasureRanges, readWrittenMeter} from "../auto-align-symbtr-measure-candidates.mjs";
+import {
+  buildMeasureRanges,
+  buildStoredBoxLookup,
+  classifyRepairActions,
+  readWrittenMeter,
+} from "../auto-align-symbtr-measure-candidates.mjs";
 
 const HEADER = "Sira\tKod\tNota53\tNotaAE\tKoma53\tKomaAE\tPay\tPayda\tMs\tLNS\tBas\tSoz1\tOffset";
 
@@ -39,5 +44,72 @@ describe("auto-align-symbtr-measure-candidates", () => {
     const {measures, totalBeats} = buildMeasureRanges(txt, {numerator: 2, denominator: 4});
     expect(measures).toHaveLength(1);
     expect(totalBeats).toBe(2);
+  });
+
+  it("kutu-bazli siniflandirma: ayni olcu/aday keep, farkli aday replace", () => {
+    const boxes = [
+      {measureIndex: 1, sourceCandidateRowIndex: 0, sourceCandidateIndexInRow: 1, leftPercent: 21.1, deltaPercent: 0.5},
+      {measureIndex: 2, sourceCandidateRowIndex: 0, sourceCandidateIndexInRow: 2, leftPercent: 49.7, deltaPercent: 0.7},
+    ];
+    const storedByMeasure = new Map([
+      [1, {measureIndex: 1, rowIndex: 0, indexInRow: 1, leftPercent: 21.1}],
+      [2, {measureIndex: 2, rowIndex: 1, indexInRow: 0, leftPercent: 2.4}],
+      [3, {measureIndex: 3, rowIndex: 0, indexInRow: 3, leftPercent: 80.1}],
+    ]);
+
+    const {actions, counts} = classifyRepairActions({boxes, storedByMeasure});
+
+    expect(counts).toEqual({keep: 1, replace: 1, review: 1, add: 0});
+    expect(actions.find((action) => action.measureIndex === 1)).toMatchObject({action: "keep"});
+    const replace = actions.find((action) => action.measureIndex === 2);
+    expect(replace).toMatchObject({
+      action: "replace",
+      reason: "different-candidate",
+      proposed: {sourceCandidateRowIndex: 0, sourceCandidateIndexInRow: 2, leftPercent: 49.7},
+    });
+    expect(actions.find((action) => action.measureIndex === 3)).toMatchObject({action: "review", reason: "no-new-box"});
+  });
+
+  it("kutu-bazli siniflandirma: yeni hizalamanin ekledigi olculer add olur", () => {
+    const boxes = [
+      {measureIndex: 1, sourceCandidateRowIndex: 0, sourceCandidateIndexInRow: 0, leftPercent: 14.2},
+      {measureIndex: 2, sourceCandidateRowIndex: 0, sourceCandidateIndexInRow: 1, leftPercent: 35.6},
+    ];
+    const storedByMeasure = new Map([[1, {measureIndex: 1, rowIndex: 0, indexInRow: 0, leftPercent: 14.2}]]);
+
+    const {actions, counts} = classifyRepairActions({boxes, storedByMeasure});
+
+    expect(counts).toEqual({keep: 1, replace: 0, review: 0, add: 1});
+    expect(actions.find((action) => action.measureIndex === 2)).toMatchObject({action: "add"});
+  });
+
+  it("kutu-bazli siniflandirma: beklenen aralik disindaki yeni atama review olur (hint ile)", () => {
+    const boxes = [
+      {measureIndex: 1, sourceCandidateRowIndex: 0, sourceCandidateIndexInRow: 0, leftPercent: 2.4, deltaPercent: 9.1, contained: false},
+    ];
+    const storedByMeasure = new Map([
+      [1, {measureIndex: 1, rowIndex: 2, indexInRow: 0, leftPercent: 2.389}],
+    ]);
+
+    const {actions, counts} = classifyRepairActions({boxes, storedByMeasure});
+
+    expect(counts).toEqual({keep: 0, replace: 0, review: 1, add: 0});
+    expect(actions[0]).toMatchObject({
+      action: "review",
+      reason: "proposed-outside-range",
+      hint: {sourceCandidateRowIndex: 0, sourceCandidateIndexInRow: 0, leftPercent: 2.4},
+    });
+  });
+
+  it("buildStoredBoxLookup stored manifest kutularini olcu indeksine gore indeksler", () => {
+    const lookup = buildStoredBoxLookup({
+      measureBoxes: [
+        {measureIndex: 1, sourceCandidateRowIndex: 0, sourceCandidateIndexInRow: 1, leftPercent: 21.1},
+        {measureIndex: 1, sourceCandidateRowIndex: 0, sourceCandidateIndexInRow: 2, leftPercent: 49.7},
+      ],
+    });
+
+    expect(lookup.size).toBe(1);
+    expect(lookup.get(1)).toEqual({measureIndex: 1, rowIndex: 0, indexInRow: 2, leftPercent: 49.7});
   });
 });

@@ -31,6 +31,7 @@ const LAYOUT_PATH = path.join(ROOT, "src", "data", "symbtr", "layout.generated.j
 const VERIFICATION_PATH = path.join(ROOT, "src", "data", "symbtr", "layout-verification.generated.json");
 const TXT_ROOT = path.join(ROOT, "symb", "SymbTr-3.0", "txt");
 const REPORT_PATH = path.join(ROOT, "output", "symbtr-layout-review", "auto-alignment-report.json");
+const REPAIR_PROPOSAL_PATH = path.join(ROOT, "output", "symbtr-layout-review", "repair-proposals.json");
 const NOTE_AREA_INSET = 0.14;
 
 function parseCliOptions(argv) {
@@ -249,19 +250,13 @@ function alignEntry({catalogId, layoutEntry, rawText, mu2Raw, verificationEntry}
         : item.candidateIndex,
       leftPercent: candidates[item.candidateIndex]?.leftPercent ?? null,
       deltaPercent: item.deltaPercent,
+      contained: item.contained,
     }))
     .sort((left, right) => left.measureIndex - right.measureIndex);
 
   // Mevcut verified manifest ile karsilastirma: ayni olcu icin depolanan kutu
   // farkli adaya isaret ediyorsa (veya farkli x'teyse) "mismatch".
-  const storedByMeasure = new Map();
-  for (const box of verificationEntry?.measureBoxes ?? []) {
-    storedByMeasure.set(Number(box.measureIndex), {
-      rowIndex: Number(box.sourceCandidateRowIndex),
-      candidateIndex: Number(box.sourceCandidateIndexInRow),
-      leftPercent: Number(box.leftPercent),
-    });
-  }
+  const storedByMeasure = buildStoredBoxLookup(verificationEntry);
   let storedMismatches = 0;
   for (const box of boxes) {
     const stored = storedByMeasure.get(box.measureIndex);
@@ -273,6 +268,7 @@ function alignEntry({catalogId, layoutEntry, rawText, mu2Raw, verificationEntry}
       storedMismatches += 1;
     }
   }
+  const repair = classifyRepairActions({boxes, storedByMeasure});
 
   return {
     catalogId,
@@ -287,7 +283,110 @@ function alignEntry({catalogId, layoutEntry, rawText, mu2Raw, verificationEntry}
     boxes,
     storedBoxes: verificationEntry?.measureBoxes?.length ?? 0,
     storedMismatches,
+    repairCounts: repair.counts,
   };
+}
+
+/**
+ * Stored verified kutulari olcu indeksine gore indeksler.
+ * Donus: Map<measureIndex, {measureIndex, rowIndex, indexInRow, leftPercent}>
+ */
+export function buildStoredBoxLookup(verificationEntry) {
+  const lookup = new Map();
+  for (const box of verificationEntry?.measureBoxes ?? []) {
+    const measureIndex = Number(box.measureIndex);
+    if (!Number.isFinite(measureIndex)) continue;
+    lookup.set(measureIndex, {
+      measureIndex,
+      rowIndex: Number(box.sourceCandidateRowIndex),
+      indexInRow: Number(box.sourceCandidateIndexInRow),
+      leftPercent: Number(box.leftPercent),
+    });
+  }
+  return lookup;
+}
+
+/**
+ * Kutu-bazli onarim siniflandirmasi (W4.1b). LLM yok; kural deterministiktir:
+ * - keep:    stored kutu ile yeni hizalama AYNI olcuye AYNI adayi atiyor.
+ * - replace: stored kutu ile yeni hizalama ayni olcu icin FARKLI aday oneriyor
+ *            -> yeni aday, geometrik kanitli onarim onerisidir.
+ * - review:  stored kutu, yeni hizalamanin kapsamadigi bir olcuye ait
+ *            -> kanit yok; dokunulmaz, insan/gorsel onaya kalir.
+ * - add:     yeni hizalama, stored manifestte hic olmayan bir olcuyu kapsiyor.
+ */
+export function classifyRepairActions({boxes, storedByMeasure}) {
+  const newByMeasure = new Map();
+  for (const box of boxes) {
+    newByMeasure.set(Number(box.measureIndex), box);
+  }
+
+  const actions = [];
+  for (const [measureIndex, stored] of storedByMeasure) {
+    const proposed = newByMeasure.get(measureIndex);
+    if (!proposed) {
+      actions.push({measureIndex, action: "review", reason: "no-new-box", stored});
+      continue;
+    }
+    const sameCandidate =
+      stored.rowIndex === proposed.sourceCandidateRowIndex &&
+      stored.indexInRow === proposed.sourceCandidateIndexInRow &&
+      Math.abs(stored.leftPercent - (proposed.leftPercent ?? -1)) <= 2;
+    actions.push(
+      sameCandidate
+        ? {measureIndex, action: "keep", stored}
+        : proposed.contained !== false
+          ? {
+            measureIndex,
+            action: "replace",
+            reason: "different-candidate",
+            stored,
+            proposed: {
+              sourceCandidateRowIndex: proposed.sourceCandidateRowIndex,
+              sourceCandidateIndexInRow: proposed.sourceCandidateIndexInRow,
+              leftPercent: proposed.leftPercent,
+              deltaPercent: proposed.deltaPercent,
+            },
+          }
+          : {
+            // Yeni atama beklenen x-araliginin DISINDA (en-yakin yedek kurali).
+            // Kanit sinirli oldugu icin yazma onerilmez; insan/gorsel onaya
+            // birakilir, yalnizca ipucu tasinir.
+            measureIndex,
+            action: "review",
+            reason: "proposed-outside-range",
+            stored,
+            hint: {
+              sourceCandidateRowIndex: proposed.sourceCandidateRowIndex,
+              sourceCandidateIndexInRow: proposed.sourceCandidateIndexInRow,
+              leftPercent: proposed.leftPercent,
+              deltaPercent: proposed.deltaPercent,
+            },
+          },
+    );
+  }
+
+  for (const box of boxes) {
+    const measureIndex = Number(box.measureIndex);
+    if (!storedByMeasure.has(measureIndex)) {
+      actions.push({
+        measureIndex,
+        action: "add",
+        reason: "measure-not-in-stored",
+        proposed: {
+          sourceCandidateRowIndex: box.sourceCandidateRowIndex,
+          sourceCandidateIndexInRow: box.sourceCandidateIndexInRow,
+          leftPercent: box.leftPercent,
+          deltaPercent: box.deltaPercent,
+        },
+      });
+    }
+  }
+
+  actions.sort((left, right) => left.measureIndex - right.measureIndex);
+  const counts = {keep: 0, replace: 0, review: 0, add: 0};
+  for (const action of actions) counts[action.action] += 1;
+  return {actions, counts};
 }
 
 function main() {
@@ -297,6 +396,7 @@ function main() {
   const verificationEntries = verificationData.entries ?? {};
   if (!layoutData) throw new Error(`Missing ${LAYOUT_PATH}`);
   const writeImportReady = options.get("import-ready") === "true";
+  const writeRepairProposal = options.get("repair-proposal") === "true";
   const minConfidence = options.get("min-confidence") ?? "high";
   const allowedConfidences = new Set(["high", "medium", "low"]);
   if (!allowedConfidences.has(minConfidence)) throw new Error(`--min-confidence must be high|medium|low`);
@@ -427,6 +527,74 @@ function main() {
     );
     writeFileSync(importPath, `${JSON.stringify({entries: importEntries}, null, 2)}\n`);
     console.log(`import-ready: ${Object.keys(importEntries).length} entries -> ${importPath}`);
+  }
+
+  if (writeRepairProposal) {
+    const proposalEntries = {};
+    const excluded = [];
+    let fingerprintMismatchCount = 0;
+    for (const entry of entries) {
+      if (entry.skipped || entry.storedBoxes <= 0) continue;
+      const layoutEntry = layoutData.entries[entry.catalogId];
+      const fingerprint = getSymbTrLayoutCandidateFingerprint({
+        catalogId: entry.catalogId,
+        layoutData,
+        layoutEntry,
+      });
+      const storedEntry = verificationEntries[entry.catalogId];
+      const fingerprintMatch = storedEntry?.candidateGeometryFingerprint === fingerprint;
+      if (!fingerprintMatch) {
+        fingerprintMismatchCount += 1;
+        excluded.push({catalogId: entry.catalogId, reason: "candidate-geometry-fingerprint-mismatch"});
+        continue;
+      }
+      const storedByMeasure = buildStoredBoxLookup(storedEntry);
+      const repair = classifyRepairActions({boxes: entry.boxes, storedByMeasure});
+      proposalEntries[entry.catalogId] = {
+        catalogId: entry.catalogId,
+        measureIndexBasis: entry.measureIndexBasis,
+        confidence: entry.confidence,
+        coverage: entry.coverage,
+        medianDeltaPercent: entry.medianDeltaPercent,
+        storedBoxes: entry.storedBoxes,
+        candidateGeometryFingerprintMatch: true,
+        counts: repair.counts,
+        actions: repair.actions,
+      };
+    }
+
+    const actionTotals = {keep: 0, replace: 0, review: 0, add: 0};
+    for (const proposal of Object.values(proposalEntries)) {
+      for (const action of Object.keys(actionTotals)) actionTotals[action] += proposal.counts[action];
+    }
+    const proposalSummary = {
+      version: 1,
+      type: "symbtr-measure-box-repair-proposals",
+      generatedAt: new Date().toISOString(),
+      dryRun: true,
+      basis: {
+        alignmentReportPath: REPORT_PATH,
+        alignmentReportGeneratedAt: report.generatedAt,
+        verificationManifestPath: VERIFICATION_PATH,
+      },
+      summary: {
+        verifiedEntriesWithProposals: Object.keys(proposalEntries).length,
+        verifiedEntriesExcludedFingerprintMismatch: fingerprintMismatchCount,
+        replaceBoxCount: actionTotals.replace,
+        keepBoxCount: actionTotals.keep,
+        reviewBoxCount: actionTotals.review,
+        addBoxCount: actionTotals.add,
+        writeReadyEntryCount: Object.values(proposalEntries).filter(
+          (proposal) => proposal.measureIndexBasis === "meter-walk-v2" && proposal.confidence === "high",
+        ).length,
+      },
+      excluded,
+      entries: proposalEntries,
+    };
+    mkdirSync(path.dirname(REPAIR_PROPOSAL_PATH), {recursive: true});
+    writeFileSync(REPAIR_PROPOSAL_PATH, `${JSON.stringify(proposalSummary, null, 2)}\n`);
+    console.log(`repair-proposal: ${proposalSummary.summary.verifiedEntriesWithProposals} entries -> ${REPAIR_PROPOSAL_PATH}`);
+    console.log(JSON.stringify(proposalSummary.summary, null, 2));
   }
 }
 

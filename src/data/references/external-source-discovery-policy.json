@@ -17,7 +17,7 @@
   },
   "cacheTtlDays": 14,
   "timeoutMs": 8000,
-  "maxResponseBytes": 262144,
+  "maxResponseBytes": 786432,
   "directAutoAttachAllowed": false,
   "writeSafety": {
     "dryRunDefault": true,

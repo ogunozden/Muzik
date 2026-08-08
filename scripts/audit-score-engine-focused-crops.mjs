@@ -422,6 +422,24 @@ async function captureImplementationCrops(browser, baseUrl, outputDir) {
 
   const systemLines = String(renderManifest || "").split("\n").map((line) => line.trim()).filter(Boolean);
   const firstMeasureSystems = systemLines.filter((line) => /:m1:system:/.test(line));
+  // Satir sozlesmesi: `<id>:<measureId>:<segmentIndex>/<segmentCount>:<eventCount>:<start>-<end>`
+  // Ornek: `score:hicazkar-pesrev-osman-bey:m1:system:1:score:...:m1:1/1:5:0-4`
+  const parsedSystems = systemLines.map((line) => {
+    const measureMatch = line.match(/:m(\d+):system:/);
+    const segmentMatch = line.match(/:(\d+)\/(\d+):(\d+):([\d.]+)-([\d.]+)$/);
+    return {
+      line,
+      measureIndex: measureMatch ? Number(measureMatch[1]) : null,
+      segmentIndex: segmentMatch ? Number(segmentMatch[1]) : 0,
+      segmentCount: segmentMatch ? Number(segmentMatch[2]) : 1,
+      eventCount: segmentMatch ? Number(segmentMatch[3]) : 0,
+      span: segmentMatch ? Number(segmentMatch[5]) - Number(segmentMatch[4]) : 0,
+    };
+  });
+  const maxEventsPerSystem = Math.max(...parsedSystems.map((system) => system.eventCount), 0);
+  const maxBeatSpanPerSystem = Math.max(...parsedSystems.map((system) => system.span), 0);
+  const denseSystemCount = parsedSystems.filter((system) => system.eventCount > 24).length;
+  const overlongSystemCount = parsedSystems.filter((system) => system.span > 7.25).length;
   return {
     surfaceBox: {
       x: Math.round(surfaceBox.x),
@@ -432,6 +450,10 @@ async function captureImplementationCrops(browser, baseUrl, outputDir) {
     renderSystemCount: systemLines.length,
     firstMeasureSystemCount: firstMeasureSystems.length,
     firstMeasureSystems,
+    maxEventsPerSystem,
+    maxBeatSpanPerSystem,
+    denseSystemCount,
+    overlongSystemCount,
     requiredNotationTokens: {
       hasKomaSharp: String(vexMap || "").includes(":#4"),
       hasKomaFlat: String(vexMap || "").includes(":b5"),
@@ -666,7 +688,16 @@ async function main() {
       sourceDimensionsMatch: source.sourcePages.every((sourcePage) => sourcePage.dimensionMatch),
       sourceCropsNonBlank: source.crops.every((crop) => crop.bytes > 5_000 && cropStats[crop.path].nonWhiteRatio > 0.02),
       implementationCropsNonBlank: implementation.crops.every((crop) => crop.bytes > 5_000 && cropStats[crop.path].nonWhiteRatio > 0.02),
-      implementationSplitsLongMeasure: implementation.firstMeasureSystemCount > 1,
+      // NOT: eskiden `firstMeasureSystemCount > 1` deneniyordu ("ilk 28/4
+      // olcusu birden fazla sisteme bolunmeli"). G6 pivotundan sonra olcu
+      // izgarasi yazili mertebeden yuruyor; gercek hicazkar pesrev 28/4 usulde
+      // ama 4/4 YAZILI olculerle notalanmis (Devr-i Kebir = 7 × 4/4) — 1.
+      // olcu 5 event / 4 vurus ve TEK sisteme sigiyor. Degismez olan,
+      // "uzun/dens hicbir sistem siniri asmaz" (asagidaki iki kontrol).
+      // "Uzun olcu bolunur mu?" sorusu `score-layout.test.ts` birim testiyle
+      // korunuyor — `audit-score-engine-engraving.mjs` ile ayni karar.
+      implementationNoOverlongSystems: implementation.overlongSystemCount === 0,
+      implementationNoDenseSystems: implementation.denseSystemCount === 0,
       implementationHasBaselineNotationTokens: [
         "hasClefSurface",
         "hasMeter28",

@@ -32,10 +32,12 @@
 
 | ID | Açık iş | Kök neden / neden açık | Öncelik / tetikleyici |
 |---|---|---|---|
-| W2.1 | `/studio` kayıtlı-nota playback imleci duvar saatiyle (`performance.now`) ilerliyor; ritim + score-engine `heardContextTime` (ses saati) kullanıyor | D6 deseni `/studio`'ya taşınmadı; çıkış gecikmesi (~53 ms) + saat sürüklenmesi senkronu bozar | P1 · Dalga 2: ses saatine hizala |
-| W2.2 | Test çıktısında jsdom `canvas.getContext` gürültüsü (~200 satır) | canvas paketi yok; test setup'ında no-op stub yok | P3 · Dalga 2 |
-| W3.1 | GitNexus indeksi HEAD'in 3 commit gerisinde + FTS indeksleri eksik | analiz sonrası reindex yapılmadı | P2 · `gitnexus analyze --repair-fts` |
-| W3.2 | TODO'nun eski "Öncelik" listesinde G9 hâlâ açık görünüyor; kodda `rows.ts` geçişi TAMAM | doküman senkronu (başlık bayat) | P3 · başlık güncelle |
+| W2.1 ✅ | `/studio` kayıtlı-nota playback imleci ses saatine hizalandı (`getHeardPlaybackPosition`) | commit `c645a74` | KAPANDI (2026-08-08) |
+| W2.2 ✅ | jsdom `canvas.getContext` gürültüsü no-op stub ile temizlendi | commit `c645a74` | KAPANDI (2026-08-08) |
+| W3.1 | GitNexus FTS indeksleri eksik (grafik indeksi tazelendi: 4761 sembol; FTS uzantısı bu makinede kurulamıyor) | `LOAD fts failed after successful INSTALL` — environment kısıtı | P2 · `gitnexus doctor` ile elle kurulum |
+| W3.2 ✅ | TODO G9 başlığı ✅ işaretlendi + AGENTS/CLAUDE rozet senkronu | commit `b0ef851` | KAPANDI (2026-08-08) |
+| W3.3 ✅ | Prod build `data-testid` sıyırıyordu → release denetimleri prod'da kırıktı; `reactRemoveProperties` kaldırıldı, focused-crops/engraving denetimleri onarıldı | commit (2026-08-08) | KAPANDI — denetimler prod'da yeşil |
+| W3.4 | `/studio/score-engine` sayfasında 2 form kontrolü `id`/`name` taşımıyor (Chrome a11y issue) | select'ler yalnız `aria-label` taşıyor | P3 · label+id bağla |
 | W3.3 | Verovio ana renderer hedefi; paket kurulu değil (VexFlow geçici) | koşullu borç (`PRODUCT_ARCHITECTURE.md`) | Tetikleyici: Verovio geçiş kararı |
 | W4.1 | Verified PDF ölçü kutusu manifesti boş (0 kutu) | insan/görsel onay gerektirir (`UX_UI_COMPLETION_AUDIT.md`) | Dış girdi |
 | W4.2 | Kürasyonlu harici kaynak coverage 22/3000 | insan kürasyon backlog'u (`audit:external-references`) | Dış girdi |

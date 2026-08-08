@@ -322,7 +322,23 @@ async function auditViewport(browser, baseUrl, viewport, screenshotOutput) {
     },
     {timeout: 45_000},
   );
-  await page.waitForTimeout(400);
+  // Dokuman degisiminde VexFlow svg'si ASENKRON yeniden cizilir; manifest
+  // (JSX) yeni dokumani gosterirken svg ara-render durumunda olabilir ve
+  // gecici (yanlis-pozitif) sinir-disi oge yakalanabilir. Olcumden ONCE svg
+  // path sayisinin 4 ardısık frame boyunca DEGISMEDIGINI bekliyoruz — boylece
+  // yalniz KARARLI render olculur; gercek bir tasma yine yakalanir.
+  await page.waitForFunction(
+    () => {
+      const svg = document.querySelector('[data-testid="vexflow-score-surface"] svg');
+      if (!svg) return false;
+      const pathCount = svg.querySelectorAll("path").length;
+      const stamps = (window.__scoreEngravingSvgStamps ||= []);
+      stamps.push(pathCount);
+      if (stamps.length > 4) stamps.shift();
+      return stamps.length === 4 && stamps.every((value) => value === stamps[0]);
+    },
+    {timeout: 20_000},
+  );
   const data = await page.evaluate(makeAuditExpression());
 
   const playButton = page.getByRole("button", {name: "Motoru \u00c7al"});

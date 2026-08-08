@@ -46,7 +46,11 @@ const nextConfig = {
   // SWC Compiler
   compiler: {
     removeConsole: isProd ? { exclude: ["error", "warn"] } : false,
-    reactRemoveProperties: isProd ? { properties: ["^data-testid$"] } : false,
+    // `data-testid` PROD'DA SİYIRILMAZ (2026-08-08): release denetimleri
+    // (audit:score-engine-focused-crops, audit:score-engine-engraving) prod
+    // sunucuda (`next start`, 4015) bu seçicilerle çalışır. Sıyırma, prod-cycle
+    // kapanış kapısını kendi denetlediği ortamda SESSİZCE kırıyordu — denetim
+    // testid bulamayıp 15 s timeout alıyordu. Testid'ler release sözleşmesidir.
   },
 
   // Images

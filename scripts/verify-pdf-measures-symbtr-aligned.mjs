@@ -2,8 +2,9 @@ import {readFileSync, writeFileSync, mkdirSync} from "node:fs";
 import path from "node:path";
 import {spawnSync} from "node:child_process";
 import {
-  CURRENT_MEASURE_INDEX_BASIS,
   LEGACY_MEASURE_INDEX_BASIS,
+  CURRENT_MEASURE_INDEX_BASIS,
+  RUNTIME_ACCEPTED_MEASURE_INDEX_BASES,
   getSymbTrMeasureIndexSummary,
 } from "./lib/symbtr-score-measures.mjs";
 import {getSymbTrLayoutCandidateFingerprint} from "./lib/symbtr-layout-fingerprint.mjs";
@@ -44,7 +45,7 @@ function cleanVerification() {
     }
 
     const basis = entry?.measureIndexBasis ?? LEGACY_MEASURE_INDEX_BASIS;
-    if (basis === CURRENT_MEASURE_INDEX_BASIS) continue;
+    if (RUNTIME_ACCEPTED_MEASURE_INDEX_BASES.includes(basis)) continue;
 
     if (entry.method === "symbtr-txt-aligned") {
       delete entries[catalogId];

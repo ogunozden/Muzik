@@ -3,9 +3,9 @@ import {existsSync, mkdirSync, readFileSync, rmSync, writeFileSync} from "node:f
 import path from "node:path";
 import {getSymbTrLayoutCandidateFingerprint} from "./lib/symbtr-layout-fingerprint.mjs";
 import {
-  CURRENT_MEASURE_INDEX_BASIS,
   LEGACY_MEASURE_INDEX_BASIS,
   MEASURE_INDEX_BASES,
+  RUNTIME_ACCEPTED_MEASURE_INDEX_BASES,
 } from "./lib/symbtr-score-measures.mjs";
 
 const root = process.cwd();
@@ -125,10 +125,34 @@ function validateIncomingEntries({incomingEntries, layoutData}) {
     const entryBasis = entry.measureIndexBasis ?? LEGACY_MEASURE_INDEX_BASIS;
     if (!MEASURE_INDEX_BASES.includes(entryBasis)) {
       errors.push(`${prefix}.measureIndexBasis must be one of ${MEASURE_INDEX_BASES.join(", ")}`);
-    } else if (entryBasis !== CURRENT_MEASURE_INDEX_BASIS) {
+    } else if (!RUNTIME_ACCEPTED_MEASURE_INDEX_BASES.includes(entryBasis)) {
       errors.push(
-        `${prefix}.measureIndexBasis is "${entryBasis}" but the engine now uses "${CURRENT_MEASURE_INDEX_BASIS}"; re-verify the measure boxes`,
+        `${prefix}.measureIndexBasis is "${entryBasis}" but the engine accepts ${RUNTIME_ACCEPTED_MEASURE_INDEX_BASES.join(", ")}; re-verify the measure boxes`,
       );
+    }
+
+    // written-expanded-v1: kutu olcu numaralari ILK-GENISLEMIS indekstir;
+    // yazili->acilmis esleme zorunludur ve hicbir kutu expanded sinirini
+    // asamaz.
+    if (entryBasis === "written-expanded-v1") {
+      const mapping = entry.writtenMeasureMapping;
+      if (
+        !isObject(mapping) ||
+        !Array.isArray(mapping.expanded) ||
+        mapping.expanded.length === 0 ||
+        !isObject(mapping.firstExpandedIndexByWritten)
+      ) {
+        errors.push(`${prefix}.writtenMeasureMapping is required for written-expanded-v1`);
+      } else {
+        const expandedLength = mapping.expanded.length;
+        for (const box of Array.isArray(entry.measureBoxes) ? entry.measureBoxes : []) {
+          if (Number.isInteger(box?.measureIndex) && box.measureIndex > expandedLength) {
+            errors.push(
+              `${prefix}.measureBoxes measureIndex ${box.measureIndex} exceeds expanded measure count ${expandedLength}`,
+            );
+          }
+        }
+      }
     }
 
     if (!allowedMethods.has(entry.method)) {

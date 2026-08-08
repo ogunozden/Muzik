@@ -90,13 +90,19 @@ export interface SymbTrVerifiedPdfMeasureBox extends Omit<SymbTrPdfMeasureCandid
  * (geriye donuk uyum). Taban degistiginde eski kayitlar bayatlar ve kutular
  * GORUNUR sekilde duser — sessizce yanlis yere kaymaktansa.
  */
-export type SymbTrMeasureIndexBasis = "offset-ceil-v1" | "meter-walk-v2";
+export type SymbTrMeasureIndexBasis = "offset-ceil-v1" | "meter-walk-v2" | "written-expanded-v1";
 
 /** `scripts/lib/symbtr-score-measures.mjs` ile ayni deger olmali (test eder). */
 export const CURRENT_MEASURE_INDEX_BASIS: SymbTrMeasureIndexBasis = "meter-walk-v2";
 
 /** Alani olmayan kayitlarin varsayilan tabani. */
 export const LEGACY_MEASURE_INDEX_BASIS: SymbTrMeasureIndexBasis = "offset-ceil-v1";
+
+/** Motorun calisma zamaninda kabul ettigi tabanlar (bayat sayilmayanlar). */
+export const RUNTIME_ACCEPTED_MEASURE_INDEX_BASES: readonly SymbTrMeasureIndexBasis[] = [
+  CURRENT_MEASURE_INDEX_BASIS,
+  "written-expanded-v1",
+];
 
 export interface SymbTrPdfLayoutVerificationEntry {
   catalogId: string;
@@ -105,6 +111,18 @@ export interface SymbTrPdfLayoutVerificationEntry {
   sourceMeasureCandidateCount: number;
   /** Kutularin dogrulandigi olcu numarasi tabani. Yoksa `offset-ceil-v1`. */
   measureIndexBasis?: SymbTrMeasureIndexBasis;
+  /**
+   * `written-expanded-v1` tabaninda zorunlu: yazili olcu -> acilmis olcu
+   * eslemesi. Kutularin `measureIndex` degeri ILK-GENISLEMIS indekstir;
+   * runtime (score engine, follow UI) measureIndex'i expanded uzayinda esler.
+   */
+  writtenMeasureMapping?: {
+    navigation: "repeat" | "ds" | "both";
+    expanded: readonly number[];
+    firstExpandedIndexByWritten: Record<number, number>;
+    dalsegnoMeasure?: number | null;
+    segnoMeasure?: number | null;
+  };
   verifiedAt: string;
   reviewer: string;
   method: SymbTrPdfMeasureBoxVerificationMethod;
@@ -153,7 +171,8 @@ function isVerificationCurrent(
 export function isSymbTrVerificationBasisCurrent(
   verification: Pick<SymbTrPdfLayoutVerificationEntry, "measureIndexBasis">,
 ): boolean {
-  return (verification.measureIndexBasis ?? LEGACY_MEASURE_INDEX_BASIS) === CURRENT_MEASURE_INDEX_BASIS;
+  const basis = verification.measureIndexBasis ?? LEGACY_MEASURE_INDEX_BASIS;
+  return RUNTIME_ACCEPTED_MEASURE_INDEX_BASES.includes(basis);
 }
 
 export function getSymbTrVerifiedPdfMeasureBoxes(catalogId: string): readonly SymbTrVerifiedPdfMeasureBox[] {

@@ -339,7 +339,7 @@ function alignEntry({
     totalBeats,
     measureIndexBasis: useWrittenExpanded ? "written-expanded-v1" : measureIndexBasis,
     anchorSource: anchorUsable ? "note-anchors" : null,
-    importable: !useWrittenExpanded,
+    importable: !useWrittenExpanded || (confidence === "high" && medianDelta !== null && medianDelta <= 4),
     candidates: candidates.length,
     coverage,
     medianDeltaPercent: medianDelta,
@@ -579,7 +579,7 @@ function main() {
     for (const entry of entries) {
       if (
         entry.skipped ||
-        entry.measureIndexBasis !== "meter-walk-v2" ||
+        !["meter-walk-v2", "written-expanded-v1"].includes(entry.measureIndexBasis) ||
         confidenceRank[entry.confidence] > confidenceRank[minConfidence]
       ) {
         continue;
@@ -636,8 +636,16 @@ function main() {
           medianDeltaPercent: entry.medianDeltaPercent,
           confidence: entry.confidence,
         },
+        ...(entry.measureIndexBasis === "written-expanded-v1"
+          ? {
+              writtenMeasureMapping: noteAnchorsByCatalog.get(entry.catalogId)?.writtenMeasureMapping ?? null,
+            }
+          : {}),
         measureBoxes,
       };
+      if (entry.measureIndexBasis === "written-expanded-v1" && !importEntries[entry.catalogId]?.writtenMeasureMapping) {
+        delete importEntries[entry.catalogId];
+      }
     }
     const importPath = path.join(
       ROOT,

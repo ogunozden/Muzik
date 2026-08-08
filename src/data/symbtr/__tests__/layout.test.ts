@@ -9,6 +9,7 @@ import {
   getSymbTrPdfMeasureCandidates,
   getSymbTrVerifiedPdfMeasureBoxes,
   isSymbTrVerificationBasisCurrent,
+  RUNTIME_ACCEPTED_MEASURE_INDEX_BASES,
 } from "../layout";
 import verificationData from "../layout-verification.generated.json";
 
@@ -136,5 +137,33 @@ describe("measureIndexBasis — pivot emniyet valfi (G5)", () => {
     expect(isSymbTrVerificationBasisCurrent({...base, measureIndexBasis: "offset-ceil-v1"})).toBe(false);
     // Alani olmayan ESKI kayit da `offset-ceil-v1` sayilir -> o da bayat.
     expect(isSymbTrVerificationBasisCurrent({...base, measureIndexBasis: undefined})).toBe(false);
+  });
+
+  it("written-expanded-v1 tabani runtime'da KABUL edilir, eski taban bayat kalir", () => {
+    const layout = getSymbTrPdfLayout(VERIFIED_CATALOG_ID)!;
+    const base: SymbTrPdfLayoutVerificationEntry = {
+      catalogId: VERIFIED_CATALOG_ID,
+      sourceLayoutGeneratedAt: SYMBTR_PDF_LAYOUT_GENERATED_AT,
+      sourceArchiveMemberPath: layout.source.archiveMemberPath,
+      sourceMeasureCandidateCount: layout.summary.measureCandidateCount,
+      measureIndexBasis: "written-expanded-v1",
+      writtenMeasureMapping: {
+        navigation: "ds",
+        expanded: [1, 2, 1, 2],
+        firstExpandedIndexByWritten: {1: 1, 2: 2},
+      },
+      verifiedAt: "2026-08-08T00:00:00.000Z",
+      reviewer: "test",
+      method: "symbtr-txt-aligned",
+      measureBoxes: [],
+    };
+    expect(isSymbTrVerificationBasisCurrent(base)).toBe(true);
+    expect(isSymbTrVerificationBasisCurrent({...base, measureIndexBasis: "offset-ceil-v1"})).toBe(false);
+  });
+
+  it("RUNTIME_ACCEPTED sabitleri TS ve .mjs AYNI olmali", async () => {
+    const scriptModule = await import("../../../../scripts/lib/symbtr-score-measures.mjs");
+    expect(scriptModule.RUNTIME_ACCEPTED_MEASURE_INDEX_BASES).toEqual(RUNTIME_ACCEPTED_MEASURE_INDEX_BASES);
+    expect(scriptModule.MEASURE_INDEX_BASES).toContain("written-expanded-v1");
   });
 });

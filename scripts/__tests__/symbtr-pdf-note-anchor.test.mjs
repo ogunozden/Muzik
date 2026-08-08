@@ -212,7 +212,7 @@ describe("symbtr-pdf-note-anchor", () => {
     // A |: B C :| D  ->  A B C B C D
     expect(result.expanded).toEqual([1, 2, 3, 4, 3, 4, 5]);
     expect(result.navigation).toBe("repeat");
-    expect(result.firstExpandedIndexByWritten[3]).toBe(2);
+    expect(result.firstExpandedIndexByWritten[3]).toBe(3);
   });
 
   it("expandWrittenMeasures volta (1. ve 2. son) gecislerini yonetir", () => {

@@ -5,9 +5,9 @@ import {
   getSymbTrLayoutCandidateFingerprint,
 } from "./lib/symbtr-layout-fingerprint.mjs";
 import {
-  CURRENT_MEASURE_INDEX_BASIS,
   LEGACY_MEASURE_INDEX_BASIS,
   MEASURE_INDEX_BASES,
+  RUNTIME_ACCEPTED_MEASURE_INDEX_BASES,
   getSymbTrMeasureIndexSummary,
 } from "./lib/symbtr-score-measures.mjs";
 
@@ -205,10 +205,22 @@ function validateVerificationEntry({
     errors.push(
       `${prefix}.measureIndexBasis must be one of ${MEASURE_INDEX_BASES.join(", ")}`,
     );
-  } else if (measureIndexBasis !== CURRENT_MEASURE_INDEX_BASIS) {
+  } else if (!RUNTIME_ACCEPTED_MEASURE_INDEX_BASES.includes(measureIndexBasis)) {
     errors.push(
-      `${prefix}.measureIndexBasis is "${measureIndexBasis}" but the engine now uses "${CURRENT_MEASURE_INDEX_BASIS}"; re-verify the measure boxes`,
+      `${prefix}.measureIndexBasis is "${measureIndexBasis}" but the engine accepts ${RUNTIME_ACCEPTED_MEASURE_INDEX_BASES.join(", ")}; re-verify the measure boxes`,
     );
+  }
+
+  if (measureIndexBasis === "written-expanded-v1") {
+    const mapping = verificationEntry.writtenMeasureMapping;
+    if (
+      !isPlainObject(mapping) ||
+      !Array.isArray(mapping.expanded) ||
+      mapping.expanded.length === 0 ||
+      !isPlainObject(mapping.firstExpandedIndexByWritten)
+    ) {
+      errors.push(`${prefix}.writtenMeasureMapping is required for written-expanded-v1`);
+    }
   }
 
   if (!isNonEmptyString(verificationEntry.verifiedAt)) {

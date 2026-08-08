@@ -213,7 +213,8 @@ export function expandWrittenMeasures(xmlText) {
   const firstExpandedIndexByWritten = {};
   baseSequence.forEach((writtenMeasure, index) => {
     if (!(writtenMeasure in firstExpandedIndexByWritten)) {
-      firstExpandedIndexByWritten[writtenMeasure] = index;
+      // Motorun measureIndex uzayi 1-bazlidir (walk olculeri 1..N).
+      firstExpandedIndexByWritten[writtenMeasure] = index + 1;
     }
   });
   return {

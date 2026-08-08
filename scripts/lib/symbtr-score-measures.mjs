@@ -19,8 +19,14 @@ import {readZipEntry} from "./zip-entry-reader.mjs";
  * `src/data/symbtr/layout.ts` ayni sabiti tanimlar; `layout.test.ts` ikisinin
  * esitligini test eder — TS ile `.mjs` arasinda kayma olamaz.
  */
-export const MEASURE_INDEX_BASES = ["offset-ceil-v1", "meter-walk-v2"];
+export const MEASURE_INDEX_BASES = ["offset-ceil-v1", "meter-walk-v2", "written-expanded-v1"];
 export const CURRENT_MEASURE_INDEX_BASIS = "meter-walk-v2";
+/**
+ * Motorun calisma zamaninda KABUL ettigi tabanlar (bayat sayilmayanlar).
+ * `written-expanded-v1`: MusicXML yazili olcu yapisi + tekrar acilimi; kutu
+ * olcu numarasi ILK-GENISLEMIS indekstir (expanded uzayinda esler — follow UI).
+ */
+export const RUNTIME_ACCEPTED_MEASURE_INDEX_BASES = ["meter-walk-v2", "written-expanded-v1"];
 
 /**
  * Alani OLMAYAN kayitlarin varsayilani. `src/data/symbtr/layout.ts` ile ayni

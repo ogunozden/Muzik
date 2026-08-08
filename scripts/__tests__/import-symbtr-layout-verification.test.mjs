@@ -171,7 +171,7 @@ describe("import-symbtr-layout-verification", () => {
     });
 
     expect(() => runScript(root, "input/verification.json", true)).toThrow(
-      `measureIndexBasis is "offset-ceil-v1" but the engine now uses "${CURRENT_MEASURE_INDEX_BASIS}"`,
+      `measureIndexBasis is "offset-ceil-v1" but the engine accepts`,
     );
   });
 

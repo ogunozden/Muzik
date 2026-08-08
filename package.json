@@ -38,6 +38,7 @@
     "dev": "next dev --turbopack",
     "discover:external-sources": "node scripts/discover-external-sources.mjs --scope missing --providers internet-archive,divanmakam,ogm-materyal,salihbora --dry-run",
     "extract:symbtr-measures": "node scripts/extract-symbtr-pdf-measures.mjs",
+    "extract:symbtr-note-anchors": "node scripts/extract-symbtr-pdf-note-anchors.mjs --all",
     "fetch:symbtr-v3": "node scripts/fetch-symbtr-v3.mjs",
     "fix:percussion-samples": "node scripts/trim-percussion-samples.mjs",
     "generate:pdf-measure-verification": "node scripts/verify-pdf-measures-heuristic.mjs",

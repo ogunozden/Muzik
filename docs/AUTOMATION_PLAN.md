@@ -69,8 +69,8 @@ icinde, tum keep'ler dogru**. Manifeste YAZMA ise operatör onayı gerektirir
 
 | Gereksinim | Neden | Oncelik |
 |---|---|---|
-| **Nota-anchor cikarici**: PDF vektor katmanindan staff satirlarina nota basi x-konumlarini da cikar (yalniz dikey cizgiler degil) | Esit-bolusum kapasitesi yaklasiktir; anchor'lar olcu sinirlarini KESIN yapar (`note-anchor-percent`, `visual-map.ts`'te zaten tanimli dogrulanmis yontem) | P1 |
-| **Anchor esleyici**: cikarilan nota baslarini SymbTr event sirasiyla esle → satir icin sparse beat→x kalibrasyonu → olcu sinirlari enterpolasyonu | W4.1'in "kesin" kademesi; 770 medium + 1.940 low girisin cogunu high'a tasir | P1 |
+| **Nota-anchor cikarici** ✅ v1: PDF metin katmanindaki muzik fontu glifleri (TT7/F3 gibi) font-genislik tablosuyla GLIF BAZINDA x konumuna cevrildi (Tc/Tw/Tz/kerning dogru ilerleme); staff bandi filtresi + akor kumeleme. Korpus: 2.795/2.999 PDF islendi; 1.157 giris kalibre (4.727 satir artik <=3pt), 990 PDF'te staff cizgisi YOK (tarama), 204 zip-inflate (mevcut extractor ile ayni kume) | `extract:symbtr-note-anchors` (38s, 2.999 PDF) | P1 — CIKARICI TAMAM |
+| **Anchor esleyici** ✅ v1: MusicXML YAZILI (tekrar acilmamis) event yapisi cikarildi; satir-sirali kalibrasyon (imza kumesi k-eleme + 12pt yinelemeli aykiri eleme). **Kok bulgu:** TXT tekrarlari actigi icin tekrarli eserlerde anchor/event orani ~1/tekrar katsayisi (641 giris count-mismatch olarak OLÇÜLDÜ); tekrarsiz eserlerde oran 1.0-1.2 | `note-anchors.generated.json`; aligner entegrasyonu (anchor-bazli olcu araliklari) + written<->expanded olcu eslemesi siradaki P1 | P1 — ESLETICI TAMAM, ENTEGRASYON SIRADA |
 | **Medium girislere on-doldurma**: review template'i alignment'dan gelen `suggestedMeasureIndex` ile doldur | Insan isini "65 bin karar"dan "medyan-delta spot-kontrolu"ne indirir | P2 |
 | **14.694 uyumsuz kutu onariminin UYGULANMASI**: `repair-proposals.json` uretildi (13.651 replace + 4.677 review); demote/replace islemi operatör onayı sonrasi import kapisindan gecer | Veri butunlugu: yanlis "verified" veri, kurasyon/arastirma kararlarini kirletir | P1 (onay bekliyor) |
 

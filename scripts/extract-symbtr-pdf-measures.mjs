@@ -1,5 +1,6 @@
 import {mkdirSync, readFileSync, writeFileSync} from "node:fs";
 import path from "node:path";
+import {fileURLToPath} from "node:url";
 import {inflateRawSync, inflateSync} from "node:zlib";
 
 const root = process.cwd();
@@ -8,7 +9,7 @@ const pdfZipPath = path.join(symbRoot, "pdf_v3.zip");
 const DEFAULT_CATALOG_ID = "hicazkar--pesrev--devrikebir----tanburi_buyuk_osman_bey";
 const DEFAULT_GENERATED_AT = "2026-05-10";
 
-function parseCliOptions(args) {
+export function parseCliOptions(args) {
   const options = new Map();
 
   for (let index = 0; index < args.length; index += 1) {
@@ -33,15 +34,15 @@ function parseCliOptions(args) {
   return options;
 }
 
-function readUInt16(buffer, offset) {
+export function readUInt16(buffer, offset) {
   return buffer.readUInt16LE(offset);
 }
 
-function readUInt32(buffer, offset) {
+export function readUInt32(buffer, offset) {
   return buffer.readUInt32LE(offset);
 }
 
-function findEndOfCentralDirectory(buffer) {
+export function findEndOfCentralDirectory(buffer) {
   const signature = 0x06054b50;
   const minOffset = Math.max(0, buffer.length - 0xffff - 22);
 
@@ -54,7 +55,7 @@ function findEndOfCentralDirectory(buffer) {
   throw new Error("ZIP end of central directory not found.");
 }
 
-function readZipArchive(zipPath) {
+export function readZipArchive(zipPath) {
   const buffer = readFileSync(zipPath);
   const endOffset = findEndOfCentralDirectory(buffer);
   const entryCount = readUInt16(buffer, endOffset + 10);
@@ -88,7 +89,7 @@ function readZipArchive(zipPath) {
   return {buffer, entries};
 }
 
-function readZipEntry(archive, entryName) {
+export function readZipEntry(archive, entryName) {
   const entry = archive.entries.find((candidate) => candidate.fullName === entryName);
 
   if (!entry) {
@@ -103,7 +104,7 @@ function readZipEntry(archive, entryName) {
   return entry.compressionMethod === 0 ? compressed : inflateRawSync(compressed);
 }
 
-function readPdfContentStreams(pdfBuffer) {
+export function readPdfContentStreams(pdfBuffer) {
   const pdfText = pdfBuffer.toString("latin1");
   const objectPattern = /(\d+) 0 obj/g;
   const streams = [];
@@ -144,7 +145,7 @@ function readPdfContentStreams(pdfBuffer) {
   return streams;
 }
 
-function parsePageSize(pdfBuffer) {
+export function parsePageSize(pdfBuffer) {
   const pdfText = pdfBuffer.toString("latin1");
   const mediaBoxMatch = pdfText.match(/\/MediaBox\s*\[\s*0\s+0\s+([0-9.]+)\s+([0-9.]+)\s*\]/);
 
@@ -154,7 +155,7 @@ function parsePageSize(pdfBuffer) {
   };
 }
 
-function parseLineSegments(contentText) {
+export function parseLineSegments(contentText) {
   const tokens = [...contentText.matchAll(/-?\d*\.\d+|-?\d+|[A-Za-z*]+/g)].map((match) => match[0]);
   const segments = [];
   const stack = [];
@@ -211,11 +212,11 @@ function parseLineSegments(contentText) {
   return segments;
 }
 
-function round(value) {
+export function round(value) {
   return Number(value.toFixed(3));
 }
 
-function percentage(value, total) {
+export function percentage(value, total) {
   return Number(((value / total) * 100).toFixed(3));
 }
 
@@ -235,11 +236,11 @@ function toProjectPath(targetPath) {
   return targetPath.split(path.sep).join("/");
 }
 
-function catalogIdFromPdfEntry(fullName) {
+export function catalogIdFromPdfEntry(fullName) {
   return path.basename(fullName).replace(/\.pdf$/i, "");
 }
 
-function uniqueStaffLines(segments) {
+export function uniqueStaffLines(segments) {
   const lines = segments
     .filter((segment) => Math.abs(segment.y1 - segment.y2) < 0.05)
     .map((segment) => ({
@@ -265,7 +266,7 @@ function uniqueStaffLines(segments) {
   return unique;
 }
 
-function groupStaffRows(staffLines) {
+export function groupStaffRows(staffLines) {
   const rows = [];
   let index = 0;
 
@@ -292,7 +293,7 @@ function groupStaffRows(staffLines) {
   return rows;
 }
 
-function extractMeasureCandidates(segments, staffRows, pageSize) {
+export function extractMeasureCandidates(segments, staffRows, pageSize) {
   const verticalSegments = segments
     .filter((segment) => Math.abs(segment.x1 - segment.x2) < 0.05)
     .map((segment) => ({
@@ -336,16 +337,15 @@ function extractMeasureCandidates(segments, staffRows, pageSize) {
   return boxes;
 }
 
-const options = parseCliOptions(process.argv.slice(2));
-const extractionWarning = "Candidates are extracted from staff-wide vertical vector lines. Human or visual regression review is required before treating them as verified measure boxes.";
 const pdfArchive = readZipArchive(pdfZipPath);
 const pdfEntriesByCatalogId = new Map(
   pdfArchive.entries
     .filter((entry) => entry.fullName.toLowerCase().endsWith(".pdf"))
     .map((entry) => [catalogIdFromPdfEntry(entry.fullName), entry]),
 );
+const extractionWarning = "Candidates are extracted from staff-wide vertical vector lines. Human or visual regression review is required before treating them as verified measure boxes.";
 
-function extractLayoutEntry(catalogId) {
+export function extractLayoutEntry(catalogId) {
   const pdfEntry = pdfEntriesByCatalogId.get(catalogId);
 
   if (!pdfEntry) {
@@ -383,11 +383,52 @@ function extractLayoutEntry(catalogId) {
   };
 }
 
-function parsePositiveInteger(value, fallback) {
+export function parsePositiveInteger(value, fallback) {
   if (value === undefined) return fallback;
   const parsed = Number(value);
   return Number.isInteger(parsed) && parsed > 0 ? parsed : fallback;
 }
+
+function main() {
+  const options = parseCliOptions(process.argv.slice(2));
+
+  function buildExtractionSummary() {
+    const candidateEntryCount = layoutEntries.filter((entry) => entry.measureCandidates.length > 0).length;
+
+    return {
+      generatedAt: options.get("generated-at") ?? DEFAULT_GENERATED_AT,
+      sourceArchivePath: toProjectPath(path.relative(root, pdfZipPath)),
+      requestedEntryCount: catalogIds.length,
+      extractedEntryCount: layoutEntries.length,
+      candidateEntryCount,
+      zeroCandidateEntryCount: layoutEntries.length - candidateEntryCount,
+      totalMeasureCandidateCount: layoutEntries.reduce(
+        (total, entry) => total + entry.measureCandidates.length,
+        0,
+      ),
+      failureCount: failures.length,
+      failures,
+      sampleEntries: layoutEntries.slice(0, 5).map((entry) => ({
+        catalogId: entry.catalogId,
+        staffRowCount: entry.summary.staffRowCount,
+        measureCandidateCount: entry.summary.measureCandidateCount,
+      })),
+      warning: extractionWarning,
+    };
+  }
+
+  function compactSummary(summary, extra = {}) {
+    return {
+      ...extra,
+      requestedEntryCount: summary.requestedEntryCount,
+      extractedEntryCount: summary.extractedEntryCount,
+      candidateEntryCount: summary.candidateEntryCount,
+      zeroCandidateEntryCount: summary.zeroCandidateEntryCount,
+      totalMeasureCandidateCount: summary.totalMeasureCandidateCount,
+      failureCount: summary.failureCount,
+      warning: summary.warning,
+    };
+  }
 
 const requestedCatalogIds = options.has("all")
   ? Array.from(pdfEntriesByCatalogId.keys()).sort()
@@ -411,44 +452,6 @@ for (const selectedCatalogId of catalogIds) {
 if (!options.has("all") && failures.length > 0) {
   console.error(JSON.stringify({failures}, null, 2));
   process.exit(1);
-}
-
-function buildExtractionSummary() {
-  const candidateEntryCount = layoutEntries.filter((entry) => entry.measureCandidates.length > 0).length;
-
-  return {
-    generatedAt: options.get("generated-at") ?? DEFAULT_GENERATED_AT,
-    sourceArchivePath: toProjectPath(path.relative(root, pdfZipPath)),
-    requestedEntryCount: catalogIds.length,
-    extractedEntryCount: layoutEntries.length,
-    candidateEntryCount,
-    zeroCandidateEntryCount: layoutEntries.length - candidateEntryCount,
-    totalMeasureCandidateCount: layoutEntries.reduce(
-      (total, entry) => total + entry.measureCandidates.length,
-      0,
-    ),
-    failureCount: failures.length,
-    failures,
-    sampleEntries: layoutEntries.slice(0, 5).map((entry) => ({
-      catalogId: entry.catalogId,
-      staffRowCount: entry.summary.staffRowCount,
-      measureCandidateCount: entry.summary.measureCandidateCount,
-    })),
-    warning: extractionWarning,
-  };
-}
-
-function compactSummary(summary, extra = {}) {
-  return {
-    ...extra,
-    requestedEntryCount: summary.requestedEntryCount,
-    extractedEntryCount: summary.extractedEntryCount,
-    candidateEntryCount: summary.candidateEntryCount,
-    zeroCandidateEntryCount: summary.zeroCandidateEntryCount,
-    totalMeasureCandidateCount: summary.totalMeasureCandidateCount,
-    failureCount: summary.failureCount,
-    warning: summary.warning,
-  };
 }
 
 const extractionSummary = buildExtractionSummary();
@@ -505,3 +508,7 @@ if (options.has("all")) {
     2,
   ));
 }
+}
+
+const isMain = process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url);
+if (isMain) main();

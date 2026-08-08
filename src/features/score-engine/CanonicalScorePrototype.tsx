@@ -215,6 +215,8 @@ export function CanonicalScorePrototype({
             <StatusPill label={`quality-${qualityReport.status}`} tone={getQualityTone(qualityReport)} />
             <StatusPill label={activeSource?.kind ?? "source"} tone="neutral" />
             <select
+              id="score-engine-document-select"
+              name="score-engine-document"
               aria-label={t("scoreEngine.document")}
               value={selectedDocumentId}
               onChange={(event) => void loadCanonicalDocument(event.target.value)}
@@ -235,6 +237,8 @@ export function CanonicalScorePrototype({
               ))}
             </select>
             <select
+              id="score-engine-instrument-select"
+              name="score-engine-instrument"
               aria-label={t("scoreEngine.instrument")}
               value={selectedInstrument}
               onChange={(event) => setSelectedInstrument(event.target.value as InstrumentType)}

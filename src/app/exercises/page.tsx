@@ -2,6 +2,7 @@
 
 import {useState, useMemo} from "react";
 import {PageShell, Badge} from "@/shared/ui";
+import {UnifiedLayout} from "@/shared/ui/layout/UnifiedLayout";
 import exerciseIndex from "@/data/exercise-index.json";
 
 interface Exercise {
@@ -26,8 +27,9 @@ export default function ExerciseIndexPage() {
   }, [selectedMakam]);
 
   return (
-    <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6">
-      <PageShell>
+    <UnifiedLayout>
+      <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6">
+        <PageShell>
         <h1 className="text-2xl font-semibold text-[var(--color-text-primary)]">
           Alıştırma Dizini
         </h1>
@@ -130,7 +132,8 @@ export default function ExerciseIndexPage() {
             </div>
           </div>
         )}
-      </PageShell>
-    </div>
+        </PageShell>
+      </div>
+    </UnifiedLayout>
   );
 }

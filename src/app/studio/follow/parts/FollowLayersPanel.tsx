@@ -55,6 +55,8 @@ export function FollowLayersPanel({
       <div className="mt-3 grid gap-3">
         <div className="flex gap-2">
           <select
+            id="melodic-layer-instrument"
+            name="melodic-layer-instrument"
             aria-label="Melodik enstrüman ekle"
             value={layerInstrument}
             onChange={(event) => onLayerInstrumentChange(event.target.value as InstrumentType)}
@@ -75,6 +77,8 @@ export function FollowLayersPanel({
 
         <div className="flex gap-2">
           <select
+            id="percussion-layer-instrument"
+            name="percussion-layer-instrument"
             aria-label="Vurmalı enstrüman ekle"
             value={percussionInstrument}
             onChange={(event) => onPercussionInstrumentChange(event.target.value as InstrumentType)}

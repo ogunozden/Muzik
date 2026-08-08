@@ -152,6 +152,7 @@ export function ReviewGroupsSection({ctx}: {ctx: CurationReviewSectionsCtx}) {
                 <label className={`flex flex-col gap-1 text-sm ${tokens.colors.text.secondary}`}>
                   Grup sayfa
                   <select
+                    name="candidate-group-limit"
                     value={candidateGroupLimit}
                     onChange={(event) => {
                       setCandidateGroupLimit(Number(event.target.value));
@@ -449,6 +450,7 @@ export function ReviewQueueSection({ctx}: {ctx: CurationReviewSectionsCtx}) {
                 <label className={`flex flex-col gap-1 text-sm ${tokens.colors.text.secondary}`}>
                   Aday sayfa
                   <select
+                    name="candidate-limit"
                     value={candidateLimit}
                     onChange={(event) => {
                       setCandidateLimit(Number(event.target.value));

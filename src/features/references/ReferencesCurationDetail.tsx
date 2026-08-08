@@ -475,6 +475,7 @@ export function ReferencesCurationDetail({
             <label className={`flex flex-col gap-1 text-sm ${tokens.colors.text.secondary}`}>
               Besteci
               <select
+                name="composer-filter"
                 value={composerFilter}
                 onChange={(event) => setComposerFilter(event.target.value)}
                 className={`rounded-md border ${tokens.colors.border.base} bg-white px-3 py-2 text-sm ${tokens.colors.text.primary}`}
@@ -486,6 +487,7 @@ export function ReferencesCurationDetail({
             <label className={`flex flex-col gap-1 text-sm ${tokens.colors.text.secondary}`}>
               Güfteci
               <select
+                name="lyricist-filter"
                 value={lyricistFilter}
                 onChange={(event) => setLyricistFilter(event.target.value)}
                 className={`rounded-md border ${tokens.colors.border.base} bg-white px-3 py-2 text-sm ${tokens.colors.text.primary}`}
@@ -497,6 +499,7 @@ export function ReferencesCurationDetail({
             <label className={`flex flex-col gap-1 text-sm ${tokens.colors.text.secondary}`}>
               Durum
               <select
+                name="status-filter"
                 value={statusFilter}
                 onChange={(event) => setStatusFilter(event.target.value)}
                 className={`rounded-md border ${tokens.colors.border.base} bg-white px-3 py-2 text-sm ${tokens.colors.text.primary}`}
@@ -508,6 +511,7 @@ export function ReferencesCurationDetail({
             <label className={`flex flex-col gap-1 text-sm ${tokens.colors.text.secondary}`}>
               Silme
               <select
+                name="delete-scope-filter"
                 value={deleteScopeFilter}
                 onChange={(event) => setDeleteScopeFilter(event.target.value)}
                 className={`rounded-md border ${tokens.colors.border.base} bg-white px-3 py-2 text-sm ${tokens.colors.text.primary}`}
@@ -522,6 +526,7 @@ export function ReferencesCurationDetail({
             <label className={`flex flex-col gap-1 text-sm ${tokens.colors.text.secondary}`}>
               Kaynak tipi
               <select
+                name="provider-filter"
                 value={providerFilter}
                 onChange={(event) => setProviderFilter(event.target.value)}
                 className={`rounded-md border ${tokens.colors.border.base} bg-white px-3 py-2 text-sm ${tokens.colors.text.primary}`}
@@ -533,6 +538,7 @@ export function ReferencesCurationDetail({
             <label className={`flex flex-col gap-1 text-sm ${tokens.colors.text.secondary}`}>
               Site
               <select
+                name="site-filter"
                 value={siteFilter}
                 onChange={(event) => setSiteFilter(event.target.value)}
                 className={`rounded-md border ${tokens.colors.border.base} bg-white px-3 py-2 text-sm ${tokens.colors.text.primary}`}
@@ -544,6 +550,7 @@ export function ReferencesCurationDetail({
             <label className={`flex flex-col gap-1 text-sm ${tokens.colors.text.secondary}`}>
               Güven
               <select
+                name="confidence-filter"
                 value={confidenceFilter}
                 onChange={(event) => setConfidenceFilter(event.target.value)}
                 className={`rounded-md border ${tokens.colors.border.base} bg-white px-3 py-2 text-sm ${tokens.colors.text.primary}`}
@@ -555,6 +562,7 @@ export function ReferencesCurationDetail({
             <label className={`flex flex-col gap-1 text-sm ${tokens.colors.text.secondary}`}>
               Manuel not
               <select
+                name="manual-note-filter"
                 value={manualNoteFilter}
                 onChange={(event) => setManualNoteFilter(event.target.value)}
                 className={`rounded-md border ${tokens.colors.border.base} bg-white px-3 py-2 text-sm ${tokens.colors.text.primary}`}
@@ -622,6 +630,7 @@ export function ReferencesCurationDetail({
                 <label className={`mt-4 flex flex-col gap-1 text-sm ${tokens.colors.text.secondary}`}>
                   Kaynak
                   <select
+                    name="selected-source-detail"
                     value={currentReference?.sourceId ?? ""}
                     onChange={(event) => setSelectedSourceId(event.target.value)}
                     className={`rounded-md border ${tokens.colors.border.base} bg-white px-3 py-2 text-sm ${tokens.colors.text.primary}`}
@@ -741,6 +750,7 @@ export function ReferencesCurationDetail({
                 <label className={`flex min-w-64 flex-col gap-1 text-sm ${tokens.colors.text.secondary}`}>
                   Kaynak
                   <select
+                    name="selected-source-correction"
                     value={currentReference?.sourceId ?? ""}
                     onChange={(event) => setSelectedSourceId(event.target.value)}
                     className={`rounded-md border ${tokens.colors.border.base} bg-white px-3 py-2 text-sm ${tokens.colors.text.primary}`}

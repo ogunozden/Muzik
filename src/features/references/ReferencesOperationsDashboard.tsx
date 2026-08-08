@@ -351,6 +351,7 @@ export function ReferencesOperationsDashboard({
                 <label className={`flex flex-col gap-1 ${tokens.colors.text.secondary} text-sm`}>
                   Provider
                   <select
+                    name="source-provider"
                     className={`w-full rounded-md border ${tokens.colors.border.base} bg-white px-3 py-2 text-sm ${tokens.colors.text.primary}`}
                     value={form.provider}
                     onChange={(event) => setForm((current) => ({...current, provider: event.target.value}))}

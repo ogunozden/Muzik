@@ -1,6 +1,6 @@
 # Güvenlik denetimi — kapı nerede, borç nerede
 
-**Son ölçüm: 2026-07-27**
+**Son ölçüm: 2026-08-08**
 
 ## Kapı
 
@@ -40,10 +40,25 @@ Bunlar gerçek kusurlardı ve kapatıldı:
 
 `npm audit --omit=dev` → **0 açık**.
 
+## 2026-08-08 — prod'da yeni açık bulundu ve kapatıldı (nanoid)
+
+`audit:prod-cycle` kapanış kapısı, prod bağımlılıklarında `nanoid <3.3.17`
+(GHSA-2v37-7h3g-55p8, high) yakaladı: `postcss@8.5.23 → nanoid@3.3.16`.
+`npm audit fix --omit=dev` ile **nanoid 3.3.18**'e yükseltildi (lockfile;
+`package-lock.json`). `npm run audit:security` → **0 açık**. Bu bulgu,
+prod-cycle'ın "0 vulnerability" koşulunun gerçekten çalıştığının da kanıtıdır.
+
 ## Kalan borç (yalnız geliştirme, bugün düzeltilemez)
 
-9 yüksek bulgu; hepsi tek kökten: **`brace-expansion` ReDoS**
-(`minimatch` → `eslint-plugin-*` → `eslint-config-next` → `eslint`).
+3 yüksek bulgu; hepsi yalnız GELİŞTİRME bağımlılıklarında:
+
+1. **`brace-expansion` ReDoS** (`minimatch` → `eslint-plugin-*` →
+   `eslint-config-next` → `eslint`) — yukarıda belgelenen zincir; bugün
+   yamalı sürüm kombinasyonu yok.
+2. **`js-yaml@4.3.0`** (`eslint` → `@eslint/eslintrc`) — CVE-2026-59870
+   (!!omap çözümlemesinde kuadratik CPU); 4.x'e **backport yok**.
+3. **`undici@7.28.0`** (`jsdom@29`) — GHSA-8xcm-r25x-g524 ve ilgili 4
+   advisory; jsdom'un bağımlılık aralığı henüz düzeltmeyi almıyor.
 
 Denenen ve **neden işe yaramadığı ölçülen** yollar:
 

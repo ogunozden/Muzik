@@ -28,6 +28,14 @@ describe("CanonicalScorePrototype", () => {
     playArrangementMock.mockClear();
     stopAllMock.mockClear();
     heardClock.startedAt = performance.now();
+    // rAF'i makro-task zamanlayicisina bagla: jsdom rAF'i, islemci acligi
+    // altinda (tam suite paralel yuku) 5 sn boyunca hic frame uretmeyebiliyor
+    // ve imlec hic ilerlemiyordu — test flaky kaliyordu. setTimeout(16ms)
+    // macrotask olarak kuyruga girer; yuk altinda bile kesin ateşlenir.
+    vi.stubGlobal("requestAnimationFrame", (callback: FrameRequestCallback) =>
+      window.setTimeout(() => callback(performance.now()), 16) as unknown as number,
+    );
+    vi.stubGlobal("cancelAnimationFrame", (id: number) => window.clearTimeout(id));
   });
 
   afterEach(() => {

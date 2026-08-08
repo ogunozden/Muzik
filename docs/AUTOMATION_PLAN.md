@@ -86,6 +86,39 @@ written-expanded-v1) `--write` ile manifeste yazildi:
   eslesmesi gercek sayiya (`· durum {status}`) guncellendi; desktop+mobile
   verifiedPdfStatus true.
 
+### Repair uygulamasi (W4.1h — KAPANDI, 2026-08-08)
+
+Operatör onayi ile `scripts/apply-symbtr-repair-proposals.mjs`
+(`npm run apply:symbtr-repair [--write]`) calistirildi. Siniflandirma
+semantigi birebir korundu:
+
+- **replace (12.008 kutu)** — onerilen adayin geometrisiyle degisti
+  (reviewer: symbtr-txt-aligner-v1; kanitli onarim).
+- **keep (2.864 kutu)** — stored aynen korundu.
+- **review (5.722 kutu)** — dokunulmadi; ancak ayni PDF adayina iki olcu
+  isaret edemez (dogrulayici kurali): adayi bir replace'in sahiplendigi
+  3.607 review kutusu verified'dan dustu (aday kumesinde kaldi, insan
+  yuzeyi korunur); kalan 2.115 review kutusu verified olarak duruyor.
+- **add (459 kutu)** — YAZILMADI: yeni kutu, ayri import-ready kapisindan
+  gecer.
+
+Preview once son otorite (`validate-symbtr-layout-verification.mjs`) tarafindan
+dogrulandi (0 hata) ve yalnizca ondan sonra `--write` manifesti guncelledi.
+
+Sonuc:
+
+- Manifest: **624 giris / 16.987 kutu** (503 giris `repairEvidence` tasir).
+- storedMismatch **12.863 → 285 (−%97,8)** — sistematik yanlis hizalama
+  giderildi.
+- Taze repair-proposals: **replace 0** (hepsi uygulandi), keep 14.872,
+  review 2.115, add 1.029 (review-dusen olcülerin alignment kapsamasi).
+- Kapilar: `verify:symbtr-measures` + `verify:symbtr-layout-review-import`
+  errors `[]`; tam suite 1.111 test yesil; lint/typecheck/guardrails/build/
+  prod-cycle OK (studio-follow dahil).
+
+Kalan insan/gorsel yuzey: 2.115 review kutusu + 1.029 add adayi + 1.181
+unresolved candidate giris.
+
 ### Kalan teknoloji gereksinimleri
 
 | Gereksinim | Neden | Oncelik |
@@ -113,7 +146,7 @@ written-expanded-v1) `--write` ile manifeste yazildi:
 Sonuc: kalan %23,3 uyumsuzluk, isaret-duzeyi deterministik otomasyonla
 cozulemiyor; tam muzikal yorum (insan/uzman) veya kaynak duzeltmesi gerektirir.
 | **Medium girislere on-doldurma**: review template'i alignment'dan gelen `suggestedMeasureIndex` ile doldur | Insan isini "65 bin karar"dan "medyan-delta spot-kontrolu"ne indirir | P2 |
-| **Uyumsuz kutu onariminin UYGULANMASI**: `repair-proposals.json` tazelendi (624 giris: 12.008 replace / 2.864 keep / 5.722 review / 459 add, writeReady 84); replace uygulamasi verified veriyi degistirir — operatör karari olmadan import kapisindan gecirilmez | Veri butunlugu: yanlis "verified" veri, kurasyon/arastirma kararlarini kirletir | P1 (operatör karar yüzeyi) |
+| **Uyumsuz kutu onarimi UYGULANDI** ✅: `apply:symbtr-repair --write` — 12.008 replace uygulandi, 3.607 cakisan review verified'dan dustu, 459 add yazilmadi; storedMismatch 12.863 → 285; taze proposal replace 0 / review 2.115 / add 1.029 | Preview + son otorite dogrulayicisindan gecti | KAPANDI (2026-08-08) — kalan yuzey: 2.115 review + 1.029 add (insan/gorsel) |
 
 ## 2. W4.2 — 2978 harici kaynak kurasyonu
 

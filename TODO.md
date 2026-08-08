@@ -489,7 +489,7 @@ tick ekseninde olsun.
       · Bütün nota ölçüyü aşar ve bu **G8 doğrulayıcısında görünür**;
       sahte triole ise görünmezdi. Görünür fazlalık, sessiz yanlıştan iyidir.
 
-### Öncelik 4.5 · G9 — parser'ı `rows.ts`'e geçir *(FAZ A'nın son halkası)*
+### Öncelik 4.5 · G9 ✅ — parser `rows.ts`'e geçti *(FAZ A'nın son halkası — kapandı)*
 
 - [x] **G9** · **Parser `rows.ts`'e geçti — FAZ A'nın son halkası kapandı.**
       `parseSymbtrScore` artık `if (code !== "9") return` yapmıyor; zamanı

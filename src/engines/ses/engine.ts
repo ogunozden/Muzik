@@ -137,6 +137,19 @@ export async function playRhythm(
 
 export type {RhythmLoopController};
 
+export type ArrangementPlayback = {
+  /** Planlanan toplam sure (saniye). 0 ise hicbir sey planlanmadi. */
+  durationSeconds: number;
+  /**
+   * Sesin planlandigi MUTLAK AudioContext zamani. Gorsel imlec bunu
+   * `getHeardPlaybackPosition` ile birlikte kullanmali — duvar saati
+   * (`performance.now`) ses saatinden ayrisir ve cikis gecikmesini bilmez.
+   */
+  baseTime: number;
+};
+
+const NO_PLAYBACK: ArrangementPlayback = {durationSeconds: 0, baseTime: 0};
+
 /**
  * Dikissiz ritim dongusu: heceler sample ailesine indirgenir, planlama
  * WebAudio saatinde ileriye-bakisli yapilir (tur basi duraksama yok).
@@ -162,12 +175,12 @@ export async function startRhythmLoop(
 export async function playSequence(
   notes: ScheduledNote[],
   instrument: InstrumentType = "ud",
-): Promise<number> {
+): Promise<ArrangementPlayback> {
   const ok = await initAudio();
-  if (!ok) return 0;
+  if (!ok) return NO_PLAYBACK;
 
   const context = getAudioContext();
-  if (!context) return 0;
+  if (!context) return NO_PLAYBACK;
 
   const instruments = Array.from(new Set(notes.map((note) => note.instrument ?? instrument)));
   await Promise.all(instruments.map((noteInstrument) => preloadInstrumentSamples(noteInstrument)));
@@ -186,21 +199,11 @@ export async function playSequence(
     );
   }
 
-  return notes.reduce((maxDuration, note) => Math.max(maxDuration, note.startTime + note.duration), 0);
+  const durationSeconds = notes.reduce((maxDuration, note) => Math.max(maxDuration, note.startTime + note.duration), 0);
+  // D6: donus degeri `baseTime` tasir — gorsel imlec `getHeardPlaybackPosition`
+  // ile SES saatinden okunmalidir; duvar saati ayristikca sapar.
+  return {durationSeconds, baseTime};
 }
-
-export type ArrangementPlayback = {
-  /** Planlanan toplam sure (saniye). 0 ise hicbir sey planlanmadi. */
-  durationSeconds: number;
-  /**
-   * Sesin planlandigi MUTLAK AudioContext zamani. Gorsel imlec bunu
-   * `getHeardPlaybackPosition` ile birlikte kullanmali — duvar saati
-   * (`performance.now`) ses saatinden ayrisir ve cikis gecikmesini bilmez.
-   */
-  baseTime: number;
-};
-
-const NO_PLAYBACK: ArrangementPlayback = {durationSeconds: 0, baseTime: 0};
 
 /**
  * Su an DUYULAN calma konumu (saniye), `playArrangement`in dondurdugu

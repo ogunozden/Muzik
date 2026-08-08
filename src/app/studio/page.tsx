@@ -9,7 +9,7 @@ import { useMidiInput } from "@/hooks/useMidiInput";
 import { MAKAM_DATA, snapMidiToMakamFrequency } from "@/engines/makam/data";
 import { USUL_DATA } from "@/engines/usul/data";
 import { midiToNoteName, noteNameToMidi } from "@/engines/nota/data";
-import { playSequence, stopAll } from "@/engines/ses/engine";
+import {getHeardPlaybackPosition, playSequence, stopAll} from "@/engines/ses/engine";
 import type { InstrumentType } from "@/engines/ses/engine";
 import { INSTRUMENTS, MELODIC_INSTRUMENTS } from "@/lib/app-constants";
 import { NotaEvent } from "@/types";
@@ -177,7 +177,6 @@ function NotaEditorPage() {
     if (recordedNotes.length === 0 || isPlaying) return;
 
     setIsPlaying(true);
-    const startTime = performance.now();
     const sortedNotes = [...recordedNotes].sort((left, right) => left.startTime - right.startTime);
     const scheduledNotes = sortedNotes.map((note) => {
       const match = note.pitch.match(/([A-G]#?)(\d)/);
@@ -196,26 +195,28 @@ function NotaEditorPage() {
       };
     });
 
-    const animate = () => {
-      const elapsed = (performance.now() - startTime) / 1000;
-      setPlaybackPosition(elapsed);
-      playbackRef.current = requestAnimationFrame(animate);
-    };
-    playbackRef.current = requestAnimationFrame(animate);
-
-    const totalDuration = await playSequence(scheduledNotes, selectedInstrument);
-    if (totalDuration <= 0) {
+    const {durationSeconds, baseTime} = await playSequence(scheduledNotes, selectedInstrument);
+    if (durationSeconds <= 0) {
       if (playbackRef.current) cancelAnimationFrame(playbackRef.current);
       setIsPlaying(false);
       setPlaybackPosition(-1);
       return;
     }
 
+    // D6: imlec DUYULAN ses saatinden okunur (`heardContextTime`); duvar saati
+    // (`performance.now`) cikis gecikmesini (~53 ms) bilmez ve iki saat
+    // ayristikca sapar. Ritim + score-engine ayni deseni kullanir.
+    const animate = () => {
+      setPlaybackPosition(Math.min(getHeardPlaybackPosition(baseTime), durationSeconds));
+      playbackRef.current = requestAnimationFrame(animate);
+    };
+    playbackRef.current = requestAnimationFrame(animate);
+
     setTimeout(() => {
       if (playbackRef.current) cancelAnimationFrame(playbackRef.current);
       setIsPlaying(false);
       setPlaybackPosition(-1);
-    }, (totalDuration + 0.5) * 1000);
+    }, (durationSeconds + 0.5) * 1000);
   }, [recordedNotes, isPlaying, selectedInstrument, setIsPlaying, setPlaybackPosition]);
 
   const stopPlayback = useCallback(() => {

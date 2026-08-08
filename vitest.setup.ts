@@ -32,6 +32,16 @@ if (typeof globalThis.localStorage === "undefined") {
   Object.defineProperty(globalThis, "localStorage", {value: memoryStorage, configurable: true});
 }
 
+// jsdom'da canvas paketi yok; VexFlow cizim yollari no-op'tur. jsdom'un
+// varsayilan `getContext()` her cagri icin "Not implemented" logu bastirip
+// null donuyor; tam suite'te ~200 satir gurultu uretiyordu. Davranis
+// degismeden (null) log bastirilir.
+if (typeof HTMLCanvasElement !== "undefined") {
+  HTMLCanvasElement.prototype.getContext = function getContext(): RenderingContext | null {
+    return null;
+  } as typeof HTMLCanvasElement.prototype.getContext;
+}
+
 /**
  * Test i18n init'i (F5.4): `useTranslation` gercek Turkce degerleri dondurur
  * (varsayilan `tr`). Boylece bilesenler i18n'e baglanirken Turkce-metin test

@@ -131,4 +131,28 @@ describe("auto-align-symbtr-measure-candidates", () => {
     const anchored = {medianDeltaPercent: 4.5, coverage: 1.0, confidence: "high", anchorSource: "note-anchors"};
     expect(pickBetterAlignment(projected, anchored)).toBe(projected);
   });
+
+  it("pickBetterAlignment farkli tabanda (written-expanded) delta toleransiyla kabul eder", () => {
+    const projected = {measureIndexBasis: "meter-walk-v2", medianDeltaPercent: 6.4, coverage: 0.63, confidence: "low"};
+    const anchored = {
+      measureIndexBasis: "written-expanded-v1",
+      medianDeltaPercent: 9.0,
+      coverage: 0.94,
+      confidence: "medium",
+      importable: false,
+    };
+    expect(pickBetterAlignment(projected, anchored)).toBe(anchored);
+  });
+
+  it("pickBetterAlignment farkli tabanda cok kotu deltayi reddeder", () => {
+    const projected = {measureIndexBasis: "meter-walk-v2", medianDeltaPercent: 6.4, coverage: 0.63, confidence: "low"};
+    const anchored = {
+      measureIndexBasis: "written-expanded-v1",
+      medianDeltaPercent: 12.0,
+      coverage: 0.94,
+      confidence: "low",
+      importable: false,
+    };
+    expect(pickBetterAlignment(projected, anchored)).toBe(projected);
+  });
 });

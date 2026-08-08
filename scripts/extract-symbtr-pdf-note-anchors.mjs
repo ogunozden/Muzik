@@ -22,6 +22,7 @@ import {
 import {
   calibrateRowsSequential,
   countWrittenEventsFromMusicXml,
+  expandWrittenMeasures,
   extractNoteAnchors,
   parseFontWidths,
 } from "./lib/symbtr-pdf-note-anchor.mjs";
@@ -63,6 +64,9 @@ function extractNoteAnchorEntry(catalogId, {minRatio}) {
   const written = existsSync(xmlPath)
     ? countWrittenEventsFromMusicXml(readFileSync(xmlPath, "utf8"))
     : {writtenEvents: [], measureStarts: [], writtenMeasureCount: 0, totalBeats: 0};
+  const mapping = existsSync(xmlPath)
+    ? expandWrittenMeasures(readFileSync(xmlPath, "utf8"))
+    : {expanded: [], firstExpandedIndexByWritten: {}, writtenMeasureCount: 0, navigation: "none"};
 
   const overallRatio = written.writtenEvents.length > 0 ? anchors.length / written.writtenEvents.length : null;
   const matched = calibrateRowsSequential({anchors, writtenEvents: written.writtenEvents, staffRows});
@@ -86,6 +90,15 @@ function extractNoteAnchorEntry(catalogId, {minRatio}) {
     overallRatio: overallRatio !== null ? Number(overallRatio.toFixed(3)) : null,
     writtenMeasureCount: written.writtenMeasureCount,
     measureStarts: written.measureStarts,
+    writtenMeasureMapping: mapping.navigation === "none"
+      ? null
+      : {
+          navigation: mapping.navigation,
+          expanded: mapping.expanded,
+          firstExpandedIndexByWritten: mapping.firstExpandedIndexByWritten,
+          dalsegnoMeasure: mapping.dalsegnoMeasure,
+          segnoMeasure: mapping.segnoMeasure,
+        },
     calibratedRowCount,
     outlierCount: matched.results.reduce((sum, item) => sum + item.dropped, 0),
     medianResiduals: matched.results.filter((item) => item.medianResidual !== null).map((item) => item.medianResidual),

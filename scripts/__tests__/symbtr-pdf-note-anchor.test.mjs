@@ -3,6 +3,7 @@ import {
   buildAnchorMeasureRanges,
   calibrateRowsSequential,
   countSymbTrEvents,
+  expandWrittenMeasures,
   extractNoteAnchors,
   extractTextRuns,
   interpolateBeatToX,
@@ -183,5 +184,64 @@ describe("symbtr-pdf-note-anchor", () => {
     expect(results[0].reason).toBe("calibrated");
     // imza glifleri elenmis olmali: kalan pair'ler nota x'lerinde
     expect(results[0].pairs.every((pair) => pair.x >= 130)).toBe(true);
+  });
+
+  it("expandWrittenMeasures basit tekrari acar", () => {
+    const xml = [
+      "<score-partwise>",
+      "<part id=\"P1\">",
+      "<measure number=\"1\"><note><pitch><step>C</step></pitch><duration>1</duration></note></measure>",
+      "<measure number=\"2\"><note><pitch><step>D</step></pitch><duration>1</duration></note></measure>",
+      "<measure number=\"3\"><note><pitch><step>E</step></pitch><duration>1</duration></note></measure>",
+      "<measure number=\"4\"><note><pitch><step>F</step></pitch><duration>1</duration></note></measure>",
+      "<measure number=\"5\"><note><pitch><step>G</step></pitch><duration>1</duration></note></measure>",
+      "</part>",
+      "</score-partwise>",
+    ].join("");
+    // 2. olcude fwd, 4. olcude bwd (A |:B C:| D)
+    const xmlWithRepeats = xml
+      .replace(
+        "<measure number=\"2\">",
+        "<measure number=\"2\"><barline location=\"right\"><repeat direction=\"forward\"/></barline>",
+      )
+      .replace(
+        "<measure number=\"4\">",
+        "<measure number=\"4\"><barline location=\"right\"><repeat direction=\"backward\" times=\"2\"/></barline>",
+      );
+    const result = expandWrittenMeasures(xmlWithRepeats);
+    // A |: B C :| D  ->  A B C B C D
+    expect(result.expanded).toEqual([1, 2, 3, 4, 3, 4, 5]);
+    expect(result.navigation).toBe("repeat");
+    expect(result.firstExpandedIndexByWritten[3]).toBe(2);
+  });
+
+  it("expandWrittenMeasures volta (1. ve 2. son) gecislerini yonetir", () => {
+    const xml = [
+      "<score-partwise><part id=\"P1\">",
+      "<measure number=\"1\"><barline location=\"right\"><repeat direction=\"forward\"/></barline><note><pitch><step>C</step></pitch><duration>1</duration></note></measure>",
+      "<measure number=\"2\"><ending number=\"1\"/><barline location=\"right\"><repeat direction=\"backward\" times=\"2\"/></barline><note><pitch><step>D</step></pitch><duration>1</duration></note></measure>",
+      "<measure number=\"3\"><ending number=\"2\"/><note><pitch><step>E</step></pitch><duration>1</duration></note></measure>",
+      "<measure number=\"4\"><note><pitch><step>F</step></pitch><duration>1</duration></note></measure>",
+      "</part></score-partwise>",
+    ].join("");
+    const result = expandWrittenMeasures(xml);
+    // A |: 1. B :| 2. C | D  ->  A B C D (B 1. son, C 2. son)
+    expect(result.expanded).toEqual([1, 2, 3, 4]);
+  });
+
+  it("expandWrittenMeasures segno + D.S. navigasyonunu acar", () => {
+    const measures = [1, 2, 3, 4, 5, 6, 7].map((number) =>
+      `<measure number="${number}"><note><pitch><step>C</step></pitch><duration>1</duration></note></measure>`,
+    );
+    // olcu 4'te segno, olcu 6'da dalsegno (sound attribute)
+    measures[3] = measures[3].replace("<measure number=\"4\">", "<measure number=\"4\"><direction><direction-type><segno/></direction-type><sound segno=\"segno\"/></direction>");
+    measures[5] = measures[5].replace("<measure number=\"6\">", "<measure number=\"6\"><direction><direction-type><words>D.S.</words></direction-type><sound dalsegno=\"segno\"/></direction>");
+    const xml = `<score-partwise><part id="P1">${measures.join("")}</part></score-partwise>`;
+    const result = expandWrittenMeasures(xml);
+    // 1-6 calinir, sonra segno (4) den sona: 4 5 6 7
+    expect(result.expanded).toEqual([1, 2, 3, 4, 5, 6, 4, 5, 6, 7]);
+    expect(result.navigation).toBe("ds");
+    expect(result.segnoMeasure).toBe(4);
+    expect(result.dalsegnoMeasure).toBe(6);
   });
 });

@@ -61,6 +61,15 @@ function readJson(filePath, fallback = null) {
  */
 export function pickBetterAlignment(projected, anchored) {
   if (!anchored) return projected;
+  // Farkli olcu tabanlari (walk vs written-expanded): coverage paydalari
+  // farkli oldugundan karsilastirilamaz. written-expanded tekrarli eser icin
+  // DOGRU modeldir; yalnizca medyan deltasi cok kotuyse reddedilir.
+  if (projected.measureIndexBasis !== anchored.measureIndexBasis) {
+    return anchored.medianDeltaPercent !== null &&
+      (projected.medianDeltaPercent === null || anchored.medianDeltaPercent <= projected.medianDeltaPercent + 4)
+      ? anchored
+      : projected;
+  }
   const anchorMedian = anchored.medianDeltaPercent;
   const projectMedian = projected.medianDeltaPercent;
   const anchorBetter =
@@ -150,7 +159,16 @@ function readWrittenMeter(mu2Raw) {
   return null;
 }
 
-function alignEntry({catalogId, layoutEntry, rawText, mu2Raw, verificationEntry, anchorCalibration = null}) {
+function alignEntry({
+  catalogId,
+  layoutEntry,
+  rawText,
+  mu2Raw,
+  verificationEntry,
+  anchorCalibration = null,
+  writtenMeasures = null,
+  writtenMapping = null,
+}) {
   const writtenMeterRaw = readWrittenMeter(mu2Raw ?? "");
   const writtenMeter = writtenMeterRaw ?? null;
   const measureIndexBasis = writtenMeter ? "meter-walk-v2" : "offset-ceil-v1";
@@ -178,17 +196,30 @@ function alignEntry({catalogId, layoutEntry, rawText, mu2Raw, verificationEntry,
   // Her olcunun beklenen x-araligi (satir bazinda). `createVisualMeasureSegments`
   // ile ayni kural: olcu ile satir bantlari OGRTUSMUYORSA beklenen aralik yoktur
   // (dejenere aralik uretmemek icin — yanlis satir atamasini onler).
-  // Anchor kalibrasyonu (W4.1c): yazili (tekrarsiz) olcu sayisi TXT yuruyusuyle
-  // tutarliysa beklenen araliklar GERCEK nota konumlarindan enterpole edilir;
-  // aksi halde esit-bolusum izdusumu kullanilir (tekrar acilimi korunur).
+  // Anchor kalibrasyonu (W4.1c): yazili olcu sayisi TXT yuruyusuyle tutarliysa
+  // (tekrarsiz eser) beklenen araliklar GERCEK nota konumlarindan enterpole
+  // edilir. Tekrarli eserlerde (walk != written) yalnizca expanded sirasi walk
+  // ile BIREBIR eslesiyorsa written-expanded analiz yolu kullanilir; kutular
+  // ilk-genislemis olcu indeksini tasir (runtime measureIndex expanded
+  // uzayinda esler — follow UI).
+  const walkWrittenRatio =
+    anchorCalibration?.writtenMeasureCount > 0
+      ? Math.abs(measures.length - anchorCalibration.writtenMeasureCount) / anchorCalibration.writtenMeasureCount
+      : Infinity;
+  const expandedMatchesWalk =
+    writtenMapping !== null &&
+    writtenMapping.expanded?.length === measures.length &&
+    measures.length > 0;
+  const useWrittenExpanded = expandedMatchesWalk && walkWrittenRatio > 0.05;
   const anchorUsable =
     anchorCalibration !== null &&
     anchorCalibration.ranges.length > 0 &&
     anchorCalibration.writtenMeasureCount > 0 &&
-    Math.abs(measures.length - anchorCalibration.writtenMeasureCount) / anchorCalibration.writtenMeasureCount <= 0.05;
+    (walkWrittenRatio <= 0.05 || expandedMatchesWalk);
+  const activeMeasures = useWrittenExpanded && writtenMeasures?.length ? writtenMeasures : measures;
   const expectedRanges = anchorUsable
     ? anchorCalibration.ranges
-    : measures.flatMap((measure) =>
+    : activeMeasures.flatMap((measure) =>
         bands
           .filter((band) => measure.endBeat > band.startBeat && measure.startBeat < band.endBeat)
           .map((band) => ({
@@ -264,14 +295,16 @@ function alignEntry({catalogId, layoutEntry, rawText, mu2Raw, verificationEntry,
   }
 
   const coveredMeasures = byMeasure.size;
-  const coverage = measures.length > 0 ? coveredMeasures / measures.length : 0;
+  const coverage = activeMeasures.length > 0 ? coveredMeasures / activeMeasures.length : 0;
   const deltas = Array.from(byMeasure.values()).map((item) => item.deltaPercent);
   const medianDelta = deltas.length > 0 ? [...deltas].sort((a, b) => a - b)[Math.floor(deltas.length / 2)] : null;
   const confidence = coverage >= 0.9 && (medianDelta === null || medianDelta <= 4) ? "high" : coverage >= 0.75 ? "medium" : "low";
 
   const boxes = Array.from(byMeasure.values())
     .map((item) => ({
-      measureIndex: item.measureIndex,
+      measureIndex: useWrittenExpanded
+        ? (writtenMapping.firstExpandedIndexByWritten[item.measureIndex] ?? item.measureIndex)
+        : item.measureIndex,
       sourceCandidateRowIndex: item.rowIndex,
       sourceCandidateIndexInRow: candidates[item.candidateIndex]
         ? Number(layoutEntry.measureCandidates[item.candidateIndex]?.candidateIndexInRow ?? item.candidateIndex)
@@ -300,11 +333,13 @@ function alignEntry({catalogId, layoutEntry, rawText, mu2Raw, verificationEntry,
 
   return {
     catalogId,
-    measures: measures.length,
+    measures: activeMeasures.length,
+    walkMeasures: measures.length,
     rows: rows.length,
     totalBeats,
-    measureIndexBasis,
+    measureIndexBasis: useWrittenExpanded ? "written-expanded-v1" : measureIndexBasis,
     anchorSource: anchorUsable ? "note-anchors" : null,
+    importable: !useWrittenExpanded,
     candidates: candidates.length,
     coverage,
     medianDeltaPercent: medianDelta,
@@ -456,6 +491,8 @@ function main() {
     }
     const anchorEntry = noteAnchorsByCatalog.get(catalogId);
     let anchorCalibration = null;
+    let writtenMeasures = null;
+    let writtenMapping = null;
     if (anchorEntry?.status === "calibrated" && anchorEntry.measureStarts?.length && anchorEntry.calibrations?.length) {
       const pageSize = layoutEntry.pageSize ?? {width: 595.22, height: 842};
       const staffRowsForRanges = (layoutEntry.staffRows ?? []).map((row, rowIndex) => {
@@ -478,6 +515,12 @@ function main() {
           ranges,
           writtenMeasureCount: anchorEntry.writtenMeasureCount,
         };
+        writtenMeasures = anchorEntry.measureStarts.map((measureStart) => ({
+          index: measureStart.measure,
+          startBeat: measureStart.beat,
+          endBeat: measureStart.beat + (measureStart.durationBeats ?? 4),
+        }));
+        if (anchorEntry.writtenMeasureMapping) writtenMapping = anchorEntry.writtenMeasureMapping;
       }
     }
     const projected = alignEntry({
@@ -487,6 +530,8 @@ function main() {
       mu2Raw: existsSync(mu2Path) ? readFileSync(mu2Path, "latin1") : "",
       verificationEntry: verificationEntries[catalogId],
       anchorCalibration: null,
+      writtenMeasures: null,
+      writtenMapping: null,
     });
     const anchored = anchorCalibration
       ? alignEntry({
@@ -496,6 +541,8 @@ function main() {
         mu2Raw: existsSync(mu2Path) ? readFileSync(mu2Path, "latin1") : "",
         verificationEntry: verificationEntries[catalogId],
         anchorCalibration,
+        writtenMeasures,
+        writtenMapping,
       })
       : null;
     entries.push(pickBetterAlignment(projected, anchored));
@@ -514,6 +561,7 @@ function main() {
     storedMismatchTotal: entries.reduce((sum, entry) => sum + (entry.storedMismatches ?? 0), 0),
     storedBoxesTotal: entries.reduce((sum, entry) => sum + (entry.storedBoxes ?? 0), 0),
     anchorSourceCount: entries.filter((entry) => entry.anchorSource === "note-anchors").length,
+    writtenExpandedEntryCount: entries.filter((entry) => entry.measureIndexBasis === "written-expanded-v1").length,
     medianDeltaDistribution: {
       under2Percent: entries.filter((entry) => entry.medianDeltaPercent !== null && entry.medianDeltaPercent <= 2).length,
       under6Percent: entries.filter((entry) => entry.medianDeltaPercent !== null && entry.medianDeltaPercent <= 6).length,

@@ -124,6 +124,109 @@ export function countWrittenEventsFromMusicXml(xmlText) {
 }
 
 /**
+ * MusicXML yazili olcu yapisini PERFORMANS (acilmis) sirasina genisletir.
+ * Iki mekanizma desteklenir:
+ *   1. `<repeat direction="forward/backward" times="N">` + `<ending number>`.
+ *   2. `<segno/>` + `<sound dalsegno="segno"/>` (D.S.) — segno'dan sona tekrar.
+ * Deterministik; volta gecisleri pass sayisina gore karar verir.
+ * Donus: {expanded: [writtenMeasureNumber...], firstExpandedIndexByWritten:
+ * {writtenMeasure: index}, writtenMeasureCount, navigation: "repeat"|"ds"|"both"|"none"}
+ */
+export function expandWrittenMeasures(xmlText) {
+  const parts = [...xmlText.matchAll(/<part[^>]*id="([^"]*)"[\s\S]*?<\/part>/g)];
+  const partBody = parts[0]?.[0] ?? xmlText;
+  const measureBlocks = [...partBody.matchAll(/<measure\b[^>]*>([\s\S]*?)<\/measure>/g)];
+  if (measureBlocks.length === 0) return {expanded: [], firstExpandedIndexByWritten: {}, writtenMeasureCount: 0, navigation: "none"};
+
+  const measures = measureBlocks.map((block, index) => {
+    const body = block[1];
+    const number = Number(block[0].match(/number="(\d+)"/)?.[1] ?? index + 1);
+    const fwdMatch = body.match(/<repeat direction="forward"[^>]*>/);
+    const fwdLocation = body.match(/<barline location="(left|right)"[\s\S]*?<repeat direction="forward"/)?.[1] ?? null;
+    const bwdMatch = body.match(/<repeat direction="backward"(\s+times="(\d+)")?[^>]*>/);
+    const endingMatch = body.match(/<ending\s+number="(\d+)"/);
+    const segno = /<segno\b|\bsound\s+segno=/.test(body);
+    const dalsegno = /\bsound\s+dalsegno=/.test(body);
+    return {
+      number,
+      fwd: Boolean(fwdMatch),
+      fwdAtCurrent: fwdLocation === "left",
+      bwdTimes: bwdMatch ? Number(bwdMatch[2] ?? 2) : null,
+      ending: endingMatch ? Number(endingMatch[1]) : null,
+      segno,
+      dalsegno,
+    };
+  });
+
+  function expandRepeats(range) {
+    const sequence = [];
+    const stack = [];
+    let index = 0;
+    let iterations = 0;
+    while (index < range.length && iterations < 100000) {
+      iterations += 1;
+      const measure = range[index];
+      const pass = stack.length > 0 ? stack[stack.length - 1].pass : 1;
+      if (measure.ending === 1 && pass > 1) {
+        index += 1;
+        continue;
+      }
+      if (measure.ending === 2 && pass === 1) {
+        index += 1;
+        continue;
+      }
+      sequence.push(measure.number);
+      if (measure.fwd) {
+        // Bolge zaten aciksa (geri donus bu olcuye geldiyse) fwd tekrar
+        // push edilmez; aksi halde sonsuz dongu olusur (location="left"
+        // fwd olcusune geri donuste).
+        const openTop = stack[stack.length - 1];
+        const alreadyOpen = openTop && openTop.startIndex === index;
+        if (!alreadyOpen) {
+          stack.push({startIndex: index + (measure.fwdAtCurrent ? 0 : 1), pass: 1, times: 2});
+        }
+      }
+      if (measure.bwdTimes !== null) {
+        const top = stack.pop() ?? {startIndex: 0, pass: 1, times: measure.bwdTimes};
+        const times = measure.bwdTimes ?? top.times;
+        if (top.pass < times) {
+          stack.push({...top, pass: top.pass + 1});
+          index = top.startIndex;
+          continue;
+        }
+      }
+      index += 1;
+    }
+    return sequence;
+  }
+
+  const segnoIndex = measures.findIndex((measure) => measure.segno);
+  const dalsegnoIndex = measures.findIndex((measure) => measure.dalsegno);
+  const hasDs = segnoIndex >= 0 && dalsegnoIndex > segnoIndex;
+  const baseSequence = hasDs
+    ? [...expandRepeats(measures.slice(0, dalsegnoIndex + 1)), ...expandRepeats(measures.slice(segnoIndex))]
+    : expandRepeats(measures);
+  const navigation = hasDs
+    ? (measures.some((measure) => measure.bwdTimes !== null || measure.fwd) ? "both" : "ds")
+    : (measures.some((measure) => measure.bwdTimes !== null || measure.fwd) ? "repeat" : "none");
+
+  const firstExpandedIndexByWritten = {};
+  baseSequence.forEach((writtenMeasure, index) => {
+    if (!(writtenMeasure in firstExpandedIndexByWritten)) {
+      firstExpandedIndexByWritten[writtenMeasure] = index;
+    }
+  });
+  return {
+    expanded: baseSequence,
+    firstExpandedIndexByWritten,
+    writtenMeasureCount: measures.length,
+    navigation,
+    dalsegnoMeasure: hasDs ? measures[dalsegnoIndex].number : null,
+    segnoMeasure: hasDs ? measures[segnoIndex].number : null,
+  };
+}
+
+/**
  * Anchor'lari YAZILI event'lerle KURESEL sirali esler (tekrar acilmamis
  * MusicXML yapisi). Satir ici dogrusal uyumdan 12pt uzeri aykiri noktalar
  * (satir basi imza glifleri gibi) deterministik elenir.

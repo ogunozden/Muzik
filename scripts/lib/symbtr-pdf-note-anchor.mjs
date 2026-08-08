@@ -47,7 +47,7 @@ export function countSymbTrEvents(rawText) {
  * katsayisi duser (2026-08-08 olcumu: seyir/aranagme 1.0-1.2, sarki/turku
  * 0.34-0.64).
  * Donus: {writtenEvents: [{measure, beat, durationBeats}], measureStarts:
- * [{measure, beat}], writtenMeasureCount, totalBeats}
+ * [{measure, beat, durationBeats}], writtenMeasureCount, totalBeats}
  */
 export function countWrittenEventsFromMusicXml(xmlText) {
   const parts = [...xmlText.matchAll(/<part[^>]*id="([^"]*)"[\s\S]*?<\/part>/g)];
@@ -75,12 +75,16 @@ export function countWrittenEventsFromMusicXml(xmlText) {
   for (const block of measureBlocks) {
     const measureBody = block[1];
     const measureNumber = Number(block[0].match(/number="(\d+)"/)?.[1] ?? 1);
-    measureStarts.push({measure: measureNumber, beat: currentPosition / ((currentMeter.denominator / 4) * divisions)});
     const divisionsMatch = measureBody.match(/<divisions>(\d+)<\/divisions>/);
     if (divisionsMatch) divisions = Number(divisionsMatch[1]);
     const timeMatch = measureBody.match(/<time[^>]*>\s*<beats>(\d+)<\/beats>\s*<beat-type>(\d+)<\/beat-type>/);
     if (timeMatch) currentMeter = {numerator: Number(timeMatch[1]), denominator: Number(timeMatch[2])};
     const beatDuration = (currentMeter.denominator / 4) * divisions; // 1 beat = den/4 * divisions
+    measureStarts.push({
+      measure: measureNumber,
+      beat: currentPosition / beatDuration,
+      durationBeats: currentMeter.numerator,
+    });
 
     const noteBlocks = [...measureBody.matchAll(/<note\b[^>]*>([\s\S]*?)<\/note>/g)];
     for (const noteBlock of noteBlocks) {
@@ -577,7 +581,7 @@ export function interpolateBeatToX(pairs, beat, minX, maxX) {
 
 /** Beat'in hangi satira ait oldugunu kalibrasyon araliklarindan bulur. */
 export function rowForBeat(calibrations, beat) {
-  const sorted = [...calibrations]
+  const rows = [...calibrations]
     .filter((calibration) => calibration.pairs?.length)
     .map((calibration) => ({
       rowIndex: calibration.rowIndex,
@@ -585,7 +589,22 @@ export function rowForBeat(calibrations, beat) {
       maxBeat: Math.max(...calibration.pairs.map((pair) => pair.beat)),
     }))
     .sort((left, right) => left.minBeat - right.minBeat);
-  return sorted.find((row) => beat >= row.minBeat - 0.5 && beat <= row.maxBeat + 0.5)?.rowIndex ?? null;
+  const containing = rows.find((row) => beat >= row.minBeat - 0.5 && beat <= row.maxBeat + 0.5);
+  if (containing) return containing.rowIndex;
+  if (rows.length === 0) return null;
+  if (beat < rows[0].minBeat) return rows[0].rowIndex;
+  if (beat > rows[rows.length - 1].maxBeat) return rows[rows.length - 1].rowIndex;
+  // Satirlar arasi bosluk: en yakin sinira sahip satir (ekstrapolasyon).
+  let best = null;
+  let bestDistance = Infinity;
+  for (const row of rows) {
+    const distance = beat < row.minBeat ? row.minBeat - beat : beat - row.maxBeat;
+    if (distance < bestDistance) {
+      bestDistance = distance;
+      best = row.rowIndex;
+    }
+  }
+  return best;
 }
 
 /** Yazili olcu sinirlarini anchor kalibrasyonuyla beklenen x-araliklarina cevirir. */
@@ -593,9 +612,12 @@ export function buildWrittenMeasureRanges({measureStarts, calibrations, staffRow
   const pageWidth = pageSize?.width ?? 595.22;
   const ranges = [];
   const rowBounds = new Map(staffRows.map((row) => [row.rowIndex, row]));
-  for (let index = 0; index < measureStarts.length - 1; index += 1) {
+  for (let index = 0; index < measureStarts.length; index += 1) {
     const startMeasure = measureStarts[index];
-    const endMeasure = measureStarts[index + 1];
+    const endMeasure = measureStarts[index + 1] ?? {
+      measure: startMeasure.measure + 1,
+      beat: startMeasure.beat + (startMeasure.durationBeats ?? 4),
+    };
     const rowIndex = rowForBeat(calibrations, startMeasure.beat);
     const row = rowBounds.get(rowIndex);
     if (!row) continue;

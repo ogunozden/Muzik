@@ -3,6 +3,7 @@ import {
   buildMeasureRanges,
   buildStoredBoxLookup,
   classifyRepairActions,
+  pickBetterAlignment,
   readWrittenMeter,
 } from "../auto-align-symbtr-measure-candidates.mjs";
 
@@ -111,5 +112,23 @@ describe("auto-align-symbtr-measure-candidates", () => {
 
     expect(lookup.size).toBe(1);
     expect(lookup.get(1)).toEqual({measureIndex: 1, rowIndex: 0, indexInRow: 2, leftPercent: 49.7});
+  });
+
+  it("pickBetterAlignment anchor yalnizca deltayi dusurup coverage'i koruyorsa secer", () => {
+    const projected = {medianDeltaPercent: 6.5, coverage: 0.95, confidence: "medium"};
+    const anchored = {medianDeltaPercent: 4.1, coverage: 0.94, confidence: "high", anchorSource: "note-anchors"};
+    expect(pickBetterAlignment(projected, anchored)).toBe(anchored);
+  });
+
+  it("pickBetterAlignment coverage cok dusuyorsa anchoru reddeder", () => {
+    const projected = {medianDeltaPercent: 6.5, coverage: 0.95, confidence: "medium"};
+    const anchored = {medianDeltaPercent: 4.1, coverage: 0.80, confidence: "medium", anchorSource: "note-anchors"};
+    expect(pickBetterAlignment(projected, anchored)).toBe(projected);
+  });
+
+  it("pickBetterAlignment deltasi dusmeyen anchoru reddeder", () => {
+    const projected = {medianDeltaPercent: 4.0, coverage: 0.95, confidence: "high"};
+    const anchored = {medianDeltaPercent: 4.5, coverage: 1.0, confidence: "high", anchorSource: "note-anchors"};
+    expect(pickBetterAlignment(projected, anchored)).toBe(projected);
   });
 });

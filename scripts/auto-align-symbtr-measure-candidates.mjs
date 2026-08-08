@@ -25,10 +25,12 @@ import {existsSync, mkdirSync, readFileSync, writeFileSync} from "node:fs";
 import path from "node:path";
 import {fileURLToPath} from "node:url";
 import {getSymbTrLayoutCandidateFingerprint} from "./lib/symbtr-layout-fingerprint.mjs";
+import {buildWrittenMeasureRanges} from "./lib/symbtr-pdf-note-anchor.mjs";
 
 const ROOT = process.cwd();
 const LAYOUT_PATH = path.join(ROOT, "src", "data", "symbtr", "layout.generated.json");
 const VERIFICATION_PATH = path.join(ROOT, "src", "data", "symbtr", "layout-verification.generated.json");
+const DEFAULT_NOTE_ANCHORS_PATH = path.join(ROOT, "output", "symbtr-layout-review", "note-anchors.generated.json");
 const TXT_ROOT = path.join(ROOT, "symb", "SymbTr-3.0", "txt");
 const REPORT_PATH = path.join(ROOT, "output", "symbtr-layout-review", "auto-alignment-report.json");
 const REPAIR_PROPOSAL_PATH = path.join(ROOT, "output", "symbtr-layout-review", "repair-proposals.json");
@@ -50,6 +52,22 @@ function parseCliOptions(argv) {
 function readJson(filePath, fallback = null) {
   if (!existsSync(filePath)) return fallback;
   return JSON.parse(readFileSync(filePath, "utf8"));
+}
+
+/**
+ * Iki hizalama sonucundan olculebilir olarak daha iyisini secer: anchor
+ * kalibrasyonu yalnizca medyan deltayi DUSURUYOR ve coverage'i ~%5'ten fazla
+ * kaybetmiyorsa kullanilir. Regresyonu garantisiz birakmaz.
+ */
+export function pickBetterAlignment(projected, anchored) {
+  if (!anchored) return projected;
+  const anchorMedian = anchored.medianDeltaPercent;
+  const projectMedian = projected.medianDeltaPercent;
+  const anchorBetter =
+    anchorMedian !== null &&
+    (projectMedian === null || anchorMedian < projectMedian) &&
+    anchored.coverage >= projected.coverage - 0.05;
+  return anchorBetter ? anchored : projected;
 }
 
 function clampPercent(value) {
@@ -132,7 +150,7 @@ function readWrittenMeter(mu2Raw) {
   return null;
 }
 
-function alignEntry({catalogId, layoutEntry, rawText, mu2Raw, verificationEntry}) {
+function alignEntry({catalogId, layoutEntry, rawText, mu2Raw, verificationEntry, anchorCalibration = null}) {
   const writtenMeterRaw = readWrittenMeter(mu2Raw ?? "");
   const writtenMeter = writtenMeterRaw ?? null;
   const measureIndexBasis = writtenMeter ? "meter-walk-v2" : "offset-ceil-v1";
@@ -160,17 +178,27 @@ function alignEntry({catalogId, layoutEntry, rawText, mu2Raw, verificationEntry}
   // Her olcunun beklenen x-araligi (satir bazinda). `createVisualMeasureSegments`
   // ile ayni kural: olcu ile satir bantlari OGRTUSMUYORSA beklenen aralik yoktur
   // (dejenere aralik uretmemek icin — yanlis satir atamasini onler).
-  const expectedRanges = measures.flatMap((measure) =>
-    bands
-      .filter((band) => measure.endBeat > band.startBeat && measure.startBeat < band.endBeat)
-      .map((band) => ({
-        measureIndex: measure.index,
-        rowIndex: band.rowIndex,
-        leftPercent: projectBeatToVisualXPercent(band, measure.startBeat),
-        rightPercent: projectBeatToVisualXPercent(band, measure.endBeat),
-        centerPercent: projectBeatToVisualXPercent(band, (measure.startBeat + measure.endBeat) / 2),
-      })),
-  );
+  // Anchor kalibrasyonu (W4.1c): yazili (tekrarsiz) olcu sayisi TXT yuruyusuyle
+  // tutarliysa beklenen araliklar GERCEK nota konumlarindan enterpole edilir;
+  // aksi halde esit-bolusum izdusumu kullanilir (tekrar acilimi korunur).
+  const anchorUsable =
+    anchorCalibration !== null &&
+    anchorCalibration.ranges.length > 0 &&
+    anchorCalibration.writtenMeasureCount > 0 &&
+    Math.abs(measures.length - anchorCalibration.writtenMeasureCount) / anchorCalibration.writtenMeasureCount <= 0.05;
+  const expectedRanges = anchorUsable
+    ? anchorCalibration.ranges
+    : measures.flatMap((measure) =>
+        bands
+          .filter((band) => measure.endBeat > band.startBeat && measure.startBeat < band.endBeat)
+          .map((band) => ({
+            measureIndex: measure.index,
+            rowIndex: band.rowIndex,
+            leftPercent: projectBeatToVisualXPercent(band, measure.startBeat),
+            rightPercent: projectBeatToVisualXPercent(band, measure.endBeat),
+            centerPercent: projectBeatToVisualXPercent(band, (measure.startBeat + measure.endBeat) / 2),
+          })),
+      );
 
   const candidates = (Array.isArray(layoutEntry.measureCandidates) ? layoutEntry.measureCandidates : [])
     .map((candidate, index) => ({
@@ -276,6 +304,7 @@ function alignEntry({catalogId, layoutEntry, rawText, mu2Raw, verificationEntry}
     rows: rows.length,
     totalBeats,
     measureIndexBasis,
+    anchorSource: anchorUsable ? "note-anchors" : null,
     candidates: candidates.length,
     coverage,
     medianDeltaPercent: medianDelta,
@@ -398,8 +427,14 @@ function main() {
   const writeImportReady = options.get("import-ready") === "true";
   const writeRepairProposal = options.get("repair-proposal") === "true";
   const minConfidence = options.get("min-confidence") ?? "high";
+  const noteAnchorsPath = options.get("note-anchors")
+    ?? (existsSync(DEFAULT_NOTE_ANCHORS_PATH) ? DEFAULT_NOTE_ANCHORS_PATH : null);
   const allowedConfidences = new Set(["high", "medium", "low"]);
   if (!allowedConfidences.has(minConfidence)) throw new Error(`--min-confidence must be high|medium|low`);
+  const noteAnchorsData = noteAnchorsPath ? readJson(noteAnchorsPath) : null;
+  const noteAnchorsByCatalog = new Map(
+    (noteAnchorsData?.entries ?? []).map((entry) => [entry.catalogId, entry]),
+  );
 
   const candidateIds = Object.keys(layoutData.entries ?? {});
   const requestedIds = options.has("catalog-id")
@@ -419,15 +454,51 @@ function main() {
       txtMissing += 1;
       continue;
     }
-    entries.push(
-      alignEntry({
+    const anchorEntry = noteAnchorsByCatalog.get(catalogId);
+    let anchorCalibration = null;
+    if (anchorEntry?.status === "calibrated" && anchorEntry.measureStarts?.length && anchorEntry.calibrations?.length) {
+      const pageSize = layoutEntry.pageSize ?? {width: 595.22, height: 842};
+      const staffRowsForRanges = (layoutEntry.staffRows ?? []).map((row, rowIndex) => {
+        const leftPercent = Number(row.leftPercent ?? 0);
+        const widthPercent = Number(row.widthPercent ?? 100);
+        return {
+          rowIndex,
+          left: (leftPercent / 100) * pageSize.width,
+          right: ((leftPercent + widthPercent) / 100) * pageSize.width,
+        };
+      });
+      const ranges = buildWrittenMeasureRanges({
+        measureStarts: anchorEntry.measureStarts,
+        calibrations: anchorEntry.calibrations,
+        staffRows: staffRowsForRanges,
+        pageSize,
+      });
+      if (ranges.length > 0) {
+        anchorCalibration = {
+          ranges,
+          writtenMeasureCount: anchorEntry.writtenMeasureCount,
+        };
+      }
+    }
+    const projected = alignEntry({
+      catalogId,
+      layoutEntry,
+      rawText: readFileSync(txtPath, "utf8"),
+      mu2Raw: existsSync(mu2Path) ? readFileSync(mu2Path, "latin1") : "",
+      verificationEntry: verificationEntries[catalogId],
+      anchorCalibration: null,
+    });
+    const anchored = anchorCalibration
+      ? alignEntry({
         catalogId,
         layoutEntry,
         rawText: readFileSync(txtPath, "utf8"),
         mu2Raw: existsSync(mu2Path) ? readFileSync(mu2Path, "latin1") : "",
         verificationEntry: verificationEntries[catalogId],
-      }),
-    );
+        anchorCalibration,
+      })
+      : null;
+    entries.push(pickBetterAlignment(projected, anchored));
   }
 
   const summary = {
@@ -442,6 +513,7 @@ function main() {
     },
     storedMismatchTotal: entries.reduce((sum, entry) => sum + (entry.storedMismatches ?? 0), 0),
     storedBoxesTotal: entries.reduce((sum, entry) => sum + (entry.storedBoxes ?? 0), 0),
+    anchorSourceCount: entries.filter((entry) => entry.anchorSource === "note-anchors").length,
     medianDeltaDistribution: {
       under2Percent: entries.filter((entry) => entry.medianDeltaPercent !== null && entry.medianDeltaPercent <= 2).length,
       under6Percent: entries.filter((entry) => entry.medianDeltaPercent !== null && entry.medianDeltaPercent <= 6).length,

@@ -85,6 +85,7 @@ function extractNoteAnchorEntry(catalogId, {minRatio}) {
     eventCount: written.writtenEvents.length,
     overallRatio: overallRatio !== null ? Number(overallRatio.toFixed(3)) : null,
     writtenMeasureCount: written.writtenMeasureCount,
+    measureStarts: written.measureStarts,
     calibratedRowCount,
     outlierCount: matched.results.reduce((sum, item) => sum + item.dropped, 0),
     medianResiduals: matched.results.filter((item) => item.medianResidual !== null).map((item) => item.medianResidual),

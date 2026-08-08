@@ -29,6 +29,7 @@ import {FollowScorePanel} from "./parts/FollowScorePanel";
 import {TempoControl} from "./parts/TempoControl";
 import {FollowCuePanel} from "./parts/FollowCuePanel";
 import {FollowLayersPanel} from "./parts/FollowLayersPanel";
+import {LoopRegionControl} from "./parts/LoopRegionControl";
 import {FollowPieceAddPanel} from "./parts/FollowPieceAddPanel";
 import {StudioTabs} from "@/features/studio/StudioTabs";
 import {VolumeControl, usePlaybackVolume} from "@/shared/ui/organisms/VolumeControl";
@@ -46,6 +47,9 @@ import {
   getInstrumentLabel,
   getMelodicGainScale,
   getPlaybackEventPosition,
+  buildLoopRegion,
+  repeatNotesForLoop,
+  wrapPlaybackPosition,
   getSectionAt,
   hasMelodicSamples,
   hasPercussionSamples,
@@ -93,6 +97,10 @@ export default function EserTakipPage() {
   const [mutedLayerIds, setMutedLayerIds] = useState<string[]>([]);
   /** Yalniz bu katman calar; tekrar tiklayinca temizlenir. */
   const [soloLayerId, setSoloLayerId] = useState<string | null>(null);
+  /** Döngü bölgesi (W3.8): olcu araligi + acma/kapama. */
+  const [isLoopEnabled, setIsLoopEnabled] = useState(false);
+  const [loopStartMeasure, setLoopStartMeasure] = useState(1);
+  const [loopEndMeasure, setLoopEndMeasure] = useState(Number.MAX_SAFE_INTEGER);
 
   const animationRef = useRef<number | null>(null);
   const stopTimerRef = useRef<number | null>(null);
@@ -108,6 +116,18 @@ export default function EserTakipPage() {
   const events = parsedEvents;
   const totalDuration = events.reduce((max, event) => Math.max(max, event.startTime + event.duration), 0);
   const totalBeats = events.reduce((max, event) => Math.max(max, event.startBeat + event.durationBeats), 0);
+  const maxMeasureIndex = useMemo(
+    () =>
+      Math.max(
+        1,
+        ...events.map((event) => event.measureIndex).filter((index): index is number => index !== null),
+      ),
+    [events],
+  );
+  const loopRegion = useMemo(
+    () => buildLoopRegion(events, loopStartMeasure, loopEndMeasure, maxMeasureIndex),
+    [events, loopEndMeasure, loopStartMeasure, maxMeasureIndex],
+  );
   const currentBeat = playbackPosition / beatDuration;
   const progress = totalDuration > 0 ? Math.min(100, (playbackPosition / totalDuration) * 100) : 0;
   const currentEvent = getCurrentScoreEvent(events, playbackPosition);
@@ -251,6 +271,9 @@ export default function EserTakipPage() {
     setRawScore("");
     setScoreError(null);
     setBpm(nextPiece.bpm);
+    setIsLoopEnabled(false);
+    setLoopStartMeasure(1);
+    setLoopEndMeasure(Number.MAX_SAFE_INTEGER);
     setMelodicLayers([...nextPiece.melodicLayers]);
     setPercussionLayers([...nextPiece.percussionLayers]);
     setLayerMessage(null);
@@ -504,12 +527,24 @@ export default function EserTakipPage() {
       : percussionLayers.filter((layer) => !mutedSet.has(layer.id));
     if (effectiveMelodicLayers.length === 0 && activePercussionLayers.length === 0) return;
 
+    const looping = isLoopEnabled && loopRegion !== null;
+    const sourceEvents =
+      looping && loopRegion
+        ? events.filter(
+            (event) =>
+              event.measureIndex !== null &&
+              event.measureIndex >= loopRegion.startMeasure &&
+              event.measureIndex <= loopRegion.endMeasure,
+          )
+        : events;
+    if (sourceEvents.length === 0) return;
+
     stopAll();
     setIsPlaying(true);
     setPlaybackPosition(0);
 
     const melodicGainScale = getMelodicGainScale(effectiveMelodicLayers);
-    const notes = events
+    let notes = sourceEvents
       .filter((event) => !event.isRest && event.midiNumber !== null)
       .flatMap((event) =>
         effectiveMelodicLayers.map((layer) => ({
@@ -521,8 +556,11 @@ export default function EserTakipPage() {
           instrument: layer.instrument,
         })),
       );
+    if (looping && loopRegion) {
+      notes = repeatNotesForLoop(notes, loopRegion.regionStartTime, loopRegion.regionDuration, totalDuration);
+    }
 
-    const percussionHits = activePercussionLayers.flatMap((percussionLayer) =>
+    let percussionHits = activePercussionLayers.flatMap((percussionLayer) =>
       Array.from({length: Math.ceil(totalBeats / usul.beats)}).flatMap((_, cycleIndex) =>
         playbackUsulHits
           .filter((symbol): symbol is typeof symbol & {symbol: PercussionSymbol} => symbol.symbol !== "")
@@ -541,6 +579,14 @@ export default function EserTakipPage() {
           .filter((hit) => hit !== null),
       ),
     );
+    if (looping && loopRegion) {
+      const regionHits = percussionHits.filter(
+        (hit) =>
+          hit.startTime >= loopRegion.regionStartTime &&
+          hit.startTime < loopRegion.regionStartTime + loopRegion.regionDuration,
+      );
+      percussionHits = repeatNotesForLoop(regionHits, loopRegion.regionStartTime, loopRegion.regionDuration, totalDuration);
+    }
 
     const {durationSeconds, baseTime} = await playArrangement(
       notes,
@@ -559,7 +605,12 @@ export default function EserTakipPage() {
     // kayiyor ve cikis gecikmesi (~53 ms) hic dusulmuyordu. Ritim motorundaki
     // `heardContextTime` deseni burada da kullanilir.
     const animate = () => {
-      setPlaybackPosition(getHeardPlaybackPosition(baseTime));
+      const heard = getHeardPlaybackPosition(baseTime);
+      const position =
+        looping && loopRegion
+          ? wrapPlaybackPosition(heard, loopRegion.regionStartTime, loopRegion.regionDuration)
+          : heard;
+      setPlaybackPosition(Math.max(0, position));
       animationRef.current = requestAnimationFrame(animate);
     };
 
@@ -569,12 +620,15 @@ export default function EserTakipPage() {
     beatDuration,
     events,
     isPlaying,
+    isLoopEnabled,
+    loopRegion,
     melodicLayers,
     mutedLayerIds,
     percussionLayers,
     playbackUsulHits,
     soloLayerId,
     stopPlayback,
+    totalDuration,
     totalBeats,
     usul,
     volume,
@@ -664,6 +718,20 @@ export default function EserTakipPage() {
             <TempoControl bpm={bpm} onBpmChange={handleBpmChange} />
 
             <VolumeControl volume={volume} onVolumeChange={setVolume} />
+
+            <LoopRegionControl
+              enabled={isLoopEnabled}
+              startMeasure={loopRegion?.startMeasure ?? 1}
+              endMeasure={loopRegion?.endMeasure ?? maxMeasureIndex}
+              maxMeasure={maxMeasureIndex}
+              onEnabledChange={setIsLoopEnabled}
+              onStartMeasureChange={(value) =>
+                setLoopStartMeasure(clamp(Number.isFinite(value) ? value : 1, 1, maxMeasureIndex))
+              }
+              onEndMeasureChange={(value) =>
+                setLoopEndMeasure(clamp(Number.isFinite(value) ? value : maxMeasureIndex, 1, maxMeasureIndex))
+              }
+            />
 
             <FollowPieceAddPanel
               pieceLibrary={pieceLibrary}

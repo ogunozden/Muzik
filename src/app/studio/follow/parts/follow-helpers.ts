@@ -57,6 +57,35 @@ export function clampBpm(value: number, fallbackBpm: number = DEFAULT_PIECE.bpm)
   return Math.min(MAX_BPM, Math.max(MIN_BPM, Math.round(value)));
 }
 
+/**
+ * Döngü bölgesi (loop region) planlamasi — SAF fonksiyonlar (W3.8).
+ *
+ * Notalar/hit'ler bolge boyunca ses saatinde TEKRAR planlanir: bolge suresi
+ * kadar ofsetlenmis kopyalar, toplam sureyi asmayacak sekilde uretilir.
+ */
+export function repeatNotesForLoop<T extends {startTime: number}>(
+  notes: readonly T[],
+  regionStartTime: number,
+  regionDuration: number,
+  totalDuration: number,
+): T[] {
+  if (notes.length === 0 || !(regionDuration > 0) || !(totalDuration > regionStartTime)) return [...notes];
+  const loopCount = Math.max(1, Math.ceil((totalDuration - regionStartTime) / regionDuration));
+  return notes.flatMap((note) =>
+    Array.from({length: loopCount}, (_, index) => ({...note, startTime: note.startTime + index * regionDuration})),
+  );
+}
+
+/**
+ * Imleci bolgede SARAR: bolge disinda kalan duyulan konum, bolgenin basina
+ * dondurulur (gorsel geri bildirim; ses zaten tekrar planlanmistir).
+ */
+export function wrapPlaybackPosition(heardPosition: number, regionStartTime: number, regionDuration: number): number {
+  if (!(regionDuration > 0) || heardPosition < regionStartTime) return Math.max(0, heardPosition);
+  const offset = (heardPosition - regionStartTime) % regionDuration;
+  return regionStartTime + (offset < 0 ? offset + regionDuration : offset);
+}
+
 export function getInstrumentLabel(instrumentId: InstrumentType): string {
   const instrument = INSTRUMENTS.find((item) => item.id === instrumentId);
   return instrument?.nameTr ?? instrumentId;
@@ -129,6 +158,37 @@ export function makeVisualPieceSignature(title: string, images: readonly CustomS
 
 export function clamp(value: number, min: number, max: number): number {
   return Math.min(max, Math.max(min, value));
+}
+
+export interface LoopRegion {
+  startMeasure: number;
+  endMeasure: number;
+  regionStartTime: number;
+  regionDuration: number;
+}
+
+/**
+ * Olcu araligindan dongu bolgesi hesaplar (W3.8). Gecersiz/boş aralikta
+ * `null` — cagiran dongusuz davranisa doner.
+ */
+export function buildLoopRegion(
+  events: readonly {measureIndex: number | null; startTime: number; duration: number}[],
+  startMeasureInput: number,
+  endMeasureInput: number,
+  maxMeasureIndex: number,
+): LoopRegion | null {
+  const startMeasure = clamp(startMeasureInput, 1, maxMeasureIndex);
+  const endMeasure = clamp(Math.min(endMeasureInput, maxMeasureIndex), startMeasure, maxMeasureIndex);
+  const regionEvents = events.filter(
+    (event) =>
+      event.measureIndex !== null && event.measureIndex >= startMeasure && event.measureIndex <= endMeasure,
+  );
+  if (regionEvents.length === 0) return null;
+  const regionStartTime = Math.min(...regionEvents.map((event) => event.startTime));
+  const regionEndTime = Math.max(...regionEvents.map((event) => event.startTime + event.duration));
+  const regionDuration = regionEndTime - regionStartTime;
+  if (!(regionDuration > 0)) return null;
+  return {startMeasure, endMeasure, regionStartTime, regionDuration};
 }
 
 export function getPlaybackEventPosition(

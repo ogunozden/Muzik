@@ -380,6 +380,26 @@ describe("EserTakipPage", () => {
     fireEvent.change(slider, {target: {value: "100"}});
   });
 
+  it("döngü bölgesi secilebilir ve dongu planlamasi calistirilir", async () => {
+    render(<EserTakipPage />);
+
+    await screen.findAllByText("Fa♯4/5");
+    const loopToggle = screen.getByRole("checkbox", {name: "Döngü"});
+    fireEvent.click(loopToggle);
+
+    const startInput = screen.getByRole("spinbutton", {name: "Döngü başlangıç ölçüsü"}) as HTMLInputElement;
+    const endInput = screen.getByRole("spinbutton", {name: "Döngü bitiş ölçüsü"}) as HTMLInputElement;
+    fireEvent.change(startInput, {target: {value: "1"}});
+    fireEvent.change(endInput, {target: {value: "2"}});
+
+    fireEvent.click(screen.getByRole("button", {name: "Parçayı çal"}));
+    await waitFor(() => expect(playArrangementMock).toHaveBeenCalled());
+
+    const calls = playArrangementMock.mock.calls as unknown as [Array<{startTime: number}>][];
+    const scheduledNotes = calls[0][0];
+    expect(scheduledNotes.length).toBeGreaterThan(0);
+  });
+
   it("schedules the default piece with the reference ahenk and Devr-i Kebir darb starts", async () => {
     render(<EserTakipPage />);
 

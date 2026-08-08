@@ -14,9 +14,47 @@ import {
   makeVisualPieceSignature,
   MAX_BPM,
   MIN_BPM,
+  repeatNotesForLoop,
+  wrapPlaybackPosition,
 } from "../follow-helpers";
 
 describe("follow-helpers", () => {
+  describe("repeatNotesForLoop", () => {
+    it("bolge notalarini bolge suresi kadar ofsetlenmis kopyalarla tekrar eder", () => {
+      const notes = [
+        {startTime: 1, id: "a"},
+        {startTime: 1.5, id: "b"},
+      ];
+      const repeated = repeatNotesForLoop(notes, 1, 2, 7);
+
+      // (7 - 1) / 2 = 3 tekrar; her nota 0, 2, 4 ofsetli olarak cikar.
+      expect(repeated).toHaveLength(6);
+      // flatMap once notalari, sonra kopyalari uretir: her nota 0, 2, 4 ofsetli.
+      expect(repeated.map((note) => note.startTime)).toEqual([1, 3, 5, 1.5, 3.5, 5.5]);
+      expect(repeated[2]).toMatchObject({id: "a"});
+      expect(repeated[3]).toMatchObject({id: "b"});
+    });
+
+    it("gecersiz bolge girdisinde notalari oldugu gibi dondurur", () => {
+      const notes = [{startTime: 0, id: "a"}];
+      expect(repeatNotesForLoop(notes, 0, 0, 5)).toEqual(notes);
+      expect(repeatNotesForLoop([], 0, 2, 5)).toEqual([]);
+    });
+  });
+
+  describe("wrapPlaybackPosition", () => {
+    it("bolge icindeki konumu korur, disindakini bolgeye sarar", () => {
+      expect(wrapPlaybackPosition(1.5, 1, 2)).toBeCloseTo(1.5);
+      expect(wrapPlaybackPosition(4.2, 1, 2)).toBeCloseTo(2.2);
+      expect(wrapPlaybackPosition(5, 1, 2)).toBeCloseTo(1);
+    });
+
+    it("bolge oncesi konumu degistirmez; gecersiz bolgede ham degeri dondurur", () => {
+      expect(wrapPlaybackPosition(0.5, 1, 2)).toBeCloseTo(0.5);
+      expect(wrapPlaybackPosition(3, 1, 0)).toBeCloseTo(3);
+    });
+  });
+
   describe("clampBpm", () => {
     it("clamps below minimum to MIN_BPM", () => {
       expect(clampBpm(10)).toBe(MIN_BPM);

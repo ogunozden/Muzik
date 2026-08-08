@@ -25,7 +25,7 @@ import {existsSync, mkdirSync, readFileSync, writeFileSync} from "node:fs";
 import path from "node:path";
 import {fileURLToPath} from "node:url";
 import {getSymbTrLayoutCandidateFingerprint} from "./lib/symbtr-layout-fingerprint.mjs";
-import {buildWrittenMeasureRanges} from "./lib/symbtr-pdf-note-anchor.mjs";
+import {buildWrittenMeasureRanges, expandWrittenMeasures} from "./lib/symbtr-pdf-note-anchor.mjs";
 
 const ROOT = process.cwd();
 const LAYOUT_PATH = path.join(ROOT, "src", "data", "symbtr", "layout.generated.json");
@@ -340,6 +340,7 @@ function alignEntry({
     measureIndexBasis: useWrittenExpanded ? "written-expanded-v1" : measureIndexBasis,
     anchorSource: anchorUsable ? "note-anchors" : null,
     importable: !useWrittenExpanded || (confidence === "high" && medianDelta !== null && medianDelta <= 4),
+    writtenMeasureMapping: useWrittenExpanded && writtenMapping ? writtenMapping : null,
     candidates: candidates.length,
     coverage,
     medianDeltaPercent: medianDelta,
@@ -521,6 +522,19 @@ function main() {
           endBeat: measureStart.beat + (measureStart.durationBeats ?? 4),
         }));
         if (anchorEntry.writtenMeasureMapping) writtenMapping = anchorEntry.writtenMeasureMapping;
+        // WALK-REHBERLI acilim: MusicXML'i TXT walk olcu sayisina gore ac
+        // (DS bolumunun bitisi cogu zaman <fine> ile isaretli degildir;
+        // hedef uzunluk deterministik cozer — 2026-08-08: 469 giris).
+        const xmlPath = path.join(ROOT, "symb", "SymbTr-3.0", "MusicXML", `${catalogId}.xml`);
+        if (existsSync(xmlPath) && existsSync(txtPath)) {
+          const walkCount = buildMeasureRanges(
+            readFileSync(txtPath, "utf8"),
+            readWrittenMeter(existsSync(mu2Path) ? readFileSync(mu2Path, "latin1") : "")
+              ?? {numerator: 4, denominator: 4},
+          ).measures.length;
+          const guided = expandWrittenMeasures(readFileSync(xmlPath, "utf8"), {targetLength: walkCount});
+          if (guided.expanded.length > 0) writtenMapping = guided;
+        }
       }
     }
     const projected = alignEntry({
@@ -638,7 +652,9 @@ function main() {
         },
         ...(entry.measureIndexBasis === "written-expanded-v1"
           ? {
-              writtenMeasureMapping: noteAnchorsByCatalog.get(entry.catalogId)?.writtenMeasureMapping ?? null,
+              writtenMeasureMapping: entry.writtenMeasureMapping
+                ?? noteAnchorsByCatalog.get(entry.catalogId)?.writtenMeasureMapping
+                ?? null,
             }
           : {}),
         measureBoxes,

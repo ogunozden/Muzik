@@ -244,4 +244,19 @@ describe("symbtr-pdf-note-anchor", () => {
     expect(result.segnoMeasure).toBe(4);
     expect(result.dalsegnoMeasure).toBe(6);
   });
+
+  it("expandWrittenMeasures targetLength ile D.S. bolumunun bitisini walk'a gore cozer", () => {
+    const measures = [1, 2, 3, 4, 5, 6, 7, 8].map((number) =>
+      `<measure number="${number}"><note><pitch><step>C</step></pitch><duration>1</duration></note></measure>`,
+    );
+    measures[2] = measures[2].replace("<measure number=\"3\">", "<measure number=\"3\"><direction><direction-type><segno/></direction-type><sound segno=\"segno\"/></direction>");
+    measures[7] = measures[7].replace("<measure number=\"8\">", "<measure number=\"8\"><direction><direction-type><words>D.S.</words></direction-type><sound dalsegno=\"segno\"/></direction>");
+    const xml = `<score-partwise><part id="P1">${measures.join("")}</part></score-partwise>`;
+    // Plain: 1-8 + 3-8 = 14. Walk 11 ise: DS bolumu 3..5 (3 olcu) -> 1-8 + 3-5 = 11
+    const plain = expandWrittenMeasures(xml);
+    expect(plain.expanded).toHaveLength(14);
+    const guided = expandWrittenMeasures(xml, {targetLength: 11});
+    expect(guided.expanded).toEqual([1, 2, 3, 4, 5, 6, 7, 8, 3, 4, 5]);
+    expect(guided.dsEndGuided).toBe(true);
+  });
 });

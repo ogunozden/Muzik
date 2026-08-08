@@ -131,8 +131,15 @@ export function countWrittenEventsFromMusicXml(xmlText) {
  * Deterministik; volta gecisleri pass sayisina gore karar verir.
  * Donus: {expanded: [writtenMeasureNumber...], firstExpandedIndexByWritten:
  * {writtenMeasure: index}, writtenMeasureCount, navigation: "repeat"|"ds"|"both"|"none"}
+ *
+ * `targetLength` verilirse (TXT walk olcu sayisi) acilim WALK-REHBERLI
+ * dogrulanir: D.S. bolumunun bitisi, hedef uzunlugu karsilayacak sekilde
+ * deterministik cozulur (`dsEndGuided` ile isaretlenir). Kok neden:
+ * SymbTr TXT'lerinde D.S. bolumunun bitisi cogu zaman `<fine>` ile
+ * isaretlenmemistir; segno'dan baslayip eserin sonuna kadar calan varsayim
+ * fazla uzatir (2026-08-08 olcumu: 1.215 over-expansion vakasi).
  */
-export function expandWrittenMeasures(xmlText) {
+export function expandWrittenMeasures(xmlText, {targetLength = null} = {}) {
   const parts = [...xmlText.matchAll(/<part[^>]*id="([^"]*)"[\s\S]*?<\/part>/g)];
   const partBody = parts[0]?.[0] ?? xmlText;
   const measureBlocks = [...partBody.matchAll(/<measure\b[^>]*>([\s\S]*?)<\/measure>/g)];
@@ -203,9 +210,32 @@ export function expandWrittenMeasures(xmlText) {
   const segnoIndex = measures.findIndex((measure) => measure.segno);
   const dalsegnoIndex = measures.findIndex((measure) => measure.dalsegno);
   const hasDs = segnoIndex >= 0 && dalsegnoIndex > segnoIndex;
-  const baseSequence = hasDs
-    ? [...expandRepeats(measures.slice(0, dalsegnoIndex + 1)), ...expandRepeats(measures.slice(segnoIndex))]
-    : expandRepeats(measures);
+  let baseSequence;
+  let dsEndGuided = false;
+  if (!hasDs) {
+    baseSequence = expandRepeats(measures);
+  } else {
+    const before = expandRepeats(measures.slice(0, dalsegnoIndex + 1));
+    const after = expandRepeats(measures.slice(segnoIndex));
+    baseSequence = [...before, ...after];
+    if (
+      targetLength !== null &&
+      Number.isInteger(targetLength) &&
+      targetLength > 0 &&
+      baseSequence.length !== targetLength
+    ) {
+      // D.S. bolumunun bitisini walk'a gore coz: son = segno + (hedef - onceki)
+      const sectionLength = targetLength - before.length;
+      const guidedEndIndex = sectionLength > 0 ? segnoIndex + sectionLength - 1 : -1;
+      if (guidedEndIndex >= segnoIndex && guidedEndIndex < measures.length && sectionLength > 0) {
+        const guidedAfter = expandRepeats(measures.slice(segnoIndex, guidedEndIndex + 1));
+        if (before.length + guidedAfter.length === targetLength) {
+          baseSequence = [...before, ...guidedAfter];
+          dsEndGuided = true;
+        }
+      }
+    }
+  }
   const navigation = hasDs
     ? (measures.some((measure) => measure.bwdTimes !== null || measure.fwd) ? "both" : "ds")
     : (measures.some((measure) => measure.bwdTimes !== null || measure.fwd) ? "repeat" : "none");
@@ -222,6 +252,7 @@ export function expandWrittenMeasures(xmlText) {
     firstExpandedIndexByWritten,
     writtenMeasureCount: measures.length,
     navigation,
+    dsEndGuided,
     dalsegnoMeasure: hasDs ? measures[dalsegnoIndex].number : null,
     segnoMeasure: hasDs ? measures[segnoIndex].number : null,
   };

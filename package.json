@@ -20,6 +20,8 @@
     "audit:score-engine-symbolic-corpus": "node scripts/audit-score-engine-symbolic-glyph-corpus.mjs",
     "audit:security": "npm audit --omit=dev --audit-level=moderate",
     "audit:security:dev": "npm audit --audit-level=moderate || echo \"[audit:dev] yukaridaki bulgular GELISTIRME bagimliliklarinda; bkz. docs/SECURITY-AUDIT.md\"",
+    "align:symbtr-measures": "node scripts/auto-align-symbtr-measure-candidates.mjs",
+    "align:symbtr-measures:import-ready": "node scripts/auto-align-symbtr-measure-candidates.mjs --import-ready --min-confidence high",
     "audit:studio-follow": "node scripts/audit-studio-follow-browser.mjs --base-url http://localhost:4015 --summary-output output/playwright/studio-follow-browser-audit-20260601.json --screenshot-output output/playwright/studio-follow-browser-audit-20260601.png",
     "audit:symbtr-layout": "node scripts/audit-symbtr-layout-sources.mjs",
     "audit:symbtr-pdf-measures": "node scripts/extract-symbtr-pdf-measures.mjs --all --summary-output output/symbtr-layout-review/pdf-measure-extraction-summary.json",

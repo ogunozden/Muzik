@@ -44,6 +44,10 @@
 | W3.8 ✅ | Follow'da döngü bölgesi (ölçü aralığı + ses saatinde tekrar planlama + imleç sarma) | commit (2026-08-08) | KAPANDI — loop artık /rhythm + /studio/follow'da; /studio kayıtlı-nota loop'u ayrı kalem |
 | W3.9 ✅ | Transpoze — 53-EDO KOMA kaydırması (ahenk mekanizmasıyla aynı yol; aralık yapısı korunur) | commit (2026-08-08) | KAPANDI — ürün kabul kriteri "transpose çalışır" karşılandı |
 | W3.10 ✅ | `/studio` kayıtlı-nota tekrarı (loop): tekrar sayacı + kayıt boyunca imleç sarma | commit (2026-08-08) | KAPANDI — loop artık rhythm + follow + studio |
+| W4.1a ✅ | Geometrik otomatik hizalayıcı (`align:symbtr-measures`): 2.795 giriş raporlandı (85 high / 770 medium / 1.940 low); 85 high giriş import-ready + dry-run geçti (1.676 kutu); import kapısına kanıt zarfı eklendi | commit (2026-08-08) | KAPANDI — kalan: nota-anchor extractor (P1, AUTOMATION_PLAN §1) |
+| W4.1b | **14.694/19.064 stored kutu (%77) geometrik hizalamayla uyuşmuyor** — eski `symbtr-txt-aligned` satır-sayısı kusuru | tespit edildi; onarım: uyumsuz kutuları demote edip yeni hizalayıcıyla yeniden üret | P1 · AUTOMATION_PLAN §1 |
+| W4.3a ✅ | 4 claimed klasör hız-bilinçli korelasyonla yeniden ölçüldü (lavta .75 / santur .60 / rebab .81 / kasık .18 — eşik altı; `claimed` kalmaları dürüst) | `identify-sample-provenance` | ÖLÇÜLDÜ — kaynak havuzu genişleyince otomatik yeniden tara |
+| W4.2a | Devamlı sağlayıcı tarama partileri (2978 grup) zamanlanmış kosucuyla ilerletilecek + deterministik kabul eşiği | pipeline hazır; runtime/network bütçesi gerekir | P1 · AUTOMATION_PLAN §2 |
 | W4.1 | Verified PDF ölçü kutusu: review template 2026-08-08'de güncel sayımlarla yeniden üretildi (kapılar yeşil); 546 giriş/19064 kutu verified, 1259 giriş aday | insan/görsel onay gerektirir | Dış girdi |
 | W3.3 | Verovio ana renderer hedefi; paket kurulu değil (VexFlow geçici) | koşullu borç (`PRODUCT_ARCHITECTURE.md`) | Tetikleyici: Verovio geçiş kararı |
 | W4.1 | Verified PDF ölçü kutusu manifesti boş (0 kutu) | insan/görsel onay gerektirir (`UX_UI_COMPLETION_AUDIT.md`) | Dış girdi |

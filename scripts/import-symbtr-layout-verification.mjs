@@ -139,6 +139,26 @@ function validateIncomingEntries({incomingEntries, layoutData}) {
       errors.push(`${prefix}.reviewer must be a non-empty string`);
     }
 
+    // Geometrik otomatik hizalama (symbtr-txt-aligned) yalniz KANIT ZARFIYLA
+    // kabul edilir: median delta <= 4% + confidence high + rapor referansi.
+    // 2026-08-08 oncesi bu kapinin yoklugu, satir-basi adaylarini olcu diye
+    // isaretleyen 14.694 kutunun manifeste girmesine izin vermisti.
+    if (entry.method === "symbtr-txt-aligned") {
+      const evidence = entry.alignmentEvidence;
+      if (
+        !isObject(evidence) ||
+        typeof evidence.reportPath !== "string" ||
+        evidence.reportPath.length === 0 ||
+        evidence.confidence !== "high" ||
+        !Number.isFinite(evidence.medianDeltaPercent) ||
+        evidence.medianDeltaPercent > 4
+      ) {
+        errors.push(
+          `${prefix}.alignmentEvidence must prove geometric alignment (medianDeltaPercent <= 4, confidence high, reportPath)`,
+        );
+      }
+    }
+
     if (!Array.isArray(entry.measureBoxes) || entry.measureBoxes.length === 0) {
       errors.push(`${prefix}.measureBoxes must include at least one verified box`);
       continue;

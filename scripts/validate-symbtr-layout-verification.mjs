@@ -458,7 +458,20 @@ function validateReviewTemplateEntry({
     }
 
     if (row.suggestedMeasureIndex !== null) {
-      errors.push(`${rowPrefix}.suggestedMeasureIndex must stay null in the non-promoting review template`);
+      // W4.1 P2: otomatik hizalama raporundan gelen ONERILER tanitim degildir;
+      // yalnizca high/medium guvenli girdilerde ve acikca isaretliyse kabul
+      // edilir. Insan onayi + measureBoxes donusumu hala zorunludur.
+      const allowedSuggestion =
+        Number.isInteger(row.suggestedMeasureIndex) &&
+        row.suggestedMeasureIndex >= 1 &&
+        ["high", "medium"].includes(row.suggestionConfidence) &&
+        isPlainObject(reviewEntry.alignmentSuggestion) &&
+        reviewEntry.alignmentSuggestion.source === "auto-alignment-report";
+      if (!allowedSuggestion) {
+        errors.push(
+          `${rowPrefix}.suggestedMeasureIndex must be null or a positive integer with high/medium suggestionConfidence + alignmentSuggestion proof`,
+        );
+      }
     }
 
     if (row.confidence !== candidate.confidence) {
@@ -701,7 +714,15 @@ function validateReviewBatchPlan({
           errors.push(`layout-verification-review-batch-plan.json ${packetLabel} unknown candidate row ${rowKey}`);
         }
         if (row?.suggestedMeasureIndex !== null) {
-          errors.push(`layout-verification-review-batch-plan.json ${packetLabel} suggestedMeasureIndex must stay null`);
+          const allowedSuggestion =
+            Number.isInteger(row.suggestedMeasureIndex) &&
+            row.suggestedMeasureIndex >= 1 &&
+            ["high", "medium"].includes(row.suggestionConfidence);
+          if (!allowedSuggestion) {
+            errors.push(
+              `layout-verification-review-batch-plan.json ${packetLabel} suggestedMeasureIndex must be null or a positive integer with high/medium suggestionConfidence`,
+            );
+          }
         }
         if (row?.reviewDecision !== "unreviewed") {
           errors.push(`layout-verification-review-batch-plan.json ${packetLabel} reviewDecision must stay unreviewed`);

@@ -294,17 +294,27 @@ export function expandWrittenMeasuresGuided(xmlText, {targetLength}) {
       .filter((index) => index >= 0 && index < dalsegnoIndex);
     for (const segnoIndex of segnoIndexes.length ? segnoIndexes : [0]) {
       for (const mode of modes) {
-        const before = expandRepeatsRange(measures.slice(0, dalsegnoIndex + 1), {withRepeats: mode.beforeRepeats});
-        const after = expandRepeatsRange(measures.slice(segnoIndex), {withRepeats: mode.afterRepeats});
-        candidates.push({sequence: [...before, ...after], mode: `${mode.label}:segno-${segnoIndex + 1}`});
-        // DS-sonu walk'a gore cozumlu
-        const sectionLength = targetLength - before.length;
-        const guidedEndIndex = sectionLength > 0 ? segnoIndex + sectionLength - 1 : -1;
-        if (guidedEndIndex >= segnoIndex && guidedEndIndex < measures.length && sectionLength > 0) {
-          const guidedAfter = expandRepeatsRange(measures.slice(segnoIndex, guidedEndIndex + 1), {
-            withRepeats: mode.afterRepeats,
-          });
-          candidates.push({sequence: [...before, ...guidedAfter], mode: `${mode.label}:ds-guided:segno-${segnoIndex + 1}`});
+        // dalsegno olcusu atlamadan ONCE calinir (inclusive) veya sadece
+        // atlamadan SONRA segno bolumunde gorunur (exclusive) — iki yorum da
+        // korpusta olculur; walk ile birebir eslesen secilir.
+        for (const beforeEnd of [dalsegnoIndex + 1, dalsegnoIndex]) {
+          if (beforeEnd <= segnoIndex) continue;
+          const before = expandRepeatsRange(measures.slice(0, beforeEnd), {withRepeats: mode.beforeRepeats});
+          const after = expandRepeatsRange(measures.slice(segnoIndex), {withRepeats: mode.afterRepeats});
+          const label = beforeEnd === dalsegnoIndex + 1 ? "inclusive" : "exclusive";
+          candidates.push({sequence: [...before, ...after], mode: `${mode.label}:${label}:segno-${segnoIndex + 1}`});
+          // DS-sonu walk'a gore cozumlu
+          const sectionLength = targetLength - before.length;
+          const guidedEndIndex = sectionLength > 0 ? segnoIndex + sectionLength - 1 : -1;
+          if (guidedEndIndex >= segnoIndex && guidedEndIndex < measures.length && sectionLength > 0) {
+            const guidedAfter = expandRepeatsRange(measures.slice(segnoIndex, guidedEndIndex + 1), {
+              withRepeats: mode.afterRepeats,
+            });
+            candidates.push({
+              sequence: [...before, ...guidedAfter],
+              mode: `${mode.label}:${label}:ds-guided:segno-${segnoIndex + 1}`,
+            });
+          }
         }
       }
     }

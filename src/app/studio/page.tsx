@@ -11,6 +11,7 @@ import { USUL_DATA } from "@/engines/usul/data";
 import { midiToNoteName, noteNameToMidi } from "@/engines/nota/data";
 import {getHeardPlaybackPosition, playSequence, stopAll} from "@/engines/ses/engine";
 import {VolumeControl, usePlaybackVolume} from "@/shared/ui/organisms/VolumeControl";
+import {getSequenceDuration, repeatScheduledNotes, wrapSequencePosition} from "./playback-helpers";
 import type { InstrumentType } from "@/engines/ses/engine";
 import { INSTRUMENTS, MELODIC_INSTRUMENTS } from "@/lib/app-constants";
 import { NotaEvent } from "@/types";
@@ -69,6 +70,7 @@ function NotaEditorPage() {
   const { t, i18n } = useTranslation();
   const [saveMessage, setSaveMessage] = useState<string | null>(null);
   const [volume, setVolume] = usePlaybackVolume();
+  const [repeatCount, setRepeatCount] = useState(1);
 
   // Zustand State
   const {
@@ -197,19 +199,26 @@ function NotaEditorPage() {
       };
     });
 
-    const {durationSeconds, baseTime} = await playSequence(scheduledNotes, selectedInstrument, {gainScale: volume});
-    if (durationSeconds <= 0) {
+    const sequenceDuration = getSequenceDuration(scheduledNotes);
+    const notesToSchedule =
+      repeatCount > 1 ? repeatScheduledNotes(scheduledNotes, repeatCount) : scheduledNotes;
+    const {durationSeconds, baseTime} = await playSequence(notesToSchedule, selectedInstrument, {gainScale: volume});
+    if (durationSeconds <= 0 || !(sequenceDuration > 0)) {
       if (playbackRef.current) cancelAnimationFrame(playbackRef.current);
       setIsPlaying(false);
       setPlaybackPosition(-1);
       return;
     }
+    const totalDuration = sequenceDuration * Math.max(1, repeatCount);
 
     // D6: imlec DUYULAN ses saatinden okunur (`heardContextTime`); duvar saati
     // (`performance.now`) cikis gecikmesini (~53 ms) bilmez ve iki saat
     // ayristikca sapar. Ritim + score-engine ayni deseni kullanir.
     const animate = () => {
-      setPlaybackPosition(Math.min(getHeardPlaybackPosition(baseTime), durationSeconds));
+      const heard = getHeardPlaybackPosition(baseTime);
+      const position =
+        repeatCount > 1 ? wrapSequencePosition(heard, sequenceDuration) : Math.min(heard, totalDuration);
+      setPlaybackPosition(position);
       playbackRef.current = requestAnimationFrame(animate);
     };
     playbackRef.current = requestAnimationFrame(animate);
@@ -218,8 +227,8 @@ function NotaEditorPage() {
       if (playbackRef.current) cancelAnimationFrame(playbackRef.current);
       setIsPlaying(false);
       setPlaybackPosition(-1);
-    }, (durationSeconds + 0.5) * 1000);
-  }, [recordedNotes, isPlaying, selectedInstrument, volume, setIsPlaying, setPlaybackPosition]);
+    }, (totalDuration + 0.5) * 1000);
+  }, [recordedNotes, isPlaying, repeatCount, selectedInstrument, volume, setIsPlaying, setPlaybackPosition]);
 
   const stopPlayback = useCallback(() => {
     if (playbackRef.current) cancelAnimationFrame(playbackRef.current);
@@ -546,7 +555,35 @@ function NotaEditorPage() {
                             {t("notaEditor.timelineDescription")}
                           </p>
                         </div>
-                        <VolumeControl volume={volume} onVolumeChange={setVolume} />
+                        <div className="flex items-center gap-4">
+                          <VolumeControl volume={volume} onVolumeChange={setVolume} />
+                          <label className={`grid gap-1 text-sm ${tokens.colors.text.secondary}`}>
+                            <span className="text-xs font-semibold uppercase">Tekrar</span>
+                            <span className="flex items-center gap-2">
+                              <button
+                                type="button"
+                                aria-label="Tekrar azalt"
+                                disabled={repeatCount <= 1}
+                                onClick={() => setRepeatCount((count) => Math.max(1, count - 1))}
+                                className="rounded-md border border-[var(--color-border-default)] px-2 py-0.5 text-sm font-semibold text-[var(--color-text-primary)] disabled:opacity-40"
+                              >
+                                −
+                              </button>
+                              <span className="w-8 text-center text-sm font-semibold tabular-nums text-[var(--color-text-primary)]">
+                                {repeatCount}×
+                              </span>
+                              <button
+                                type="button"
+                                aria-label="Tekrar artır"
+                                disabled={repeatCount >= 99}
+                                onClick={() => setRepeatCount((count) => Math.min(99, count + 1))}
+                                className="rounded-md border border-[var(--color-border-default)] px-2 py-0.5 text-sm font-semibold text-[var(--color-text-primary)] disabled:opacity-40"
+                              >
+                                +
+                              </button>
+                            </span>
+                          </label>
+                        </div>
                       </div>
                       <div className="overflow-x-auto">
                         <PianoRollViewer

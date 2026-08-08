@@ -400,6 +400,21 @@ describe("EserTakipPage", () => {
     expect(scheduledNotes.length).toBeGreaterThan(0);
   });
 
+  it("transpoze koma kaydirinca notalar otantik frekanslarda kayar", async () => {
+    render(<EserTakipPage />);
+
+    await screen.findAllByText("Fa♯4/5");
+    fireEvent.click(screen.getByRole("button", {name: "Transpoze artır"}));
+    fireEvent.click(screen.getByRole("button", {name: "Parçayı çal"}));
+
+    await waitFor(() => expect(playArrangementMock).toHaveBeenCalled());
+    const calls = playArrangementMock.mock.calls as unknown as [Array<{targetFrequency?: number}>][];
+    const scheduledNotes = calls[0][0];
+
+    // Varsayilan ahenk 9 koma; +1 koma transpoze ile ilk nota 354. koma olur.
+    expect(scheduledNotes[0].targetFrequency).toBeCloseTo(koma53ToFrequency(354), 5);
+  });
+
   it("schedules the default piece with the reference ahenk and Devr-i Kebir darb starts", async () => {
     render(<EserTakipPage />);
 

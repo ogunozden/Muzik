@@ -42,7 +42,7 @@
 | W3.6 ✅ | `/exercises` UnifiedLayout'a sarıldı (guardrails:layout kırmızısı kapandı) | commit `3bde375` | KAPANDI (2026-08-08) |
 | W3.7 ✅ | Çalma kontrolcüleri: master volume (studio/follow/rhythm, localStorage kalıcı) + follow katmanlarında Solo/Sessiz | commit (2026-08-08) | KAPANDI — ürün kabul kriteri "volume çalışır" karşılandı |
 | W3.8 ✅ | Follow'da döngü bölgesi (ölçü aralığı + ses saatinde tekrar planlama + imleç sarma) | commit (2026-08-08) | KAPANDI — loop artık /rhythm + /studio/follow'da; /studio kayıtlı-nota loop'u ayrı kalem |
-| W3.9 | Transpose (ahenk/makam-bilinçli tasarım gerektirir — 12-TET kaydırma otantikliği bozar) | tasarım kararı | P2 · Dalga 7 |
+| W3.9 ✅ | Transpoze — 53-EDO KOMA kaydırması (ahenk mekanizmasıyla aynı yol; aralık yapısı korunur) | commit (2026-08-08) | KAPANDI — ürün kabul kriteri "transpose çalışır" karşılandı |
 | W4.1 | Verified PDF ölçü kutusu: review template 2026-08-08'de güncel sayımlarla yeniden üretildi (kapılar yeşil); 546 giriş/19064 kutu verified, 1259 giriş aday | insan/görsel onay gerektirir | Dış girdi |
 | W3.3 | Verovio ana renderer hedefi; paket kurulu değil (VexFlow geçici) | koşullu borç (`PRODUCT_ARCHITECTURE.md`) | Tetikleyici: Verovio geçiş kararı |
 | W4.1 | Verified PDF ölçü kutusu manifesti boş (0 kutu) | insan/görsel onay gerektirir (`UX_UI_COMPLETION_AUDIT.md`) | Dış girdi |

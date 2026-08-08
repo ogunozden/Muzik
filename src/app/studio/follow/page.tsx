@@ -29,10 +29,10 @@ import {FollowScorePanel} from "./parts/FollowScorePanel";
 import {TempoControl} from "./parts/TempoControl";
 import {FollowCuePanel} from "./parts/FollowCuePanel";
 import {FollowLayersPanel} from "./parts/FollowLayersPanel";
-import {LoopRegionControl} from "./parts/LoopRegionControl";
+import {PlaybackControlsPanel} from "./parts/PlaybackControlsPanel";
 import {FollowPieceAddPanel} from "./parts/FollowPieceAddPanel";
 import {StudioTabs} from "@/features/studio/StudioTabs";
-import {VolumeControl, usePlaybackVolume} from "@/shared/ui/organisms/VolumeControl";
+import {usePlaybackVolume} from "@/shared/ui/organisms/VolumeControl";
 import {
   ADDED_MELODIC_LAYER_GAIN,
   DEFAULT_PIECE,
@@ -101,6 +101,8 @@ export default function EserTakipPage() {
   const [isLoopEnabled, setIsLoopEnabled] = useState(false);
   const [loopStartMeasure, setLoopStartMeasure] = useState(1);
   const [loopEndMeasure, setLoopEndMeasure] = useState(Number.MAX_SAFE_INTEGER);
+  /** Transpoze (W3.9): ahenk koma offset'ine eklenen kullanici kaydirmasi. */
+  const [transposeKoma, setTransposeKoma] = useState(0);
 
   const animationRef = useRef<number | null>(null);
   const stopTimerRef = useRef<number | null>(null);
@@ -108,7 +110,7 @@ export default function EserTakipPage() {
 
   const usul = useMemo(() => USUL_DATA.find((item) => item.id === selectedPiece.usulId), [selectedPiece.usulId]);
   const beatDuration = usul ? getUsulBeatDuration(usul, bpm) : 60 / bpm;
-  const playbackKoma53Offset = selectedPiece.playbackAhenk?.koma53Offset ?? 0;
+  const playbackKoma53Offset = (selectedPiece.playbackAhenk?.koma53Offset ?? 0) + transposeKoma;
   const parsedEvents = useMemo(
     () => (rawScore ? parseSymbtrScore(rawScore, bpm, playbackKoma53Offset) : []),
     [bpm, playbackKoma53Offset, rawScore],
@@ -274,6 +276,7 @@ export default function EserTakipPage() {
     setIsLoopEnabled(false);
     setLoopStartMeasure(1);
     setLoopEndMeasure(Number.MAX_SAFE_INTEGER);
+    setTransposeKoma(0);
     setMelodicLayers([...nextPiece.melodicLayers]);
     setPercussionLayers([...nextPiece.percussionLayers]);
     setLayerMessage(null);
@@ -717,20 +720,18 @@ export default function EserTakipPage() {
 
             <TempoControl bpm={bpm} onBpmChange={handleBpmChange} />
 
-            <VolumeControl volume={volume} onVolumeChange={setVolume} />
-
-            <LoopRegionControl
-              enabled={isLoopEnabled}
-              startMeasure={loopRegion?.startMeasure ?? 1}
-              endMeasure={loopRegion?.endMeasure ?? maxMeasureIndex}
+            <PlaybackControlsPanel
+              volume={volume}
+              onVolumeChange={setVolume}
+              loopEnabled={isLoopEnabled}
+              onLoopEnabledChange={setIsLoopEnabled}
+              loopStartMeasure={loopRegion?.startMeasure ?? 1}
+              loopEndMeasure={loopRegion?.endMeasure ?? maxMeasureIndex}
               maxMeasure={maxMeasureIndex}
-              onEnabledChange={setIsLoopEnabled}
-              onStartMeasureChange={(value) =>
-                setLoopStartMeasure(clamp(Number.isFinite(value) ? value : 1, 1, maxMeasureIndex))
-              }
-              onEndMeasureChange={(value) =>
-                setLoopEndMeasure(clamp(Number.isFinite(value) ? value : maxMeasureIndex, 1, maxMeasureIndex))
-              }
+              onLoopStartMeasureChange={setLoopStartMeasure}
+              onLoopEndMeasureChange={setLoopEndMeasure}
+              transposeKoma={transposeKoma}
+              onTransposeKomaChange={setTransposeKoma}
             />
 
             <FollowPieceAddPanel

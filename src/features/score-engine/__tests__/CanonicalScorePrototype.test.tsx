@@ -9,17 +9,19 @@ const stopAllMock = vi.hoisted(() => vi.fn());
  * AudioContext'ten okunur (getOutputTimestamp / outputLatency); jsdom'da
  * AudioContext yok.
  *
- * KOK NEDEN (2026-08-08): onceki surum konumu rAF KARE SAYISIYLA adimliyordu
- * (`calls * 0.25`) ve 1400ms'lik waitFor, tam suite yuku altinda kare acligi
- * cekince flaky kaliyordu. Artik konum GERCEK GECEN SUREDEN turer: rAF yalniz
- * render tetikler, imlecin degeri kare sayisina bagli degildir — gec kalmis
- * tek bir kare bile dogru konumu yazar. Timeout da 5s'e cikarildi.
+ * KOK NEDEN (2026-08-08, iki kez flaky): konum ZAMAN-TABANLI oldugunda ve
+ * tam suite yuku altinda rAF frame'leri seyrek dustugunde, orneklenen konum
+ * n3'UN PENCERESININ USTUNE atliyordu (n3 hicbir poll'da gorunmuyordu).
+ * Cozum: mock, n3'UN PENCERESI ICINDE SABIT bir konum dondurur — tek bir
+ * gec kalmis frame bile testi gecirir; pencere kacirma imkansizdir.
  */
-const heardClock = vi.hoisted(() => ({startedAt: 0}));
+// Demo dokuman m1 pencereleri: n2 [0, 0.833), n3 [0.833, 1.667), n4 [1.667, ...).
+// 1.0 sn, n3'un ORTASIDIR — ornekleme seyrek olsa bile tek frame n3'u gosterir.
+const PLAYBACK_PROBE_POSITION = 1.0;
 
 vi.mock("@/engines/ses/engine", () => ({
   playArrangement: playArrangementMock,
-  getHeardPlaybackPosition: () => Math.max(0, (performance.now() - heardClock.startedAt) / 1000),
+  getHeardPlaybackPosition: () => PLAYBACK_PROBE_POSITION,
   stopAll: stopAllMock,
 }));
 
@@ -27,7 +29,6 @@ describe("CanonicalScorePrototype", () => {
   beforeEach(() => {
     playArrangementMock.mockClear();
     stopAllMock.mockClear();
-    heardClock.startedAt = performance.now();
     // rAF'i makro-task zamanlayicisina bagla: jsdom rAF'i, islemci acligi
     // altinda (tam suite paralel yuku) 5 sn boyunca hic frame uretmeyebiliyor
     // ve imlec hic ilerlemiyordu — test flaky kaliyordu. setTimeout(16ms)

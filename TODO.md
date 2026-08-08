@@ -34,7 +34,7 @@
 |---|---|---|---|
 | W2.1 ✅ | `/studio` kayıtlı-nota playback imleci ses saatine hizalandı (`getHeardPlaybackPosition`) | commit `c645a74` | KAPANDI (2026-08-08) |
 | W2.2 ✅ | jsdom `canvas.getContext` gürültüsü no-op stub ile temizlendi | commit `c645a74` | KAPANDI (2026-08-08) |
-| W3.1 | GitNexus FTS indeksleri eksik (grafik indeksi tazelendi: 4761 sembol; FTS uzantısı bu makinede kurulamıyor) | `LOAD fts failed after successful INSTALL` — environment kısıtı | P2 · `gitnexus doctor` ile elle kurulum |
+| W3.1 | GitNexus FTS indeksleri eksik (grafik indeksi tazelendi: 4761 sembol; FTS uzantısı bu makinede yüklenemiyor) | 4 deneme + `doctor`: uzantı iner ama Node SQLite `LOAD` edemiyor (ABI/platform kısıtı) | P2 · Node sqlite/GitNexus sürümü değişince tekrar dene |
 | W3.2 ✅ | TODO G9 başlığı ✅ işaretlendi + AGENTS/CLAUDE rozet senkronu | commit `b0ef851` | KAPANDI (2026-08-08) |
 | W3.3 ✅ | Prod build `data-testid` sıyırıyordu → release denetimleri prod'da kırıktı; `reactRemoveProperties` kaldırıldı, focused-crops/engraving denetimleri onarıldı | commit (2026-08-08) | KAPANDI — denetimler prod'da yeşil |
 | W3.4 ✅ | Tüm sayfalardaki 21 select'e `id`/`name` eklendi (Chrome a11y issue kapandı) | commit `3bde375` | KAPANDI (2026-08-08) |

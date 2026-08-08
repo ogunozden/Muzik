@@ -136,7 +136,7 @@ sonucu verdi: mevcut kayitta ayri bir cift-vurus yok.
 |---|---|---|
 | **Genisletilmis kaynak havuzu** (harici lisansli kayitlar) | Korelasyon havuzu genisledikce claimed klasorlerin kimligi olculebilir | P2 (dis girdi) |
 | **Alternatif kimlik sinyali**: perde-bagimsiz spektral imza (FFT/centroid) kaydi | Hiz-ayarli korelasyon esik altinda kalan dosyalar icin ikinci bagimsiz kanit | P2 |
-| **Oto-yeniden-tarama kancasi**: yeni kaynak havuzu eklendiginde claimed klasorlerini otomatik yeniden korelasyonla tara | Kaynak girdiginde insan hatirlatmasi gerekmeden dogrulama akisi | P3 |
+| **Oto-yeniden-tarama kancasi** ✅: `samples:auto-rescan-claimed` — sample manifest sha256'si degisince claimed klasorleri otomatik yeniden korelasyonla tarar (idempotent; `output/samples/claimed-pool-fingerprint.json`). Ilk kosu 4 klasoru yeniden olctu (lavta .75 / santur .60 / rebab .81 / kasik .18 — esik alti, onceki olcumle tutarli); tekrar kosu 0,7s'de durur | — | P3 — TAMAM |
 
 ## 4. W3.1 — GitNexus FTS (environment)
 

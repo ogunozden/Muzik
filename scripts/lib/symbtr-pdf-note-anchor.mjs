@@ -168,17 +168,17 @@ function expandRepeatsRange(measures, {withRepeats = true} = {}) {
   if (!withRepeats) return measures.map((measure) => measure.number);
   const sequence = [];
   const stack = [];
+  const maxEnding = measures.reduce((max, measure) => Math.max(max, measure.ending ?? 0), 0);
   let index = 0;
   let iterations = 0;
   while (index < measures.length && iterations < 100000) {
     iterations += 1;
     const measure = measures[index];
     const pass = stack.length > 0 ? stack[stack.length - 1].pass : 1;
-    if (measure.ending === 1 && pass > 1) {
-      index += 1;
-      continue;
-    }
-    if (measure.ending === 2 && pass === 1) {
+    // Genellestirilmis volta kurali: ending N yalniz N. geciste calinir;
+    // diger gecislerde atlanir. 1/2 sonlu eserlerde eski davranisla aynidir;
+    // 3+ sonlu (uc sonlu) eserler de boylece acilir.
+    if (measure.ending !== null && measure.ending !== pass && measure.ending <= maxEnding) {
       index += 1;
       continue;
     }

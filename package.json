@@ -64,6 +64,7 @@
     "samples:identify": "node scripts/identify-sample-provenance.mjs",
     "samples:manifest": "node scripts/build-sample-manifest.mjs",
     "samples:manifest:check": "node scripts/build-sample-manifest.mjs --check",
+    "samples:auto-rescan-claimed": "node scripts/auto-rescan-claimed-samples.mjs",
     "samples:probe-hek": "node scripts/probe-hek-in-recording.mjs",
     "samples:render-instrument": "node scripts/render-soundfont-instrument.mjs",
     "samples:render-percussion": "node scripts/render-soundfont-percussion.mjs",

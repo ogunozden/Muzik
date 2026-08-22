@@ -1,5 +1,5 @@
 import {NextRequest, NextResponse} from "next/server";
-import externalReferencePolicy from "./src/data/references/external-reference-policy.json" with {type: "json"};
+import externalReferencePolicy from "./src/data/references/external-reference-policy.json";
 
 function generateNonce(): string {
   const array = new Uint8Array(16);

@@ -109,6 +109,9 @@
     "vexflow": "^5.0.0",
     "zustand": "^5.0.14"
   },
+  "optionalDependencies": {
+    "verovio": "^6.3.0"
+  },
   "devDependencies": {
     "@axe-core/playwright": "^4.12.1",
     "@playwright/test": "^1.61.1",

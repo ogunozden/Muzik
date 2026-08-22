@@ -41,4 +41,32 @@ describe("playback volume", () => {
     fireEvent.change(slider, {target: {value: "25"}});
     expect(onChange).toHaveBeenCalledWith(0.25);
   });
+
+  it("handles localStorage errors gracefully", () => {
+    const originalGetItem = window.localStorage.getItem;
+    window.localStorage.getItem = () => {
+      throw new Error("storage fail");
+    };
+    expect(readStoredPlaybackVolume()).toBe(DEFAULT_PLAYBACK_VOLUME);
+    window.localStorage.getItem = originalGetItem;
+  });
+
+  it("clamps edge values and infinity", () => {
+    expect(clampPlaybackVolume(Number.POSITIVE_INFINITY)).toBe(DEFAULT_PLAYBACK_VOLUME);
+    expect(clampPlaybackVolume(Number.NEGATIVE_INFINITY)).toBe(DEFAULT_PLAYBACK_VOLUME);
+    expect(clampPlaybackVolume(0)).toBe(0);
+    expect(clampPlaybackVolume(1)).toBe(1);
+  });
+
+  it("persists volume via usePlaybackVolume hook", async () => {
+    const {usePlaybackVolume} = await import("../VolumeControl");
+    const TestComp = () => {
+      const [vol, setVol] = usePlaybackVolume();
+      return <button onClick={() => setVol(0.7)}>vol:{vol}</button>;
+    };
+    const {getByRole} = render(<TestComp />);
+    expect(getByRole("button").textContent).toContain("vol:");
+    fireEvent.click(getByRole("button"));
+    expect(window.localStorage.getItem(PLAYBACK_VOLUME_STORAGE_KEY)).toBe("0.7");
+  });
 });

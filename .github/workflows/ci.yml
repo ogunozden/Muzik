@@ -43,6 +43,12 @@ jobs:
         env:
           REQUIRE_CORPUS: "1"
       - run: npm run build
+      - name: Layout guardrails (must-run, no skip)
+        run: |
+          npm run start -- -p 3000 &
+          npx --yes wait-on http://localhost:3000 --timeout 120000
+          npm run guardrails:layout
+          pkill -f "next start" || true
       - run: npm run audit:bundle-size
       # Kullaniciya GIDEN bagimliliklarda bilinen acik olamaz — bu adim bloke eder.
       - run: npm run audit:security
@@ -55,3 +61,8 @@ jobs:
       # verilmez. Chromium runner'a kurulur.
       - run: npx playwright install --with-deps chromium
       - run: npm run test:e2e
+      # E2E prod (C1.1/R5): ayni akislar uretim derlemesine karsi (next start).
+      # `next dev` sayfaya dev-tools katmani enjekte ediyor ve sekme sirasi
+      # farkli; uretim gercek kullanici yuzeyidir. run-e2e-production.mjs tek
+      # komutta derler, sunucuyu kaldirir, testi kosar, kapatir.
+      - run: npm run test:e2e:prod

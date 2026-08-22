@@ -38,12 +38,13 @@ const IDENTICAL_THRESHOLD = 0.9999;
 /**
  * Bilinen, kayit bekleyen kusurlar. Her giris `provenance.json`
  * -> `duplicateAudit.findings` icinde gerekcesiyle duruyor.
+ *
+ * 2026-08-22: Uc cift cozuldu — davul Eastern (Wadaiko/Req) ile
+ * zilden (Big Gong) ayrildi, def Riq_Full ayri hiz katmanlarina
+ * gecirildi, nakkare 58=Tabla Na vs 59=Tabla Tun ile ayristirildi.
+ * Liste bos; yeni ikiz cikarsa test kirilir.
  */
-const KNOWN_DUPLICATES = [
-  ["davul/dum-accent.wav", "zil/dum-accent.wav"],
-  ["davul/ke-accent.wav", "def/ke.wav"],
-  ["nakkare/ke-accent.wav", "nakkare/tek-accent.wav"],
-].map((pair) => pair.sort().join(" == "));
+const KNOWN_DUPLICATES: string[] = [];
 
 function readWavMono(buffer: Buffer): {mono: Float32Array; rate: number} | null {
   if (buffer.length < 44 || buffer.toString("ascii", 0, 4) !== "RIFF") return null;

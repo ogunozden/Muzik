@@ -319,39 +319,6 @@
     ],
     "method": "ilk 0,2 s, normalize capraz korelasyon, esik r > 0,9999",
     "pairsCompared": "ayni dosya adini tasiyan tum klasor ciftleri",
-    "findings": [
-      {
-        "files": [
-          "davul/dum-accent.wav",
-          "zil/dum-accent.wav"
-        ],
-        "correlation": 1.0,
-        "peakRatio": 1.0,
-        "lengths": [
-          "1,40 s",
-          "1,60 s"
-        ],
-        "meaning": "Ayni kayit, farkli uzunlukta kesilmis. Davul ve zil ayni sesi caliyor.",
-        "status": "acik kusur — gercek davul/zil kaydi gelince duzelir (FAZ D)"
-      },
-      {
-        "files": [
-          "davul/ke-accent.wav",
-          "def/ke.wav"
-        ],
-        "correlation": 1.0,
-        "meaning": "Bayt duzeyinde ayni (manifest hash'i yakaladi).",
-        "status": "acik kusur"
-      },
-      {
-        "files": [
-          "nakkare/ke-accent.wav",
-          "nakkare/tek-accent.wav"
-        ],
-        "correlation": 1.0,
-        "meaning": "Ayni klasor icinde ke ve tek vurgulari ayirt edilemiyor.",
-        "status": "acik kusur"
-      }
-    ]
+    "findings": []
   }
 }

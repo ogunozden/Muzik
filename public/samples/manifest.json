@@ -221,68 +221,68 @@
       "bytes": 30930
     },
     "davul/dum-accent.wav": {
-      "sha256": "cfb41f836aef87dabf342c91e17c80c4a90448660f555e1d0b5775dd002534f4",
-      "bytes": 123558
+      "sha256": "708f2aedea608869d10cdcee12be1488cbc70884aa6735a70a161528482b750f",
+      "bytes": 34044
     },
     "davul/dum.wav": {
-      "sha256": "02376fa83ab6d3dcfdfa9f8855f043fc71793d6bf32e5ea06b9015b1e839b693",
-      "bytes": 105918
+      "sha256": "8eae3525226bfdaf5d543bd4479ea851d0f52cfe50d990cf0fc13f848ff1ab56",
+      "bytes": 34044
     },
     "davul/hek-accent.wav": {
-      "sha256": "05625d47e1777f9edaa908b261a6356645b4d303db9e53cfdaf749a36b13c07c",
-      "bytes": 123524
+      "sha256": "44a0b08c20fed31299c55afb3457c503d6602c3d3da9cd0d2a01e1a4399ff907",
+      "bytes": 34044
     },
     "davul/hek.wav": {
-      "sha256": "a0dbfc0e1cb479a2bcdbd5964c589059a8f533aa4a98b016ed68bb1ea99ec07d",
-      "bytes": 105884
+      "sha256": "4e10443c3bc988d1fd011cfe3fb3ea4965ae1c7528526d8de685f240b2a032c9",
+      "bytes": 34044
     },
     "davul/ke-accent.wav": {
-      "sha256": "0c244859bf365c74e54e5d3db396a4217d22200d78239feb28f5e2887e8274c2",
-      "bytes": 61470
+      "sha256": "53477ba5713ed68867694371cef11b33aab9e3ef78ceb76a16dd195363338715",
+      "bytes": 18444
     },
     "davul/ke.wav": {
-      "sha256": "8bc34634fface5a303844b2537fb3db719ddf78a495a841dc1deada8e29ad601",
-      "bytes": 70638
+      "sha256": "28b09e2fca10ea37a2e83c0564e3a9d3990f15f57afe5a58e14e8f7714ea3b85",
+      "bytes": 18444
     },
     "davul/tek-accent.wav": {
-      "sha256": "ea4714c4e2ee4e88b4f88ad1db250c5b2fffc39b3f17d616cc1fdd6e2577ee39",
-      "bytes": 46210
+      "sha256": "94d235d6ef407bdf53cbe8cad386abeb3c58a1df6ebde85d9ad89798bf5e836f",
+      "bytes": 34044
     },
     "davul/tek.wav": {
-      "sha256": "8255c7cd902a4a13fc4d88e2b421afe5c080c5809d88c08c1409cd72d342a0d1",
-      "bytes": 26332
+      "sha256": "98247ab8eb0316cd8fbc0ecf85d3255fbfc7f75218aac4a14a30abfb2aaa02da",
+      "bytes": 20270
     },
     "def/dum-accent.wav": {
-      "sha256": "cad5816373fe0bac405a329019af1c0b647148272db77b4080973e5df2745be5",
-      "bytes": 88278
+      "sha256": "eb75c451a4f33d1b1983f6ada1277a2b1cafb3e789719e3c2499bad4012a2853",
+      "bytes": 15556
     },
     "def/dum.wav": {
-      "sha256": "ae0f7a33edc17301015078ea5f99d1958be265b5c0a91fc972eeb5a3441e9862",
-      "bytes": 62166
+      "sha256": "8ce67331f0d60169f5276932852720325bea888181a92221db0a417cd63a5ec2",
+      "bytes": 40996
     },
     "def/hek-accent.wav": {
-      "sha256": "76e4d5ff882b8066d3e5ea243f912f9f0c23e12e898fd71511feca8e85e44577",
-      "bytes": 88244
+      "sha256": "188abd103b285bb268349eae4a91ee2837682d13afb1ffe05f8e8d7176fdd09f",
+      "bytes": 15556
     },
     "def/hek.wav": {
-      "sha256": "7204a56099b4302eb7f6ae6514466c423f680bc66eac267d90787c9ad9312178",
-      "bytes": 69856
+      "sha256": "cfc1bec16d1ea00b2288857fdbbc4c7b945c276982f10c59e2dd703edb69fb38",
+      "bytes": 40996
     },
     "def/ke-accent.wav": {
-      "sha256": "cc2cfdbb937b25aa98257797f99c45c0abeb281d322e2f5aa9082d7e0631770e",
-      "bytes": 26188
+      "sha256": "af896b57e0b8370c7ac2e487f13658c74c3576469d058175376aeb13c3d97524",
+      "bytes": 11644
     },
     "def/ke.wav": {
-      "sha256": "0c244859bf365c74e54e5d3db396a4217d22200d78239feb28f5e2887e8274c2",
-      "bytes": 61470
+      "sha256": "424a8c19e0e806141b74042fee9d38c3ea2cc88b8f6965ac4d314ab58b7df157",
+      "bytes": 10604
     },
     "def/tek-accent.wav": {
-      "sha256": "fcc5f3b14970a32a2919902b6e1945113078faca3c29476361ee17ed325589af",
-      "bytes": 21542
+      "sha256": "31b740e3c8b790fcc9de338e67450b6a05873ea395428d7a65b75e0130e79b4a",
+      "bytes": 12756
     },
     "def/tek.wav": {
-      "sha256": "bab175da142b780c8dc549cb9a913bd08e6604eb5918b5804051e71ec0d2304c",
-      "bytes": 69890
+      "sha256": "71d6aa8198b0beb3f8aba3362ed18cca2e148190e3edba8cbbbcb7123946a09b",
+      "bytes": 21136
     },
     "kanun/A3.wav": {
       "sha256": "1fe0c6769b59ab555e455b31faa52fc6f2423f6bf35a0ef95a0e6b0478b73e74",
@@ -925,36 +925,36 @@
       "bytes": 26050
     },
     "nakkare/dum-accent.wav": {
-      "sha256": "48b3f21dda49f4cf19483a71ecf29dc0d902cd291827398e6a191ef2e5277fd2",
-      "bytes": 77080
+      "sha256": "a4f8aea2f614570aab5dc442c61453432bd49e3f656c66581b0b6c3ccf510f86",
+      "bytes": 8782
     },
     "nakkare/dum.wav": {
-      "sha256": "6489b55848dc0d52ff46069f545a69395e10f1c89a8bb186febce2c0e30d05d5",
-      "bytes": 59438
+      "sha256": "e36ef118d62256577a2d56480a50117d651828fb314096aec504a7afde02df42",
+      "bytes": 4756
     },
     "nakkare/hek-accent.wav": {
-      "sha256": "a24e250e9aae23c7e615c4d3d1fecefb5454d9d97ebe8fd68f54b56546497e3c",
-      "bytes": 77046
+      "sha256": "4c9232c8b386870fcc93681caaa9d77aef2ee1557b82b963352a4bbdd5411f3d",
+      "bytes": 8782
     },
     "nakkare/hek.wav": {
-      "sha256": "9cf32778e1ecc7ab254acf660d946b4ad27a1ea18760fc096715793a5deabf42",
-      "bytes": 59404
+      "sha256": "14c1411121531df7a52cfba3c6b1aa3909818ba8829ab5796ae7e895bf921f74",
+      "bytes": 34044
     },
     "nakkare/ke-accent.wav": {
-      "sha256": "65c1e04b5f8fd6807a52d9d553cc004f0e8cdfa3e6b8e1c1ceb49233577243d9",
-      "bytes": 28258
+      "sha256": "7b04bd5389f9c97218304abdc918006f5b311625aa117d337a57a2b6c99d54de",
+      "bytes": 21530
     },
     "nakkare/ke.wav": {
-      "sha256": "f13778fe6a1c9b91ba1bab3b795447b8553e10297f76c609442929d4ab27c014",
-      "bytes": 20106
+      "sha256": "43c37991c3749be456ea8f36549e9f364684288d311cc7c0a60ae2f26f39ae9a",
+      "bytes": 34044
     },
     "nakkare/tek-accent.wav": {
-      "sha256": "65c1e04b5f8fd6807a52d9d553cc004f0e8cdfa3e6b8e1c1ceb49233577243d9",
-      "bytes": 28258
+      "sha256": "3d76a7d42345bc9ec8d9b0d9d184ccc38fb5def25387523d9edc2ce6a01178ec",
+      "bytes": 7068
     },
     "nakkare/tek.wav": {
-      "sha256": "21d816923f930f8203574edb6d182aeb48298d17e58c7b749cd9084653fa7f25",
-      "bytes": 9398
+      "sha256": "3d91f4a613f65d5a216467580ea3a6998e3e0940bda02c9304a96498bc965545",
+      "bytes": 34044
     },
     "ney/A3.wav": {
       "sha256": "a879af8a1995c42ef4f1172d4f1586cefcb6a875fd3cdadd14c7d5b9c7431b1c",

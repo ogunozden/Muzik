@@ -12,8 +12,11 @@ const externalReferencePolicy = JSON.parse(
   fs.readFileSync(path.join(__dirname, "src/data/references/external-reference-policy.json"), "utf8"),
 );
 
-function contentSecurityPolicy() {
-  const scriptSrc = isProd ? "'self' 'unsafe-inline'" : "'self' 'unsafe-inline' 'unsafe-eval'";
+export function contentSecurityPolicy(nonce) {
+  const effectiveNonce = nonce ?? "random-nonce-placeholder";
+  const scriptSrc = isProd
+    ? `'self' 'nonce-${effectiveNonce}'`
+    : `'self' 'nonce-${effectiveNonce}' 'unsafe-eval'`;
 
   return [
     "default-src 'self'",
@@ -29,6 +32,14 @@ function contentSecurityPolicy() {
     "style-src 'self' 'unsafe-inline'",
     "worker-src 'self' blob:",
   ].join("; ");
+}
+
+export function generateNonce() {
+  const array = new Uint8Array(16);
+  crypto.getRandomValues(array);
+  let binary = "";
+  for (const byte of array) binary += String.fromCharCode(byte);
+  return btoa(binary);
 }
 
 /** @type {import('next').NextConfig} */
@@ -63,6 +74,40 @@ const nextConfig = {
 
   // Server external
   serverExternalPackages: [],
+
+  // Verovio WASM is lazy-loaded via dynamic import; Node builtins inside its
+  // Emscripten glue must not be bundled for the browser. Without this,
+  // `next build --webpack` fails with UnhandledSchemeError: node:crypto / node:fs
+  // (verovio/dist/verovio-module.mjs). Stub stays valid even when verovio is
+  // not installed thanks to try/catch + optionalDependencies.
+  webpack: (config, {isServer}) => {
+    if (!isServer) {
+      config.resolve = config.resolve || {};
+      config.resolve.fallback = {
+        ...(config.resolve.fallback ?? {}),
+        fs: false,
+        crypto: false,
+        path: false,
+        os: false,
+        stream: false,
+        buffer: false,
+        module: false,
+        util: false,
+      };
+      config.resolve.alias = {
+        ...(config.resolve.alias ?? {}),
+        "node:fs": false,
+        "node:crypto": false,
+        "node:module": false,
+        "node:path": false,
+        "node:os": false,
+        "node:buffer": false,
+        "node:stream": false,
+        "node:util": false,
+      };
+    }
+    return config;
+  },
 
   // Headers
   async headers() {

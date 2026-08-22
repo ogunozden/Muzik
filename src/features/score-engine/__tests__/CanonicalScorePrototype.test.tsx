@@ -45,7 +45,7 @@ describe("CanonicalScorePrototype", () => {
   });
 
   it("renders a clean canonical score surface with active note lineage", () => {
-    render(<CanonicalScorePrototype />);
+    render(<CanonicalScorePrototype renderer="vexflow" />);
 
     expect(screen.getByRole("heading", {name: "Skor Motoru"})).toBeDefined();
     expect(screen.getByRole("img", {name: "Canonical score engine VexFlow temiz nota yüzeyi"})).toBeDefined();
@@ -69,7 +69,7 @@ describe("CanonicalScorePrototype", () => {
   });
 
   it("toggles notation layers on the workbench surface", () => {
-    render(<CanonicalScorePrototype />);
+    render(<CanonicalScorePrototype renderer="vexflow" />);
 
     const accidentalsButton = screen.getByRole("button", {name: /Arıza/});
     expect(accidentalsButton.getAttribute("aria-pressed")).toBe("true");
@@ -80,7 +80,7 @@ describe("CanonicalScorePrototype", () => {
   });
 
   it("maps rests and dotted source durations before engraving", () => {
-    render(<CanonicalScorePrototype />);
+    render(<CanonicalScorePrototype renderer="vexflow" />);
     const mapText = screen.getByTestId("canonical-vex-map").textContent ?? "";
 
     expect(mapText).toContain("score-engine-demo:hicazkar-pesrev:m1:n4:g/5:8:dotted:none");
@@ -88,7 +88,7 @@ describe("CanonicalScorePrototype", () => {
   });
 
   it("schedules playback from canonical note ids", async () => {
-    render(<CanonicalScorePrototype />);
+    render(<CanonicalScorePrototype renderer="vexflow" />);
 
     fireEvent.click(screen.getByRole("button", {name: "Motoru Çal"}));
 
@@ -107,7 +107,7 @@ describe("CanonicalScorePrototype", () => {
   it("advances the active note id while playback is running", async () => {
     playArrangementMock.mockResolvedValueOnce({durationSeconds: 3, baseTime: 0});
 
-    render(<CanonicalScorePrototype />);
+    render(<CanonicalScorePrototype renderer="vexflow" />);
 
     fireEvent.click(screen.getByRole("button", {name: "Motoru Çal"}));
 

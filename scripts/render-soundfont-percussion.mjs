@@ -70,10 +70,16 @@ function parseArguments(argv) {
 /** "dum=Bass_p/bass_ff,tek=..." -> [{symbol, normal, accent}] */
 function parseMapping(spec) {
   return spec.split(",").map((entry) => {
-    const [symbol, zones] = entry.split("=");
-    const [normal, accent] = (zones ?? "").split("/");
+    const eq = entry.indexOf("=");
+    if (eq === -1) throw new Error(`gecersiz esleme: ${entry}`);
+    const symbol = entry.slice(0, eq).trim();
+    const zones = entry.slice(eq + 1);
+    const slash = zones.indexOf("/");
+    if (slash === -1) throw new Error(`gecersiz esleme: ${entry}`);
+    const normal = zones.slice(0, slash).trim();
+    const accent = zones.slice(slash + 1).trim();
     if (!symbol || !normal || !accent) throw new Error(`gecersiz esleme: ${entry}`);
-    return {symbol: symbol.trim(), normal: normal.trim(), accent: accent.trim()};
+    return {symbol, normal, accent};
   });
 }
 

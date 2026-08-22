@@ -37,4 +37,29 @@ describe("HubTabs", () => {
     render(<HubTabs label="Kütüphane" tabs={TABS} />);
     expect(screen.getByRole("navigation", {name: "Kütüphane"})).toBeDefined();
   });
+
+  it("picks the longest matching href as active (nested hub)", () => {
+    const nestedTabs = [
+      {href: "/archive", label: "Arşiv"},
+      {href: "/archive/featured", label: "Öne çıkan"},
+    ];
+    pathnameMock.value = "/archive/featured/item";
+    render(<HubTabs label="Kütüphane" tabs={nestedTabs} />);
+    expect(screen.getByRole("link", {name: "Öne çıkan"}).getAttribute("aria-current")).toBe("page");
+    expect(screen.getByRole("link", {name: "Arşiv"}).getAttribute("aria-current")).toBeNull();
+  });
+
+  it("renders with no active tab when pathname does not match", () => {
+    pathnameMock.value = "/unknown";
+    render(<HubTabs label="Kütüphane" tabs={TABS} />);
+    expect(screen.getByRole("link", {name: "Arşiv"}).getAttribute("aria-current")).toBeNull();
+    expect(screen.getByRole("link", {name: "Sesler"}).getAttribute("aria-current")).toBeNull();
+  });
+
+  it("applies active styling via tokens", () => {
+    pathnameMock.value = "/samples";
+    render(<HubTabs label="Kütüphane" tabs={TABS} />);
+    const active = screen.getByRole("link", {name: "Sesler"});
+    expect(active.className).toContain("bg-[var(--color-primary-500)]");
+  });
 });

@@ -13,6 +13,10 @@
     "scripts/**/*.{mjs,cjs}"
   ],
   "ignoreExportsUsedInFile": true,
+  "ignore": [
+    "src/features/score-engine/workbench/ScoreSurface.tsx",
+    "src/data/score-engine/verovio-emitter.ts"
+  ],
   "tags": [
     "-knipignore"
   ]

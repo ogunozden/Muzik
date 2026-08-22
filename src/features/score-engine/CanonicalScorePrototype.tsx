@@ -14,13 +14,23 @@ import {evaluateCanonicalScoreQuality} from "@/data/score-engine/quality";
 import {getHeardPlaybackPosition, playArrangement, stopAll, type InstrumentType} from "@/engines/ses/engine";
 import {INSTRUMENTS, MELODIC_INSTRUMENTS} from "@/shared/config/instruments";
 import {tokens} from "@/shared/tokens";
-import {
-  ConfidenceBar,
-  ScoreSurface,
-  StatusPill,
-  WorkbenchMetric,
-} from "./workbench/ScoreSurface";
+import {ConfidenceBar, StatusPill, WorkbenchMetric} from "./workbench/ScoreSurfaceVex";
+import {ScoreSurfaceVex} from "./workbench/ScoreSurfaceVex";
+import {ScoreSurfaceRouter, type ScoreRenderer} from "./workbench/ScoreSurfaceRouter";
+import dynamic from "next/dynamic";
 import {WorkbenchStatusBar} from "./workbench/WorkbenchStatusBar";
+
+const ScoreSurfaceVerovio = dynamic(
+  () => import("@/features/score-engine/workbench/ScoreSurfaceVerovio").then((mod) => mod.ScoreSurfaceVerovio),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="rounded-md border border-[var(--color-border-subtle)] bg-[var(--color-bg-base)] px-4 py-6 text-sm text-[var(--color-text-secondary)]">
+        Verovio lazy-load…
+      </div>
+    ),
+  },
+);
 import {
   DEFAULT_VISIBLE_LAYERS,
   SCORE_LAYER_CONTROLS,
@@ -38,8 +48,10 @@ import {
 
 export function CanonicalScorePrototype({
   document: initialDocument = SCORE_ENGINE_DEMO_DOCUMENT,
+  renderer,
 }: {
   document?: CanonicalScoreDocument;
+  renderer?: ScoreRenderer | "both";
 }) {
   const {t} = useTranslation();
   const [document, setDocument] = useState(initialDocument);
@@ -270,7 +282,18 @@ export function CanonicalScorePrototype({
           {[
             [t("scoreEngine.metricSource"), activeSource?.label ?? "SymbTr source"],
             [t("scoreEngine.metricCanonical"), `${document.events.length} event / ${document.measures.length} ölçü`],
-            [t("scoreEngine.metricRender"), documentLoadState === "loading" ? "yükleniyor" : "temiz yüzey"],
+            [
+              t("scoreEngine.metricRender"),
+              documentLoadState === "loading"
+                ? "yükleniyor"
+                : renderer === "both"
+                  ? "VexFlow + Verovio (lab)"
+                  : renderer === "vexflow"
+                    ? "VexFlow (fallback)"
+                    : renderer === "verovio"
+                      ? "Verovio MEI (lazy)"
+                      : "Verovio (env default)",
+            ],
             [t("scoreEngine.metricPlayback"), `${scheduledNotes.length} nota / ${getInstrumentLabel(selectedInstrument)}`],
             [t("scoreEngine.metricQuality"), `${qualityReport.score}/100 · ${qualityReport.status}`],
           ].map(([label, value]) => (
@@ -316,7 +339,22 @@ export function CanonicalScorePrototype({
             </div>
           </div>
 
-          <ScoreSurface document={document} activeEvent={activeEvent} visibleLayers={visibleLayers} />
+          {renderer === "both" ? (
+            <div className="grid gap-4 lg:grid-cols-2">
+              <div>
+                <p className={`mb-2 text-xs font-semibold uppercase ${tokens.colors.text.secondary}`}>VexFlow (fallback)</p>
+                <ScoreSurfaceVex document={document} activeEvent={activeEvent} visibleLayers={visibleLayers} />
+              </div>
+              <div>
+                <p className={`mb-2 text-xs font-semibold uppercase ${tokens.colors.text.secondary}`}>Verovio MEI (default, lazy)</p>
+                <ScoreSurfaceVerovio document={document} activeEvent={activeEvent} visibleLayers={visibleLayers} />
+              </div>
+            </div>
+          ) : renderer ? (
+            <ScoreSurfaceRouter document={document} activeEvent={activeEvent} visibleLayers={visibleLayers} renderer={renderer} />
+          ) : (
+            <ScoreSurfaceRouter document={document} activeEvent={activeEvent} visibleLayers={visibleLayers} />
+          )}
 
           <div className="mt-3 rounded-md border border-[var(--color-border-subtle)] bg-white p-3">
             <div className="h-2 overflow-hidden rounded-full bg-[var(--color-bg-muted)]">

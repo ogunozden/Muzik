@@ -195,12 +195,21 @@ describe("Kaynak /samples sayfasında görünür (H4)", () => {
     expect(route).toContain("provenance.json");
     expect(route).toContain("provenance: folderProvenance");
 
-    const page = fs.readFileSync(path.join(process.cwd(), "src", "app", "samples", "page.tsx"), "utf8");
+    // page 101 satira atomiklesti — metinler artik components/* ve hooks/*’ta
+    const samplesDir = path.join(process.cwd(), "src", "app", "samples");
+    const allSamplesCode = fs
+      .readdirSync(samplesDir, {recursive: true, withFileTypes: true} as never)
+      .filter((e: never) => (e as {isFile: () => boolean}).isFile())
+      .map((e: never) => {
+        const entry = e as {parentPath: string; name: string};
+        return fs.readFileSync(path.join(entry.parentPath, entry.name), "utf8");
+      })
+      .join("\n");
     // Kaynagi bilinmeyen klasor bos gecilmemeli — ekranda soylenmeli.
-    expect(page).toContain("Kaynak bilinmiyor");
+    expect(allSamplesCode).toContain("Kaynak bilinmiyor");
     // "Iddia" ile "belgeli" ayrimi kullaniciya da gorunmeli.
-    expect(page).toContain("üretim parametreleri kayıtlı değil");
-    expect(page).toContain("yeniden üretilebilir");
+    expect(allSamplesCode).toContain("üretim parametreleri kayıtlı değil");
+    expect(allSamplesCode).toContain("yeniden üretilebilir");
   });
 });
 

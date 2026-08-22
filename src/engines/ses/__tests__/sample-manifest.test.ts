@@ -95,9 +95,17 @@ describe("Ses manifestosu — kaynak iddiasinin kapsami", () => {
     expect(route).toContain("matchesManifest");
     expect(route).toContain("manifest.json");
 
-    const page = fs.readFileSync(path.join(process.cwd(), "src", "app", "samples", "page.tsx"), "utf8");
-    expect(page).toContain("slot.matchesManifest === false");
-    expect(page).toContain("Kaynak kaydı bu dosyayı kapsamıyor");
+    const samplesDir = path.join(process.cwd(), "src", "app", "samples");
+    const allSamplesCode = fs
+      .readdirSync(samplesDir, {recursive: true, withFileTypes: true} as never)
+      .filter((e: never) => (e as {isFile: () => boolean}).isFile())
+      .map((e: never) => {
+        const entry = e as {parentPath: string; name: string};
+        return fs.readFileSync(path.join(entry.parentPath, entry.name), "utf8");
+      })
+      .join("\n");
+    expect(allSamplesCode).toContain("slot.matchesManifest === false");
+    expect(allSamplesCode).toContain("Kaynak kaydı bu dosyayı kapsamıyor");
   });
 
   it("uretici betik depoda ve script olarak bagli", () => {

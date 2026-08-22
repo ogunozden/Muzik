@@ -92,8 +92,16 @@ describe("Kayıt dışı perde bildirilmeli (F2)", () => {
     const route = fs.readFileSync(path.join(process.cwd(), "src", "app", "api", "samples", "route.ts"), "utf8");
     expect(route.split("extrapolatedFrom").length - 1).toBeGreaterThanOrEqual(2);
 
-    const page = fs.readFileSync(path.join(process.cwd(), "src", "app", "samples", "page.tsx"), "utf8");
-    expect(page).toContain("slot.extrapolatedFrom");
-    expect(page).toContain("Gerilmiş perde");
+    const samplesDir = path.join(process.cwd(), "src", "app", "samples");
+    const allSamplesCode = fs
+      .readdirSync(samplesDir, {recursive: true, withFileTypes: true} as never)
+      .filter((e: never) => (e as {isFile: () => boolean}).isFile())
+      .map((e: never) => {
+        const entry = e as {parentPath: string; name: string};
+        return fs.readFileSync(path.join(entry.parentPath, entry.name), "utf8");
+      })
+      .join("\n");
+    expect(allSamplesCode).toContain("slot.extrapolatedFrom");
+    expect(allSamplesCode).toContain("Gerilmiş perde");
   });
 });

@@ -60,12 +60,20 @@ describe("Türetilmiş sample'ın kaynağı görünür kalmalı (F3)", () => {
   });
 
   it("/samples sayfasi turetim uyarisini ekranda gosteriyor", () => {
-    const page = fs.readFileSync(path.join(process.cwd(), "src", "app", "samples", "page.tsx"), "utf8");
+    const samplesDir = path.join(process.cwd(), "src", "app", "samples");
+    const allSamplesCode = fs
+      .readdirSync(samplesDir, {recursive: true, withFileTypes: true} as never)
+      .filter((e: never) => (e as {isFile: () => boolean}).isFile())
+      .map((e: never) => {
+        const entry = e as {parentPath: string; name: string};
+        return fs.readFileSync(path.join(entry.parentPath, entry.name), "utf8");
+      })
+      .join("\n");
 
-    expect(page).toContain("slot.derivedFrom");
-    expect(page).toContain("Türetilmiş ses");
+    expect(allSamplesCode).toContain("slot.derivedFrom");
+    expect(allSamplesCode).toContain("Türetilmiş ses");
     // "gercek kayit degil" ifadesi acik olmali — kullanici tahmin etmesin.
-    expect(page).toContain("gerçek kayıt değil");
+    expect(allSamplesCode).toContain("gerçek kayıt değil");
   });
 
   it("gercek bir hek kaydi bulunmadigi hala dogru", () => {

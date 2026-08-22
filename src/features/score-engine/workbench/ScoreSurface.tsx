@@ -1,60 +1,21 @@
 "use client";
 
-import {useEffect, useMemo, useRef, useState} from "react";
-import {
-  computePolicyDerivedNaturals,
-  computeSourceProvenTies,
-  findSegnoSectionMarker,
-  mapCanonicalEventToVex,
-} from "@/data/score-engine/notation";
-import type {CanonicalScoreDocument, CanonicalScoreEvent} from "@/data/score-engine/canonical-score";
 import {tokens} from "@/shared/tokens";
 import {SCORE_SURFACE_COLORS} from "@/shared/tokens/visual-palettes";
-import {findRenderSystemForEvent} from "../score-layout";
+import type {CanonicalScoreDocument, CanonicalScoreEvent} from "@/data/score-engine/canonical-score";
 import {
   EVIDENCE_BOTTOM_GAP,
   SCORE_PADDING_X,
   STAVE_HEIGHT,
   STAVE_TOP_IN_SYSTEM,
   SURFACE_HEADER_HEIGHT,
-  SYSTEM_HEIGHT,
-  buildGlyphClassMapText,
   formatKeySignaturePolicy,
-  formatKomaAccidental,
-  komaAccidentalGlyphName,
   formatNotationLabel,
   formatPercent,
-  getSurfaceHeight,
-  getSurfaceWidth,
   getSystemLabel,
-  getSystemLayouts,
-  parseMeter,
-  type NoteRenderPosition,
-  type SectionMarkerPosition,
   type VisibleScoreLayers,
-} from "./score-format";
-
-/** Bir frame'de cizilecek sistem sayisi (D12). */
-const SYSTEMS_PER_FRAME = 8;
-
-/**
- * Bu sayidan AZ sistemi olan belgeler tamamen cizilir — sanallastirma yok (K5).
- * Olcum (120 gercek eser): medyan 55 sistem / 11.708px, en buyugu 193 sistem /
- * 40.688px. Kucuk belgelerde pencereleme kazanc getirmez, yalnizca davranisi
- * degistirir; esik altinda eski (tam) yol korunur.
- */
-const VIRTUALIZATION_MIN_SYSTEMS = 24;
-/** Viewport disinda, ustte ve altta hazir tutulan sistem sayisi. */
-const RENDER_OVERSCAN_SYSTEMS = 6;
-
-/**
- * Bir sonraki frame'i bekler. `requestAnimationFrame` yoksa (jsdom/SSR) hemen
- * cozulur — cizim yine tamamlanir, yalnizca bolunmez.
- */
-function nextFrame(): Promise<void> {
-  if (typeof requestAnimationFrame !== "function") return Promise.resolve();
-  return new Promise((resolve) => requestAnimationFrame(() => resolve()));
-}
+} from "@/features/score-engine/workbench/score-format";
+import {useScoreSurface} from "@/features/score-engine/workbench/useScoreSurface";
 
 export function StatusPill({label, tone = "success"}: {label: string; tone?: "success" | "warning" | "neutral"}) {
   const toneClass =
@@ -63,10 +24,7 @@ export function StatusPill({label, tone = "success"}: {label: string; tone?: "su
       : tone === "warning"
         ? "border-amber-300 bg-amber-50 text-amber-800"
         : "border-[var(--color-border-subtle)] bg-white text-[var(--color-text-secondary)]";
-
-  return (
-    <span className={`inline-flex rounded-full border px-2.5 py-1 text-xs font-medium ${toneClass}`}>{label}</span>
-  );
+  return <span className={`inline-flex rounded-full border px-2.5 py-1 text-xs font-medium ${toneClass}`}>{label}</span>;
 }
 
 export function WorkbenchMetric({label, value}: {label: string; value: string}) {
@@ -101,414 +59,21 @@ export function ScoreSurface({
   activeEvent: CanonicalScoreEvent | null;
   visibleLayers: VisibleScoreLayers;
 }) {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const scrollHostRef = useRef<HTMLDivElement>(null);
-  const source = document.sources[0];
-  /**
-   * Yuzey genisligi (K5). `getSurfaceWidth()` TABAN degeri verir (1180);
-   * kapsayici daha genisse yuzey ONA buyur — daralmaz, cunku porte icin bir
-   * asgari genislik gerekir ve dar ekranda zaten yatay kaydirma var. Eskiden
-   * deger sabitti ve genis ekranlarda sagda bos alan kaliyordu.
-   */
-  const [measuredWidth, setMeasuredWidth] = useState(0);
-  const surfaceWidth = useMemo(() => Math.max(getSurfaceWidth(), measuredWidth), [measuredWidth]);
-
-  useEffect(() => {
-    const measure = () => {
-      const host = scrollHostRef.current;
-      if (host) setMeasuredWidth(host.clientWidth);
-    };
-    const initial = requestAnimationFrame(measure);
-    window.addEventListener("resize", measure);
-    return () => {
-      cancelAnimationFrame(initial);
-      window.removeEventListener("resize", measure);
-    };
-  }, []);
-  const systemLayouts = useMemo(() => getSystemLayouts(document, surfaceWidth), [document, surfaceWidth]);
-  const surfaceHeight = useMemo(() => getSurfaceHeight(systemLayouts.length), [systemLayouts.length]);
-  const mappedEvents = useMemo(() => document.events.map(mapCanonicalEventToVex), [document]);
-  const mappedEventsById = useMemo(
-    () => new Map(mappedEvents.map((mappedEvent) => [mappedEvent.event.id, mappedEvent])),
-    [mappedEvents],
-  );
-  const sourceTies = useMemo(() => computeSourceProvenTies(document), [document]);
-  const notationMapText = useMemo(
-    () =>
-      [
-        ...mappedEvents.map(
-          (mappedEvent) =>
-            `${mappedEvent.event.id}:${mappedEvent.pitch.key}:${mappedEvent.duration.duration}:${
-              mappedEvent.duration.dotted ? "dotted" : "plain"
-            }:${mappedEvent.pitch.komaAccidental ?? "none"}`,
-        ),
-        // Kaynak-kanitli tie satirlari (F8.7): audit `:tie:` token'ini bu
-        // haritadan dogrular; yalniz dogrulanmis (cizilen) ciftler yazilir.
-        ...sourceTies.map((tie) => `feature:tie:${tie.fromEventId}:${tie.toEventId}:source-proven`),
-      ].join("\n"),
-    [mappedEvents, sourceTies],
-  );
-  const glyphClassMapText = useMemo(() => buildGlyphClassMapText(document), [document]);
-  const policyNaturals = useMemo(() => computePolicyDerivedNaturals(document.events), [document]);
-  const [notePositions, setNotePositions] = useState<NoteRenderPosition[]>([]);
-  const [renderError, setRenderError] = useState<string | null>(null);
-  /**
-   * Cizilecek sistem araligi (K5). Buyuk belgelerde tum porteleri DOM'a koymak
-   * yerine yalnizca viewport civarindakiler cizilir; SVG yuksekligi degismez,
-   * bu yuzden kaydirma cubugu ve konumlar bozulmaz.
-   */
-  const [renderRange, setRenderRange] = useState<{start: number; end: number}>({start: 0, end: Number.MAX_SAFE_INTEGER});
-
-  useEffect(() => {
-    // Esik altinda sanallastirma yok: varsayilan aralik zaten "hepsi".
-    if (systemLayouts.length < VIRTUALIZATION_MIN_SYSTEMS) return;
-
-    const update = () => {
-      const host = scrollHostRef.current;
-      if (!host) return;
-      const rect = host.getBoundingClientRect();
-      // Yuzeyin ustunden viewport'a olan mesafe (yuzey koordinatinda).
-      const top = Math.max(0, -rect.top);
-      const bottom = top + window.innerHeight;
-      const first = Math.floor((top - SURFACE_HEADER_HEIGHT) / SYSTEM_HEIGHT) - RENDER_OVERSCAN_SYSTEMS;
-      const last = Math.ceil((bottom - SURFACE_HEADER_HEIGHT) / SYSTEM_HEIGHT) + RENDER_OVERSCAN_SYSTEMS;
-      setRenderRange((current) => {
-        const next = {start: Math.max(0, first), end: Math.min(systemLayouts.length, Math.max(0, last))};
-        return current.start === next.start && current.end === next.end ? current : next;
-      });
-    };
-
-    // Ilk olcum bir frame ERTELENIR: effect govdesinde senkron setState
-    // cagirmak React Compiler'da zincirleme render uyarisi uretir.
-    const initial = requestAnimationFrame(update);
-    window.addEventListener("scroll", update, {passive: true});
-    window.addEventListener("resize", update);
-    return () => {
-      cancelAnimationFrame(initial);
-      window.removeEventListener("scroll", update);
-      window.removeEventListener("resize", update);
-    };
-  }, [systemLayouts.length]);
-  const activeSystem = findRenderSystemForEvent(systemLayouts, activeEvent?.id);
-  const activeSystemLayout = activeSystem
-    ? systemLayouts.find((layout) => layout.id === activeSystem.id) ?? null
-    : null;
-  const activePosition = activeEvent ? notePositions.find((position) => position.id === activeEvent.id) ?? null : null;
-  const activeCallout =
-    activePosition && activeSystemLayout
-      ? {
-          x: Math.min(
-            Math.max(activePosition.x + 12, activeSystemLayout.x + 12),
-            activeSystemLayout.x + activeSystemLayout.width - 128,
-          ),
-          y: activeSystemLayout.y + STAVE_TOP_IN_SYSTEM - 62,
-        }
-      : null;
-  const sectionMarkerPositions = useMemo<SectionMarkerPosition[]>(() => {
-    const eventById = new Map(document.events.map((event) => [event.id, event]));
-    const firstEventIdBySection = new Map<string, string>();
-    for (const section of document.sections) {
-      const firstEventId = section.eventIds.find((eventId) => eventById.has(eventId));
-      if (firstEventId) firstEventIdBySection.set(section.id, firstEventId);
-    }
-
-    return document.sections
-      .map((section) => {
-        const firstEventId = firstEventIdBySection.get(section.id);
-        const position = firstEventId ? notePositions.find((candidate) => candidate.id === firstEventId) : null;
-        const system = position ? systemLayouts.find((layout) => layout.id === position.systemId) : null;
-        if (!position || !system) return null;
-        return {
-          id: section.id,
-          label: section.label,
-          systemId: position.systemId,
-          x: Math.min(Math.max(position.x - 116, system.x + 112), system.x + system.width - 132),
-          y: system.y + STAVE_TOP_IN_SYSTEM - 40,
-        };
-      })
-      .filter((marker): marker is SectionMarkerPosition => Boolean(marker));
-  }, [document.events, document.sections, notePositions, systemLayouts]);
-
-  useEffect(() => {
-    const container = containerRef.current;
-    if (!container) return;
-
-    let cancelled = false;
-    container.innerHTML = "";
-    setRenderError(null);
-
-    void (async () => {
-      try {
-        const vexflow = await import("vexflow");
-        const {Accidental, Annotation, Beam, Dot, Formatter, Renderer, Stave, StaveNote, StaveTie, Tuplet, Voice} =
-          vexflow;
-        // `Glyphs` enum'u VexFlow'un CJS derlemesinde var ama TARAYICI
-        // paketinde modul ad-alaninin tepesinde GORUNMUYOR — bu yuzden
-        // `GLYPHS[...]` erisimi `Cannot read properties of undefined` ile
-        // patliyor ve TUM porte cizimi cokuyordu (yalniz anahtar + mertebe
-        // kaliyordu). Hata `audit:score-engine-engraving` denetimi C1
-        // blokaji yuzunden hic kosamadigi icin gorunmemisti.
-        //
-        // Bos nesneye dusuyoruz: glyph bulunamayinca kod zaten BELGELENMIS
-        // yedege gecer (standart # / b + metin annotation).
-        const GLYPHS =
-          (vexflow as unknown as {Glyphs?: Record<string, string>}).Glyphs ??
-          ((vexflow as unknown as {default?: {Glyphs?: Record<string, string>}}).default?.Glyphs ?? {});
-        if (cancelled) return;
-
-        const renderer = new Renderer(container, Renderer.Backends.SVG);
-        renderer.resize(surfaceWidth, surfaceHeight);
-        const context = renderer.getContext();
-        context.setFont("Arial", 10);
-
-        const renderedPositions: NoteRenderPosition[] = [];
-        const scoreMeter = parseMeter(document.meter);
-        const eventsById = new Map(document.events.map((event) => [event.id, event]));
-        const vfNotesByEventId = new Map<
-          string,
-          {note: InstanceType<typeof StaveNote>; lastNote: InstanceType<typeof StaveNote>; systemId: string}
-        >();
-
-        // Sistemler PARCALI cizilir (D12). Olcum (120 gercek eser): medyan 55
-        // sistem = 11.708px SVG, en buyugu 193 sistem = 40.688px. Hepsi tek
-        // senkron dongude cizilince (her biri kendi `Formatter().format()`
-        // pasiyla) ana thread bloke oluyor ve `accidentals` toggle'i tum yapiyi
-        // bastan kuruyordu. Cizim BOLUNMEZ (kesme/kirpma yok) — yalniz her
-        // parcadan sonra bir frame'e yer aciyoruz.
-        const drawnLayouts = systemLayouts.slice(renderRange.start, renderRange.end);
-        for (let chunkStart = 0; chunkStart < drawnLayouts.length; chunkStart += SYSTEMS_PER_FRAME) {
-          if (cancelled) return;
-          if (chunkStart > 0) await nextFrame();
-          if (cancelled) return;
-
-          for (const systemLayout of drawnLayouts.slice(chunkStart, chunkStart + SYSTEMS_PER_FRAME)) {
-          const staveTop = systemLayout.y + STAVE_TOP_IN_SYSTEM;
-          const staveBottom = staveTop + STAVE_HEIGHT;
-          const stave = new Stave(systemLayout.x, staveTop, systemLayout.width);
-          stave.addClef("treble");
-          if (systemLayout.measureIndex === 1 && systemLayout.segmentIndex === 0) {
-            stave.addTimeSignature(document.meter);
-          }
-          stave.setContext(context).draw();
-
-          const systemEvents = systemLayout.eventIds
-            .map((eventId) => eventsById.get(eventId))
-            .filter((event): event is CanonicalScoreEvent => Boolean(event));
-          // Bir event BIRDEN FAZLA notaya bolunebilir (K3): tek standart
-          // degerle yazilamayan sureler (5/8, 7/8, 5/4...) bag ile bagli
-          // parcalara ayrilir. Ariza/annotation YALNIZ ilk parcaya konur —
-          // bagli nota arizayi tekrar etmez.
-          const notesByEvent = systemEvents.map((event) => {
-            const mappedEvent = mappedEventsById.get(event.id) ?? mapCanonicalEventToVex(event);
-            const parts = mappedEvent.duration.tiedParts ?? [
-              {duration: mappedEvent.duration.duration, dotted: mappedEvent.duration.dotted},
-            ];
-
-            const notes = parts.map((part, partIndex) => {
-            const vfNote = new StaveNote({
-              clef: "treble",
-              duration: part.duration,
-              keys: [mappedEvent.pitch.key],
-            });
-
-            if (part.dotted) {
-              Dot.buildAndAttach([vfNote], {all: true});
-            }
-
-            if (partIndex > 0) return vfNote;
-
-            // Otantik koma arizasi (F13.3): kaynak SymbTr koma tasiyorsa,
-            // standart # / b YERINE gercek AEU glyph'i cizilir (bakiye, kucuk/
-            // buyuk mucenneb, koma). VexFlow Glyphs enum'unda kod-alias'i
-            // olmayanlar da setText ile kesin codepoint'ten cizilir. Standart-
-            // disi koma (glyph yok) eski metin annotation'a duser.
-            const komaGlyphName = visibleLayers.accidentals
-              ? komaAccidentalGlyphName(mappedEvent.pitch.komaAccidental)
-              : null;
-            const komaGlyph = komaGlyphName ? GLYPHS[komaGlyphName] : null;
-
-            if (komaGlyph) {
-              const isFlat = mappedEvent.pitch.komaAccidental?.startsWith("b") ?? false;
-              const komaAcc = new Accidental(isFlat ? "b" : "#");
-              komaAcc.setText(komaGlyph);
-              vfNote.addModifier(komaAcc, 0);
-            } else if (visibleLayers.accidentals && mappedEvent.pitch.accidental) {
-              vfNote.addModifier(new Accidental(mappedEvent.pitch.accidental), 0);
-            }
-
-            // Policy-derived natural (ENGRAVING_POLICY bolum 3): ayni olcu +
-            // ayni adimda onceki ariza sonrasi arizasiz event cancellation'dir.
-            if (visibleLayers.accidentals && policyNaturals.has(event.id)) {
-              vfNote.addModifier(new Accidental("n"), 0);
-            }
-
-            // Glyph yoksa (standart-disi koma) metin annotation fallback.
-            const komaAnnotationText =
-              visibleLayers.accidentals && !komaGlyph
-                ? formatKomaAccidental(mappedEvent.pitch.komaAccidental)
-                : null;
-            if (komaAnnotationText) {
-              vfNote.addModifier(
-                new Annotation(komaAnnotationText)
-                  .setJustification(Annotation.HorizontalJustify.CENTER)
-                  .setVerticalJustification(Annotation.VerticalJustify.TOP),
-                0,
-              );
-            }
-
-            return vfNote;
-            });
-
-            return {event, mappedEvent, notes};
-          });
-
-          const staveNotes = notesByEvent.flatMap((entry) => entry.notes);
-          if (staveNotes.length === 0) continue;
-
-          const systemBeatSpan = Math.max(1, Math.ceil(systemLayout.endBeat - systemLayout.startBeat));
-          const voice = new Voice({
-            beatValue: scoreMeter.beatValue,
-            numBeats: Math.max(scoreMeter.beatValue === 4 ? systemBeatSpan : scoreMeter.numBeats, systemBeatSpan),
-          }).setStrict(false);
-          voice.addTickables(staveNotes);
-          const contextReserve = systemLayout.measureIndex === 1 && systemLayout.segmentIndex === 0 ? 160 : 76;
-          new Formatter().joinVoices([voice]).format([voice], Math.max(360, systemLayout.width - contextReserve));
-          voice.draw(context, stave);
-
-          const beamGroups: Array<typeof staveNotes> = [];
-          let currentBeamGroup: typeof staveNotes = [];
-          for (const entry of notesByEvent) {
-            const baseDuration = entry.mappedEvent.duration.duration.replace("r", "");
-            const beamable =
-              !entry.event.isRest &&
-              !entry.mappedEvent.duration.tiedParts && // bagli parcalar ayri kuyruk tasir
-              (baseDuration === "8" || baseDuration === "16" || baseDuration === "32");
-            if (beamable) {
-              currentBeamGroup.push(...entry.notes);
-              continue;
-            }
-            if (currentBeamGroup.length > 1) beamGroups.push(currentBeamGroup);
-            currentBeamGroup = [];
-          }
-          if (currentBeamGroup.length > 1) beamGroups.push(currentBeamGroup);
-
-          for (const beamGroup of beamGroups) {
-            for (const beam of Beam.generateBeams(beamGroup, {maintainStemDirections: true})) {
-              beam.setContext(context).draw();
-            }
-          }
-
-          // Tuplet bracket'leri (K2): ardisik AYNI paydali triole notalari
-          // gruplanip 3:2 bracket'iyla cizilir. Yazili deger zaten sekizlik/
-          // onaltilik olarak esleniyor (mapEventDurationToVex); bracket gercek
-          // sureyi anlatir. Eskiden bu notalar en yakin dyadic degere
-          // yuvarlanip bracket'siz ciziliyordu (2.173 event, 83 eser).
-          let tupletRun: Array<InstanceType<typeof StaveNote>> = [];
-          let tupletDenominator: number | null = null;
-          const flushTupletRun = () => {
-            const context7 = tupletRun;
-            tupletRun = [];
-            if (!tupletDenominator || context7.length === 0) return;
-            const groupSize = 3;
-            for (let at = 0; at + groupSize <= context7.length; at += groupSize) {
-              new Tuplet(context7.slice(at, at + groupSize), {numNotes: groupSize, notesOccupied: 2})
-                .setContext(context)
-                .draw();
-            }
-          };
-
-          for (const entry of notesByEvent) {
-            const denominator = entry.mappedEvent.duration.tuplet?.sourceDenominator ?? null;
-            if (denominator !== tupletDenominator) {
-              flushTupletRun();
-              tupletDenominator = denominator;
-            }
-            if (denominator) tupletRun.push(...entry.notes);
-          }
-          flushTupletRun();
-
-          for (const entry of notesByEvent) {
-            const firstNote = entry.notes[0];
-            const lastNote = entry.notes[entry.notes.length - 1];
-            vfNotesByEventId.set(entry.event.id, {note: firstNote, lastNote, systemId: systemLayout.id});
-
-            // Event ICI baglar (K3): bolunmus parcalari birbirine bagla.
-            for (let at = 0; at + 1 < entry.notes.length; at += 1) {
-              new StaveTie({firstNote: entry.notes[at], lastNote: entry.notes[at + 1]}).setContext(context).draw();
-            }
-
-            const ys = firstNote.getYs();
-            renderedPositions.push({
-              id: entry.event.id,
-              labelY: staveBottom + 42,
-              measureId: entry.event.measureId,
-              systemId: systemLayout.id,
-              x: firstNote.getAbsoluteX(),
-              y: ys[0] ?? staveTop + 40,
-            });
-          }
-          }
-        }
-
-        // Kaynak-kanitli tie'lar (F8.7; SymbTr v3 <tied> + mu2 caret):
-        // yalniz `computeSourceProvenTies` dogrulamasindan gecen ciftler
-        // cizilir. Sistem siniri asan tie iki yarim yay olarak cizilir
-        // (VexFlow kismi StaveTie sozlesmesi).
-        for (const tie of sourceTies) {
-          const fromEntry = vfNotesByEventId.get(tie.fromEventId);
-          const toEntry = vfNotesByEventId.get(tie.toEventId);
-          if (!fromEntry || !toEntry) continue;
-          if (fromEntry.systemId === toEntry.systemId) {
-            new StaveTie({firstNote: fromEntry.lastNote, lastNote: toEntry.note}).setContext(context).draw();
-            continue;
-          }
-          new StaveTie({firstNote: fromEntry.lastNote}).setContext(context).draw();
-          new StaveTie({lastNote: toEntry.note}).setContext(context).draw();
-        }
-
-        // Segno glyph: Teslim bolumu baslangici (SymbTr v3 PDF kaynakli).
-        // Isaretci, dispatch tablosuyla ORTAK olan `findSegnoSectionMarker`tan
-        // gelir (D2) — cizim ile manifest artik ayrisamaz. `GLYPHS` yukarida
-        // zaten cozuldu; buradaki ikinci `await import("vexflow")` gereksizdi.
-        const segnoMarker = findSegnoSectionMarker(document);
-        const segnoGlyph = segnoMarker ? GLYPHS.segno : null;
-        if (segnoMarker && segnoGlyph) {
-          const segnoSystem = systemLayouts.find((layout) => layout.eventIds.includes(segnoMarker.eventId));
-          if (segnoSystem) {
-            context.save();
-            context.setFillStyle(SCORE_SURFACE_COLORS.segnoInk);
-            context.setFont("Arial", 14);
-            context.fillText(segnoGlyph, segnoSystem.x - 12, segnoSystem.y + STAVE_TOP_IN_SYSTEM - 6);
-            context.restore();
-          }
-        }
-
-        const svg = container.querySelector("svg");
-        svg?.setAttribute("data-renderer", "vexflow");
-        if (!cancelled) setNotePositions(renderedPositions);
-      } catch (error) {
-        if (!cancelled) {
-          setNotePositions([]);
-          setRenderError(error instanceof Error ? error.message : "VexFlow render hatası");
-        }
-      }
-    })();
-
-    return () => {
-      cancelled = true;
-      container.innerHTML = "";
-    };
-  }, [
-    document,
-    mappedEventsById,
-    policyNaturals,
-    renderRange,
-    sourceTies,
+  const {
+    activeCallout,
+    activePosition,
+    activeSystemLayout,
+    containerRef,
+    glyphClassMapText,
+    notationMapText,
+    renderError,
+    scrollHostRef,
+    sectionMarkerPositions,
+    source,
     surfaceHeight,
     surfaceWidth,
     systemLayouts,
-    visibleLayers.accidentals,
-  ]);
+  } = useScoreSurface({document, activeEvent, visibleLayers});
 
   return (
     <div
@@ -672,9 +237,7 @@ export function ScoreSurface({
           {systemLayouts
             .map(
               (system) =>
-                `${system.id}:${system.measureId}:${system.segmentIndex + 1}/${system.segmentCount}:${system.eventIds.length}:${
-                  system.startBeat
-                }-${system.endBeat}`,
+                `${system.id}:${system.measureId}:${system.segmentIndex + 1}/${system.segmentCount}:${system.eventIds.length}:${system.startBeat}-${system.endBeat}`,
             )
             .join("\n")}
         </pre>

@@ -244,22 +244,13 @@ for (const file of walk(path.join(root, "src"))) {
   }
 }
 
-// Max-line guardrail (F4.8): dosyalar <=800 satir. Mevcut buyuk dosyalar
-// aktif decomposition hedefidir (M8.1-M8.3) ve grandfather edilir; bu allowlist
-// yalniz kuculdukce kisalir (ratchet). YENI dosya 800'u asamaz.
-const MAX_LINES = 800;
-// H6 (2026-07-27): `studio/follow/page.tsx` (1024 -> 685) ve
-// `references/curation/page.tsx` (848 -> 559) bu listeden CIKARILDI — artik
-// normal 800 kuralina tabiler. Liste yalnizca kisalir; bir dosya buraya geri
-// eklenemez.
-const GRANDFATHERED_LARGE_FILES = new Map([
-  // [dosya, tavan] — mevcut satirin ustune cikamaz; decomposition ile azalir.
-  // ReferencesCurationDetail 803->548 atomik parcalama ile listeden CIKARILDI (2026-08-22)
-  ["src/app/api/external-references/route.ts", 800],
-  ["src/engines/usul/data.ts", 810], // saf veri dosyasi (usul tanimlari) — satir basina 1 usul, bolmek yapay
-  ["src/engines/makam/data.ts", 810], // saf veri dosyasi (makam tanimlari) — satir basina 1 makam
-  ["src/app/api/external-references/route-state.ts", 685],
-]);
+// Max-line guardrail — kesin cozum: 600 (radikal). Tum dosyalar <600 olmali, grandfather 0.
+// Onceki 800 + grandfather listesi 2026-08-22 kokten cozumle kaldirildi:
+// - usul 779 / makam 709 -> data/* 4 parca (<350) + barrel 1
+// - follow 732->224, studio 633->386, ScoreSurface 639->247, Dashboard 632->127
+// - canonical-score 573->349, curation-helpers 563->133, route-state 642->4
+const MAX_LINES = 600;
+const GRANDFATHERED_LARGE_FILES = new Map([]);
 
 for (const file of walk(path.join(root, "src"))) {
   const rel = file.relativePath;

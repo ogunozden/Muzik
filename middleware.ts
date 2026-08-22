@@ -11,7 +11,8 @@ function generateNonce(): string {
 
 function buildCsp(nonce: string): string {
   const isProd = process.env.NODE_ENV === "production";
-  const scriptSrc = isProd ? `'self' 'nonce-${nonce}'` : `'self' 'nonce-${nonce}' 'unsafe-eval'`;
+  // 'unsafe-inline' fallback: Next inline scriptleri henuz nonce attribute almiyor, bloklanmasin
+  const scriptSrc = isProd ? `'self' 'nonce-${nonce}' 'unsafe-inline'` : `'self' 'nonce-${nonce}' 'unsafe-inline' 'unsafe-eval'`;
   return [
     "default-src 'self'",
     "base-uri 'self'",

@@ -14,9 +14,11 @@ const externalReferencePolicy = JSON.parse(
 
 export function contentSecurityPolicy(nonce) {
   const effectiveNonce = nonce ?? "random-nonce-placeholder";
+  // CSP nonce + unsafe-inline: nonce'li scriptler icin strict, nonce'siz Next inline'lari icin fallback.
+  // Middleware gercek nonce'u header'a yazar; buradaki placeholder sadece build-time fallback.
   const scriptSrc = isProd
-    ? `'self' 'nonce-${effectiveNonce}'`
-    : `'self' 'nonce-${effectiveNonce}' 'unsafe-eval'`;
+    ? `'self' 'nonce-${effectiveNonce}' 'unsafe-inline'`
+    : `'self' 'nonce-${effectiveNonce}' 'unsafe-inline' 'unsafe-eval'`;
 
   return [
     "default-src 'self'",
@@ -109,7 +111,7 @@ const nextConfig = {
     return config;
   },
 
-  // Headers
+  // Headers — CSP middleware.ts tarafindan nonce ile dinamik yazilir, burada statik CSP koymuyoruz (cift header = placeholder bloklar)
   async headers() {
     const headers = [
       {
@@ -120,7 +122,6 @@ const nextConfig = {
           { key: "X-Frame-Options", value: "DENY" },
           { key: "X-XSS-Protection", value: "1; mode=block" },
           { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
-          { key: "Content-Security-Policy", value: contentSecurityPolicy() },
           {
             key: "Permissions-Policy",
             value: "camera=(), microphone=(self), geolocation=()",

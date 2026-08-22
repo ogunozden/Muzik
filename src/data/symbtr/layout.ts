@@ -1,7 +1,28 @@
 import "server-only";
-import layoutData from "./layout.generated.json";
-import layoutVerificationData from "./layout-verification.generated.json";
+import fs from "node:fs";
+import path from "node:path";
 import {SYMBTR_CATALOG_COUNT, getSymbTrEntryById} from "./catalog";
+
+function loadGeneratedJson<T>(relativePath: string, fallback: T): T {
+  const fullPath = path.join(process.cwd(), relativePath);
+  if (fs.existsSync(fullPath)) {
+    try {
+      return JSON.parse(fs.readFileSync(fullPath, "utf8")) as T;
+    } catch {
+      return fallback;
+    }
+  }
+  return fallback;
+}
+
+const layoutData = loadGeneratedJson<{generatedAt: string; entries: Record<string, SymbTrPdfLayoutEntry>}>(
+  "src/data/symbtr/layout.generated.json",
+  {generatedAt: "", entries: {}},
+);
+const layoutVerificationData = loadGeneratedJson<{entries: Record<string, SymbTrPdfLayoutVerificationEntry>}>(
+  "src/data/symbtr/layout-verification.generated.json",
+  {entries: {}},
+);
 
 export type SymbTrPdfLayoutExtraction = "pdf-vector-candidate";
 export type SymbTrPdfMeasureCandidateConfidence = "pdf-vector-candidate";

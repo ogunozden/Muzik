@@ -254,10 +254,10 @@ const MAX_LINES = 800;
 // eklenemez.
 const GRANDFATHERED_LARGE_FILES = new Map([
   // [dosya, tavan] — mevcut satirin ustune cikamaz; decomposition ile azalir.
+  // ReferencesCurationDetail 803->548 atomik parcalama ile listeden CIKARILDI (2026-08-22)
   ["src/app/api/external-references/route.ts", 800],
-  ["src/features/references/ReferencesCurationDetail.tsx", 810],
-  ["src/engines/usul/data.ts", 810], // saf veri dosyasi (usul tanimlari)
-  ["src/engines/makam/data.ts", 810], // saf veri dosyasi (makam tanimlari)
+  ["src/engines/usul/data.ts", 810], // saf veri dosyasi (usul tanimlari) — satir basina 1 usul, bolmek yapay
+  ["src/engines/makam/data.ts", 810], // saf veri dosyasi (makam tanimlari) — satir basina 1 makam
   ["src/app/api/external-references/route-state.ts", 685],
 ]);
 

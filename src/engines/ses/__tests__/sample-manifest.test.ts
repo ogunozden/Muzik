@@ -97,9 +97,9 @@ describe("Ses manifestosu — kaynak iddiasinin kapsami", () => {
 
     const samplesDir = path.join(process.cwd(), "src", "app", "samples");
     const allSamplesCode = fs
-      .readdirSync(samplesDir, {recursive: true, withFileTypes: true} as never)
-      .filter((e: never) => (e as {isFile: () => boolean}).isFile())
-      .map((e: never) => {
+      .readdirSync(samplesDir, {recursive: true, withFileTypes: true} as any)
+      .filter((e: unknown) => (e as {isFile: () => boolean}).isFile())
+      .map((e: unknown) => {
         const entry = e as {parentPath: string; name: string};
         return fs.readFileSync(path.join(entry.parentPath, entry.name), "utf8");
       })

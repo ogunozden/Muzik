@@ -6,7 +6,8 @@ import {Select} from "@/shared/ui/atoms/Select";
 interface LabeledSelectProps {
   label: string;
   ariaLabel: string;
-  items: Array<{key: string; label: string}>;
+  items?: Array<{key: string; label: string}>;
+  groups?: Array<{label: string; items: Array<{key: string; label: string}>}>;
   value?: string;
   onChange?: (key: string) => void;
   placeholder?: string;
@@ -17,6 +18,7 @@ export function LabeledSelect({
   label,
   ariaLabel,
   items,
+  groups,
   value,
   onChange,
   placeholder,
@@ -31,6 +33,7 @@ export function LabeledSelect({
         id={selectId}
         ariaLabel={ariaLabel}
         items={items}
+        groups={groups}
         selectedKeys={new Set(value ? [value] : [])}
         onSelectionChange={(keys) => onChange?.(Array.from(keys)[0] as string)}
         placeholder={placeholder}

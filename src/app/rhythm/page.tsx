@@ -25,7 +25,7 @@ import {useCallback, useEffect, useRef, useState} from "react";
 import {useTranslation} from "react-i18next";
 import {LabeledSelect, LabeledSlider, PageHeader, PageShell, PageSurface, UsulPanel} from "@/shared/ui";
 import {UnifiedLayout} from "@/shared/ui/layout/UnifiedLayout";
-import {USUL_DATA, getUsulBeatDuration, getUsulGrouping} from "@/engines/usul/data";
+import {USUL_DATA, getGroupedUsulItems, getUsulBeatDuration, getUsulGrouping} from "@/engines/usul/data";
 import type {InstrumentType} from "@/engines/ses/engine";
 import {startRhythmLoop, stopAll, type RhythmLoopController} from "@/engines/ses/engine";
 import {VolumeControl, usePlaybackVolume} from "@/shared/ui/organisms/VolumeControl";
@@ -111,10 +111,8 @@ export default function UsulPage() {
     }
   }, []);
 
-  const usulItems = USUL_DATA.map((usul) => ({
-    key: usul.id,
-    label: usul.name,
-  }));
+  // Gruplandırma: önce ölçü (2/4 → 120/4) sonra alfabetik (tr locale)
+  const usulGroups = getGroupedUsulItems();
 
   // Velvele modu: kitaptaki susleme dizilisi varsa ve secildiyse onu cal/goster.
   const hasVelvele = Boolean(selectedUsulObj?.velvele?.length);
@@ -270,7 +268,7 @@ export default function UsulPage() {
           usulSelectAriaLabel={t("usul.selectUsul")}
           symbolGridAriaLabel={t("usul.symbolGrid")}
           playButtonAriaLabel={isRhythmPlaying ? t("common.stop") : t("usul.playRhythm")}
-          usulItems={usulItems}
+          usulGroups={usulGroups}
           selectedUsul={selectedUsulObj?.id}
           onUsulChange={(key) => {
             stopRhythm();

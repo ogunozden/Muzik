@@ -333,3 +333,47 @@ export const PENDING_USULS: Usul[] = ALL_USULS.filter((usul) => PENDING_USUL_IDS
 export function getUsulById(id: string): Usul | undefined {
   return USUL_DATA.find((usul) => usul.id === id);
 }
+
+/**
+ * Ritmleri önce ölçü (beats/unit) sonra alfabetik gruplar.
+ * Ölçü sıralaması: önce beats küçükten büyüğe, eşitse unit küçükten büyüğe (4 < 8 < 16).
+ * Grup içi alfabetik: Türkçe localeCompare.
+ */
+export function getGroupedUsulItems(): Array<{label: string; items: Array<{key: string; label: string}>}> {
+  const sorted = [...USUL_DATA].sort((a, b) => {
+    if (a.beats !== b.beats) return a.beats - b.beats;
+    const unitA = parseInt(a.unit) || 0;
+    const unitB = parseInt(b.unit) || 0;
+    if (unitA !== unitB) return unitA - unitB;
+    return a.name.localeCompare(b.name, "tr");
+  });
+
+  const groups = new Map<string, Array<{key: string; label: string}>>();
+  for (const usul of sorted) {
+    const label = `${usul.beats}/${usul.unit}`;
+    if (!groups.has(label)) groups.set(label, []);
+    groups.get(label)!.push({key: usul.id, label: `${usul.name} — ${usul.beats}/${usul.unit}`});
+  }
+
+  // Grupları da ölçüye göre sırala (aynı kural)
+  return Array.from(groups.entries())
+    .sort((a, b) => {
+      const [beatsA, unitA] = a[0].split("/").map((n) => parseInt(n) || 0);
+      const [beatsB, unitB] = b[0].split("/").map((n) => parseInt(n) || 0);
+      if (beatsA !== beatsB) return beatsA - beatsB;
+      return unitA - unitB;
+    })
+    .map(([label, items]) => ({label, items}));
+}
+
+export function getUsulItemsSorted(): Array<{key: string; label: string}> {
+  return [...USUL_DATA]
+    .sort((a, b) => {
+      if (a.beats !== b.beats) return a.beats - b.beats;
+      const unitA = parseInt(a.unit) || 0;
+      const unitB = parseInt(b.unit) || 0;
+      if (unitA !== unitB) return unitA - unitB;
+      return a.name.localeCompare(b.name, "tr");
+    })
+    .map((usul) => ({key: usul.id, label: `${usul.name} — ${usul.beats}/${usul.unit}`}));
+}

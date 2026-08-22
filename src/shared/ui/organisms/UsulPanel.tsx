@@ -17,7 +17,8 @@ interface UsulPanelProps {
   usulSelectAriaLabel: string;
   symbolGridAriaLabel: string;
   playButtonAriaLabel: string;
-  usulItems: Array<{key: string; label: string}>;
+  usulItems?: Array<{key: string; label: string}>;
+  usulGroups?: Array<{label: string; items: Array<{key: string; label: string}>}>;
   selectedUsul?: string;
   onUsulChange?: (key: string) => void;
   symbols?: UsulSymbolType[];
@@ -35,6 +36,7 @@ const UsulPanelComponent = forwardRef<UsulNotationHandle, UsulPanelProps>(functi
     symbolGridAriaLabel,
     playButtonAriaLabel,
     usulItems,
+    usulGroups,
     selectedUsul,
     onUsulChange,
     symbols,
@@ -62,11 +64,12 @@ const UsulPanelComponent = forwardRef<UsulNotationHandle, UsulPanelProps>(functi
         gap: "var(--space-4)",
       }}
     >
-      {/* Usul Seçimi */}
+      {/* Usul Seçimi — gruplu: önce ölçü (2/4, 3/4...) sonra alfabetik */}
       <LabeledSelect
         label={t("usul.usul")}
         ariaLabel={usulSelectAriaLabel}
-        items={usulItems}
+        items={usulGroups ? undefined : usulItems}
+        groups={usulGroups}
         value={selectedUsul}
         onChange={onUsulChange}
         placeholder={t("usul.usulPlaceholder")}

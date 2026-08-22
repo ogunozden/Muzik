@@ -1,20 +1,11 @@
-# Core Domain
+# Core Domain — Saf Modeller
 
-Dis dunya efektlerinden bagimsiz, saf alan bilgisi.
+> Framework-bağımsız tipler ve saf fonksiyonlar. React/Next/DOM/Web Audio import etmez.
 
-- `note-naming.ts` — perde adlandirma (solfej/harf) donusumleri.
+| Dosya | İçerik |
+|---|---|
+| `models.ts` | Makam / Usul / NotaEvent — **TEK KAYNAK** (eski `src/types`) |
+| `note-naming.ts` | Solfej / pitch parsing |
 
-## Burada ne YOK, ve neden
-
-Bu klasorde bir sure `ScoreDocument`, `UsulPattern`, `InstrumentProfile` tip
-sozlesmeleri durdu. Hicbiri **kullanilmadi**: `index.ts` ucunu yeniden disa
-aktariyordu ve `index.ts`i de kimse import etmiyordu — kapali bir dongu.
-README ayrica var olmayan bir `PracticeSession`dan soz ediyordu.
-
-2026-07-27'de kaldirildi. Gerekce, projenin kendi kodlama kurali: ihtiyac
-dogmadan soyutlama yazilmaz (YAGNI). Gercek tipler bugun kullanildiklari
-yerde yasiyor (`data/score-engine/canonical-score.ts`, `engines/usul/data.ts`,
-`engines/ses/profiles.ts`) ve oradan tuketiliyor.
-
-Buraya yeni bir sozlesme, ancak **iki ayri katman** ayni tipe ihtiyac
-duydugunda tasinmalidir.
+`src/types` artık yalnızca shim (`export * from "@/core/domain/models"`).
+Yeni domain tipi buraya eklenir.

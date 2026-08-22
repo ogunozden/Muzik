@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useRef } from "react";
-import type { NotaEvent } from "@/types";
+import type { NotaEvent } from "@/core/domain/models";
 
 interface VexFlowViewerProps {
   notes: NotaEvent[];

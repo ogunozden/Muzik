@@ -29,8 +29,8 @@ vi.mock("@/shared/tokens", () => ({
   },
 }));
 
-vi.mock("@/lib/app-constants", async (importOriginal) => ({
-  ...(await importOriginal<typeof import("@/lib/app-constants")>()),
+vi.mock("@/shared/config/music-constants", async (importOriginal) => ({
+  ...(await importOriginal<typeof import("@/shared/config/music-constants")>()),
   PIANO_CONFIG: {
     totalOctaves: 3,
     startOctave: 3,

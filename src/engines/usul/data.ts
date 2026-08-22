@@ -1,4 +1,4 @@
-import {Usul, UsulSymbol} from "@/types";
+import {Usul, UsulSymbol} from "@/core/domain/models";
 import corpusMeters from "./__generated__/usul-corpus-meters.json";
 
 // Karakteristik tempo korpustan (kod-52 medyani) OTONOM baglanir; usulun kendi

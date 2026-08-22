@@ -1,4 +1,4 @@
-import type {NotaEvent} from "@/types";
+import type {NotaEvent} from "@/core/domain/models";
 
 export interface ScoreCreatePayload {
   title: string;

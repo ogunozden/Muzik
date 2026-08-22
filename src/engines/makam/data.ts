@@ -1,5 +1,5 @@
-import {Makam, MakamKeyAccidental, MakamKomaScale} from "@/types";
-import {NOTE_NAMES} from "@/lib/app-constants";
+import {Makam, MakamKeyAccidental, MakamKomaScale} from "@/core/domain/models";
+import {NOTE_NAMES} from "@/shared/config/music-constants";
 import {midiToFrequency, noteNameToMidi} from "@/engines/nota/data";
 import makamCorpus from "./__generated__/makam-corpus.json";
 import makamSeyir from "./__generated__/makam-seyir.generated.json";

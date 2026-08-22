@@ -13,7 +13,7 @@
 "use client";
 
 import React, {forwardRef, useId, useImperativeHandle, useRef} from "react";
-import type {UsulSymbol} from "@/types";
+import type {UsulSymbol} from "@/core/domain/models";
 import {USUL_NOTATION_COLORS} from "@/shared/tokens/visual-palettes";
 
 /**

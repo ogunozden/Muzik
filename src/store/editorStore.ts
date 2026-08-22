@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import type { InstrumentType } from '@/engines/ses/instruments';
-import type { NotaEvent, Makam, Usul, UsulSymbol } from '@/types';
+import type { NotaEvent, Makam, Usul, UsulSymbol } from "@/core/domain/models";
 import { MAKAM_DATA, getMakamScale, getMakamKomaFrequencies } from '@/engines/makam/data';
 import { USUL_DATA } from '@/engines/usul/data';
 import { noteNameToMidi } from '@/engines/nota/data';

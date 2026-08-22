@@ -1,8 +1,13 @@
-import {
-  colors as designColors,
-  radius as designRadius,
-  spacing as designSpacing,
-} from "@/lib/design-system";
+/**
+ * Shared Tokens — TEK MERKEZ (ENGINEERING_RULESET: "Tek token kaynagi shared/tokens")
+ *
+ * Bu dosya artık DESIGN SYSTEM'in gerçek kaynağıdır.
+ * `src/lib/design-system` yalnızca geriye dönük shim olarak re-export eder.
+ * CSS değişkenlerinin tek gerçeği `shared/tokens/theme.css`’tir.
+ */
+import {colors as designColors} from "./colors";
+import {radius as designRadius} from "./radius";
+import {spacing as designSpacing} from "./spacing";
 
 export const tokens = {
   colors: {
@@ -54,3 +59,6 @@ export const tokens = {
 } as const;
 
 export {designColors, designRadius, designSpacing};
+export {colors} from "./colors";
+export {spacing} from "./spacing";
+export {radius} from "./radius";

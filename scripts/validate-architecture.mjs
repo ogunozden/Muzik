@@ -88,9 +88,6 @@ if (exists(navigationConfigPath)) {
   const primaryNavigationBlock = navigationConfig.match(
     /export const navigation:\s*NavItem\[\]\s*=\s*\[([\s\S]*?)\n\];/
   )?.[1] ?? "";
-  const legacyAliasBlock = navigationConfig.match(
-    /export const legacyNavigationAliases:\s*NavItem\[\]\s*=\s*\[([\s\S]*?)\n\];/
-  )?.[1] ?? "";
   const requiredVisibleRouteKeys = [
     "studio",
     "studioFollow",
@@ -99,15 +96,6 @@ if (exists(navigationConfigPath)) {
     "archive",
     "rhythm",
     "samples",
-  ];
-  const requiredLegacyAliasKeys = [
-    "makam",
-    "usul",
-    "nota",
-    "notaEditor",
-    "recording",
-    "sesler",
-    "eserTakip",
   ];
 
   for (const routeKey of requiredVisibleRouteKeys) {
@@ -118,15 +106,31 @@ if (exists(navigationConfigPath)) {
     }
   }
 
-  for (const routeKey of requiredLegacyAliasKeys) {
+  // Legacy aliaslar TEK KAYNAK: src/shared/config/legacy-routes.ts LEGACY_ROUTE_MAP
+  const usesLegacyMap = navigationConfig.includes("LEGACY_ROUTE_MAP") && navigationConfig.includes("legacyNavigationAliases");
+  if (!usesLegacyMap) {
+    failures.push("Legacy alias must be derived from LEGACY_ROUTE_MAP (centralized atomic source): src/shared/config/navigation.config.ts");
+  }
+  // Legacy id'ler ana navigasyonda GORUNMEZ olmali
+  const legacyIdsInPrimary = ["makam", "usul", "nota", "notaEditor", "recording", "sesler", "eserTakip"];
+  for (const routeKey of legacyIdsInPrimary) {
     const idPattern = new RegExp(`id:\\s*["']${routeKey}["']`);
-    const hrefPattern = new RegExp(`href:\\s*routes\\.${routeKey}\\b`);
-    if (idPattern.test(primaryNavigationBlock) || hrefPattern.test(primaryNavigationBlock)) {
+    if (idPattern.test(primaryNavigationBlock)) {
       failures.push(`Legacy redirect route must not be visible in main navigation: ${routeKey}`);
     }
-    if (!idPattern.test(legacyAliasBlock) || !hrefPattern.test(legacyAliasBlock)) {
-      failures.push(`Legacy redirect route must remain centrally tracked: ${routeKey}`);
+  }
+  // Tek kaynak dosyasi var mi ve 7 anahtar tam mi?
+  const legacyRoutesPath = "src/shared/config/legacy-routes.ts";
+  if (exists(legacyRoutesPath)) {
+    const legacyRoutes = fs.readFileSync(path.join(root, legacyRoutesPath), "utf8");
+    const requiredLegacyPaths = ["makam", "usul", "nota", "nota-editor", "recording", "sesler", "eser-takip"];
+    for (const p of requiredLegacyPaths) {
+      if (!legacyRoutes.includes(`"${p}"`) && !legacyRoutes.includes(`'${p}'`) && !legacyRoutes.includes(p + ":")) {
+        failures.push(`Legacy route missing in central map: ${p} (src/shared/config/legacy-routes.ts)`);
+      }
     }
+  } else {
+    failures.push("Missing central legacy route map: src/shared/config/legacy-routes.ts");
   }
 }
 

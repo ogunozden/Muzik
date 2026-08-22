@@ -19,7 +19,7 @@ import {
 } from "@/data/pieces/visual-map";
 import {getHeardPlaybackPosition, normalizePercussionSymbol, playArrangement, stopAll, type InstrumentType, type PercussionSymbol} from "@/engines/ses/engine";
 import {USUL_DATA, getUsulBeatDuration} from "@/engines/usul/data";
-import {INSTRUMENTS, MELODIC_INSTRUMENTS, PERCUSSION_INSTRUMENTS} from "@/lib/app-constants";
+import {INSTRUMENTS, MELODIC_INSTRUMENTS, PERCUSSION_INSTRUMENTS} from "@/shared/config/instruments";
 import {tokens} from "@/shared/tokens";
 import type {SymbTrCatalogEntry} from "@/data/symbtr/catalog";
 import {useSymbtrPieceBundle} from "@/features/studio/useSymbtrPieceBundle";

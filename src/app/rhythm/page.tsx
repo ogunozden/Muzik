@@ -31,7 +31,7 @@ import {startRhythmLoop, stopAll, type RhythmLoopController} from "@/engines/ses
 import {VolumeControl, usePlaybackVolume} from "@/shared/ui/organisms/VolumeControl";
 import type {UsulNotationHandle} from "@/shared/ui/organisms/UsulNotation";
 import {useEditorStore} from "@/store/editorStore";
-import {INSTRUMENTS, PERCUSSION_INSTRUMENTS} from "@/lib/app-constants";
+import {INSTRUMENTS, PERCUSSION_INSTRUMENTS} from "@/shared/config/instruments";
 
 const SYMBOL_LABELS: Record<string, string> = {
   dum: "Düm",

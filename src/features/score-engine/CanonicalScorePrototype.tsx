@@ -12,7 +12,7 @@ import type {CanonicalDocumentListItem, SymbtrCanonicalImportResult} from "@/dat
 import {SCORE_ENGINE_DEMO_DOCUMENT} from "@/data/score-engine/demo-score";
 import {evaluateCanonicalScoreQuality} from "@/data/score-engine/quality";
 import {getHeardPlaybackPosition, playArrangement, stopAll, type InstrumentType} from "@/engines/ses/engine";
-import {INSTRUMENTS, MELODIC_INSTRUMENTS} from "@/lib/app-constants";
+import {INSTRUMENTS, MELODIC_INSTRUMENTS} from "@/shared/config/instruments";
 import {tokens} from "@/shared/tokens";
 import {
   ConfidenceBar,

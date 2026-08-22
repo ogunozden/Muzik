@@ -8,7 +8,7 @@ import {
 } from "@/data/score-engine/notation";
 import type {CanonicalScoreQualityReport} from "@/data/score-engine/quality";
 import type {InstrumentType} from "@/engines/ses/engine";
-import {INSTRUMENTS} from "@/lib/app-constants";
+import {INSTRUMENTS} from "@/shared/config/instruments";
 import {buildScoreRenderSystems, type ScoreRenderSystem} from "../score-layout";
 
 /**

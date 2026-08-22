@@ -3,7 +3,7 @@ import {
   INSTRUMENTS,
   MELODIC_INSTRUMENTS as MELODIC_INSTRUMENT_IDS,
   PERCUSSION_INSTRUMENTS as PERCUSSION_INSTRUMENT_IDS,
-} from "@/lib/app-constants";
+} from "@/shared/config/instruments";
 import {describeExtrapolation} from "./sample-provenance";
 
 export type SampleCategory = "melodic" | "percussion";

@@ -8,7 +8,7 @@ import { Badge, Button, Card, CardBody, PageHeader, PageShell } from "@/shared/u
 import { LibraryTabs } from "@/features/library/LibraryTabs";
 import Link from "next/link";
 import dynamic from "next/dynamic";
-import { NotaEvent } from "@/types";
+import { NotaEvent } from "@/core/domain/models";
 
 // Dynamic import for VexFlow Viewer to prevent SSR issues
 const VexFlowViewer = dynamic(

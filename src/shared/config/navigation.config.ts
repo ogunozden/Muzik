@@ -3,7 +3,8 @@
  * Merkezi navigasyon menüsü yapılandırması
  */
 
-import { routes } from "./routes.config";
+import {routes} from "./routes.config";
+import {LEGACY_ROUTE_MAP} from "./legacy-routes";
 
 /**
  * Nav item tipleri
@@ -66,65 +67,25 @@ export const navigation: NavItem[] = [
 ];
 
 /**
- * Eski yol adlarinin merkezi kaydi. Ana navigasyonda GORUNMEZ; yalniz
- * yonlendirme sayfalari icin tutulur.
+ * Eski yol adlarinin merkezi kaydi. TEK KAYNAK: `legacy-routes.ts` LEGACY_ROUTE_MAP.
+ * Ana navigasyonda GORUNMEZ; yalniz yonlendirme sayfalari icin tutulur.
  *
- * Bu dizi hicbir modul tarafindan import EDILMEZ — tuketicisi
- * `scripts/validate-architecture.mjs`, dosyayi METIN olarak okuyup her
- * eski yolun burada kayitli oldugunu dogrular. Olu kod tarayicisi (knip)
- * metinsel okumayi goremedigi icin bunu olu sanip sildirdi; guardrail
- * yakaladi ve geri kondu. Asagidaki etiket knip'e bunu bildirir.
+ * Artik HARDCODE degil — LEGACY_ROUTE_MAP’tan turetilir, guardrail tek kaynagi dogrular.
+ * Olu kod tarayicisi (knip) bunu olu sanmasin diye @knipignore korunur.
  *
  * @knipignore
  */
-export const legacyNavigationAliases: NavItem[] = [
-  {
-    id: "makam",
-    label: "nav.makam",
-    href: routes.makam,
-    type: "link",
-    icon: "🎙️",
-  },
-  {
-    id: "usul",
-    label: "nav.usul",
-    href: routes.usul,
-    type: "link",
-    icon: "⏱️",
-  },
-  {
-    id: "nota",
-    label: "nav.nota",
-    href: routes.nota,
-    type: "link",
-    icon: "♩",
-  },
-  {
-    id: "notaEditor",
-    label: "nav.notaEditor",
-    href: routes.notaEditor,
-    type: "link",
-    icon: "✏️",
-  },
-  {
-    id: "recording",
-    label: "nav.recording",
-    href: routes.recording,
-    type: "link",
-    icon: "⏺",
-  },
-  {
-    id: "sesler",
-    label: "nav.sesler",
-    href: routes.sesler,
-    type: "link",
-    icon: "🎚️",
-  },
-  {
-    id: "eserTakip",
-    label: "nav.eserTakip",
-    href: routes.eserTakip,
-    type: "link",
-    icon: "📍",
-  },
-];
+const LEGACY_ALIAS_META: Record<string, {id: string; label: string; icon: string}> = {
+  makam: {id: "makam", label: "nav.makam", icon: "🎙️"},
+  usul: {id: "usul", label: "nav.usul", icon: "⏱️"},
+  nota: {id: "nota", label: "nav.nota", icon: "♩"},
+  "nota-editor": {id: "notaEditor", label: "nav.notaEditor", icon: "✏️"},
+  recording: {id: "recording", label: "nav.recording", icon: "⏺"},
+  sesler: {id: "sesler", label: "nav.sesler", icon: "🎚️"},
+  "eser-takip": {id: "eserTakip", label: "nav.eserTakip", icon: "📍"},
+};
+
+export const legacyNavigationAliases: NavItem[] = Object.entries(LEGACY_ROUTE_MAP).map(([legacyPath, href]) => {
+  const meta = LEGACY_ALIAS_META[legacyPath] ?? {id: legacyPath, label: `nav.${legacyPath}`, icon: "📍"};
+  return {id: meta.id, label: meta.label, href, type: "link" as const, icon: meta.icon};
+});

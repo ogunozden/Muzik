@@ -2,7 +2,7 @@ import "server-only";
 import {randomUUID} from "node:crypto";
 import {getDatabase} from "../persistence/database";
 import type {ScoreCreatePayload, ScoreUpdatePayload} from "@/core/application/score-payload";
-import type {NotaEvent} from "@/types";
+import type {NotaEvent} from "@/core/domain/models";
 
 /**
  * Eser (score) kalici kayit deposu (ADR 0001: core/infrastructure).

@@ -7,7 +7,7 @@ import {
 } from "@/data/pieces/hicazkarPesrev";
 import type {PieceVisualStaffBand} from "@/data/pieces/visual-map";
 import type {InstrumentType, PercussionSymbol} from "@/engines/ses/engine";
-import {INSTRUMENTS} from "@/lib/app-constants";
+import {INSTRUMENTS} from "@/shared/config/instruments";
 import type {SymbTrCatalogEntry} from "@/data/symbtr/catalog";
 
 /**

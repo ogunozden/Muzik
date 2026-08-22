@@ -16,7 +16,7 @@
 "use client";
 
 import {useCallback, useEffect, useRef, useState} from "react";
-import type {Usul} from "@/types";
+import type {Usul} from "@/core/domain/models";
 import {getUsulBeatDuration} from "@/engines/usul/data";
 import {startRhythmLoop, stopAll, type RhythmLoopController} from "@/engines/ses/engine";
 import type {InstrumentType} from "@/engines/ses/engine";

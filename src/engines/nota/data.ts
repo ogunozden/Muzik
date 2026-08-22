@@ -1,4 +1,4 @@
-import {PIANO_CONFIG, NOTE_NAMES} from "@/lib/app-constants";
+import {PIANO_CONFIG, NOTE_NAMES} from "@/shared/config/music-constants";
 
 export function midiToFrequency(midiNumber: number): number {
   return 440 * Math.pow(2, (midiNumber - 69) / 12);

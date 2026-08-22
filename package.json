@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "engines": {
-    "node": ">=26 <27",
+    "node": ">=22 <27",
     "npm": ">=10"
   },
   "scripts": {
@@ -28,6 +28,10 @@
     "audit:symbtr-layout": "node scripts/audit-symbtr-layout-sources.mjs",
     "audit:symbtr-pdf-measures": "node scripts/extract-symbtr-pdf-measures.mjs --all --summary-output output/symbtr-layout-review/pdf-measure-extraction-summary.json",
     "build": "next build --webpack",
+    "check": "npm run guardrails:architecture && npm run typecheck && npm run lint && npm run test:run",
+    "audit:all": "npm run audit:bundle-size && npm run audit:security && npm run test:coverage",
+    "clean": "node scripts/clean-output.mjs",
+    "derive:all": "npm run derive:makam-corpus && npm run derive:usul-accent-profile && npm run derive:usul-meters && npm run derive:makam-seyir",
     "corpus:fetch": "node scripts/fetch-symbtr-v3.mjs",
     "curation:auto-attach": "node scripts/manage-source-curation.mjs auto-attach --write",
     "curation:stats": "node scripts/manage-source-curation.mjs stats --write",

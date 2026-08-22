@@ -10,7 +10,7 @@ import {forwardRef, memo} from "react";
 import {useTranslation} from "react-i18next";
 import {Button} from "@/shared/ui/atoms/Button";
 import {LabeledSelect} from "@/shared/ui/molecules/LabeledSelect";
-import {UsulSymbol as UsulSymbolType} from "@/types";
+import {UsulSymbol as UsulSymbolType} from "@/core/domain/models";
 import {UsulNotation, type UsulNotationHandle} from "@/shared/ui/organisms/UsulNotation";
 
 interface UsulPanelProps {

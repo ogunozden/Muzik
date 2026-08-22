@@ -3,7 +3,7 @@ import {fireEvent, render, screen} from "@testing-library/react";
 import React from "react";
 import {InstrumentSurface, MELODIC_INSTRUMENT_SURFACES} from "../InstrumentSurface";
 import {playNote} from "@/engines/ses/engine";
-import {MELODIC_INSTRUMENTS} from "@/lib/app-constants";
+import {MELODIC_INSTRUMENTS} from "@/shared/config/instruments";
 
 vi.mock("@/shared/tokens", () => ({
   tokens: {

@@ -13,7 +13,7 @@
 
 import {useCallback, useEffect, useMemo, useRef, useState} from "react";
 import {Badge, Button, PageSurface} from "@/shared/ui";
-import {getMakamById, getMakamScale} from "@/engines/makam/data";
+import {getMakamById, getMakamGuclu, getMakamKarar, getMakamScale} from "@/engines/makam/data";
 import {MAKAM_CURRICULUM, MAKAM_CURRICULUM_STEPS, MAKAM_TOTAL_STEPS} from "./makam-curriculum";
 import {useMakamPlayback} from "./useMakamPlayback";
 import {useLearningProgress} from "./useLearningProgress";
@@ -31,6 +31,9 @@ export function MakamStepper() {
   const makam = getMakamById(step.makamId);
   const scale = makam ? getMakamScale(makam) : [];
   const seyir = makam?.seyir;
+  // Kaynakli karar/guclu (D3/D4); kaynagi yoksa null -> UI'da gosterilmez.
+  const karar = makam ? getMakamKarar(makam) : null;
+  const guclu = makam ? getMakamGuclu(makam) : null;
   const isDone = makam ? progress.isCompleted(makam.id) : false;
 
   const goTo = useCallback(
@@ -107,9 +110,20 @@ export function MakamStepper() {
       <PageSurface className="mb-4 p-5">
         <div className="mb-3 flex flex-wrap items-center gap-x-3 gap-y-1" aria-live="polite">
           <h2 className="text-lg font-semibold text-[var(--color-text-primary)]">{makam.name}</h2>
-          <span className="text-sm text-[var(--color-text-secondary)]">Karar: {makam.tonic}</span>
-          {makam.dominant ? (
-            <span className="text-sm text-[var(--color-text-secondary)]">Güçlü: {makam.dominant}</span>
+          {/*
+            Karar ve guclu KAYNAKTAN gelir (D3/D4). Eskiden "Karar: {makam.tonic}"
+            yaziliyordu; `tonic` 48 makamin HEPSINDE "C" oldugu icin Rast, Hicaz,
+            Segah, Evic — hepsi icin ekranda "Karar: C" cikiyordu, hemen
+            asagidaki otoriter seyir metni "dugah'ta karar kilar" derken.
+            `dominant` ise elle yazilmisti ve 11/48 makamda makamin kendi
+            dizisinde bile yoktu. Kaynagi olmayan makamda HICBIR SEY
+            gosterilmez — bos birakmak, uydurmaya yeglenir.
+          */}
+          {karar ? (
+            <span className="text-sm text-[var(--color-text-secondary)]">Karar: {karar.label}</span>
+          ) : null}
+          {guclu ? (
+            <span className="text-sm text-[var(--color-text-secondary)]">Güçlü: {guclu.label}</span>
           ) : null}
           {seyir ? <Badge>Seyir: {seyir.yon}</Badge> : null}
           {isDone ? <Badge>✓ Ogrenildi</Badge> : null}
@@ -118,7 +132,12 @@ export function MakamStepper() {
         <p className="mb-4 text-sm text-[var(--color-text-primary)]">{step.note}</p>
 
         <section aria-label="Koma perde dizisi" className="mb-4 rounded-md bg-[var(--color-bg-base)] p-4">
-          <p className="mb-1 text-xs text-[var(--color-text-secondary)]">Perde dizisi</p>
+          {/*
+            `getMakamScale` NOTE_NAMES uzerinde yarim-ton yuruyusudur: sesin
+            calidigi 53-EDO koma dizisi DEGIL, onun 12-TET izdusumu. Etiket
+            bunu soylemezse ayni ekranda iki farkli gerceklik olur (D15).
+          */}
+          <p className="mb-1 text-xs text-[var(--color-text-secondary)]">Perde dizisi (12-TET izdüşümü)</p>
           <p className="font-mono text-sm text-[var(--color-text-primary)]">{scale.join("  ")}</p>
         </section>
 

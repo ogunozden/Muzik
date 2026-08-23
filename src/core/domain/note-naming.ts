@@ -100,30 +100,3 @@ export function formatSolfegePitch(pitch: string, variant: PitchLabelVariant = "
 
   return `${solfege}${accidental}${parsed.octave}`;
 }
-
-export function formatSolfegePitchFromMidi(midiNumber: number, variant: PitchLabelVariant = "compact"): string {
-  const octave = Math.floor(midiNumber / 12) - 1;
-  const pitchClass = PITCH_CLASSES[midiNumber % 12];
-  return formatSolfegePitch(`${pitchClass}${octave}`, variant);
-}
-
-export function slugifyMusicName(value: string): string {
-  return value
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "")
-    .toLowerCase()
-    .replace(/ı/g, "i")
-    .replace(/ğ/g, "g")
-    .replace(/ü/g, "u")
-    .replace(/ş/g, "s")
-    .replace(/ö/g, "o")
-    .replace(/ç/g, "c")
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/^-+|-+$/g, "");
-}
-
-export function makeCanonicalAssetName(parts: readonly string[], extension: string): string {
-  const slug = parts.map(slugifyMusicName).filter(Boolean).join("--") || "untitled";
-  const normalizedExtension = extension.replace(/^\./, "").toLowerCase();
-  return `${slug}.${normalizedExtension}`;
-}

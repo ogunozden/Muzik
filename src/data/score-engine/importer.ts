@@ -2,9 +2,11 @@ import fs from "node:fs";
 import path from "node:path";
 import type {PieceDefinition} from "@/data/pieces/hicazkarPesrev";
 import {HICAZKAR_PESREV} from "@/data/pieces/hicazkarPesrev";
+import {splitEventsAtBarlines} from "@/data/symbtr/barline-split";
+import {readMu2WrittenMeter} from "@/data/symbtr/meter-map";
 import {parseSymbtrScore, type SymbtrScoreEvent} from "@/data/symbtr/parser";
 import type {CanonicalScoreDocument, CanonicalSourceFeature} from "./canonical-score";
-import {buildCanonicalScoreFromSymbtrEvents} from "./canonical-score";
+import {buildCanonicalScoreFromSymbtrEvents, getMeasureIndex} from "./canonical-score";
 import {buildSymbtrPdfSourceAnchors} from "./canonical-score-anchors";
 import {SCORE_ENGINE_DOCUMENT_PIECES} from "./calibration";
 import {evaluateCanonicalScoreQuality, type CanonicalScoreQualityReport} from "./quality";
@@ -16,6 +18,14 @@ export interface SymbtrCanonicalImportInput {
   scoreId?: string;
   sourceReference?: string;
   sourceKind?: "local" | "remote" | "user-upload";
+  /**
+   * Yazili mertebe. Verilmezse `piece.symbtrCatalogId`in `mu2` kardesinden
+   * okunur; o da yoksa olcu numarasi `Offset` tabanina duser.
+   *
+   * `raw` ile `piece` AYNI esere ait degilse (sentetik fixture'lar) bunu
+   * ACIKCA vermek gerekir — aksi halde baska bir eserin mertebesi okunur.
+   */
+  writtenMeter?: {numerator: number; denominator: number} | null;
 }
 
 export interface SymbtrCanonicalImportResult {
@@ -339,7 +349,7 @@ export function inferMeterFromSymbtrEvents(
   const measureMap = new Map<number, {start: number; end: number}>();
 
   for (const event of events) {
-    const measureIndex = event.measureIndex ?? Math.max(1, Math.floor(event.startBeat / 4) + 1);
+    const measureIndex = getMeasureIndex(event);
     const current = measureMap.get(measureIndex);
     const end = event.startBeat + event.durationBeats;
     if (!current) {
@@ -363,10 +373,32 @@ export function inferMeterFromSymbtrEvents(
   return dominant ? formatMeterFromQuarterBeats(dominant.value) : fallbackMeter;
 }
 
+/**
+ * Yazili mertebeyi `mu2` kardes dosyasinin 1. satirindan okur (PLAN §3/G6).
+ *
+ * TXT'de yazili mertebe YOKTUR. Bu deger olmadan olcu numarasi `Offset`
+ * sutunundan tahmin edilmek zorunda kalir; G4 olctu ki tempo isaretli
+ * eserlerde bu %83,56'ya duser. `mu2` varsa tahmin GEREKMEZ.
+ */
+function readLocalWrittenMeter(piece: PieceDefinition): {numerator: number; denominator: number} | null {
+  const mu2 = readFirstExistingLocalSymbtrFile(piece.symbtrCatalogId, "mu2", "mu2");
+  return mu2 ? readMu2WrittenMeter(mu2.raw) : null;
+}
+
 export function parseSymbtrToCanonical(input: SymbtrCanonicalImportInput): SymbtrCanonicalImportResult {
   const piece = input.piece ?? USER_SYMBTR_PIECE;
-  const events = parseSymbtrScore(input.raw, piece.bpm, piece.playbackAhenk?.koma53Offset ?? 0);
-  const runtimePiece = piece.meter === "auto" ? {...piece, meter: inferMeterFromSymbtrEvents(events, "4/4")} : piece;
+  const writtenMeter = input.writtenMeter !== undefined ? input.writtenMeter : readLocalWrittenMeter(piece);
+  const parsed = parseSymbtrScore(input.raw, piece.bpm, piece.playbackAhenk?.koma53Offset ?? 0, {writtenMeter});
+  // GRAVUR yolu: bar cizgisini asan notalar bolunur ve bagla isaretlenir (G7).
+  // CALMA yolu bu fonksiyondan gecmez (`follow/page.tsx` dogrudan
+  // `parseSymbtrScore` cagirir), dolayisiyla duyulan nota sayisi degismez.
+  const events = splitEventsAtBarlines(parsed, input.raw, writtenMeter).events;
+  // Mertebe biliniyorsa TAHMIN ETME. `inferMeterFromSymbtrEvents` yalniz `mu2`
+  // bulunamayan (arsiv disi) girdiler icin kalir.
+  const resolvedMeter = writtenMeter
+    ? `${writtenMeter.numerator}/${writtenMeter.denominator}`
+    : inferMeterFromSymbtrEvents(events, "4/4");
+  const runtimePiece = piece.meter === "auto" ? {...piece, meter: resolvedMeter} : piece;
   const document = buildCanonicalScoreFromSymbtrEvents(runtimePiece, events, {
     scoreId: input.scoreId ?? `score:${runtimePiece.id}`,
     sourceFingerprint: createSourceFingerprint(input.raw),

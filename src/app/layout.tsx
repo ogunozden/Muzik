@@ -5,6 +5,7 @@
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import { Providers } from "./providers";
+import { BRAND_THEME_COLOR } from "@/shared/tokens/visual-palettes";
 
 export const metadata: Metadata = {
   title: {
@@ -39,7 +40,7 @@ export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
   maximumScale: 5,
-  themeColor: "#8B5A2B",
+  themeColor: BRAND_THEME_COLOR,
 };
 
 export default function RootLayout({

@@ -1,7 +1,7 @@
 import {describe, expect, it} from "vitest";
 import {INSTRUMENT_PROFILES} from "../profiles";
 import {SAMPLE_SLOTS} from "../sample-library";
-import {INSTRUMENTS, MELODIC_INSTRUMENTS, PERCUSSION_INSTRUMENTS} from "@/lib/app-constants";
+import {INSTRUMENTS, MELODIC_INSTRUMENTS, PERCUSSION_INSTRUMENTS} from "@/shared/config/instruments";
 
 describe("instrument catalog consistency", () => {
   it("has an audio profile for every listed instrument", () => {

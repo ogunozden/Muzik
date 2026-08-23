@@ -1,18 +1,13 @@
-import {
-  colors as designColors,
-  radius as designRadius,
-  shadows as designShadows,
-  spacing as designSpacing,
-  typography as designTypography,
-} from "@/lib/design-system";
-
-export {
-  colors,
-  radius,
-  shadows,
-  spacing,
-  typography,
-} from "@/lib/design-system";
+/**
+ * Shared Tokens — TEK MERKEZ (ENGINEERING_RULESET: "Tek token kaynagi shared/tokens")
+ *
+ * Bu dosya artık DESIGN SYSTEM'in gerçek kaynağıdır.
+ * `src/lib/design-system` yalnızca geriye dönük shim olarak re-export eder.
+ * CSS değişkenlerinin tek gerçeği `shared/tokens/theme.css`’tir.
+ */
+import {colors as designColors} from "./colors";
+import {radius as designRadius} from "./radius";
+import {spacing as designSpacing} from "./spacing";
 
 export const tokens = {
   colors: {
@@ -21,9 +16,12 @@ export const tokens = {
       hover: "hover:bg-[var(--color-primary-600)] text-white",
       light: "bg-[var(--color-primary-100)] text-[var(--color-primary-700)]",
     },
+    // WCAG AA: `--color-secondary-500` (#925d00) uzerinde KOYU metin 3,28
+    // veriyordu (esik 4,5) — axe taramasi yakaladi. Beyaz metin ayni zeminde
+    // 5,54 veriyor; marka rengi degismeden esik asiliyor.
     secondary: {
-      base: "bg-[var(--color-secondary-500)] text-[var(--color-text-primary)]",
-      hover: "hover:bg-[var(--color-secondary-600)] text-[var(--color-text-primary)]",
+      base: "bg-[var(--color-secondary-500)] text-white",
+      hover: "hover:bg-[var(--color-secondary-600)] text-white",
     },
     accent: {
       base: "bg-[var(--color-accent)] text-white",
@@ -60,10 +58,7 @@ export const tokens = {
   },
 } as const;
 
-export {
-  designColors,
-  designRadius,
-  designShadows,
-  designSpacing,
-  designTypography,
-};
+export {designColors, designRadius, designSpacing};
+export {colors} from "./colors";
+export {spacing} from "./spacing";
+export {radius} from "./radius";

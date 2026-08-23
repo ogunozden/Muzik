@@ -80,7 +80,7 @@ function buildSearchUrl(query) {
   return `https://html.duckduckgo.com/html/?q=${encodeURIComponent(query)}`;
 }
 
-export async function verifyOgmMateryalGroup({group, provider, checkedAt, timeoutMs=8000, rows=3, cache, acceptedThreshold=80}) {
+export async function verifyOgmMateryalGroup({group, provider, checkedAt, timeoutMs=8000, rows=3, cache, acceptedThreshold=80, respectRateLimit = true, rateLimitState = null}) {
   const title = group.title && group.title !== "1" ? group.title : "";
   const composer = group.composer || "";
   const query = `site:ogmmateryal.eba.gov.tr "${title}" "${composer}"`;

@@ -61,15 +61,49 @@ describe("usul/data", () => {
       ]);
     });
 
-    it("accents are exactly the right-hand strong strokes (dum/ta)", () => {
+    // Kaynak (s.14 "OLCULERIN VURULMASI"): dum/ta sag el KUVVETLI vurus,
+    // hek IKI ELIN BIRLIKTE vurusu. `hek` eskiden bu kumede yoktu — kaynak onu
+    // kuvvetli sayarken hic vurgulanmiyordu ve hafif `tek` ailesine caliyordu
+    // (D7). Ornek: nimcember beat 9.
+    it("vurgular kaynaktaki KUVVETLI darplardir (dum/ta sag el + hek iki el)", () => {
       for (const usul of USUL_DATA) {
         for (const symbol of usul.symbols) {
           expect(symbol.isAccent, `${usul.id}:${symbol.beat}`).toBe(
-            symbol.symbol === "dum" || symbol.symbol === "ta",
+            symbol.symbol === "dum" || symbol.symbol === "ta" || symbol.symbol === "hek",
           );
         }
         expect(usul.stressPattern).toHaveLength(usul.beats);
       }
+    });
+
+    /**
+     * D9: velvele DOLGU vuruslari `isOrnament` ile isaretlenir; ses motoru
+     * susleme kismasini bundan yapar. Eski sezgisel (`timeValue < 1`) Gonul
+     * velvelelerindeki dolgunun cogunu kaciriyordu (1.400 darbin 748'i
+     * `timeValue: 1` yazili).
+     */
+    it("velvele dolgusu isOrnament ile isaretlenir, ana darp dizisi isaretlenmez", () => {
+      let markedUsuls = 0;
+
+      for (const usul of USUL_DATA) {
+        // Ana darp dizisi ASLA isaretlenmez (isOrnament tanimsiz).
+        for (const symbol of usul.symbols) {
+          expect(symbol.isOrnament, `${usul.id}: ana darp ${symbol.beat}`).toBeUndefined();
+        }
+        if (!usul.velvele?.length) continue;
+
+        const mainBeats = new Set(usul.symbols.map((symbol) => symbol.beat));
+        for (const symbol of usul.velvele) {
+          expect(symbol.isOrnament, `${usul.id}: velvele ${symbol.beat}`).toBe(!mainBeats.has(symbol.beat));
+        }
+        // Her velvelede hem ana darba denk gelen hem dolgu vurusu olmali;
+        // aksi halde kisma ya hic ya da tumune uygulanirdi.
+        expect(usul.velvele.some((symbol) => symbol.isOrnament), `${usul.id}: dolgu var`).toBe(true);
+        expect(usul.velvele.some((symbol) => !symbol.isOrnament), `${usul.id}: ana darp hizasi var`).toBe(true);
+        markedUsuls += 1;
+      }
+
+      expect(markedUsuls, "velvelesi isaretlenen usul sayisi").toBeGreaterThanOrEqual(20);
     });
   });
 

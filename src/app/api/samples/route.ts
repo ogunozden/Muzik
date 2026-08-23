@@ -1,4 +1,5 @@
-import {mkdir, stat, unlink, writeFile} from "node:fs/promises";
+import crypto from "node:crypto";
+import {mkdir, readFile, stat, unlink, writeFile} from "node:fs/promises";
 import path from "node:path";
 import {SAMPLE_SLOT_BY_KEY, SAMPLE_SLOTS} from "@/engines/ses/sample-library";
 import {summarizeSampleCoverage} from "@/engines/ses/sample-coverage";
@@ -38,6 +39,31 @@ function resolveSlotPath(relativePath: string): string {
   return resolved;
 }
 
+/**
+ * Commit'li ses dosyalarinin hash kimligi (`manifest.json`).
+ *
+ * `provenance.json` bir KLASORUN kaynagini anlatir, ama iddia aslinda o anki
+ * DOSYALARA aittir. `/samples` sayfasindan bir dosya yuklendiginde dosya
+ * degisir, provenance kaydi ise oldugu gibi kalirdi — yani yuklenen bir
+ * studyo kaydi icin uygulama hala "soundfont'tan uretildi" derdi.
+ *
+ * Manifest bunu OLCUYLE cozer: hash tutmuyorsa kaynak kaydi o dosyayi
+ * kapsamiyor demektir. Calisma zamaninda kanit dosyasina yazmak gerekmez.
+ */
+let manifestCache: Record<string, {sha256: string}> | null = null;
+
+async function readSampleManifest(): Promise<Record<string, {sha256: string}>> {
+  if (manifestCache) return manifestCache;
+  try {
+    const raw = await readFile(path.join(SAMPLES_ROOT, "manifest.json"), "utf8");
+    manifestCache = (JSON.parse(raw) as {files?: Record<string, {sha256: string}>}).files ?? {};
+  } catch {
+    // Manifest yoksa dosyalar "kapsam disi" DEGIL, "bilinmiyor" sayilir.
+    manifestCache = {};
+  }
+  return manifestCache;
+}
+
 async function getSlotStatus(slotKey: string) {
   const slot = SAMPLE_SLOT_BY_KEY.get(slotKey);
   if (!slot) return null;
@@ -46,6 +72,12 @@ async function getSlotStatus(slotKey: string) {
 
   try {
     const fileStat = await stat(filePath);
+    const manifest = await readSampleManifest();
+    const expected = manifest[slot.relativePath]?.sha256;
+    const actual = expected
+      ? crypto.createHash("sha256").update(await readFile(filePath)).digest("hex")
+      : null;
+
     return {
       key: slot.key,
       category: slot.category,
@@ -60,9 +92,14 @@ async function getSlotStatus(slotKey: string) {
       noteName: slot.noteName ?? null,
       symbol: slot.symbol ?? null,
       isAccent: slot.isAccent ?? false,
+      derivedFrom: slot.derivedFrom ?? null,
+      extrapolatedFrom: slot.extrapolatedFrom ?? null,
       installed: fileStat.isFile(),
       size: fileStat.size,
       updatedAt: fileStat.mtime.toISOString(),
+      // null = manifestoda kayitli degil (bilinmiyor). false = dosya
+      // degismis; klasorun kaynak kaydi BU dosyayi kapsamiyor.
+      matchesManifest: expected ? actual === expected : null,
     };
   } catch {
     return {
@@ -79,15 +116,55 @@ async function getSlotStatus(slotKey: string) {
       noteName: slot.noteName ?? null,
       symbol: slot.symbol ?? null,
       isAccent: slot.isAccent ?? false,
+      derivedFrom: slot.derivedFrom ?? null,
+      extrapolatedFrom: slot.extrapolatedFrom ?? null,
       installed: false,
       size: 0,
       updatedAt: null,
+      matchesManifest: null,
     };
   }
 }
 
+/**
+ * Her ses klasorunun kaynagi (PLAN.md §11/H4).
+ *
+ * Kayit `public/samples/provenance.json`de veri olarak durur; buradan disari
+ * verilir ki `/samples` sayfasi "bu ses nereden geldi" sorusunu
+ * cevaplayabilsin. Kaydi olmayan klasor **gizlenmez**, `unknown` gorunur.
+ */
+async function readFolderProvenance(): Promise<Record<string, unknown>> {
+  try {
+    const [provenanceRaw, sourcesRaw] = await Promise.all([
+      readFile(path.join(SAMPLES_ROOT, "provenance.json"), "utf8"),
+      readFile(path.join(SAMPLES_ROOT, "sources.json"), "utf8"),
+    ]);
+    const folders = (JSON.parse(provenanceRaw) as {folders?: Record<string, Record<string, unknown>>}).folders ?? {};
+    const sources = (JSON.parse(sourcesRaw) as {sources?: Array<Record<string, unknown>>}).sources ?? [];
+    const byId = new Map(sources.map((source) => [source.id as string, source]));
+
+    // Kaynagin LISANSINI ve kokenini de disari ver. Preset adi tek basina
+    // yetmiyor: `kudum` bir icra KAYDINDAN kesiliyor, preset'i yok — ekranda
+    // "Kaynak:" bos kaliyordu. Ustelik atif sarti olan kaynaklarda lisansin
+    // gorunmesi zaten gerekli.
+    return Object.fromEntries(
+      Object.entries(folders).map(([name, record]) => {
+        const source = record.sourceId ? byId.get(record.sourceId as string) : undefined;
+        return [name, {...record, license: source?.license ?? null, origin: source?.origin ?? null}];
+      }),
+    );
+  } catch {
+    // Kayit okunamazsa sayfa calismaya devam etsin; eksiklik `unknown` olarak
+    // gorunur, sessizce "kaynagi var" gibi gosterilmez.
+    return {};
+  }
+}
+
 export async function GET() {
-  const slots = await Promise.all(SAMPLE_SLOTS.map((slot) => getSlotStatus(slot.key)));
+  const [slots, folderProvenance] = await Promise.all([
+    Promise.all(SAMPLE_SLOTS.map((slot) => getSlotStatus(slot.key))),
+    readFolderProvenance(),
+  ]);
   const validSlots = slots.filter((slot) => slot !== null);
 
   return Response.json({
@@ -95,6 +172,7 @@ export async function GET() {
     installed: validSlots.filter((slot) => slot.installed).length,
     coverage: summarizeSampleCoverage(validSlots),
     slots: validSlots,
+    provenance: folderProvenance,
   });
 }
 
@@ -133,6 +211,7 @@ export async function POST(request: Request) {
   await mkdir(path.dirname(filePath), {recursive: true});
   await writeFile(filePath, Buffer.from(arrayBuffer));
 
+  // Yukleme sonrasi dosya artik manifestoyu tutmaz; durum bunu yansitmali.
   const status = await getSlotStatus(slot.key);
   return Response.json({slot: status});
 }

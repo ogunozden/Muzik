@@ -65,4 +65,35 @@ describe("UnifiedLayout accessibility", () => {
     expect(menus.length).toBe(3);
     expect(screen.getAllByRole("menuitem").length).toBeGreaterThanOrEqual(8);
   });
+
+  it("renders brand link to home with correct href", () => {
+    render(
+      <UnifiedLayout>
+        <p>içerik</p>
+      </UnifiedLayout>,
+    );
+    const brand = screen.getByLabelText("Muzik - Türk Müziği Platformu");
+    expect(brand.getAttribute("href")).toBe("/");
+  });
+
+  it("handles details/summary hub dropdown for active child", () => {
+    render(
+      <UnifiedLayout>
+        <p>içerik</p>
+      </UnifiedLayout>,
+    );
+    const details = document.querySelector("details");
+    expect(details).not.toBeNull();
+    const summary = details?.querySelector("summary");
+    expect(summary).toBeDefined();
+  });
+
+  it("renders footer with year and app name", () => {
+    render(
+      <UnifiedLayout>
+        <p>içerik</p>
+      </UnifiedLayout>,
+    );
+    expect(screen.getByText(/© 2026/)).toBeDefined();
+  });
 });

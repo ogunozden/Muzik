@@ -11,16 +11,26 @@ import {
 import type {CanonicalDocumentListItem, SymbtrCanonicalImportResult} from "@/data/score-engine/importer";
 import {SCORE_ENGINE_DEMO_DOCUMENT} from "@/data/score-engine/demo-score";
 import {evaluateCanonicalScoreQuality} from "@/data/score-engine/quality";
-import {playArrangement, stopAll, type InstrumentType} from "@/engines/ses/engine";
-import {ENSTRUMAN_LIST, MELODIC_INSTRUMENTS} from "@/lib/app-constants";
+import {getHeardPlaybackPosition, playArrangement, stopAll, type InstrumentType} from "@/engines/ses/engine";
+import {INSTRUMENTS, MELODIC_INSTRUMENTS} from "@/shared/config/instruments";
 import {tokens} from "@/shared/tokens";
-import {
-  ConfidenceBar,
-  ScoreSurface,
-  StatusPill,
-  WorkbenchMetric,
-} from "./workbench/ScoreSurface";
+import {ConfidenceBar, StatusPill, WorkbenchMetric} from "./workbench/ScoreSurfaceVex";
+import {ScoreSurfaceVex} from "./workbench/ScoreSurfaceVex";
+import {ScoreSurfaceRouter, type ScoreRenderer} from "./workbench/ScoreSurfaceRouter";
+import dynamic from "next/dynamic";
 import {WorkbenchStatusBar} from "./workbench/WorkbenchStatusBar";
+
+const ScoreSurfaceVerovio = dynamic(
+  () => import("@/features/score-engine/workbench/ScoreSurfaceVerovio").then((mod) => mod.ScoreSurfaceVerovio),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="rounded-md border border-[var(--color-border-subtle)] bg-[var(--color-bg-base)] px-4 py-6 text-sm text-[var(--color-text-secondary)]">
+        Verovio lazy-load…
+      </div>
+    ),
+  },
+);
 import {
   DEFAULT_VISIBLE_LAYERS,
   SCORE_LAYER_CONTROLS,
@@ -38,8 +48,10 @@ import {
 
 export function CanonicalScorePrototype({
   document: initialDocument = SCORE_ENGINE_DEMO_DOCUMENT,
+  renderer,
 }: {
   document?: CanonicalScoreDocument;
+  renderer?: ScoreRenderer | "both";
 }) {
   const {t} = useTranslation();
   const [document, setDocument] = useState(initialDocument);
@@ -52,7 +64,9 @@ export function CanonicalScorePrototype({
   const [selectedInstrument, setSelectedInstrument] = useState<InstrumentType>("ud");
   const [visibleLayers, setVisibleLayers] = useState<VisibleScoreLayers>(DEFAULT_VISIBLE_LAYERS);
   const autoLoadedInitialDocumentRef = useRef(false);
-  const progressTimerRef = useRef<number | null>(null);
+  /** Belge yukleme nesli — gec gelen ESKI yaniti elemek icin (D13). */
+  const loadGenerationRef = useRef(0);
+  const progressRafRef = useRef<number | null>(null);
   const stopTimerRef = useRef<number | null>(null);
 
   const activeEvent = getActiveCanonicalEvent(document, playbackPosition) ?? document.events[0] ?? null;
@@ -61,7 +75,7 @@ export function CanonicalScorePrototype({
   const activeProgress = Math.min(100, Math.max(0, (playbackPosition / Math.max(document.totalDuration, 0.1)) * 100));
   const activeSource = activeEvent ? document.sources.find((source) => source.id === activeEvent.evidenceId) : null;
   const melodicInstrumentOptions = useMemo(
-    () => ENSTRUMAN_LIST.filter((instrument) => (MELODIC_INSTRUMENTS as readonly string[]).includes(instrument.id)),
+    () => INSTRUMENTS.filter((instrument) => (MELODIC_INSTRUMENTS as readonly string[]).includes(instrument.id)),
     [],
   );
   const scheduledNotes = useMemo(
@@ -70,18 +84,32 @@ export function CanonicalScorePrototype({
   );
   const qualityReport = useMemo(() => evaluateCanonicalScoreQuality(document), [document]);
 
+  /**
+   * Belge yukleme — YARIS KORUMALI (D13).
+   *
+   * Onceki surumde iptal/nesil koruması yoktu: kullanici hizlica belge
+   * degistirdiginde ESKI istegin yaniti sonra gelirse onu son soz kabul edip
+   * YANLIS eseri gosteriyordu. Her cagri bir nesil numarasi alir; await'ten
+   * sonra nesil degistiyse yanit sessizce atilir (state'e dokunulmaz).
+   */
   const loadCanonicalDocument = useCallback(async (documentId: string) => {
+    const generation = loadGenerationRef.current + 1;
+    loadGenerationRef.current = generation;
+    const isStale = () => loadGenerationRef.current !== generation;
+
     setDocumentLoadState("loading");
     setDocumentLoadError(null);
     try {
       const response = await fetch(`/api/score-engine/documents/${encodeURIComponent(documentId)}`);
       if (!response.ok) throw new Error(`HTTP ${response.status}`);
       const result = (await response.json()) as SymbtrCanonicalImportResult;
+      if (isStale()) return;
       setDocument(result.document);
       setSelectedDocumentId(result.document.id);
       setPlaybackPosition(0);
       setDocumentLoadState("loaded");
     } catch (error) {
+      if (isStale()) return;
       setDocumentLoadState("error");
       setDocumentLoadError(error instanceof Error ? error.message : "Doküman yüklenemedi");
     }
@@ -98,7 +126,13 @@ export function CanonicalScorePrototype({
         if (cancelled) return;
         setAvailableDocuments(payload.documents);
         const firstReachable = payload.documents.find((item) => item.eventCount > 0 && item.validation.ok);
-        if (!autoLoadedInitialDocumentRef.current && firstReachable && selectedDocumentId === initialDocument.id) {
+        // Otomatik ilk yukleme TEK SEFERLIK; `autoLoadedInitialDocumentRef`
+        // bunu zaten garantiliyor. Eskiden burada `selectedDocumentId ===
+        // initialDocument.id` de kontrol ediliyordu ve o yuzden bu effect
+        // `selectedDocumentId`e BAGIMLIYDI — `loadCanonicalDocument` o state'i
+        // set ettigi icin her belge seciminde belge LISTESI bastan cekiliyordu
+        // (D13). Effect artik yalniz mount'ta calisir.
+        if (!autoLoadedInitialDocumentRef.current && firstReachable) {
           autoLoadedInitialDocumentRef.current = true;
           await loadCanonicalDocument(firstReachable.id);
         }
@@ -113,17 +147,17 @@ export function CanonicalScorePrototype({
     return () => {
       cancelled = true;
     };
-  }, [initialDocument.id, loadCanonicalDocument, selectedDocumentId]);
+  }, [loadCanonicalDocument]);
 
   const toggleScoreLayer = useCallback((layer: VisibleScoreLayer) => {
     setVisibleLayers((current) => ({...current, [layer]: !current[layer]}));
   }, []);
 
   const clearPlaybackResources = useCallback(() => {
-    if (progressTimerRef.current) window.clearInterval(progressTimerRef.current);
+    if (progressRafRef.current) cancelAnimationFrame(progressRafRef.current);
     if (stopTimerRef.current) window.clearTimeout(stopTimerRef.current);
     stopAll();
-    progressTimerRef.current = null;
+    progressRafRef.current = null;
     stopTimerRef.current = null;
   }, []);
 
@@ -135,7 +169,17 @@ export function CanonicalScorePrototype({
 
   useEffect(() => clearPlaybackResources, [clearPlaybackResources]);
 
-  const playScore = useCallback(() => {
+  /**
+   * Imlec SES SAATINDEN okunur (D6).
+   *
+   * Eskiden `performance.now()` + `setInterval(80ms)` idi ve durdurma da duvar
+   * saatinde `setTimeout` ile yapiliyordu; ses ise `context.currentTime`
+   * uzerinden planlaniyor. Iki saat ayristikca imlec kayiyordu, ustelik cikis
+   * gecikmesi (bu sistemde ~53 ms) hic dusulmuyor ve imlec 12,5 fps akiyordu.
+   * Ritim motoru bu problemi `heardContextTime` ile cozmustu; ayni deseni
+   * `getHeardPlaybackPosition` uzerinden burada da kullaniyoruz.
+   */
+  const playScore = useCallback(async () => {
     if (isPlaying || scheduledNotes.length === 0) return;
 
     stopAll();
@@ -143,13 +187,18 @@ export function CanonicalScorePrototype({
     setPlaybackPosition(0);
 
     const duration = document.totalDuration;
-    const startAt = performance.now();
+    const {durationSeconds, baseTime} = await playArrangement(scheduledNotes, [], selectedInstrument);
+    if (durationSeconds <= 0) {
+      stopPlayback();
+      return;
+    }
 
-    progressTimerRef.current = window.setInterval(() => {
-      setPlaybackPosition(Math.min((performance.now() - startAt) / 1000, duration));
-    }, 80);
-    stopTimerRef.current = window.setTimeout(stopPlayback, (duration + 0.35) * 1000);
-    void playArrangement(scheduledNotes, [], selectedInstrument);
+    const tick = () => {
+      setPlaybackPosition(Math.min(getHeardPlaybackPosition(baseTime), duration));
+      progressRafRef.current = requestAnimationFrame(tick);
+    };
+    progressRafRef.current = requestAnimationFrame(tick);
+    stopTimerRef.current = window.setTimeout(stopPlayback, (durationSeconds + 0.35) * 1000);
   }, [document.totalDuration, isPlaying, scheduledNotes, selectedInstrument, stopPlayback]);
 
   return (
@@ -178,19 +227,30 @@ export function CanonicalScorePrototype({
             <StatusPill label={`quality-${qualityReport.status}`} tone={getQualityTone(qualityReport)} />
             <StatusPill label={activeSource?.kind ?? "source"} tone="neutral" />
             <select
+              id="score-engine-document-select"
+              name="score-engine-document"
               aria-label={t("scoreEngine.document")}
               value={selectedDocumentId}
               onChange={(event) => void loadCanonicalDocument(event.target.value)}
               className="h-10 min-w-[220px] rounded-md border border-[var(--color-border-default)] bg-white px-3 text-sm"
             >
               <option value={initialDocument.id}>{initialDocument.title} · {t("scoreEngine.demoFallback")}</option>
+              {/*
+                Dogrulama durumu secim aninda GORUNUR olmali (D1): kurasyon
+                tezgahinda bozuk belgeyi acmak MESRU bir istek, o yuzden
+                disable ETMIYORUZ — ama sessizce acilmasi da olmaz. Hata
+                sayisi etikette; operator bilerek seciyor.
+              */}
               {availableDocuments.map((item) => (
                 <option key={item.id} value={item.id} disabled={item.eventCount === 0}>
                   {item.title} · {item.eventCount || "kaynak yok"} event
+                  {item.eventCount > 0 && !item.validation.ok ? ` · ⚠ ${item.validation.errorCount} doğrulama hatası` : ""}
                 </option>
               ))}
             </select>
             <select
+              id="score-engine-instrument-select"
+              name="score-engine-instrument"
               aria-label={t("scoreEngine.instrument")}
               value={selectedInstrument}
               onChange={(event) => setSelectedInstrument(event.target.value as InstrumentType)}
@@ -204,7 +264,7 @@ export function CanonicalScorePrototype({
             </select>
             <button
               type="button"
-              onClick={isPlaying ? stopPlayback : playScore}
+              onClick={() => (isPlaying ? stopPlayback() : void playScore())}
               className="h-10 rounded-md bg-[var(--color-primary-500)] px-4 text-sm font-semibold text-white hover:bg-[var(--color-primary-600)]"
             >
               {isPlaying ? t("scoreEngine.stop") : t("scoreEngine.play")}
@@ -222,7 +282,18 @@ export function CanonicalScorePrototype({
           {[
             [t("scoreEngine.metricSource"), activeSource?.label ?? "SymbTr source"],
             [t("scoreEngine.metricCanonical"), `${document.events.length} event / ${document.measures.length} ölçü`],
-            [t("scoreEngine.metricRender"), documentLoadState === "loading" ? "yükleniyor" : "temiz yüzey"],
+            [
+              t("scoreEngine.metricRender"),
+              documentLoadState === "loading"
+                ? "yükleniyor"
+                : renderer === "both"
+                  ? "VexFlow + Verovio (lab)"
+                  : renderer === "vexflow"
+                    ? "VexFlow (fallback)"
+                    : renderer === "verovio"
+                      ? "Verovio MEI (lazy)"
+                      : "Verovio (env default)",
+            ],
             [t("scoreEngine.metricPlayback"), `${scheduledNotes.length} nota / ${getInstrumentLabel(selectedInstrument)}`],
             [t("scoreEngine.metricQuality"), `${qualityReport.score}/100 · ${qualityReport.status}`],
           ].map(([label, value]) => (
@@ -268,7 +339,22 @@ export function CanonicalScorePrototype({
             </div>
           </div>
 
-          <ScoreSurface document={document} activeEvent={activeEvent} visibleLayers={visibleLayers} />
+          {renderer === "both" ? (
+            <div className="grid gap-4 lg:grid-cols-2">
+              <div>
+                <p className={`mb-2 text-xs font-semibold uppercase ${tokens.colors.text.secondary}`}>VexFlow (fallback)</p>
+                <ScoreSurfaceVex document={document} activeEvent={activeEvent} visibleLayers={visibleLayers} />
+              </div>
+              <div>
+                <p className={`mb-2 text-xs font-semibold uppercase ${tokens.colors.text.secondary}`}>Verovio MEI (default, lazy)</p>
+                <ScoreSurfaceVerovio document={document} activeEvent={activeEvent} visibleLayers={visibleLayers} />
+              </div>
+            </div>
+          ) : renderer ? (
+            <ScoreSurfaceRouter document={document} activeEvent={activeEvent} visibleLayers={visibleLayers} renderer={renderer} />
+          ) : (
+            <ScoreSurfaceRouter document={document} activeEvent={activeEvent} visibleLayers={visibleLayers} />
+          )}
 
           <div className="mt-3 rounded-md border border-[var(--color-border-subtle)] bg-white p-3">
             <div className="h-2 overflow-hidden rounded-full bg-[var(--color-bg-muted)]">

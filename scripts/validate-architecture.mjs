@@ -88,9 +88,6 @@ if (exists(navigationConfigPath)) {
   const primaryNavigationBlock = navigationConfig.match(
     /export const navigation:\s*NavItem\[\]\s*=\s*\[([\s\S]*?)\n\];/
   )?.[1] ?? "";
-  const legacyAliasBlock = navigationConfig.match(
-    /export const legacyNavigationAliases:\s*NavItem\[\]\s*=\s*\[([\s\S]*?)\n\];/
-  )?.[1] ?? "";
   const requiredVisibleRouteKeys = [
     "studio",
     "studioFollow",
@@ -99,15 +96,6 @@ if (exists(navigationConfigPath)) {
     "archive",
     "rhythm",
     "samples",
-  ];
-  const requiredLegacyAliasKeys = [
-    "makam",
-    "usul",
-    "nota",
-    "notaEditor",
-    "recording",
-    "sesler",
-    "eserTakip",
   ];
 
   for (const routeKey of requiredVisibleRouteKeys) {
@@ -118,15 +106,31 @@ if (exists(navigationConfigPath)) {
     }
   }
 
-  for (const routeKey of requiredLegacyAliasKeys) {
+  // Legacy aliaslar TEK KAYNAK: src/shared/config/legacy-routes.ts LEGACY_ROUTE_MAP
+  const usesLegacyMap = navigationConfig.includes("LEGACY_ROUTE_MAP") && navigationConfig.includes("legacyNavigationAliases");
+  if (!usesLegacyMap) {
+    failures.push("Legacy alias must be derived from LEGACY_ROUTE_MAP (centralized atomic source): src/shared/config/navigation.config.ts");
+  }
+  // Legacy id'ler ana navigasyonda GORUNMEZ olmali
+  const legacyIdsInPrimary = ["makam", "usul", "nota", "notaEditor", "recording", "sesler", "eserTakip"];
+  for (const routeKey of legacyIdsInPrimary) {
     const idPattern = new RegExp(`id:\\s*["']${routeKey}["']`);
-    const hrefPattern = new RegExp(`href:\\s*routes\\.${routeKey}\\b`);
-    if (idPattern.test(primaryNavigationBlock) || hrefPattern.test(primaryNavigationBlock)) {
+    if (idPattern.test(primaryNavigationBlock)) {
       failures.push(`Legacy redirect route must not be visible in main navigation: ${routeKey}`);
     }
-    if (!idPattern.test(legacyAliasBlock) || !hrefPattern.test(legacyAliasBlock)) {
-      failures.push(`Legacy redirect route must remain centrally tracked: ${routeKey}`);
+  }
+  // Tek kaynak dosyasi var mi ve 7 anahtar tam mi?
+  const legacyRoutesPath = "src/shared/config/legacy-routes.ts";
+  if (exists(legacyRoutesPath)) {
+    const legacyRoutes = fs.readFileSync(path.join(root, legacyRoutesPath), "utf8");
+    const requiredLegacyPaths = ["makam", "usul", "nota", "nota-editor", "recording", "sesler", "eser-takip"];
+    for (const p of requiredLegacyPaths) {
+      if (!legacyRoutes.includes(`"${p}"`) && !legacyRoutes.includes(`'${p}'`) && !legacyRoutes.includes(p + ":")) {
+        failures.push(`Legacy route missing in central map: ${p} (src/shared/config/legacy-routes.ts)`);
+      }
     }
+  } else {
+    failures.push("Missing central legacy route map: src/shared/config/legacy-routes.ts");
   }
 }
 
@@ -208,6 +212,15 @@ for (const file of walk(path.join(root, "src"))) {
   const importsFeatures = /from\s+["']@\/features\//.test(content);
   const importsApp = /from\s+["']@\/app\//.test(content);
 
+  // Zaman cekirdegi (PLAN.md §2.1 / G1): `src/core/time` ANA MOTORUN en alt
+  // katmanidir ve HICBIR seyi import etmez. Bir bagimlilik girerse cekirdek
+  // artik "her yerden cagrilabilir" olmaktan cikar ve goc tikanir.
+  if (rel.startsWith("src/core/time/") && !rel.includes("__tests__")) {
+    if (/from\s+["'](@\/|\.\.\/)/.test(content)) {
+      failures.push(`core/time is the engine kernel and must import nothing outside itself: ${rel}`);
+    }
+  }
+
   if (rel.startsWith("src/core/domain/")) {
     if (/from\s+["']@\/(features|app|core\/application|core\/infrastructure|engines)\//.test(content)) {
       failures.push(`core/domain must stay pure (no app/features/application/infrastructure/engines import): ${rel}`);
@@ -231,20 +244,13 @@ for (const file of walk(path.join(root, "src"))) {
   }
 }
 
-// Max-line guardrail (F4.8): dosyalar <=800 satir. Mevcut buyuk dosyalar
-// aktif decomposition hedefidir (M8.1-M8.3) ve grandfather edilir; bu allowlist
-// yalniz kuculdukce kisalir (ratchet). YENI dosya 800'u asamaz.
-const MAX_LINES = 800;
-const GRANDFATHERED_LARGE_FILES = new Map([
-  // [dosya, tavan] — mevcut satirin ustune cikamaz; decomposition ile azalir.
-  ["src/app/api/external-references/route.ts", 800],
-  ["src/app/studio/follow/page.tsx", 1025],
-  ["src/app/references/curation/page.tsx", 855],
-  ["src/features/references/ReferencesCurationDetail.tsx", 810],
-  ["src/engines/usul/data.ts", 810], // saf veri dosyasi (usul tanimlari)
-  ["src/engines/makam/data.ts", 810], // saf veri dosyasi (makam tanimlari)
-  ["src/app/api/external-references/route-state.ts", 685],
-]);
+// Max-line guardrail — kesin cozum: 600 (radikal). Tum dosyalar <600 olmali, grandfather 0.
+// Onceki 800 + grandfather listesi 2026-08-22 kokten cozumle kaldirildi:
+// - usul 779 / makam 709 -> data/* 4 parca (<350) + barrel 1
+// - follow 732->224, studio 633->386, ScoreSurface 639->247, Dashboard 632->127
+// - canonical-score 573->349, curation-helpers 563->133, route-state 642->4
+const MAX_LINES = 600;
+const GRANDFATHERED_LARGE_FILES = new Map([]);
 
 for (const file of walk(path.join(root, "src"))) {
   const rel = file.relativePath;
@@ -262,6 +268,23 @@ for (const file of walk(path.join(root, "src"))) {
   } else if (lineCount > MAX_LINES) {
     failures.push(`File exceeds ${MAX_LINES} lines (${lineCount}); split into modules: ${rel}`);
   }
+}
+
+// Hardcode renk literal'i kapisi (ENGINEERING_RULESET: "Hardcode yok").
+// Bilesenlerde #hex / rgb( / oklch( literal'i yazilmaz; tek kaynak
+// shared/tokens + lib/design-system (tema tanimlari) katmanidir.
+const COLOR_LITERAL_PATTERN = /#[0-9a-fA-F]{3,8}\b|rgb\(|oklch\(/;
+for (const file of walk(path.join(root, "src"))) {
+  const rel = file.relativePath;
+  if (rel.includes("__tests__") || rel.endsWith(".generated.json") || rel.endsWith(".css")) continue;
+  if (!/\.(ts|tsx)$/.test(rel)) continue;
+  if (rel.startsWith("src/shared/tokens/") || rel.startsWith("src/lib/design-system/")) continue;
+  const lines = fs.readFileSync(file.fullPath, "utf8").split("\n");
+  lines.forEach((line, index) => {
+    if (COLOR_LITERAL_PATTERN.test(line)) {
+      failures.push(`Color literal in component (move to shared/tokens): ${rel}:${index + 1}`);
+    }
+  });
 }
 
 if (failures.length > 0) {

@@ -49,7 +49,7 @@ describe("buildRhythmSchedule", () => {
       120,
     );
 
-    expect(schedule).toEqual([
+    expect(schedule).toMatchObject([
       {startOffset: 0, beatDuration: 0.5, symbol: "dum", isAccent: true, gainScale: 1},
       {startOffset: 1, beatDuration: 0.5, symbol: "ke", isAccent: false, gainScale: 1},
     ]);
@@ -65,9 +65,11 @@ describe("buildRhythmSchedule", () => {
       60,
     );
 
-    expect(schedule).toEqual([
-      {startOffset: 8, beatDuration: 0.5, symbol: "tek", isAccent: false, gainScale: 0.68},
-      {startOffset: 8.5, beatDuration: 0.5, symbol: "ke", isAccent: false, gainScale: 0.68},
+    // gainScale 1: bu vuruslar ANA darp dizisinden geliyor (isOrnament yok).
+    // Kisa deger artik tek basina "susleme" demek DEGIL (D9).
+    expect(schedule).toMatchObject([
+      {startOffset: 8, beatDuration: 0.5, symbol: "tek", isAccent: false, gainScale: 1},
+      {startOffset: 8.5, beatDuration: 0.5, symbol: "ke", isAccent: false, gainScale: 1},
     ]);
   });
 
@@ -84,7 +86,7 @@ describe("buildRhythmSchedule", () => {
       "8",
     );
 
-    expect(schedule).toEqual([
+    expect(schedule).toMatchObject([
       {startOffset: 0, beatDuration: 0.25, symbol: "dum", isAccent: true, gainScale: 1},
       {startOffset: 0.5, beatDuration: 0.25, symbol: "tek", isAccent: false, gainScale: 1},
     ]);
@@ -93,30 +95,52 @@ describe("buildRhythmSchedule", () => {
   it("keeps the quarter-note default when unit is omitted (backward compat)", () => {
     const schedule = buildRhythmSchedule(2, [{beat: 2, symbol: "dum", isAccent: true}], 60);
 
-    expect(schedule).toEqual([{startOffset: 1, beatDuration: 1, symbol: "dum", isAccent: true, gainScale: 1}]);
+    expect(schedule).toMatchObject([{startOffset: 1, beatDuration: 1, symbol: "dum", isAccent: true, gainScale: 1}]);
   });
 
-  it("caps the hit envelope at one beat so long-valued strokes do not expose sample rebound", () => {
-    // Devr-i Kebir'in 2 vurusluk Tek'lerinde pencere degerle olceklenince
-    // kudum kaydindaki seken ikinci vurus da duyuluyordu.
+  it("uzun degerli darpta zarf NOTALI DEGERI izler (K1)", () => {
+    // Eskiden pencere 1 vurusa kirpiliyordu: "teklerde iki vurus geliyor"
+    // (2026-07-14). Kok neden kodda degil SAMPLE DOSYASINDAYDI — kudum'un
+    // dum/ke/tek kayitlari ~10ms ve ~310ms'de iki vurus iceriyordu ve kudum
+    // varsayilan vurmali. Dosyalar `scripts/trim-percussion-samples.mjs` ile
+    // ilk vurusa kirpildi, workaround kaldirildi.
     const schedule = buildRhythmSchedule(4, [{beat: 1, symbol: "tek", isAccent: false, timeValue: 2}], 60);
 
-    expect(schedule).toEqual([{startOffset: 0, beatDuration: 1, symbol: "tek", isAccent: false, gainScale: 1}]);
+    expect(schedule).toMatchObject([{startOffset: 0, beatDuration: 2, symbol: "tek", isAccent: false, gainScale: 1}]);
   });
 
-  it("softens ornament (short-value) strokes so the main darbs stay prominent (F12.4)", () => {
-    // buildRhythmSchedule normalize sonrasi calisir (te->tek, ka->ke). Kisa
-    // deger (0.5) velvele suslemesidir -> daha kisik gain.
+  it("velvele DOLGU vuruslarini kisar, ana darplari tam gainde birakir (D9)", () => {
+    // Susleme artik VELVELE YAPISINDAN gelir (`isOrnament`: ana darba denk
+    // DUSMEYEN velvele vurusu), `timeValue` sezgiselinden degil. Eski kural
+    // "timeValue < 1 ise suslemedir" diyordu; Gonul velvelelerindeki dolgunun
+    // cogu `timeValue: 1` yazili oldugu icin (1.400 darbin 748'i) tam gainde
+    // caliyor, niyet yalniz te-ke ikililerinde gerceklesiyordu.
     const schedule = buildRhythmSchedule(
       4,
       [
         {beat: 1, symbol: "dum", isAccent: true, timeValue: 2},
-        {beat: 3, symbol: "tek", isAccent: false, timeValue: 0.5},
-        {beat: 3.5, symbol: "ke", isAccent: false, timeValue: 0.5},
+        {beat: 2, symbol: "tek", isAccent: false, timeValue: 1, isOrnament: true},
+        {beat: 3, symbol: "ke", isAccent: false, timeValue: 0.5, isOrnament: true},
       ],
       60,
     );
+
     expect(schedule.map((hit) => hit.gainScale)).toEqual([1, 0.68, 0.68]);
+  });
+
+  it("Berefsan'in 4 vurusluk Duuuum'u 4 vurus SESLENIR (K1)", () => {
+    // Korpustaki 1.400 darbin %26'si `timeValue > 1`; eskiden hepsi 1 vurusa
+    // kirpiliyor, Duuuum ile Dum ayni sesleniyordu.
+    const schedule = buildRhythmSchedule(8, [{beat: 1, symbol: "dum", isAccent: true, timeValue: 4}], 60);
+
+    expect(schedule[0].notatedBeats).toBe(4);
+    expect(schedule[0].beatDuration).toBe(4);
+  });
+
+  it("kisa degerli AMA ana darp olan vurus KISILMAZ (eski sezgiselin hatasi)", () => {
+    const schedule = buildRhythmSchedule(4, [{beat: 1, symbol: "tek", isAccent: false, timeValue: 0.5}], 60);
+
+    expect(schedule[0].gainScale).toBe(1);
   });
 });
 

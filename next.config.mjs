@@ -12,8 +12,13 @@ const externalReferencePolicy = JSON.parse(
   fs.readFileSync(path.join(__dirname, "src/data/references/external-reference-policy.json"), "utf8"),
 );
 
-function contentSecurityPolicy() {
-  const scriptSrc = isProd ? "'self' 'unsafe-inline'" : "'self' 'unsafe-inline' 'unsafe-eval'";
+export function contentSecurityPolicy(nonce) {
+  const effectiveNonce = nonce ?? "random-nonce-placeholder";
+  // CSP nonce + unsafe-inline: nonce'li scriptler icin strict, nonce'siz Next inline'lari icin fallback.
+  // Middleware gercek nonce'u header'a yazar; buradaki placeholder sadece build-time fallback.
+  const scriptSrc = isProd
+    ? `'self' 'nonce-${effectiveNonce}' 'unsafe-inline'`
+    : `'self' 'nonce-${effectiveNonce}' 'unsafe-inline' 'unsafe-eval'`;
 
   return [
     "default-src 'self'",
@@ -31,6 +36,14 @@ function contentSecurityPolicy() {
   ].join("; ");
 }
 
+export function generateNonce() {
+  const array = new Uint8Array(16);
+  crypto.getRandomValues(array);
+  let binary = "";
+  for (const byte of array) binary += String.fromCharCode(byte);
+  return btoa(binary);
+}
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   // Core
@@ -46,7 +59,11 @@ const nextConfig = {
   // SWC Compiler
   compiler: {
     removeConsole: isProd ? { exclude: ["error", "warn"] } : false,
-    reactRemoveProperties: isProd ? { properties: ["^data-testid$"] } : false,
+    // `data-testid` PROD'DA SİYIRILMAZ (2026-08-08): release denetimleri
+    // (audit:score-engine-focused-crops, audit:score-engine-engraving) prod
+    // sunucuda (`next start`, 4015) bu seçicilerle çalışır. Sıyırma, prod-cycle
+    // kapanış kapısını kendi denetlediği ortamda SESSİZCE kırıyordu — denetim
+    // testid bulamayıp 15 s timeout alıyordu. Testid'ler release sözleşmesidir.
   },
 
   // Images
@@ -60,7 +77,41 @@ const nextConfig = {
   // Server external
   serverExternalPackages: [],
 
-  // Headers
+  // Verovio WASM is lazy-loaded via dynamic import; Node builtins inside its
+  // Emscripten glue must not be bundled for the browser. Without this,
+  // `next build --webpack` fails with UnhandledSchemeError: node:crypto / node:fs
+  // (verovio/dist/verovio-module.mjs). Stub stays valid even when verovio is
+  // not installed thanks to try/catch + optionalDependencies.
+  webpack: (config, {isServer}) => {
+    if (!isServer) {
+      config.resolve = config.resolve || {};
+      config.resolve.fallback = {
+        ...(config.resolve.fallback ?? {}),
+        fs: false,
+        crypto: false,
+        path: false,
+        os: false,
+        stream: false,
+        buffer: false,
+        module: false,
+        util: false,
+      };
+      config.resolve.alias = {
+        ...(config.resolve.alias ?? {}),
+        "node:fs": false,
+        "node:crypto": false,
+        "node:module": false,
+        "node:path": false,
+        "node:os": false,
+        "node:buffer": false,
+        "node:stream": false,
+        "node:util": false,
+      };
+    }
+    return config;
+  },
+
+  // Headers — CSP middleware.ts tarafindan nonce ile dinamik yazilir, burada statik CSP koymuyoruz (cift header = placeholder bloklar)
   async headers() {
     const headers = [
       {
@@ -71,7 +122,6 @@ const nextConfig = {
           { key: "X-Frame-Options", value: "DENY" },
           { key: "X-XSS-Protection", value: "1; mode=block" },
           { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
-          { key: "Content-Security-Policy", value: contentSecurityPolicy() },
           {
             key: "Permissions-Policy",
             value: "camera=(), microphone=(self), geolocation=()",

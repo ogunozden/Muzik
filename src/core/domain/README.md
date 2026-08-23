@@ -1,10 +1,11 @@
-# Core Domain
+# Core Domain — Saf Modeller
 
-Ana domain sozlesmeleri burada tanimlanir.
+> Framework-bağımsız tipler ve saf fonksiyonlar. React/Next/DOM/Web Audio import etmez.
 
-- `ScoreDocument`
-- `UsulPattern`
-- `InstrumentProfile`
-- `PracticeSession`
+| Dosya | İçerik |
+|---|---|
+| `models.ts` | Makam / Usul / NotaEvent — **TEK KAYNAK** (eski `src/types`) |
+| `note-naming.ts` | Solfej / pitch parsing |
 
-Bu katman dis dunya efektlerinden bagimsiz kalir.
+`src/types` artık yalnızca shim (`export * from "@/core/domain/models"`).
+Yeni domain tipi buraya eklenir.

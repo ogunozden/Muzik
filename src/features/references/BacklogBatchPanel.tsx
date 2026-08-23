@@ -39,6 +39,7 @@ export function BacklogBatchPanel({
                 <label className={`flex flex-col gap-1 text-sm ${tokens.colors.text.secondary}`}>
                   Sayfa
                   <select
+                    name="backlog-limit"
                     value={backlogLimit}
                     onChange={(event) => {
                       onBacklogLimitChange(Number(event.target.value));

@@ -10,7 +10,7 @@
 "use client";
 
 import {useCallback, useEffect, useRef, useState} from "react";
-import type {Makam} from "@/types";
+import type {Makam} from "@/core/domain/models";
 import {getMakamKomaFrequencies} from "@/engines/makam/data";
 import {playScaleAtFrequencies, stopAll} from "@/engines/ses/engine";
 import type {InstrumentType} from "@/engines/ses/engine";

@@ -2,6 +2,11 @@
 import {existsSync, mkdirSync, readFileSync, rmSync, writeFileSync} from "node:fs";
 import path from "node:path";
 import {getSymbTrLayoutCandidateFingerprint} from "./lib/symbtr-layout-fingerprint.mjs";
+import {
+  LEGACY_MEASURE_INDEX_BASIS,
+  MEASURE_INDEX_BASES,
+  RUNTIME_ACCEPTED_MEASURE_INDEX_BASES,
+} from "./lib/symbtr-score-measures.mjs";
 
 const root = process.cwd();
 const outputPath = path.join(root, "src", "data", "symbtr", "layout-verification.generated.json");
@@ -113,12 +118,69 @@ function validateIncomingEntries({incomingEntries, layoutData}) {
       errors.push(`${prefix}.candidateGeometryFingerprint must match the generated PDF candidate geometry fingerprint`);
     }
 
+    // G5: kutular olcu numarasi tabanina bagimli. Alan yoksa eski kayit
+    // sayilir (`offset-ceil-v1`) — `layout.ts` ile AYNI varsayilan; boylece
+    // alani unutulmus yeni bir kayit burada yakalanir, calisma zamaninda
+    // sessizce bayatlamaz.
+    const entryBasis = entry.measureIndexBasis ?? LEGACY_MEASURE_INDEX_BASIS;
+    if (!MEASURE_INDEX_BASES.includes(entryBasis)) {
+      errors.push(`${prefix}.measureIndexBasis must be one of ${MEASURE_INDEX_BASES.join(", ")}`);
+    } else if (!RUNTIME_ACCEPTED_MEASURE_INDEX_BASES.includes(entryBasis)) {
+      errors.push(
+        `${prefix}.measureIndexBasis is "${entryBasis}" but the engine accepts ${RUNTIME_ACCEPTED_MEASURE_INDEX_BASES.join(", ")}; re-verify the measure boxes`,
+      );
+    }
+
+    // written-expanded-v1: kutu olcu numaralari ILK-GENISLEMIS indekstir;
+    // yazili->acilmis esleme zorunludur ve hicbir kutu expanded sinirini
+    // asamaz.
+    if (entryBasis === "written-expanded-v1") {
+      const mapping = entry.writtenMeasureMapping;
+      if (
+        !isObject(mapping) ||
+        !Array.isArray(mapping.expanded) ||
+        mapping.expanded.length === 0 ||
+        !isObject(mapping.firstExpandedIndexByWritten)
+      ) {
+        errors.push(`${prefix}.writtenMeasureMapping is required for written-expanded-v1`);
+      } else {
+        const expandedLength = mapping.expanded.length;
+        for (const box of Array.isArray(entry.measureBoxes) ? entry.measureBoxes : []) {
+          if (Number.isInteger(box?.measureIndex) && box.measureIndex > expandedLength) {
+            errors.push(
+              `${prefix}.measureBoxes measureIndex ${box.measureIndex} exceeds expanded measure count ${expandedLength}`,
+            );
+          }
+        }
+      }
+    }
+
     if (!allowedMethods.has(entry.method)) {
       errors.push(`${prefix}.method must be human-reviewed or visual-regression`);
     }
 
     if (typeof entry.reviewer !== "string" || entry.reviewer.trim().length === 0) {
       errors.push(`${prefix}.reviewer must be a non-empty string`);
+    }
+
+    // Geometrik otomatik hizalama (symbtr-txt-aligned) yalniz KANIT ZARFIYLA
+    // kabul edilir: median delta <= 4% + confidence high + rapor referansi.
+    // 2026-08-08 oncesi bu kapinin yoklugu, satir-basi adaylarini olcu diye
+    // isaretleyen 14.694 kutunun manifeste girmesine izin vermisti.
+    if (entry.method === "symbtr-txt-aligned") {
+      const evidence = entry.alignmentEvidence;
+      if (
+        !isObject(evidence) ||
+        typeof evidence.reportPath !== "string" ||
+        evidence.reportPath.length === 0 ||
+        evidence.confidence !== "high" ||
+        !Number.isFinite(evidence.medianDeltaPercent) ||
+        evidence.medianDeltaPercent > 4
+      ) {
+        errors.push(
+          `${prefix}.alignmentEvidence must prove geometric alignment (medianDeltaPercent <= 4, confidence high, reportPath)`,
+        );
+      }
     }
 
     if (!Array.isArray(entry.measureBoxes) || entry.measureBoxes.length === 0) {

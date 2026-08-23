@@ -3,7 +3,6 @@ import {
   midiToFrequency,
   noteNameToMidi,
   midiToNoteName,
-  parseSymbTr,
   PIANO_KEYS,
 } from "../data";
 
@@ -76,31 +75,6 @@ describe("nota/data", () => {
     });
   });
 
-  describe("parseSymbTr", () => {
-    it("should parse valid identifier", () => {
-      const result = parseSymbTr("entry--rast--şarkı--aksaksemai--Ey Gözlerim--Dede Efendi");
-      expect(result.makam).toBe("rast");
-      expect(result.form).toBe("şarkı");
-      expect(result.usul).toBe("aksaksemai");
-      expect(result.name).toBe("Ey Gözlerim");
-      expect(result.composer).toBe("Dede Efendi");
-    });
-
-    it("should return empty strings for missing parts", () => {
-      const result = parseSymbTr("entry--rast");
-      expect(result.makam).toBe("rast");
-      expect(result.form).toBe("");
-      expect(result.usul).toBe("");
-      expect(result.name).toBe("");
-      expect(result.composer).toBe("");
-    });
-
-    it("should handle identifier with no parts", () => {
-      const result = parseSymbTr("");
-      expect(result.makam).toBe("");
-      expect(result.form).toBe("");
-    });
-  });
 
   describe("PIANO_KEYS", () => {
     it("should have white and black keys", () => {

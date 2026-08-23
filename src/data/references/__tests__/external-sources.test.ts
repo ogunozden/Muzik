@@ -117,9 +117,9 @@ describe("external source registry", () => {
     const coverage = getPieceExternalReferenceCoverage();
 
     expect(coverage.totalCatalogEntries).toBe(3000);
-    expect(coverage.catalogEntriesWithReferences).toBe(22);
-    expect(coverage.missingCatalogEntryCount).toBe(2978);
-    expect(coverage.referenceCount).toBe(24);
+    expect(coverage.catalogEntriesWithReferences).toBe(40);
+    expect(coverage.missingCatalogEntryCount).toBe(2960);
+    expect(coverage.referenceCount).toBe(42);
   });
 
   it("reports generated official external reference coverage for the full catalog", () => {
@@ -128,11 +128,11 @@ describe("external source registry", () => {
     expect(coverage.totalCatalogEntries).toBe(3000);
     expect(coverage.catalogEntriesWithOfficialReferences).toBe(3000);
     expect(coverage.missingOfficialReferenceCount).toBe(0);
-    expect(coverage.catalogEntriesWithCuratedReferences).toBe(22);
-    expect(coverage.missingCuratedReferenceCount).toBe(2978);
+    expect(coverage.catalogEntriesWithCuratedReferences).toBe(40);
+    expect(coverage.missingCuratedReferenceCount).toBe(2960);
     expect(coverage.officialReferenceCount).toBe(6000);
-    expect(coverage.curatedReferenceCount).toBe(24);
-    expect(coverage.resolvedReferenceCount).toBe(6024);
+    expect(coverage.curatedReferenceCount).toBe(42);
+    expect(coverage.resolvedReferenceCount).toBe(6042);
   });
 
   it("normalizes YouTube identities so URL variants do not create duplicates", () => {

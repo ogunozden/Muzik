@@ -21,16 +21,17 @@
 
 "use client";
 
-import {useCallback, useEffect, useRef, useState} from "react";
+import {useCallback, useEffect, useMemo, useRef, useState} from "react";
 import {useTranslation} from "react-i18next";
-import {LabeledSelect, LabeledSlider, PageHeader, PageShell, PageSurface, UsulPanel} from "@/shared/ui";
+import {Input, LabeledSelect, LabeledSlider, PageHeader, PageShell, PageSurface, UsulPanel} from "@/shared/ui";
 import {UnifiedLayout} from "@/shared/ui/layout/UnifiedLayout";
-import {USUL_DATA, getUsulBeatDuration, getUsulGrouping} from "@/engines/usul/data";
+import {USUL_DATA, getGroupedUsulItems, getUsulBeatDuration, getUsulGrouping} from "@/engines/usul/data";
 import type {InstrumentType} from "@/engines/ses/engine";
 import {startRhythmLoop, stopAll, type RhythmLoopController} from "@/engines/ses/engine";
+import {VolumeControl, usePlaybackVolume} from "@/shared/ui/organisms/VolumeControl";
 import type {UsulNotationHandle} from "@/shared/ui/organisms/UsulNotation";
 import {useEditorStore} from "@/store/editorStore";
-import {ENSTRUMAN_LIST, PERCUSSION_INSTRUMENTS} from "@/lib/app-constants";
+import {INSTRUMENTS, PERCUSSION_INSTRUMENTS} from "@/shared/config/instruments";
 
 const SYMBOL_LABELS: Record<string, string> = {
   dum: "Düm",
@@ -83,6 +84,7 @@ export default function UsulPage() {
   const [currentSymbolIndex, setCurrentSymbolIndex] = useState(-1);
   const [cycleCount, setCycleCount] = useState(0);
   const [syncOffsetMs, setSyncOffsetMs] = useState(0);
+  const [volume, setVolume] = usePlaybackVolume();
   const isPlayingRef = useRef(false);
   const isLoopRef = useRef(true);
   const cursorRafRef = useRef<number | null>(null);
@@ -109,17 +111,28 @@ export default function UsulPage() {
     }
   }, []);
 
-  const usulItems = USUL_DATA.map((usul) => ({
-    key: usul.id,
-    label: usul.name,
-  }));
+  // Gruplandırma: önce ölçü (2/4 → 120/4) sonra alfabetik (tr locale)
+  const usulGroups = getGroupedUsulItems();
+  const [usulSearchQuery, setUsulSearchQuery] = useState("");
+
+  // Direkt usul ismi arama — gruplar içinde filtrele, boşsa tümü
+  const filteredUsulGroups = useMemo(() => {
+    const q = usulSearchQuery.trim().toLocaleLowerCase("tr");
+    if (!q) return usulGroups;
+    return usulGroups
+      .map((group) => ({
+        ...group,
+        items: group.items.filter((item) => item.label.toLocaleLowerCase("tr").includes(q)),
+      }))
+      .filter((group) => group.items.length > 0);
+  }, [usulGroups, usulSearchQuery]);
 
   // Velvele modu: kitaptaki susleme dizilisi varsa ve secildiyse onu cal/goster.
   const hasVelvele = Boolean(selectedUsulObj?.velvele?.length);
   const symbols =
     isVelveleEnabled && selectedUsulObj?.velvele?.length ? selectedUsulObj.velvele : selectedUsulObj?.symbols;
   const activeSymbol = currentSymbolIndex >= 0 ? symbols?.[currentSymbolIndex] : null;
-  const percussionItems = ENSTRUMAN_LIST.filter((instrument) =>
+  const percussionItems = INSTRUMENTS.filter((instrument) =>
     (PERCUSSION_INSTRUMENTS as readonly string[]).includes(instrument.id as string)
   ).map((instrument) => ({
     key: instrument.id as string,
@@ -162,6 +175,7 @@ export default function UsulPage() {
     }
 
     loopControllerRef.current = controller;
+    controller.setVolume(volume);
     isPlayingRef.current = true;
     activeIndexRef.current = 0;
     cycleCountRef.current = 1;
@@ -205,7 +219,7 @@ export default function UsulPage() {
       cursorRafRef.current = requestAnimationFrame(tick);
     };
     cursorRafRef.current = requestAnimationFrame(tick);
-  }, [bpm, isVelveleEnabled, selectedPercussionInstrument, selectedUsulObj, stopRhythm]);
+  }, [bpm, isVelveleEnabled, selectedPercussionInstrument, selectedUsulObj, stopRhythm, volume]);
 
   useEffect(() => {
     if (!selectedUsulObj) setSelectedUsul("sofyan");
@@ -256,16 +270,34 @@ export default function UsulPage() {
             <span>Vurgu: {getUsulGrouping(selectedUsulObj).join("+")}</span>
             {selectedUsulObj.defaultBpm ? <span>Tempo: ~{selectedUsulObj.defaultBpm}</span> : null}
             {selectedUsulObj.velvele?.length ? <span>Velvele: var</span> : null}
-            <span className="ml-auto opacity-70">{USUL_DATA.length} usûl</span>
+            {/* `opacity-70` metni zemine karistiriyordu: kontrast 3,86 (esik 4,5).
+                Token dogrudan kullanilinca 8,49. Saydamlik yerine RENK. */}
+            <span className="ml-auto text-[var(--color-text-secondary)]">{USUL_DATA.length} usûl</span>
           </div>
         )}
+
+        <div className="mb-3">
+          <Input
+            label="Usul ara"
+            placeholder="Usul ismi yaz — örn Sofyan, Aksak, Düyek"
+            ariaLabel="Usul ara"
+            value={usulSearchQuery}
+            onChange={(e) => setUsulSearchQuery(e.target.value)}
+          />
+          {usulSearchQuery.trim() && (
+            <p className="mt-1 text-xs text-[var(--color-text-secondary)]">
+              {filteredUsulGroups.reduce((sum: number, g: {items: Array<{key: string; label: string}>}) => sum + g.items.length, 0)} usul bulundu
+              {filteredUsulGroups.length > 0 && ` — ${filteredUsulGroups.map((g: {label: string}) => g.label).join(", ")}`}
+            </p>
+          )}
+        </div>
 
         <UsulPanel
           ref={notationRef}
           usulSelectAriaLabel={t("usul.selectUsul")}
           symbolGridAriaLabel={t("usul.symbolGrid")}
           playButtonAriaLabel={isRhythmPlaying ? t("common.stop") : t("usul.playRhythm")}
-          usulItems={usulItems}
+          usulGroups={filteredUsulGroups}
           selectedUsul={selectedUsulObj?.id}
           onUsulChange={(key) => {
             stopRhythm();
@@ -284,7 +316,7 @@ export default function UsulPage() {
           className="mb-6"
         />
 
-        <PageSurface className="mb-6 grid gap-4 p-5 sm:grid-cols-[2fr_2fr_1fr] sm:items-end">
+        <PageSurface className="mb-6 grid gap-4 p-5 sm:grid-cols-[2fr_2fr_1fr_1fr] sm:items-end">
           <LabeledSelect
             label={t("makam.instrument")}
             ariaLabel={t("makam.selectInstrument")}
@@ -342,6 +374,13 @@ export default function UsulPage() {
               </label>
             )}
           </div>
+          <VolumeControl
+            volume={volume}
+            onVolumeChange={(next) => {
+              setVolume(next);
+              loopControllerRef.current?.setVolume(next);
+            }}
+          />
         </PageSurface>
 
         {/* Ses-gorsel kalibrasyonu: sistem gecikmesi cihazdan cihaza degistigi

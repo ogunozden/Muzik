@@ -16,7 +16,7 @@ import {
 import {getPieceExternalReferences} from "@/data/references/piece-external-references";
 import EserTakipPage from "../page";
 
-const playArrangementMock = vi.hoisted(() => vi.fn(async () => 1));
+const playArrangementMock = vi.hoisted(() => vi.fn(async () => ({durationSeconds: 1, baseTime: 0})));
 const stopAllMock = vi.hoisted(() => vi.fn());
 const layoutMockState = vi.hoisted(() => ({
   verifiedBoxes: [] as Array<{
@@ -50,6 +50,7 @@ vi.mock("@/engines/ses/engine", async (importOriginal) => {
   return {
     ...actual,
     playArrangement: playArrangementMock,
+    getHeardPlaybackPosition: () => 0,
     stopAll: stopAllMock,
   };
 });
@@ -327,6 +328,91 @@ describe("EserTakipPage", () => {
     const firstEventGainTotal = scheduledNotes.slice(0, 3).reduce((total, note) => total + note.gain, 0);
 
     expect(firstEventGainTotal).toBeLessThanOrEqual(0.34);
+  });
+
+  it("solo modda yalniz secilen ezgi katmani planlanir", async () => {
+    render(<EserTakipPage />);
+
+    await screen.findAllByText("Fa♯4/5");
+    fireEvent.click(screen.getAllByRole("button", {name: "Solo"})[1]);
+    fireEvent.click(screen.getByRole("button", {name: "Parçayı çal"}));
+
+    await waitFor(() => expect(playArrangementMock).toHaveBeenCalled());
+    const calls = playArrangementMock.mock.calls as unknown as [Array<{instrument: string}>][];
+    const scheduledNotes = calls[0][0];
+
+    expect(scheduledNotes.length).toBeGreaterThan(0);
+    expect(new Set(scheduledNotes.map((note) => note.instrument)).size).toBe(1);
+  });
+
+  it("sessize alinan ezgi katmani planlamaya girmez", async () => {
+    render(<EserTakipPage />);
+
+    await screen.findAllByText("Fa♯4/5");
+    fireEvent.click(screen.getAllByRole("button", {name: "Sessiz"})[0]);
+    fireEvent.click(screen.getByRole("button", {name: "Parçayı çal"}));
+
+    await waitFor(() => expect(playArrangementMock).toHaveBeenCalled());
+    const calls = playArrangementMock.mock.calls as unknown as [Array<{instrument: string}>][];
+    const scheduledNotes = calls[0][0];
+
+    expect(scheduledNotes.length).toBeGreaterThan(0);
+    expect(scheduledNotes.some((note) => note.instrument === "ud")).toBe(false);
+  });
+
+  it("master volume nota gainlerini olcekler", async () => {
+    render(<EserTakipPage />);
+
+    await screen.findAllByText("Fa♯4/5");
+    const slider = screen.getByRole("slider", {name: "Ses seviyesi"}) as HTMLInputElement;
+    fireEvent.change(slider, {target: {value: "50"}});
+    fireEvent.click(screen.getByRole("button", {name: "Parçayı çal"}));
+
+    await waitFor(() => expect(playArrangementMock).toHaveBeenCalled());
+    const calls = playArrangementMock.mock.calls as unknown as [Array<{gain: number}>][];
+    const scheduledNotes = calls[0][0];
+
+    // Ilk ezgi katmani ud: tam gain 0.2 * mix scale; %50 ses belirgin dusurur.
+    expect(scheduledNotes[0].gain).toBeLessThan(0.2);
+    expect(scheduledNotes[0].gain).toBeGreaterThan(0.04);
+
+    // Sonraki testler tam seste kalir.
+    fireEvent.change(slider, {target: {value: "100"}});
+  });
+
+  it("döngü bölgesi secilebilir ve dongu planlamasi calistirilir", async () => {
+    render(<EserTakipPage />);
+
+    await screen.findAllByText("Fa♯4/5");
+    const loopToggle = screen.getByRole("checkbox", {name: "Döngü"});
+    fireEvent.click(loopToggle);
+
+    const startInput = screen.getByRole("spinbutton", {name: "Döngü başlangıç ölçüsü"}) as HTMLInputElement;
+    const endInput = screen.getByRole("spinbutton", {name: "Döngü bitiş ölçüsü"}) as HTMLInputElement;
+    fireEvent.change(startInput, {target: {value: "1"}});
+    fireEvent.change(endInput, {target: {value: "2"}});
+
+    fireEvent.click(screen.getByRole("button", {name: "Parçayı çal"}));
+    await waitFor(() => expect(playArrangementMock).toHaveBeenCalled());
+
+    const calls = playArrangementMock.mock.calls as unknown as [Array<{startTime: number}>][];
+    const scheduledNotes = calls[0][0];
+    expect(scheduledNotes.length).toBeGreaterThan(0);
+  });
+
+  it("transpoze koma kaydirinca notalar otantik frekanslarda kayar", async () => {
+    render(<EserTakipPage />);
+
+    await screen.findAllByText("Fa♯4/5");
+    fireEvent.click(screen.getByRole("button", {name: "Transpoze artır"}));
+    fireEvent.click(screen.getByRole("button", {name: "Parçayı çal"}));
+
+    await waitFor(() => expect(playArrangementMock).toHaveBeenCalled());
+    const calls = playArrangementMock.mock.calls as unknown as [Array<{targetFrequency?: number}>][];
+    const scheduledNotes = calls[0][0];
+
+    // Varsayilan ahenk 9 koma; +1 koma transpoze ile ilk nota 354. koma olur.
+    expect(scheduledNotes[0].targetFrequency).toBeCloseTo(koma53ToFrequency(354), 5);
   });
 
   it("schedules the default piece with the reference ahenk and Devr-i Kebir darb starts", async () => {

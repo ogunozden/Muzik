@@ -40,6 +40,7 @@ describe("playPercussionSymbolScheduled", () => {
       1.25,
       0.5,
       "kudum",
+      1,
     );
     expect(schedulePercussionHitMock).toHaveBeenCalledWith(
       {currentTime: 0},

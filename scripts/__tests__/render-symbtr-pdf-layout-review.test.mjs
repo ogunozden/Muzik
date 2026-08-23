@@ -18,8 +18,15 @@ describe("render-symbtr-pdf-layout-review", () => {
   });
 
   it("renders review artifacts with a non-promoting verification template entry", () => {
-    const symbDir = path.join(process.cwd(), "symb");
-    if (!existsSync(symbDir)) return; // skip in CI (symb/ is gitignored)
+    // ON KOSUL: bu test PDF ARSIVINI okur, korpus klasorunu degil.
+    //
+    // Eskiden `symb/` var mi diye bakiyordu ve CI'da `symb/` hic olmadigi
+    // icin sessizce atlaniyordu. H1'de CI korpusu indirmeye baslayinca
+    // `symb/` olustu, kontrol gecti, ama `pdf_v3.zip` YOK — cunku indirme
+    // betigi 563 MB'lik PDF arsivini bilincli olarak disarida birakiyor.
+    // Test ENOENT ile dustu. Yani kontrol, gercek bagimliligi olcmuyordu.
+    const pdfArchive = path.join(process.cwd(), "symb", "pdf_v3.zip");
+    if (!existsSync(pdfArchive)) return;
     const outputDir = path.join(process.cwd(), "output");
     if (!existsSync(outputDir)) mkdirSync(outputDir, { recursive: true });
     const outDir = mkdtempSync(path.join(process.cwd(), "output", "test-pdf-review-"));

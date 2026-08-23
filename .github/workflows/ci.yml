@@ -10,16 +10,59 @@ jobs:
           node-version: "26"
           cache: "npm"
       - run: npm ci
+      # SymbTr korpusu (Zenodo 15470412, CC-BY 4.0 · 27 MB, PDF haric).
+      # ── NEDEN BU ADIM VAR ───────────────────────────────────────────────
+      # Projenin en guclu 13 kapisi canli korpusa dayaniyor ve `symb/`
+      # gitignored. Bu adim yokken o kapilar CI'da SESSIZCE atlaniyordu:
+      # CI aylarca yesildi ama parser'i hic 3000 eserle sinamadi.
+      # `REQUIRE_CORPUS=1` atlamayi gorunur yapar — indirme basarisiz olursa
+      # `corpus-gate.test.ts` kirmizi olur.
+      - name: Cache SymbTr corpus
+        uses: actions/cache@v6
+        with:
+          path: symb
+          key: symbtr-v3-zenodo-15470412
+      - run: npm run corpus:fetch
       - run: npm run guardrails:architecture
       - run: npm run lint
+      # Olu kod kapisi (knip). Kendi yazdigim tarayici barrel re-export ve
+      # dinamik import'u goremedigi icin 948 yanlis pozitif vermisti; knip
+      # ikisini de cozuyor. Kapi olmadan olu kod SESSIZCE birikiyor —
+      # 14 olu dosya ve 100+ olu export tam da boyle birikmisti.
+      - run: npm run lint:dead-code
+      # Ses dosyasi kimlik kapisi: `provenance.json` bir KLASORUN kaynagini
+      # anlatir, ama iddia o anki DOSYALARA aittir. Manifest bayatlarsa
+      # degismemis dosyalar "kapsam disi" gorunur ve dogru kaynak bilgisi
+      # sessizce gecersiz olur.
+      - run: npm run samples:manifest:check
       - run: npm run typecheck
       - run: npm run test:run
+        env:
+          REQUIRE_CORPUS: "1"
       - run: npm run test:coverage
+        env:
+          REQUIRE_CORPUS: "1"
       - run: npm run build
+      - name: Layout guardrails (must-run, no skip)
+        run: |
+          npm run start -- -p 3000 &
+          npx --yes wait-on http://localhost:3000 --timeout 120000
+          npm run guardrails:layout
+          pkill -f "next start" || true
       - run: npm run audit:bundle-size
+      # Kullaniciya GIDEN bagimliliklarda bilinen acik olamaz — bu adim bloke eder.
       - run: npm run audit:security
+      # Gelistirme bagimliliklarindaki borc GORUNUR kalir ama CI'yi kirmaz:
+      # bugun yamali bir surum kombinasyonu yok (bkz. docs/SECURITY-AUDIT.md).
+      - run: npm run audit:security:dev
+        continue-on-error: true
       # E2E (E5/F6.3): kritik akislar gercek tarayicida. webServer config'i CI'da
       # (reuseExistingServer=false) taze `next dev` baslatir; PLAYWRIGHT_BASE_URL
       # verilmez. Chromium runner'a kurulur.
       - run: npx playwright install --with-deps chromium
       - run: npm run test:e2e
+      # E2E prod (C1.1/R5): ayni akislar uretim derlemesine karsi (next start).
+      # `next dev` sayfaya dev-tools katmani enjekte ediyor ve sekme sirasi
+      # farkli; uretim gercek kullanici yuzeyidir. run-e2e-production.mjs tek
+      # komutta derler, sunucuyu kaldirir, testi kosar, kapatir.
+      - run: npm run test:e2e:prod

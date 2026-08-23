@@ -4,6 +4,7 @@ import {tmpdir} from "node:os";
 import path from "node:path";
 import {describe, expect, it} from "vitest";
 import {getSymbTrLayoutCandidateFingerprint} from "../lib/symbtr-layout-fingerprint.mjs";
+import {CURRENT_MEASURE_INDEX_BASIS} from "../lib/symbtr-score-measures.mjs";
 
 const scriptPath = path.resolve("scripts/import-symbtr-layout-verification.mjs");
 const catalogId = "hicazkar--pesrev--devrikebir----tanburi_buyuk_osman_bey";
@@ -68,6 +69,7 @@ function validEntry() {
       layoutData,
       layoutEntry,
     }),
+    measureIndexBasis: CURRENT_MEASURE_INDEX_BASIS,
     verifiedAt: "2026-06-01",
     reviewer: "visual-regression-batch",
     method: "visual-regression",
@@ -157,5 +159,33 @@ describe("import-symbtr-layout-verification", () => {
     expect(() => runScript(root, "input/verification.json", true)).toThrow(
       "candidateGeometryFingerprint must match the generated PDF candidate geometry fingerprint",
     );
+  });
+
+  it("rejects boxes verified against a stale measure-index basis (G5)", () => {
+    const root = createRoot();
+    const entry = validEntry();
+    entry.measureIndexBasis = "offset-ceil-v1";
+    writeJson(root, "input/verification.json", {
+      generatedAt: "2026-06-01",
+      entries: {[catalogId]: entry},
+    });
+
+    expect(() => runScript(root, "input/verification.json", true)).toThrow(
+      `measureIndexBasis is "offset-ceil-v1" but the engine accepts`,
+    );
+  });
+
+  it("rejects entries that OMIT the basis — eski kayit sayilir, sessizce gecmez", () => {
+    // Alani unutulmus YENI bir kayit calisma zamaninda bayat sayilirdi;
+    // dogrulayici ayni varsayilani kullandigi icin burada yakalanir.
+    const root = createRoot();
+    const entry = validEntry();
+    delete entry.measureIndexBasis;
+    writeJson(root, "input/verification.json", {
+      generatedAt: "2026-06-01",
+      entries: {[catalogId]: entry},
+    });
+
+    expect(() => runScript(root, "input/verification.json", true)).toThrow("measureIndexBasis");
   });
 });

@@ -65,6 +65,8 @@ export function FollowPieceAddPanel({
       <label className="mt-3 grid gap-1 text-sm">
         <span className={tokens.colors.text.secondary}>Aktif parça</span>
         <select
+          id="active-piece-select"
+          name="active-piece"
           aria-label="Aktif parça seç"
           value={selectedPieceId}
           onChange={(event) => onSelectPiece(event.target.value)}

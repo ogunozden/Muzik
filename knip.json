@@ -1,0 +1,23 @@
+{
+  "$schema": "https://unpkg.com/knip@5/schema.json",
+  "entry": [
+    "src/app/**/{page,layout,route,error,not-found,loading,template,default}.{ts,tsx}",
+    "uno.config.mjs",
+    "scripts/**/*.mjs",
+    "src/**/__tests__/**/*.{ts,tsx}",
+    "src/**/*.{test,spec}.{ts,tsx}",
+    "e2e/**/*.{ts,tsx}"
+  ],
+  "project": [
+    "src/**/*.{ts,tsx}",
+    "scripts/**/*.{mjs,cjs}"
+  ],
+  "ignoreExportsUsedInFile": true,
+  "ignore": [
+    "src/features/score-engine/workbench/ScoreSurface.tsx",
+    "src/data/score-engine/verovio-emitter.ts"
+  ],
+  "tags": [
+    "-knipignore"
+  ]
+}

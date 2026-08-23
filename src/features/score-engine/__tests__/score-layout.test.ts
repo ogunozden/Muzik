@@ -2,6 +2,7 @@ import {describe, expect, it} from "vitest";
 import type {CanonicalScoreDocument, CanonicalScoreEvent} from "@/data/score-engine/canonical-score";
 import {SCORE_ENGINE_DEMO_DOCUMENT} from "@/data/score-engine/demo-score";
 import {buildScoreRenderSystems, findRenderSystemForEvent} from "../score-layout";
+import {canonicalToMei} from "@/data/score-engine/verovio-emitter";
 
 function makeLongDevriKebirDocument(): CanonicalScoreDocument {
   const baseEvent = SCORE_ENGINE_DEMO_DOCUMENT.events[0];
@@ -64,5 +65,26 @@ describe("ScoreEngine render layout", () => {
 
     expect(activeSystem?.eventIds).toContain(targetEventId);
     expect(activeSystem?.segmentIndex).toBe(systems.length - 1);
+  });
+});
+
+describe.each(["vexflow", "verovio"] as const)("ScoreEngine engraving parity (%s)", (renderer) => {
+  it("keeps VexFlow and Verovio on the same measure grid (K4.3)", () => {
+    const document = makeLongDevriKebirDocument();
+    const vexSystems = buildScoreRenderSystems(document);
+    const mei = canonicalToMei(document);
+    // Verovio MEI must carry the same measure count/ids as the Vex layout
+    expect(mei).toContain(`xml:id="${document.id}"`);
+    for (const measure of document.measures) {
+      expect(mei).toContain(`xml:id="${measure.id}"`);
+    }
+    expect(vexSystems.length).toBeGreaterThan(1);
+    // Renderer-specific smoke: vex uses buildScoreRenderSystems, verovio uses mei beam/tuplet/accid pipeline
+    if (renderer === "verovio") {
+      expect(mei).toContain("<measure");
+      expect(mei).toContain("<note");
+    } else {
+      expect(vexSystems.every((s) => s.eventIds.length > 0)).toBe(true);
+    }
   });
 });

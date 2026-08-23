@@ -1,4 +1,4 @@
-import {mkdirSync, readFileSync, writeFileSync} from "node:fs";
+import {existsSync, mkdirSync, readFileSync, writeFileSync} from "node:fs";
 import path from "node:path";
 import {fileURLToPath} from "node:url";
 import {
@@ -14,10 +14,11 @@ const DEFAULT_OUT_DIR = "output/symbtr-layout-review";
 const DEFAULT_GENERATED_AT = "2026-06-01";
 const DEFAULT_REVIEWER = "local-reviewer";
 const DEFAULT_REVIEW_PACKET_SIZE = 1;
-const verificationTemplatePolicy = "This file is a batch review template only. Do not copy rows into layout-verification.generated.json until every selected candidate is human-reviewed or visual-regression-approved and converted into measureBoxes with confidence verified.";
-const verificationBatchPlanPolicy = "This file groups PDF measure candidates for batch visual review only. It must not promote candidates or carry verified measureBoxes; promotion must go through layout-verification.generated.json and npm run verify:symbtr-measures.";
+const verificationTemplatePolicy = "This file is a batch review template only. suggestedMeasureIndex values are ADVISORY pre-fills from the auto-alignment report (high/medium confidence) and do NOT constitute verification; do not copy rows into layout-verification.generated.json until every selected candidate is human-reviewed or visual-regression-approved and converted into measureBoxes with confidence verified.";
+const verificationBatchPlanPolicy = "This file groups PDF measure candidates for batch visual review only. It must not promote candidates or carry verified measureBoxes; suggestedMeasureIndex values are advisory pre-fills; promotion must go through layout-verification.generated.json and npm run verify:symbtr-measures.";
 const layoutPath = path.join(root, "src", "data", "symbtr", "layout.generated.json");
 const pdfZipPath = path.join(root, "symb", "pdf_v3.zip");
+const DEFAULT_ALIGNMENT_REPORT_PATH = path.join(root, "output", "symbtr-layout-review", "auto-alignment-report.json");
 
 function parseCliOptions(args) {
   const options = new Map();
@@ -311,12 +312,14 @@ function renderHtml(entry, svgFileName, pdfFileName) {
 </html>`;
 }
 
-function buildCandidateReviewRows(entry) {
+function buildCandidateReviewRows(entry, suggestions) {
   return entry.measureCandidates.map((candidate) => ({
     sourceCandidateRowIndex: candidate.rowIndex,
     sourceCandidateIndexInRow: candidate.candidateIndexInRow,
     candidateLabel: `row-${candidate.rowIndex + 1}-candidate-${candidate.candidateIndexInRow + 1}`,
-    suggestedMeasureIndex: null,
+    suggestedMeasureIndex:
+      suggestions?.byCandidate.get(`${candidate.rowIndex}:${candidate.candidateIndexInRow}`) ?? null,
+    suggestionConfidence: suggestions?.confidence ?? null,
     leftPercent: candidate.leftPercent,
     topPercent: candidate.topPercent,
     widthPercent: candidate.widthPercent,
@@ -325,7 +328,7 @@ function buildCandidateReviewRows(entry) {
   }));
 }
 
-function buildVerificationTemplateEntry({entry, layoutData, reviewer, scoreMeasureSummary}) {
+function buildVerificationTemplateEntry({entry, layoutData, reviewer, scoreMeasureSummary, alignmentSuggestion}) {
   const candidateGeometryFingerprint = getSymbTrLayoutCandidateFingerprint({
     catalogId: entry.catalogId,
     layoutData,
@@ -340,6 +343,17 @@ function buildVerificationTemplateEntry({entry, layoutData, reviewer, scoreMeasu
     candidateGeometryFingerprint,
     reviewer,
     method: "human-reviewed",
+    ...(alignmentSuggestion
+      ? {
+          alignmentSuggestion: {
+            confidence: alignmentSuggestion.confidence,
+            medianDeltaPercent: alignmentSuggestion.medianDeltaPercent,
+            coverage: alignmentSuggestion.coverage,
+            measureIndexBasis: alignmentSuggestion.measureIndexBasis,
+            source: "auto-alignment-report",
+          },
+        }
+      : {}),
     scoreMeasureSummary: {
       sourceArchiveMemberPath: scoreMeasureSummary.sourceArchiveMemberPath,
       noteEventCount: scoreMeasureSummary.noteEventCount,
@@ -348,9 +362,36 @@ function buildVerificationTemplateEntry({entry, layoutData, reviewer, scoreMeasu
       measureIndexes: scoreMeasureSummary.measureIndexes,
       missingMeasureIndexes: scoreMeasureSummary.missingMeasureIndexes,
     },
-    candidateReviewRows: buildCandidateReviewRows(entry),
+    candidateReviewRows: buildCandidateReviewRows(entry, alignmentSuggestion),
     measureBoxes: [],
   };
+}
+
+/**
+ * Otomatik hizalama raporundan on-doldurma haritasi uretir (W4.1 P2):
+ * high/medium guvenli girilerin adaylari icin suggestedMeasureIndex.
+ * DUSUK guvenli girilere on-doldurma YAPILMAZ — karar insanin.
+ */
+function loadAlignmentSuggestions(reportPath) {
+  if (!reportPath || !existsSync(reportPath)) return new Map();
+  const report = JSON.parse(readFileSync(reportPath, "utf8"));
+  const suggestionsByCatalog = new Map();
+  for (const entry of report.entries ?? []) {
+    if (!["high", "medium"].includes(entry.confidence)) continue;
+    const byCandidate = new Map();
+    for (const box of entry.boxes ?? []) {
+      if (box.leftPercent === null) continue;
+      byCandidate.set(`${box.sourceCandidateRowIndex}:${box.sourceCandidateIndexInRow}`, box.measureIndex);
+    }
+    suggestionsByCatalog.set(entry.catalogId, {
+      confidence: entry.confidence,
+      medianDeltaPercent: entry.medianDeltaPercent,
+      coverage: entry.coverage,
+      measureIndexBasis: entry.measureIndexBasis,
+      byCandidate,
+    });
+  }
+  return suggestionsByCatalog;
 }
 
 function buildVerificationReviewTemplate({layoutData, artifacts, generatedAt, reviewer}) {
@@ -478,7 +519,7 @@ function buildVerificationReviewBatchPlan({reviewTemplate, generatedAt, reviewer
   };
 }
 
-function renderReviewArtifact(catalogId, outDir, layoutData, reviewer) {
+function renderReviewArtifact(catalogId, outDir, layoutData, reviewer, alignmentSuggestion) {
   const entry = layoutData.entries?.[catalogId];
   if (!entry) {
     throw new Error(`No PDF layout candidate entry found for catalog id: ${catalogId}`);
@@ -514,6 +555,7 @@ function renderReviewArtifact(catalogId, outDir, layoutData, reviewer) {
       layoutData,
       reviewer,
       scoreMeasureSummary,
+      alignmentSuggestion,
     }),
   };
 }
@@ -523,6 +565,9 @@ const isMain = process.argv[1] && path.resolve(process.argv[1]) === fileURLToPat
 if (isMain) {
   const options = parseCliOptions(process.argv.slice(2));
   const layoutData = JSON.parse(readFileSync(layoutPath, "utf8"));
+  const alignmentReportPath = options.get("alignment-report")
+    ?? (existsSync(DEFAULT_ALIGNMENT_REPORT_PATH) ? DEFAULT_ALIGNMENT_REPORT_PATH : null);
+  const alignmentSuggestions = loadAlignmentSuggestions(alignmentReportPath);
   const outDir = options.get("out-dir") ?? DEFAULT_OUT_DIR;
   const reviewer = options.get("reviewer") ?? DEFAULT_REVIEWER;
   const generatedAt = options.get("generated-at") ?? DEFAULT_GENERATED_AT;
@@ -535,7 +580,9 @@ if (isMain) {
     : candidateEntries;
   const limit = Number(options.get("limit") ?? requestedCatalogIds.length);
   const catalogIds = requestedCatalogIds.slice(0, Number.isInteger(limit) && limit > 0 ? limit : requestedCatalogIds.length);
-  const artifacts = catalogIds.map((catalogId) => renderReviewArtifact(catalogId, outDir, layoutData, reviewer));
+  const artifacts = catalogIds.map((catalogId) =>
+    renderReviewArtifact(catalogId, outDir, layoutData, reviewer, alignmentSuggestions.get(catalogId)),
+  );
   const template = buildVerificationReviewTemplate({layoutData, artifacts, generatedAt, reviewer});
   const batchPlan = buildVerificationReviewBatchPlan({reviewTemplate: template, generatedAt, reviewer});
   const safeOutDir = assertInsideProject(path.resolve(root, outDir));

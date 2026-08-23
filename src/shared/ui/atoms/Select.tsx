@@ -12,6 +12,7 @@ type CustomSelectProps = Omit<
   ariaLabel: string;
   className?: string;
   items?: Array<{key: string; label: string}>;
+  groups?: Array<{label: string; items: Array<{key: string; label: string}>}>;
   selectedKeys?: SelectionKeys;
   onSelectionChange?: (keys: Set<string>) => void;
   isDisabled?: boolean;
@@ -23,6 +24,7 @@ export function Select({
   ariaLabel,
   className = "",
   items,
+  groups,
   selectedKeys,
   onSelectionChange,
   isDisabled,
@@ -54,11 +56,21 @@ export function Select({
         onChange={(event) => onSelectionChange?.(new Set(event.target.value ? [event.target.value] : []))}
       >
         {placeholder && <option value="">{placeholder}</option>}
-        {(items ?? []).map((item) => (
-          <option key={item.key} value={item.key} data-testid={`item-${item.key}`}>
-            {item.label}
-          </option>
-        ))}
+        {groups && groups.length > 0
+          ? groups.map((group) => (
+              <optgroup key={group.label} label={group.label} data-testid={`group-${group.label}`}>
+                {group.items.map((item) => (
+                  <option key={item.key} value={item.key} data-testid={`item-${item.key}`}>
+                    {item.label}
+                  </option>
+                ))}
+              </optgroup>
+            ))
+          : (items ?? []).map((item) => (
+              <option key={item.key} value={item.key} data-testid={`item-${item.key}`}>
+                {item.label}
+              </option>
+            ))}
       </select>
     </div>
   );

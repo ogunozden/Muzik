@@ -1,0 +1,33 @@
+name: Curation cron
+on:
+  schedule:
+    - cron: "0 2 * * *"
+  workflow_dispatch:
+
+jobs:
+  curation-cron:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v6
+        with:
+          node-version: "26"
+          cache: "npm"
+      - name: Cache SymbTr corpus
+        uses: actions/cache@v6
+        with:
+          path: symb
+          key: symbtr-v3-zenodo-15470412
+      - run: npm ci
+      - run: npm run corpus:fetch
+      - run: npm run verify:external-source-providers:schedule -- --batches 4
+      - name: Commit nightly cache
+        run: |
+          git config user.name github-actions
+          git config user.email github-actions@github.com
+          # Spec path alias: cache.json is the cron artifact; normalize to provider-verification-cache.json if needed
+          if [ -f output/external-source-discovery/provider-verification-cache.json ] && [ ! -f output/external-source-discovery/cache.json ]; then
+            cp output/external-source-discovery/provider-verification-cache.json output/external-source-discovery/cache.json
+          fi
+          git add output/external-source-discovery/cache.json output/external-source-discovery/provider-verification-cache.json output/external-source-discovery/provider-verification-batch-run.json 2>/dev/null || true
+          git diff --quiet || git commit -m "chore(curation): nightly cache" && git push || true

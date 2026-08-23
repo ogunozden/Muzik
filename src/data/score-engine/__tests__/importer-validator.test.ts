@@ -71,11 +71,15 @@ describe("ScoreEngine SymbTr importer and validator", () => {
   });
 
   it("keeps measureBeat relative to the real SymbTr measure start, not a 4/4 fallback", () => {
+    // Mertebe artik ACIKCA veriliyor (G6). Fixture sentetik oldugu icin
+    // `piece`in `mu2` kardesi okunmamali — o baska bir eserin mertebesidir.
+    // 28/4 = 7 tam nota = tam bir olcu; sonraki nota 2. olcunun basinda.
     const result = parseSymbtrToCanonical({
       raw: DEVRI_KEBIR_MEASURE_FIXTURE,
       piece: HICAZKAR_PESREV,
       scoreId: "score:devri-kebir-fixture",
       sourceReference: "fixture",
+      writtenMeter: {numerator: 28, denominator: 4},
     });
 
     expect(result.document.events[1]).toMatchObject({
@@ -83,6 +87,55 @@ describe("ScoreEngine SymbTr importer and validator", () => {
       measureBeat: 0,
       startBeat: 28,
     });
+  });
+
+  it("USUL ile YAZILI MERTEBE ayni sey degildir (PLAN §1.5)", () => {
+    // Ayni fixture, gercek Hicazkar pesrevinin YAZILI mertebesiyle (mu2: 4/4).
+    // Devrikebir 28 zamanlidir ama notada 4/4 yazilir: 28/4'luk bir nota
+    // YEDI yazili olcu boyunca surer, bir olcu degil.
+    const result = parseSymbtrToCanonical({
+      raw: DEVRI_KEBIR_MEASURE_FIXTURE,
+      piece: HICAZKAR_PESREV,
+      scoreId: "score:devri-kebir-written-meter",
+      sourceReference: "fixture",
+      writtenMeter: {numerator: 4, denominator: 4},
+    });
+
+    // 7 tam nota / (4/4 = 1 tam nota) = 7 olcu. G7 bolmesi devreye girer:
+    // nota YEDI parcaya bolunur ve bagla birlestirilir.
+    const parts = result.document.events.filter((event) => event.tie !== null);
+    expect(parts).toHaveLength(7);
+    expect(parts.map((event) => event.tie)).toEqual([
+      "start",
+      "continue",
+      "continue",
+      "continue",
+      "continue",
+      "continue",
+      "stop",
+    ]);
+    expect(parts.map((event) => event.measureId)).toEqual(
+      [1, 2, 3, 4, 5, 6, 7].map((measure) => `score:devri-kebir-written-meter:m${measure}`),
+    );
+
+    // Bolme sure yaratmaz: sonraki nota hala 28. vurusta ve 8. olcude.
+    const last = result.document.events[result.document.events.length - 1];
+    expect(last).toMatchObject({
+      measureId: "score:devri-kebir-written-meter:m8",
+      startBeat: 28,
+      tie: null,
+    });
+  });
+
+  it("mertebe verilmezse olcu tabani ACIKCA `offset-ceil-v1` olarak isaretlenir", () => {
+    // Mertebe bilinmeyen girdide motor tahmine duser; bu ORTULU kalmaz.
+    const events = parseSymbtrScore(DEVRI_KEBIR_MEASURE_FIXTURE, 60);
+    const walked = parseSymbtrScore(DEVRI_KEBIR_MEASURE_FIXTURE, 60, 0, {
+      writtenMeter: {numerator: 28, denominator: 4},
+    });
+
+    expect(events.every((event) => event.measureIndexBasis === "offset-ceil-v1")).toBe(true);
+    expect(walked.every((event) => event.measureIndexBasis === "meter-walk-v2")).toBe(true);
   });
 
   it("registers five reachable calibration catalog pieces without making up scores", () => {
@@ -135,5 +188,55 @@ describe("ScoreEngine SymbTr importer and validator", () => {
         }),
       ]),
     );
+  });
+
+  /**
+   * D1: parser artik NaN sure uretmiyor, ama validator SON kapidir —
+   * correction event'leri (`corrections.ts`) veya ileride eklenecek baska bir
+   * kaynak zaman eksenini bozarsa yakalanmali. Eski surumde yalniz
+   * `durationBeats` kontrol ediliyordu; `startBeat`/`startTime` hic
+   * dogrulanmiyordu ve NaN sessizce gecip imleci olduruyordu
+   * (NaN karsilastirmalari her zaman false).
+   */
+  describe("zaman ekseni sonluluk kapisi (D1)", () => {
+    function buildDocument() {
+      return parseSymbtrToCanonical({
+        raw: SYMBTR_FIXTURE,
+        piece: HICAZKAR_PESREV,
+        scoreId: "score:test-fixture",
+      }).document;
+    }
+
+    it("sonlu olmayan startBeat'i error olarak raporlar", () => {
+      const document = buildDocument();
+      document.events[1].startBeat = Number.NaN;
+
+      expect(validateCanonicalScore(document)).toEqual(
+        expect.arrayContaining([
+          expect.objectContaining({
+            code: "event-time-invalid",
+            severity: "error",
+            eventId: document.events[1].id,
+          }),
+        ]),
+      );
+    });
+
+    it("sonlu olmayan startTime'i error olarak raporlar", () => {
+      const document = buildDocument();
+      document.events[0].startTime = Number.POSITIVE_INFINITY;
+
+      expect(validateCanonicalScore(document)).toEqual(
+        expect.arrayContaining([
+          expect.objectContaining({code: "event-time-invalid", severity: "error"}),
+        ]),
+      );
+    });
+
+    it("saglam belgede zaman-ekseni hatasi uretmez", () => {
+      const issues = validateCanonicalScore(buildDocument());
+
+      expect(issues.filter((issue) => issue.code === "event-time-invalid")).toHaveLength(0);
+    });
   });
 });

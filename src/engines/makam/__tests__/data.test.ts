@@ -32,7 +32,8 @@ describe("makam/data", () => {
         expect(makam.name).toBeDefined();
         expect(makam.tonic).toBeDefined();
         expect(makam.intervals).toHaveLength(7);
-        expect(makam.dominant).toBeDefined();
+        // `dominant` kaldirildi (D4) — kaynakli guclu icin bkz.
+        // karar-guclu.test.ts / getMakamGuclu.
       });
     });
   });

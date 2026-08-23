@@ -53,6 +53,10 @@ symb/
 # Pipeline artifacts
 output/
 
+# Generated ağır veri — TEK GERÇEK symb/ (Zenodo). CI'da `npm run generate:symbtr-catalog` ile üretilir.
+# 40MB commit'li dosya repo'yu şişiriyordu; artık git'te değil, FS'den lazy-load.
+src/data/symbtr/*.generated.json
+
 # Runtime mutable state (SQLite; ADR 0001)
 /var/
 
@@ -62,3 +66,6 @@ output/
 /blob-report/
 /playwright/.cache/
 /public/exercises/
+
+# Kisisel editor durumu — depoya girmez.
+.obsidian/

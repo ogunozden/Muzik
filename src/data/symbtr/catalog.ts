@@ -1,5 +1,22 @@
 import "server-only";
-import catalogData from "./catalog.generated.json";
+import fs from "node:fs";
+import path from "node:path";
+
+function loadCatalogData(): {entries: SymbTrCatalogEntry[]; count: number} {
+  const generatedPath = path.join(process.cwd(), "src/data/symbtr/catalog.generated.json");
+  if (fs.existsSync(generatedPath)) {
+    try {
+      return JSON.parse(fs.readFileSync(generatedPath, "utf8"));
+    } catch {
+      // bozuk dosya — boş katalog dön, build kırılmasın
+    }
+  }
+  // CI'da symb yoksa veya regen edilmediyse: boş ama tip-güvenli fallback
+  // `npm run generate:symbtr-catalog` veya `npm run corpus:fetch` ile üretilir
+  return {entries: [], count: 0};
+}
+
+const catalogData = loadCatalogData();
 
 export type SymbTrFormat = "txt" | "mid" | "xml" | "mu2" | "pdf";
 export type SymbTrSourceAccess = "local-archive" | "external-link";

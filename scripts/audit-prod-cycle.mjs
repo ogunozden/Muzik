@@ -276,7 +276,13 @@ function collectErrors({
     errors.push("external source provider verification batch run could not be read");
   } else {
     if ((sourceProviderVerificationBatchRun.completedBatchCount ?? 0) <= 0) {
-      errors.push("external source provider verification batch runner must complete at least one batch");
+      // W4.2 sonrasi: otomatik-dogrulanabilir backlog TAMAMEN siniflanmissa
+      // (remaining 0) kosucu 0 partiyle DOGRU sekilde sonlanir — bos kosu
+      // hata degil, terminal durumdur (kalan conflict/deferred insan karari).
+      const terminalCoverage = (sourceProviderVerificationBatchRun.finalInternetArchiveRemainingCount ?? 1) === 0;
+      if (!terminalCoverage) {
+        errors.push("external source provider verification batch runner must complete at least one batch");
+      }
     }
     if ((sourceProviderVerificationBatchRun.directAutoAttachCount ?? -1) !== 0) {
       errors.push("external source provider verification batch runner directAutoAttachCount must be 0");

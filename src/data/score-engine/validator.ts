@@ -41,7 +41,7 @@ export function validateCanonicalScore(document: CanonicalScoreDocument): Canoni
     issues.push(createIssue(issues.length, "empty-events", "Canonical dokümanda event yok.", "error"));
   }
 
-  for (const measure of document.measures) {
+  for (const [index, measure] of document.measures.entries()) {
     if (measure.eventIds.length === 0) {
       issues.push(
         createIssue(issues.length, "empty-measure", `${measure.index}. ölçüde event yok.`, "warning", {
@@ -61,14 +61,33 @@ export function validateCanonicalScore(document: CanonicalScoreDocument): Canoni
       }
     }
 
-    const measureEvents = document.events.filter((event) => measure.eventIds.includes(event.id));
-    const maxEventEnd = measureEvents.reduce((max, event) => Math.max(max, event.startBeat + event.durationBeats), 0);
-    if (maxEventEnd > measure.endBeat + 0.0001) {
-      issues.push(
-        createIssue(issues.length, "measure-duration-overflow", "Ölçü bitişi event sürelerini kapsamıyor.", "error", {
-          measureId: measure.id,
-        }),
+    // TOTOLOJI DEGIL (G8): `measure.endBeat` zaten kendi event'lerinin
+    // `max(startBeat + durationBeats)` degeri olarak URETILIYOR
+    // (`canonical-score.ts`). Onu yine kendi event'leriyle karsilastirmak
+    // hicbir zaman tetiklenemezdi — olculdu, korpusta 0 kez tetiklendi.
+    //
+    // Bagimsiz karsilastirma: bir olcunun event'i BIR SONRAKI olcunun
+    // baslangicini asamaz. G7 bar cizgisi bolmesinden sonra bu gercek bir
+    // hata sinyalidir: asiyorsa ya bolme calismamis ya da olcu numarasi
+    // yanlis atanmistir.
+    const nextMeasure = document.measures[index + 1];
+    if (nextMeasure) {
+      const measureEvents = document.events.filter((event) => measure.eventIds.includes(event.id));
+      const maxEventEnd = measureEvents.reduce(
+        (max, event) => Math.max(max, event.startBeat + event.durationBeats),
+        0,
       );
+      if (maxEventEnd > nextMeasure.startBeat + 0.0001) {
+        issues.push(
+          createIssue(
+            issues.length,
+            "measure-duration-overflow",
+            `Ölçü event'i bir sonraki ölçünün başlangıcını aşıyor (${maxEventEnd} > ${nextMeasure.startBeat}).`,
+            "error",
+            {measureId: measure.id},
+          ),
+        );
+      }
     }
   }
 
@@ -84,6 +103,20 @@ export function validateCanonicalScore(document: CanonicalScoreDocument): Canoni
     if (!Number.isFinite(event.durationBeats) || event.durationBeats <= 0) {
       issues.push(
         createIssue(issues.length, "duration-invalid", "Event süresi geçersiz.", "error", {eventId: event.id}),
+      );
+    }
+
+    // Zaman ekseni sonluluk kapisi (D1). Yalniz `durationBeats` dogrulamak
+    // yetmiyordu: bozuk tek bir sure `startBeat += durationBeats` zinciriyle
+    // SONRAKI tum event'leri NaN'a cekiyor ve NaN karsilastirmalari hep false
+    // oldugu icin ne bu validator ne de `measure-duration-overflow` uyariyordu
+    // (imlec sessizce oluyordu). Parser artik bozuk satiri dusuruyor; bu kapi
+    // correction event'leri gibi diger yazma yollarina karsi son savunmadir.
+    if (!Number.isFinite(event.startBeat) || !Number.isFinite(event.startTime)) {
+      issues.push(
+        createIssue(issues.length, "event-time-invalid", "Event zaman ekseni geçersiz (sonlu değil).", "error", {
+          eventId: event.id,
+        }),
       );
     }
 

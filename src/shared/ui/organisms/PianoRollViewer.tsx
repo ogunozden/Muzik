@@ -1,8 +1,8 @@
 "use client";
 
 import {useMemo} from "react";
-import {NotaEvent} from "@/types";
-import {PIANO_CONFIG, NOTE_NAMES} from "@/lib/app-constants";
+import {NotaEvent} from "@/core/domain/models";
+import {PIANO_CONFIG, NOTE_NAMES} from "@/shared/config/music-constants";
 import {tokens} from "@/shared/tokens";
 import {PlaybackControls} from "@/shared/ui/molecules/PlaybackControls";
 import {formatSolfegePitchClass, getPitchClassIndex, parsePitch} from "@/core/domain/note-naming";

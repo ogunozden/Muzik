@@ -168,6 +168,636 @@
         "verifiedAt": "2026-05-10",
         "notes": "Bulk web curation checked title, composer Nafiz Bey (Hacı), Uşşak makam, İlahi form and Sofyan usul against the SymbTr catalog entry."
       }
+    },
+    {
+      "catalogId": "hicaz_uzzal--kocekce--aksak--baharin_zamani--dede_efendi",
+      "status": "accepted",
+      "checkedAt": "2026-06-01",
+      "evidence": {
+        "complete": true,
+        "providerVerification": "internet-archive-advancedsearch-metadata",
+        "score": 90,
+        "title": "Baharin Zamani",
+        "makam": "Hicaz Uzzal",
+        "form": "Kocekce",
+        "usul": "Aksak",
+        "composer": "Dede Efendi",
+        "sourceProvider": "Internet Archive"
+      },
+      "source": {
+        "id": "archive-baharin-zamani-geldi-ver-2-baharin-zamani",
+        "label": "Internet Archive kaynağı",
+        "provider": "archive",
+        "url": "https://archive.org/details/baharin-zamani-geldi-ver-2",
+        "title": "Baharın Zamanı Geldi Ver 2",
+        "metadata": {
+          "htmlTitle": "Baharın Zamanı Geldi Ver 2",
+          "signals": [
+            "internet-archive:advancedsearch",
+            "internet-archive:identifier:baharin-zamani-geldi-ver-2"
+          ]
+        },
+        "access": "external-link",
+        "verification": "provider-metadata",
+        "verifiedAt": "2026-06-01",
+        "notes": "Accepted-ready only after Internet Archive structured metadata matches catalog fields and import dry-run passes."
+      }
+    },
+    {
+      "catalogId": "hicaz--sarki--agirevfer--bak_ne_hale--haci_arif_bey",
+      "status": "accepted",
+      "checkedAt": "2026-06-01",
+      "evidence": {
+        "complete": true,
+        "providerVerification": "internet-archive-advancedsearch-metadata",
+        "score": 90,
+        "title": "Bak Ne Hale",
+        "makam": "Hicaz",
+        "form": "Sarki",
+        "usul": "Agirevfer",
+        "composer": "Haci Arif Bey",
+        "sourceProvider": "Internet Archive"
+      },
+      "source": {
+        "id": "archive-httpswww-worldstatesmen-orgiraq-htm-bak-ne-hale",
+        "label": "Internet Archive kaynağı",
+        "provider": "archive",
+        "url": "https://archive.org/details/httpswww.worldstatesmen.orgiraq.htm",
+        "title": "faviconV2",
+        "author": "worldstatesmen",
+        "metadata": {
+          "htmlTitle": "faviconV2",
+          "htmlAuthor": "worldstatesmen",
+          "signals": [
+            "internet-archive:advancedsearch",
+            "internet-archive:identifier:httpswww.worldstatesmen.orgiraq.htm"
+          ]
+        },
+        "access": "external-link",
+        "verification": "provider-metadata",
+        "verifiedAt": "2026-06-01",
+        "notes": "Accepted-ready only after Internet Archive structured metadata matches catalog fields and import dry-run passes."
+      }
+    },
+    {
+      "catalogId": "hicaz--sarki--aksak--bir_gul--melahat_pars",
+      "status": "accepted",
+      "checkedAt": "2026-06-01",
+      "evidence": {
+        "complete": true,
+        "providerVerification": "internet-archive-advancedsearch-metadata",
+        "score": 90,
+        "title": "Bir Gul",
+        "makam": "Hicaz",
+        "form": "Sarki",
+        "usul": "Aksak",
+        "composer": "Melahat Pars",
+        "sourceProvider": "Internet Archive"
+      },
+      "source": {
+        "id": "archive-gonul-yazar-sari-gulum-var-benim-bir-gul",
+        "label": "Internet Archive kaynağı",
+        "provider": "archive",
+        "url": "https://archive.org/details/gonul-yazar-sari-gulum-var-benim",
+        "title": "Gönül Yazar 242 Songs",
+        "metadata": {
+          "htmlTitle": "Gönül Yazar 242 Songs",
+          "signals": [
+            "internet-archive:advancedsearch",
+            "internet-archive:identifier:gonul-yazar-sari-gulum-var-benim"
+          ]
+        },
+        "access": "external-link",
+        "verification": "provider-metadata",
+        "verifiedAt": "2026-06-01",
+        "notes": "Accepted-ready only after Internet Archive structured metadata matches catalog fields and import dry-run passes."
+      }
+    },
+    {
+      "catalogId": "huseyni--ilahi--(belirsiz)--ey_gonul--ali_ufki",
+      "status": "accepted",
+      "checkedAt": "2026-06-01",
+      "evidence": {
+        "complete": true,
+        "providerVerification": "internet-archive-advancedsearch-metadata",
+        "score": 100,
+        "title": "Ey Gonul",
+        "makam": "Huseyni",
+        "form": "İlahi",
+        "usul": "(belirsiz)",
+        "composer": "Ali Ufki",
+        "sourceProvider": "Internet Archive"
+      },
+      "source": {
+        "id": "archive-yazilar42-cilt-ihramcizade-ey-gonul",
+        "label": "Internet Archive kaynağı",
+        "provider": "archive",
+        "url": "https://archive.org/details/Yazilar42.cilt_ihramcizade",
+        "title": "yazilar 42.cilt _ihramcizade",
+        "author": "ihramcizade ismail hakki",
+        "metadata": {
+          "htmlTitle": "yazilar 42.cilt _ihramcizade",
+          "htmlAuthor": "ihramcizade ismail hakki",
+          "signals": [
+            "internet-archive:advancedsearch",
+            "internet-archive:identifier:Yazilar42.cilt_ihramcizade"
+          ]
+        },
+        "access": "external-link",
+        "verification": "provider-metadata",
+        "verifiedAt": "2026-06-01",
+        "notes": "Accepted-ready only after Internet Archive structured metadata matches catalog fields and import dry-run passes."
+      }
+    },
+    {
+      "catalogId": "huseyni--oyunhavasi--nimsofyan--cecen_kizi--tanburi_cemil_bey",
+      "status": "accepted",
+      "checkedAt": "2026-06-01",
+      "evidence": {
+        "complete": true,
+        "providerVerification": "internet-archive-advancedsearch-metadata",
+        "score": 90,
+        "title": "Cecen Kizi",
+        "makam": "Huseyni",
+        "form": "Oyunhavasi",
+        "usul": "Nimsofyan",
+        "composer": "Tanburi Cemil Bey",
+        "sourceProvider": "Internet Archive"
+      },
+      "source": {
+        "id": "archive-mundofonias2018015-cecen-kizi",
+        "label": "Internet Archive kaynağı",
+        "provider": "archive",
+        "url": "https://archive.org/details/Mundofonias2018015",
+        "title": "Mundofonias 2018015",
+        "author": "Mundofonías, Juan Antonio Vázquez, Araceli Tzigane",
+        "metadata": {
+          "htmlTitle": "Mundofonias 2018015",
+          "htmlAuthor": "Mundofonías, Juan Antonio Vázquez, Araceli Tzigane",
+          "signals": [
+            "internet-archive:advancedsearch",
+            "internet-archive:identifier:Mundofonias2018015"
+          ]
+        },
+        "access": "external-link",
+        "verification": "provider-metadata",
+        "verifiedAt": "2026-06-01",
+        "notes": "Accepted-ready only after Internet Archive structured metadata matches catalog fields and import dry-run passes."
+      }
+    },
+    {
+      "catalogId": "huzzam--sarki--duyek--pisman_olur_da--irfan_ozbakir",
+      "status": "accepted",
+      "checkedAt": "2026-06-01",
+      "evidence": {
+        "complete": true,
+        "providerVerification": "internet-archive-advancedsearch-metadata",
+        "score": 90,
+        "title": "Pisman Olur Da",
+        "makam": "Huzzam",
+        "form": "Sarki",
+        "usul": "Duyek",
+        "composer": "İrfan Ozbakir",
+        "sourceProvider": "Internet Archive"
+      },
+      "source": {
+        "id": "archive-kxsf20200801-pisman-olur-da",
+        "label": "Internet Archive kaynağı",
+        "provider": "archive",
+        "url": "https://archive.org/details/kxsf20200801",
+        "title": "0x0x0 KXSF Turkish Cultural Program 2020.08.01",
+        "metadata": {
+          "htmlTitle": "0x0x0 KXSF Turkish Cultural Program 2020.08.01",
+          "signals": [
+            "internet-archive:advancedsearch",
+            "internet-archive:identifier:kxsf20200801"
+          ]
+        },
+        "access": "external-link",
+        "verification": "provider-metadata",
+        "verifiedAt": "2026-06-01",
+        "notes": "Accepted-ready only after Internet Archive structured metadata matches catalog fields and import dry-run passes."
+      }
+    },
+    {
+      "catalogId": "kurdi--fantezi--sofyan--inan_ki--selim_oztas",
+      "status": "accepted",
+      "checkedAt": "2026-06-01",
+      "evidence": {
+        "complete": true,
+        "providerVerification": "internet-archive-advancedsearch-metadata",
+        "score": 90,
+        "title": "İnan Ki",
+        "makam": "Kurdi",
+        "form": "Fantezi",
+        "usul": "Sofyan",
+        "composer": "Selim Oztas",
+        "sourceProvider": "Internet Archive"
+      },
+      "source": {
+        "id": "archive-sesliedebiyateserleri-inan-ki",
+        "label": "Internet Archive kaynağı",
+        "provider": "archive",
+        "url": "https://archive.org/details/SesliEdebiyatEserleri",
+        "title": "SesliEdebiyatEserleri",
+        "author": "www.solplatform.org",
+        "metadata": {
+          "htmlTitle": "SesliEdebiyatEserleri",
+          "htmlAuthor": "www.solplatform.org",
+          "signals": [
+            "internet-archive:advancedsearch",
+            "internet-archive:identifier:SesliEdebiyatEserleri"
+          ]
+        },
+        "access": "external-link",
+        "verification": "provider-metadata",
+        "verifiedAt": "2026-06-01",
+        "notes": "Accepted-ready only after Internet Archive structured metadata matches catalog fields and import dry-run passes."
+      }
+    },
+    {
+      "catalogId": "kurdilihicazkar--sarki--curcuna--gumus_tellerle--melahat_pars",
+      "status": "accepted",
+      "checkedAt": "2026-06-01",
+      "evidence": {
+        "complete": true,
+        "providerVerification": "internet-archive-advancedsearch-metadata",
+        "score": 90,
+        "title": "Gumus Tellerle",
+        "makam": "Kurdilihicazkar",
+        "form": "Sarki",
+        "usul": "Curcuna",
+        "composer": "Melahat Pars",
+        "sourceProvider": "Internet Archive"
+      },
+      "source": {
+        "id": "archive-20241231-gelecek-de-bir-gun-gelecek-gumus-tellerle",
+        "label": "Internet Archive kaynağı",
+        "provider": "archive",
+        "url": "https://archive.org/details/20241231-gelecek-de-bir-gun-gelecek",
+        "title": "gelecek de bir gün gelecek",
+        "metadata": {
+          "htmlTitle": "gelecek de bir gün gelecek",
+          "signals": [
+            "internet-archive:advancedsearch",
+            "internet-archive:identifier:20241231-gelecek-de-bir-gun-gelecek"
+          ]
+        },
+        "access": "external-link",
+        "verification": "provider-metadata",
+        "verifiedAt": "2026-06-01",
+        "notes": "Accepted-ready only after Internet Archive structured metadata matches catalog fields and import dry-run passes."
+      }
+    },
+    {
+      "catalogId": "mahur--sarki--curcuna--zahiri_hale--haci_arif_bey",
+      "status": "accepted",
+      "checkedAt": "2026-06-01",
+      "evidence": {
+        "complete": true,
+        "providerVerification": "internet-archive-advancedsearch-metadata",
+        "score": 90,
+        "title": "Zahiri Hale",
+        "makam": "Mahur",
+        "form": "Sarki",
+        "usul": "Curcuna",
+        "composer": "Haci Arif Bey",
+        "sourceProvider": "Internet Archive"
+      },
+      "source": {
+        "id": "archive-peygamber-sevgisi-202511-zahiri-hale",
+        "label": "Internet Archive kaynağı",
+        "provider": "archive",
+        "url": "https://archive.org/details/peygamber-sevgisi_202511",
+        "title": "Peygamber Sevgisi",
+        "metadata": {
+          "htmlTitle": "Peygamber Sevgisi",
+          "signals": [
+            "internet-archive:advancedsearch",
+            "internet-archive:identifier:peygamber-sevgisi_202511"
+          ]
+        },
+        "access": "external-link",
+        "verification": "provider-metadata",
+        "verifiedAt": "2026-06-01",
+        "notes": "Accepted-ready only after Internet Archive structured metadata matches catalog fields and import dry-run passes."
+      }
+    },
+    {
+      "catalogId": "mahur--yuruksemai--yuruksemai--beni_cun--ebubekir_aga",
+      "status": "accepted",
+      "checkedAt": "2026-06-01",
+      "evidence": {
+        "complete": true,
+        "providerVerification": "internet-archive-advancedsearch-metadata",
+        "score": 90,
+        "title": "Beni Cun",
+        "makam": "Mahur",
+        "form": "Yuruksemai",
+        "usul": "Yuruksemai",
+        "composer": "Ebubekir Aga",
+        "sourceProvider": "Internet Archive"
+      },
+      "source": {
+        "id": "archive-pkk-kronolojisi-beni-cun",
+        "label": "Internet Archive kaynağı",
+        "provider": "archive",
+        "url": "https://archive.org/details/pkk-kronolojisi",
+        "title": "PKK Kronolojisi",
+        "author": "NUCECIWAN",
+        "metadata": {
+          "htmlTitle": "PKK Kronolojisi",
+          "htmlAuthor": "NUCECIWAN",
+          "signals": [
+            "internet-archive:advancedsearch",
+            "internet-archive:identifier:pkk-kronolojisi"
+          ]
+        },
+        "access": "external-link",
+        "verification": "provider-metadata",
+        "verifiedAt": "2026-06-01",
+        "notes": "Accepted-ready only after Internet Archive structured metadata matches catalog fields and import dry-run passes."
+      }
+    },
+    {
+      "catalogId": "muhayyerkurdi--sarki--duyek--o_beni--sekip_ayhan_ozisik",
+      "status": "accepted",
+      "checkedAt": "2026-06-01",
+      "evidence": {
+        "complete": true,
+        "providerVerification": "internet-archive-advancedsearch-metadata",
+        "score": 90,
+        "title": "O Beni",
+        "makam": "Muhayyerkurdi",
+        "form": "Sarki",
+        "usul": "Duyek",
+        "composer": "Sekip Ayhan Ozisik",
+        "sourceProvider": "Internet Archive"
+      },
+      "source": {
+        "id": "archive-kkup20181030-64-o-beni",
+        "label": "Internet Archive kaynağı",
+        "provider": "archive",
+        "url": "https://archive.org/details/kkup20181030_64",
+        "title": "0x0x0 KKUP Orient Express 2018.10.30",
+        "metadata": {
+          "htmlTitle": "0x0x0 KKUP Orient Express 2018.10.30",
+          "signals": [
+            "internet-archive:advancedsearch",
+            "internet-archive:identifier:kkup20181030_64"
+          ]
+        },
+        "access": "external-link",
+        "verification": "provider-metadata",
+        "verifiedAt": "2026-06-01",
+        "notes": "Accepted-ready only after Internet Archive structured metadata matches catalog fields and import dry-run passes."
+      }
+    },
+    {
+      "catalogId": "nihavent--mars--sofyan--istiklal_marsi--zeki_ungor",
+      "status": "accepted",
+      "checkedAt": "2026-06-01",
+      "evidence": {
+        "complete": true,
+        "providerVerification": "internet-archive-advancedsearch-metadata",
+        "score": 100,
+        "title": "İstiklal Marsi",
+        "makam": "Nihavent",
+        "form": "Mars",
+        "usul": "Sofyan",
+        "composer": "Zeki Ungor",
+        "sourceProvider": "Internet Archive"
+      },
+      "source": {
+        "id": "archive-youtube-mvcsf7mdu4y-istiklal-marsi",
+        "label": "Internet Archive kaynağı",
+        "provider": "archive",
+        "url": "https://archive.org/details/youtube-mvCSf7mdu4Y",
+        "title": "National Anthem of Turkey: İstiklal Marşı",
+        "author": "Duke of Canada",
+        "metadata": {
+          "htmlTitle": "National Anthem of Turkey: İstiklal Marşı",
+          "htmlAuthor": "Duke of Canada",
+          "signals": [
+            "internet-archive:advancedsearch",
+            "internet-archive:identifier:youtube-mvCSf7mdu4Y"
+          ]
+        },
+        "access": "external-link",
+        "verification": "provider-metadata",
+        "verifiedAt": "2026-06-01",
+        "notes": "Accepted-ready only after Internet Archive structured metadata matches catalog fields and import dry-run passes."
+      }
+    },
+    {
+      "catalogId": "nikriz--turku--turkaksagi--sen_bu--trabzon",
+      "status": "accepted",
+      "checkedAt": "2026-06-01",
+      "evidence": {
+        "complete": true,
+        "providerVerification": "internet-archive-advancedsearch-metadata",
+        "score": 90,
+        "title": "Sen Bu",
+        "makam": "Nikriz",
+        "form": "Turku",
+        "usul": "Turkaksagi",
+        "composer": "Trabzon",
+        "sourceProvider": "Internet Archive"
+      },
+      "source": {
+        "id": "archive-szaivpxdvghzihmhh6javeijvopidns56z9rdr2j-sen-bu",
+        "label": "Internet Archive kaynağı",
+        "provider": "archive",
+        "url": "https://archive.org/details/szaivpxdvghzihmhh6javeijvopidns56z9rdr2j",
+        "title": "APG 308 - Fish Urine",
+        "author": "Airline Pilot Guy - Aviation Podcast",
+        "metadata": {
+          "htmlTitle": "APG 308 - Fish Urine",
+          "htmlAuthor": "Airline Pilot Guy - Aviation Podcast",
+          "signals": [
+            "internet-archive:advancedsearch",
+            "internet-archive:identifier:szaivpxdvghzihmhh6javeijvopidns56z9rdr2j"
+          ]
+        },
+        "access": "external-link",
+        "verification": "provider-metadata",
+        "verifiedAt": "2026-06-01",
+        "notes": "Accepted-ready only after Internet Archive structured metadata matches catalog fields and import dry-run passes."
+      }
+    },
+    {
+      "catalogId": "rast--sarki--semai--sevmek_seni--neveser_kokdes",
+      "status": "accepted",
+      "checkedAt": "2026-06-01",
+      "evidence": {
+        "complete": true,
+        "providerVerification": "internet-archive-advancedsearch-metadata",
+        "score": 90,
+        "title": "Sevmek Seni",
+        "makam": "Rast",
+        "form": "Sarki",
+        "usul": "Semai",
+        "composer": "Neveser Kokdes",
+        "sourceProvider": "Internet Archive"
+      },
+      "source": {
+        "id": "archive-78-sevmek-seni-bir-su-ise-sabite-tur-glerman-neveser-kkde",
+        "label": "Internet Archive kaynağı",
+        "provider": "archive",
+        "url": "https://archive.org/details/78_sevmek-seni-bir-su-ise_sabite-tur-glerman-neveser-kkde_gbia7030649a",
+        "title": "SEVMEK SENI BIR SUÇ ISE",
+        "author": "Sabite Tur Gülerman, Neveser Kökdeş",
+        "metadata": {
+          "htmlTitle": "SEVMEK SENI BIR SUÇ ISE",
+          "htmlAuthor": "Sabite Tur Gülerman, Neveser Kökdeş",
+          "signals": [
+            "internet-archive:advancedsearch",
+            "internet-archive:identifier:78_sevmek-seni-bir-su-ise_sabite-tur-glerman-neveser-kkde_gbia7030649a"
+          ]
+        },
+        "access": "external-link",
+        "verification": "provider-metadata",
+        "verifiedAt": "2026-06-01",
+        "notes": "Accepted-ready only after Internet Archive structured metadata matches catalog fields and import dry-run passes."
+      }
+    },
+    {
+      "catalogId": "segah--turku--aksak--ey_su--usak",
+      "status": "accepted",
+      "checkedAt": "2026-06-01",
+      "evidence": {
+        "complete": true,
+        "providerVerification": "internet-archive-advancedsearch-metadata",
+        "score": 90,
+        "title": "Ey Su",
+        "makam": "Segah",
+        "form": "Turku",
+        "usul": "Aksak",
+        "composer": "Usak",
+        "sourceProvider": "Internet Archive"
+      },
+      "source": {
+        "id": "archive-oto-cekici-oto-kurtarma-usak-ey-su",
+        "label": "Internet Archive kaynağı",
+        "provider": "archive",
+        "url": "https://archive.org/details/oto_cekici_oto_kurtarma_usak",
+        "title": "oto_çekici_oto_kurtarma_uşak",
+        "metadata": {
+          "htmlTitle": "oto_çekici_oto_kurtarma_uşak",
+          "signals": [
+            "internet-archive:advancedsearch",
+            "internet-archive:identifier:oto_cekici_oto_kurtarma_usak"
+          ]
+        },
+        "access": "external-link",
+        "verification": "provider-metadata",
+        "verifiedAt": "2026-06-01",
+        "notes": "Accepted-ready only after Internet Archive structured metadata matches catalog fields and import dry-run passes."
+      }
+    },
+    {
+      "catalogId": "ussak--sarki--aksak--bu_aksam_gun--tatyos_efendi",
+      "status": "accepted",
+      "checkedAt": "2026-06-01",
+      "evidence": {
+        "complete": true,
+        "providerVerification": "internet-archive-advancedsearch-metadata",
+        "score": 90,
+        "title": "Bu Aksam Gun",
+        "makam": "Ussak",
+        "form": "Sarki",
+        "usul": "Aksak",
+        "composer": "Tatyos Efendi",
+        "sourceProvider": "Internet Archive"
+      },
+      "source": {
+        "id": "archive-tatyosefendibuakamgnbatarkengelkoroump3128k-bu-aksam-gun",
+        "label": "Internet Archive kaynağı",
+        "provider": "archive",
+        "url": "https://archive.org/details/TatyosEfendiBuAkamGnBatarkenGelKoroUMP3128K",
+        "title": "Tatyos Efendi Bu Akşam Gün Batarken Gel",
+        "metadata": {
+          "htmlTitle": "Tatyos Efendi Bu Akşam Gün Batarken Gel",
+          "signals": [
+            "internet-archive:advancedsearch",
+            "internet-archive:identifier:TatyosEfendiBuAkamGnBatarkenGelKoroUMP3128K"
+          ]
+        },
+        "access": "external-link",
+        "verification": "provider-metadata",
+        "verifiedAt": "2026-06-01",
+        "notes": "Accepted-ready only after Internet Archive structured metadata matches catalog fields and import dry-run passes."
+      }
+    },
+    {
+      "catalogId": "ussak--sarki--curcuna--bu_yaz--yesari_asim_arsoy",
+      "status": "accepted",
+      "checkedAt": "2026-06-01",
+      "evidence": {
+        "complete": true,
+        "providerVerification": "internet-archive-advancedsearch-metadata",
+        "score": 100,
+        "title": "Bu Yaz",
+        "makam": "Ussak",
+        "form": "Sarki",
+        "usul": "Curcuna",
+        "composer": "Yesari Asim Arsoy",
+        "sourceProvider": "Internet Archive"
+      },
+      "source": {
+        "id": "archive-kunye-bu-yaz",
+        "label": "Internet Archive kaynağı",
+        "provider": "archive",
+        "url": "https://archive.org/details/kunye",
+        "title": "Atatürk Müzik Galerisi Eserleri Künyesi",
+        "author": "T.C. Cumhurbaşkanlığı, Mustafa Kemal Atatürk",
+        "metadata": {
+          "htmlTitle": "Atatürk Müzik Galerisi Eserleri Künyesi",
+          "htmlAuthor": "T.C. Cumhurbaşkanlığı, Mustafa Kemal Atatürk",
+          "signals": [
+            "internet-archive:advancedsearch",
+            "internet-archive:identifier:kunye"
+          ]
+        },
+        "access": "external-link",
+        "verification": "provider-metadata",
+        "verifiedAt": "2026-06-01",
+        "notes": "Accepted-ready only after Internet Archive structured metadata matches catalog fields and import dry-run passes."
+      }
+    },
+    {
+      "catalogId": "ussak--sarki--musemmen--gelmedin_bir--fehmi_tokay",
+      "status": "accepted",
+      "checkedAt": "2026-06-01",
+      "evidence": {
+        "complete": true,
+        "providerVerification": "internet-archive-advancedsearch-metadata",
+        "score": 90,
+        "title": "Gelmedin Bir",
+        "makam": "Ussak",
+        "form": "Sarki",
+        "usul": "Musemmen",
+        "composer": "Fehmi Tokay",
+        "sourceProvider": "Internet Archive"
+      },
+      "source": {
+        "id": "archive-fehmitokaygelmedinbirkeredenmadaneden-gelmedin-bir",
+        "label": "Internet Archive kaynağı",
+        "provider": "archive",
+        "url": "https://archive.org/details/FehmiTokayGelmedinBirKeredenMadaNeden",
+        "title": "Fehmi Tokay Gelmedin Bir Kereden Mada Neden",
+        "metadata": {
+          "htmlTitle": "Fehmi Tokay Gelmedin Bir Kereden Mada Neden",
+          "signals": [
+            "internet-archive:advancedsearch",
+            "internet-archive:identifier:FehmiTokayGelmedinBirKeredenMadaNeden"
+          ]
+        },
+        "access": "external-link",
+        "verification": "provider-metadata",
+        "verifiedAt": "2026-06-01",
+        "notes": "Accepted-ready only after Internet Archive structured metadata matches catalog fields and import dry-run passes."
+      }
     }
   ]
 }

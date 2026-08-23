@@ -1,5 +1,6 @@
-import { redirect } from "next/navigation";
+import {redirect} from "next/navigation";
+import {LEGACY_ROUTE_MAP} from "@/shared/config/legacy-routes";
 
-export default function LegacyUsulRoute() {
-  redirect("/rhythm");
+export default function LegacyRoute() {
+  redirect(LEGACY_ROUTE_MAP.usul);
 }

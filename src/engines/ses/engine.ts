@@ -9,12 +9,12 @@ import {
   playPercussionSymbolScheduled,
   preloadInstrumentSamples,
   preloadPercussionSamples,
-  preloadPercussionSymbolSamples,
-  startRhythmLoop as startRhythmLoopBase,
+    startRhythmLoop as startRhythmLoopBase,
   clearSampleCache as clearSampleCacheBase,
   initAudio as initAudioBase,
   stopAll as stopAllBase,
   getAudioContext,
+  heardContextTime,
   type RhythmLoopController,
 } from "./instruments";
 import {isPercussionSymbol} from "./profiles";
@@ -35,6 +35,8 @@ export type ScheduledPercussionHit = {
   symbol: PercussionSymbol;
   isAccent?: boolean;
   percussionInstrument?: InstrumentType;
+  /** Vurus bazli gain olcegi (1 = normal). Master volume ile carpilir. */
+  gainScale?: number;
 };
 
 export type RhythmSymbolInput = {
@@ -42,7 +44,18 @@ export type RhythmSymbolInput = {
   symbol: string;
   isAccent: boolean;
   timeValue?: number;
+  /** Velvele dolgu vurusu (ana darba denk gelmeyen) — susleme kismasi icin. */
+  isOrnament?: boolean;
 };
+
+export interface PlaybackGainOptions {
+  /** 0..1 master volume carpani (1 = tam). Tutarli sekilde kirpilir. */
+  gainScale?: number;
+}
+
+function clampGainScale(value: number | undefined): number {
+  return typeof value === "number" && Number.isFinite(value) ? Math.min(1, Math.max(0, value)) : 1;
+}
 
 export async function initAudio(): Promise<boolean> {
   return initAudioBase();
@@ -90,12 +103,20 @@ export async function playScaleAtFrequencies(
   await playScaleFrequencies(frequencies, instrument, duration);
 }
 
-// Nazariyat darplarinin vurmali sample kanallarina eslenmesi: te/hek sol-el
-// hafif vurus ailesinden (tek), ka ke ailesinden, ta sag-el kuvvetli vurus
-// (dum) ailesindendir ("Turk Musikisinde Usuller ve Kudum", s.14).
+// Nazariyat darplarinin vurmali sample kanallarina eslenmesi
+// ("Turk Musikisinde Usuller ve Kudum", s.14 "OLCULERIN VURULMASI"):
+//   dum/ta -> sag el, KUVVETLI vurus            -> `dum` ailesi
+//   tek/te -> sol el, hafif vurus               -> `tek` ailesi
+//   ke/ka  -> sol el, hafif/uzun                -> `ke` ailesi
+//   hek    -> IKI ELIN BIRLIKTE vurusu          -> KENDI kanali (K4)
+//
+// `hek` once `tek`e (en hafif aile), sonra `dum`a esleniyordu; ikisi de
+// yaklasimdi. Artik kendi sample slotu var: dosyalar `dum + tek` toplamindan
+// TURETILIR (`scripts/derive-hek-samples.mjs`) — bu, kaynagin "iki elin
+// birlikte vurusu" tanimini birebir gercekler, ses uydurmaz. Korpusta 36
+// `hek` darbi var (Berefsan / Muhammes / Remel velveleleri).
 const PERCUSSION_SYMBOL_ALIASES: Record<string, string> = {
   te: "tek",
-  hek: "tek",
   ka: "ke",
   ta: "dum",
 };
@@ -119,12 +140,26 @@ export async function playRhythm(
       symbol: PERCUSSION_SYMBOL_ALIASES[s.symbol] ?? s.symbol,
       isAccent: s.isAccent,
       timeValue: s.timeValue,
+      isOrnament: s.isOrnament,
     })
   );
   await playRhythmWithPercussion(beats, percussionSymbols, bpm, percussionInstrument, unit);
 }
 
 export type {RhythmLoopController};
+
+export type ArrangementPlayback = {
+  /** Planlanan toplam sure (saniye). 0 ise hicbir sey planlanmadi. */
+  durationSeconds: number;
+  /**
+   * Sesin planlandigi MUTLAK AudioContext zamani. Gorsel imlec bunu
+   * `getHeardPlaybackPosition` ile birlikte kullanmali — duvar saati
+   * (`performance.now`) ses saatinden ayrisir ve cikis gecikmesini bilmez.
+   */
+  baseTime: number;
+};
+
+const NO_PLAYBACK: ArrangementPlayback = {durationSeconds: 0, baseTime: 0};
 
 /**
  * Dikissiz ritim dongusu: heceler sample ailesine indirgenir, planlama
@@ -143,40 +178,26 @@ export async function startRhythmLoop(
     symbol: PERCUSSION_SYMBOL_ALIASES[s.symbol] ?? s.symbol,
     isAccent: s.isAccent,
     timeValue: s.timeValue,
+    isOrnament: s.isOrnament,
   }));
   return startRhythmLoopBase(beats, normalized, bpm, percussionInstrument, unit, loop);
-}
-
-/**
- * Ritim sample'larini calmadan ONCE isitir: usul sayfasi gorsel sayaci
- * baslatmadan bunu bekler; aksi halde ilk turda imlec, sample indirme
- * gecikmesi kadar sesin onune geciyordu (2026-07-14 duzeltmesi).
- */
-export async function preloadRhythm(
-  symbols: RhythmSymbolInput[],
-  percussionInstrument?: InstrumentType,
-): Promise<boolean> {
-  return preloadPercussionSymbolSamples(
-    symbols
-      .map((symbol) => PERCUSSION_SYMBOL_ALIASES[symbol.symbol] ?? symbol.symbol)
-      .filter(isPercussionSymbol),
-    percussionInstrument,
-  );
 }
 
 export async function playSequence(
   notes: ScheduledNote[],
   instrument: InstrumentType = "ud",
-): Promise<number> {
+  options: PlaybackGainOptions = {},
+): Promise<ArrangementPlayback> {
   const ok = await initAudio();
-  if (!ok) return 0;
+  if (!ok) return NO_PLAYBACK;
 
   const context = getAudioContext();
-  if (!context) return 0;
+  if (!context) return NO_PLAYBACK;
 
   const instruments = Array.from(new Set(notes.map((note) => note.instrument ?? instrument)));
   await Promise.all(instruments.map((noteInstrument) => preloadInstrumentSamples(noteInstrument)));
 
+  const gainScale = clampGainScale(options.gainScale);
   const baseTime = context.currentTime + 0.02;
 
   for (const note of notes) {
@@ -185,25 +206,44 @@ export async function playSequence(
       note.midiNumber,
       note.instrument ?? instrument,
       note.duration,
-      note.gain ?? 0.2,
+      (note.gain ?? 0.2) * gainScale,
       noteStartTime,
       note.targetFrequency,
     );
   }
 
-  return notes.reduce((maxDuration, note) => Math.max(maxDuration, note.startTime + note.duration), 0);
+  const durationSeconds = notes.reduce((maxDuration, note) => Math.max(maxDuration, note.startTime + note.duration), 0);
+  // D6: donus degeri `baseTime` tasir — gorsel imlec `getHeardPlaybackPosition`
+  // ile SES saatinden okunmalidir; duvar saati ayristikca sapar.
+  return {durationSeconds, baseTime};
+}
+
+/**
+ * Su an DUYULAN calma konumu (saniye), `playArrangement`in dondurdugu
+ * `baseTime`e gore (D6).
+ *
+ * Ritim motorunda bu problem cozulmustu (`heardContextTime`: getOutputTimestamp,
+ * yoksa currentTime - outputLatency; bu sistemde olculen fark ~53 ms) ama nota
+ * motoru ile eser-takip sayfasi duvar saatinde kalmisti: imlec sesin onunde
+ * gidiyor, iki saat ayristikca sapma buyuyordu.
+ */
+export function getHeardPlaybackPosition(baseTime: number): number {
+  const context = getAudioContext();
+  if (!context) return 0;
+  return Math.max(0, heardContextTime(context) - baseTime);
 }
 
 export async function playArrangement(
   notes: ScheduledNote[],
   percussionHits: ScheduledPercussionHit[] = [],
   fallbackInstrument: InstrumentType = "ud",
-): Promise<number> {
+  options: PlaybackGainOptions = {},
+): Promise<ArrangementPlayback> {
   const ok = await initAudio();
-  if (!ok) return 0;
+  if (!ok) return NO_PLAYBACK;
 
   const context = getAudioContext();
-  if (!context) return 0;
+  if (!context) return NO_PLAYBACK;
 
   const instruments = Array.from(new Set(notes.map((note) => note.instrument ?? fallbackInstrument)));
   await Promise.all(instruments.map((noteInstrument) => preloadInstrumentSamples(noteInstrument)));
@@ -225,6 +265,7 @@ export async function playArrangement(
     ),
   );
 
+  const gainScale = clampGainScale(options.gainScale);
   const baseTime = context.currentTime + 0.04;
 
   for (const note of notes) {
@@ -232,7 +273,7 @@ export async function playArrangement(
       note.midiNumber,
       note.instrument ?? fallbackInstrument,
       note.duration,
-      note.gain ?? 0.2,
+      (note.gain ?? 0.2) * gainScale,
       baseTime + note.startTime,
       note.targetFrequency,
     );
@@ -245,6 +286,7 @@ export async function playArrangement(
       baseTime + hit.startTime,
       hit.beatDuration,
       hit.percussionInstrument,
+      (hit.gainScale ?? 1) * gainScale,
     );
   }
 
@@ -254,7 +296,7 @@ export async function playArrangement(
     0,
   );
 
-  return Math.max(melodyDuration, rhythmDuration);
+  return {durationSeconds: Math.max(melodyDuration, rhythmDuration), baseTime};
 }
 
 function playInstrumentNoteAtTime(

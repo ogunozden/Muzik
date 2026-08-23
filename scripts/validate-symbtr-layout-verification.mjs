@@ -4,7 +4,12 @@ import {
   SYMBTR_LAYOUT_CANDIDATE_FINGERPRINT_ALGORITHM,
   getSymbTrLayoutCandidateFingerprint,
 } from "./lib/symbtr-layout-fingerprint.mjs";
-import { getSymbTrMeasureIndexSummary } from "./lib/symbtr-score-measures.mjs";
+import {
+  LEGACY_MEASURE_INDEX_BASIS,
+  MEASURE_INDEX_BASES,
+  RUNTIME_ACCEPTED_MEASURE_INDEX_BASES,
+  getSymbTrMeasureIndexSummary,
+} from "./lib/symbtr-score-measures.mjs";
 
 const PROJECT_ROOT = process.cwd();
 const LAYOUT_PATH = path.join(
@@ -189,6 +194,33 @@ function validateVerificationEntry({
     errors.push(
       `${prefix}.candidateGeometryFingerprint must match the generated PDF candidate geometry fingerprint`,
     );
+  }
+
+  // G5: dogrulanmis kutular olcu numarasi tabanina bagimli. Taban degisince
+  // bu kontrol kutulari BAYATLATIR — sessizce baska olculere kaymalarindansa.
+  // Varsayilan `layout.ts` ile AYNI: alan yoksa eski kayit sayilir.
+  const measureIndexBasis =
+    verificationEntry.measureIndexBasis ?? LEGACY_MEASURE_INDEX_BASIS;
+  if (!MEASURE_INDEX_BASES.includes(measureIndexBasis)) {
+    errors.push(
+      `${prefix}.measureIndexBasis must be one of ${MEASURE_INDEX_BASES.join(", ")}`,
+    );
+  } else if (!RUNTIME_ACCEPTED_MEASURE_INDEX_BASES.includes(measureIndexBasis)) {
+    errors.push(
+      `${prefix}.measureIndexBasis is "${measureIndexBasis}" but the engine accepts ${RUNTIME_ACCEPTED_MEASURE_INDEX_BASES.join(", ")}; re-verify the measure boxes`,
+    );
+  }
+
+  if (measureIndexBasis === "written-expanded-v1") {
+    const mapping = verificationEntry.writtenMeasureMapping;
+    if (
+      !isPlainObject(mapping) ||
+      !Array.isArray(mapping.expanded) ||
+      mapping.expanded.length === 0 ||
+      !isPlainObject(mapping.firstExpandedIndexByWritten)
+    ) {
+      errors.push(`${prefix}.writtenMeasureMapping is required for written-expanded-v1`);
+    }
   }
 
   if (!isNonEmptyString(verificationEntry.verifiedAt)) {
@@ -426,7 +458,20 @@ function validateReviewTemplateEntry({
     }
 
     if (row.suggestedMeasureIndex !== null) {
-      errors.push(`${rowPrefix}.suggestedMeasureIndex must stay null in the non-promoting review template`);
+      // W4.1 P2: otomatik hizalama raporundan gelen ONERILER tanitim degildir;
+      // yalnizca high/medium guvenli girdilerde ve acikca isaretliyse kabul
+      // edilir. Insan onayi + measureBoxes donusumu hala zorunludur.
+      const allowedSuggestion =
+        Number.isInteger(row.suggestedMeasureIndex) &&
+        row.suggestedMeasureIndex >= 1 &&
+        ["high", "medium"].includes(row.suggestionConfidence) &&
+        isPlainObject(reviewEntry.alignmentSuggestion) &&
+        reviewEntry.alignmentSuggestion.source === "auto-alignment-report";
+      if (!allowedSuggestion) {
+        errors.push(
+          `${rowPrefix}.suggestedMeasureIndex must be null or a positive integer with high/medium suggestionConfidence + alignmentSuggestion proof`,
+        );
+      }
     }
 
     if (row.confidence !== candidate.confidence) {
@@ -669,7 +714,15 @@ function validateReviewBatchPlan({
           errors.push(`layout-verification-review-batch-plan.json ${packetLabel} unknown candidate row ${rowKey}`);
         }
         if (row?.suggestedMeasureIndex !== null) {
-          errors.push(`layout-verification-review-batch-plan.json ${packetLabel} suggestedMeasureIndex must stay null`);
+          const allowedSuggestion =
+            Number.isInteger(row.suggestedMeasureIndex) &&
+            row.suggestedMeasureIndex >= 1 &&
+            ["high", "medium"].includes(row.suggestionConfidence);
+          if (!allowedSuggestion) {
+            errors.push(
+              `layout-verification-review-batch-plan.json ${packetLabel} suggestedMeasureIndex must be null or a positive integer with high/medium suggestionConfidence`,
+            );
+          }
         }
         if (row?.reviewDecision !== "unreviewed") {
           errors.push(`layout-verification-review-batch-plan.json ${packetLabel} reviewDecision must stay unreviewed`);

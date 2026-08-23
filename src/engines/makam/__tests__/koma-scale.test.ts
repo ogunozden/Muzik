@@ -1,10 +1,14 @@
 import {describe, expect, it} from "vitest";
-import {getMakamById, komaToFrequency, getMakamKomaFrequencies, MAKAM_DATA} from "../data";
+import {
+  getMakamById,
+  getMakamGuclu,
+  getMakamKarar,
+  komaToFrequency,
+  getMakamKomaFrequencies,
+  MAKAM_DATA,
+} from "../data";
 import makamCorpus from "../__generated__/makam-corpus.json";
-
-const NOTE_SEMITONE: Record<string, number> = {
-  C: 0, "C#": 1, D: 2, "D#": 3, E: 4, F: 5, "F#": 6, G: 7, "G#": 8, A: 9, "A#": 10, B: 11,
-};
+import aeuReference from "../__generated__/aeu-reference.json";
 
 /**
  * Otantik 53-EDO (Holder komasi / AEU) makam dizisi sozlesme testleri.
@@ -132,23 +136,33 @@ describe("makam 12-TET intervals korpus-turevi (hardcode -> otonom)", () => {
     expect(count).toBeGreaterThanOrEqual(60);
   });
 
-  it("her makamin `dominant`i korpusta belirgin bir derece (dominant DOGRULAMA muadili)", () => {
-    // Guclu frekansla kesin turetilemez; en azindan el-yazimi dominant'in
-    // korpus koma dizisinde (±1 yarim-ton) yer aldigini garanti ederiz.
+  it("kaynakli guclu, korpus koma dizisinde KOMA hassasiyetinde bir derecedir (D4)", () => {
+    // Eski kapi el-yazimi `dominant`i "dizide ±1 YARIM-TON var mi" diye
+    // kontrol ediyordu — ~100 cent tolerans, neredeyse her degerin gectigi bir
+    // kapi; testin kendi yorumu da turetilemedigini itiraf ediyordu. Guclu
+    // artik KAYNAKLI (`komaScale.gucluPerde`; Aydemir 2010 + korpus), bu yuzden
+    // dogrulama AEU perde tablosu uzerinden ±1 KOMA (~23 cent) yapilir.
+    const perdeKoma = aeuReference.perdeKoma as Record<string, number>;
     let validated = 0;
+
     for (const makam of MAKAM_DATA) {
-      if (!makam.komaScale) continue;
-      const tonic = NOTE_SEMITONE[makam.tonic];
-      const dom = NOTE_SEMITONE[makam.dominant];
-      if (tonic === undefined || dom === undefined) continue;
-      const domSemi = ((dom - tonic) % 12 + 12) % 12;
-      const corpusSemis = new Set(makam.komaScale.degrees.map((d) => Math.round((d.koma * 12) / 53) % 12));
-      const present = [...corpusSemis].some(
-        (s) => Math.abs(s - domSemi) <= 1 || Math.abs(s - domSemi) >= 11,
+      const karar = getMakamKarar(makam);
+      const guclu = getMakamGuclu(makam);
+      if (!karar || !guclu || !makam.komaScale) continue;
+
+      const kararKoma = perdeKoma[karar.perde];
+      const gucluKoma = perdeKoma[guclu.perde];
+      expect(kararKoma, `${makam.id}: karar ${karar.perde} AEU tablosunda`).toBeDefined();
+      expect(gucluKoma, `${makam.id}: guclu ${guclu.perde} AEU tablosunda`).toBeDefined();
+
+      const interval = (((gucluKoma - kararKoma) % 53) + 53) % 53;
+      const present = makam.komaScale.degrees.some(
+        (degree) => Math.abs(degree.koma - interval) <= 1 || Math.abs(degree.koma - interval) >= 52,
       );
-      expect(present, `${makam.id}: dominant ${makam.dominant} korpusta`).toBe(true);
+      expect(present, `${makam.id}: guclu araligi ${interval}k korpus dizisinde`).toBe(true);
       validated += 1;
     }
-    expect(validated).toBeGreaterThanOrEqual(20);
+
+    expect(validated, "kaynakli guclusu dogrulanan makam").toBeGreaterThanOrEqual(30);
   });
 });

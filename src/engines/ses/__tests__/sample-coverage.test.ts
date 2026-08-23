@@ -1,5 +1,5 @@
 import {describe, expect, it} from "vitest";
-import {INSTRUMENTS, MELODIC_INSTRUMENTS, PERCUSSION_INSTRUMENTS} from "@/lib/app-constants";
+import {INSTRUMENTS, MELODIC_INSTRUMENTS, PERCUSSION_INSTRUMENTS} from "@/shared/config/instruments";
 import {SAMPLE_SLOTS} from "../sample-library";
 import {summarizeSampleCoverage} from "../sample-coverage";
 

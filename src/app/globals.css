@@ -1,11 +1,11 @@
 /**
  * Global Styles
- * 
- * Design system CSS variables ve base styles
- * Token reference: src/lib/design-system/theme.css
+ *
+ * Token reference: src/shared/tokens/theme.css (TEK KAYNAK)
+ * lib/design-system/theme.css artık shim'dir.
  */
 
-@import "../lib/design-system/theme.css";
+@import "../shared/tokens/theme.css";
 @unocss all;
 
 /* ============================================

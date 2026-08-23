@@ -298,7 +298,7 @@ function alignEntry({
   const coverage = activeMeasures.length > 0 ? coveredMeasures / activeMeasures.length : 0;
   const deltas = Array.from(byMeasure.values()).map((item) => item.deltaPercent);
   const medianDelta = deltas.length > 0 ? [...deltas].sort((a, b) => a - b)[Math.floor(deltas.length / 2)] : null;
-  const confidence = coverage >= 0.9 && (medianDelta === null || medianDelta <= 4) ? "high" : coverage >= 0.75 ? "medium" : "low";
+  const confidence = coverage >= 0.85 && (medianDelta === null || medianDelta <= 6) ? "high" : coverage >= 0.70 ? "medium" : "low";
 
   const boxes = Array.from(byMeasure.values())
     .map((item) => ({

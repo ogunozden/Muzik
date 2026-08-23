@@ -198,7 +198,7 @@ describe("Kaynak /samples sayfasında görünür (H4)", () => {
     // page 101 satira atomiklesti — metinler artik components/* ve hooks/*’ta
     const samplesDir = path.join(process.cwd(), "src", "app", "samples");
     const allSamplesCode = fs
-      .readdirSync(samplesDir, {recursive: true, withFileTypes: true} as any)
+      .readdirSync(samplesDir, {recursive: true, withFileTypes: true} as Parameters<typeof fs.readdirSync>[1])
       .filter((e: unknown) => (e as {isFile: () => boolean}).isFile())
       .map((e: unknown) => {
         const entry = e as {parentPath: string; name: string};

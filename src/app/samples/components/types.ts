@@ -44,6 +44,8 @@ export interface FolderProvenance {
   note?: string;
   license?: string | null;
   origin?: string | null;
+  /** K3 · claimed klasörler havuz genişleyince otomatik yeniden taranır; sıradaki tarih. */
+  nextRescanAt?: string | null;
 }
 
 export interface SamplesResponse {

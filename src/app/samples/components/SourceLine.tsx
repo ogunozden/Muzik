@@ -34,6 +34,7 @@ export function SourceLine({record}: {record: FolderProvenance | null}) {
       ) : (
         <> · üretim parametreleri kayıtlı değil (yalnız preset adı biliniyor)</>
       )}
+      {record.nextRescanAt ? <> · sonraki tarama: {record.nextRescanAt}</> : null}
     </p>
   );
 }

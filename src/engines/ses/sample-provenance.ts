@@ -87,3 +87,29 @@ export function describeExtrapolation(instrument: InstrumentType, midiNumber: nu
   const direction = midiNumber < (RECORDED_MELODIC_RANGES[instrument]?.minMidi ?? 0) ? "pes" : "tiz";
   return `kayıt dışı bölge — en yakın gerçek kayıttan ${use.semitonesBeyond} yarım ton ${direction}e gerildi (${use.evidence})`;
 }
+
+/**
+ * `hek` — iki elin birlikte vuruşu (Kudum kitabı s.14, PLAN.md §10/F3 & §11/H5).
+ *
+ * Kaynak paketlerde gerçek bir `hek` kaydı YOK — 354 bölge tarandı, en yakın
+ * sözlüksel eşleşme `Finger Flam` ölçülünce kaydırılmış flam çıktı (hek ise
+ * eşzamanlı). Kudum kaydında da ayrım ölçülünce bulunamadı (dağılım sürekli).
+ * Bu yüzden `hek` dum+tek toplamından **türetilmeye devam eder** ve UI'da
+ * `Türetilmiş ses — gerçek kayıt değil, dum+tek toplamı` rozetiyle görünür.
+ * Detay `public/samples/provenance.json → hekSearch` ve
+ * `hekSearch.kudumRecordingProbe` içinde veri olarak durur (FAZ D dış girdi).
+ */
+export const HEK_PROVENANCE = {
+  symbol: "hek" as const,
+  derivedFrom: "dum + tek toplamı" as const,
+  label: "Türetilmiş ses — gerçek kayıt değil, dum+tek toplamı" as const,
+  hekSearchRef: "provenance.json → hekSearch" as const,
+  detailRef: "hekSearch.kudumRecordingProbe" as const,
+  scannedPresets: 354,
+  twoHandStrokeFound: false,
+  kudumPresetExists: false,
+} as const;
+
+export function describeHekProvenance(): typeof HEK_PROVENANCE {
+  return HEK_PROVENANCE;
+}

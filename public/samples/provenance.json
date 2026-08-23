@@ -89,7 +89,8 @@
         "Oud (Bright)"
       ],
       "producer": null,
-      "confidence": "claimed"
+      "confidence": "claimed",
+      "nextRescanAt": "2026-09-22"
     },
     "santur": {
       "sourceId": "proteus3",
@@ -97,7 +98,8 @@
         "Santur"
       ],
       "producer": null,
-      "confidence": "claimed"
+      "confidence": "claimed",
+      "nextRescanAt": "2026-09-22"
     },
     "rebab": {
       "sourceId": "proteus3",
@@ -105,7 +107,8 @@
         "Yesir Rebab"
       ],
       "producer": null,
-      "confidence": "claimed"
+      "confidence": "claimed",
+      "nextRescanAt": "2026-09-22"
     },
     "miskal": {
       "sourceId": "turkish-arab3",
@@ -184,7 +187,8 @@
         "Eastern Percussion"
       ],
       "producer": null,
-      "confidence": "claimed"
+      "confidence": "claimed",
+      "nextRescanAt": "2026-09-22"
     },
     "zil": {
       "sourceId": "turkish-arab3",

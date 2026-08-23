@@ -282,3 +282,17 @@ match the central policy in `src/data/references/external-reference-policy.json`
 provider-specific verification, CSP `frame-src` allowlisting, iframe sandbox,
 lazy loading and fallback links are required. YouTube entries must carry oEmbed
 verification before they can be accepted.
+
+## SLA — Haftalık insan onayı ve dashboard ilerleme
+
+**Hedef:** haftada 100 insan onayı → 30 haftada 3000 curated.
+
+- Her hafta en az 100 `accepted` aday `POST /api/external-references {action: "candidate-import"}` ile bulk onaylanır
+  (`src/app/references/curation/page.tsx:1` → `BulkApproveSection` tek tık “18 accepted’i onayla → 22→40”).
+- Kalan backlog `missingCuratedEntries = 3000 − curatedReferenceEntries` üzerinden izlenir; ortalama 100/hafta hızı 30 haftada kapanış sağlar.
+- Zamanlanmış keşif `npm run verify:external-source-providers:schedule -- --batches 4` gecelik cron (`.github/workflows/curation-cron.yml:1`) +%100 auto-sınıf +%0 attach ile kuyruğu besler; insan onayı tek darboğazdır.
+- Dashboard `ReferencesCurationDashboard` ve `BulkApproveSection` `curated/3000` için ilerleme çubuğu (progress bar) gösterir:
+  `width = curatedBefore/3000 * 100%`, etiket `22→40` → `40/3000 (%1.3)` → hedef `3000/3000`.
+- `audit:external-references` ve `curation:validate` her bulk sonrası `0` hatayla geçmelidir; cron cache’i `output/external-source-discovery/cache.json` → `provider-verification-cache.json` commit eder.
+
+Cron + SLA birlikte: otomasyon %100 auto-sınıf, insan kontrolü haftalık 100 ile 30 haftada 3000’e ulaşır; dashboard progress bar kalan işi görünür kılar.

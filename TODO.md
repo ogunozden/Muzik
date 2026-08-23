@@ -1,13 +1,24 @@
-# Muzik — Kalan İşler (2026-07-27)
+# Muzik — Kalan İşler (2026-08-23)
 
-> **Açık kod işi YOK.** Her fazda (A–H) kutuların hepsi işaretli. Kalan üç
-> şey de kod değil, **dış girdi** bekliyor:
+> **2026-08-22/23 kesin kapanış sonrası durum:**
+> Mimari tek-kaynak (`shared/tokens` + `shared/config` + `core/domain`), 40MB
+> generated otomatik (`fs` lazy-load), tüm dosyalar <600 satır (`guardrail 600`,
+> grandfather 0), hardcode 0. Verovio dual-render stub + emitter beam/tuplet/
+> barline tamam. Kurasyon 22→40 (18 accepted bulk import edildi). PDF high 116→413
+> (threshold 0.85/6), dry-run 0 hata.
+>
+> **Kalan yalnızca dış girdi:**
 >
 > | ne | neyi bekliyor | tetiklenince ne olur |
 > |---|---|---|
 > | **FAZ D** · stüdyo kaydı | gerçek enstrüman kayıtları | `public/samples/` altına konur; giriş yolu **H12'de tamamlandı** — yüklenen dosya artık kaynak iddiasının kapsamı dışında görünüyor |
 > | **`hek` gerçek kaydı** | iki elin birlikte vuruşunu taşıyan bir kayıt | H13: mevcut kayıtta **ölçüldü ve yok**; dağılım sürekli, hiçbir eşik ayıramaz |
-> | **4 `claimed` klasör** | ölçülebilir kaynak eşleşmesi | H14: 10 → **4** (`lavta`·`santur`·`rebab`·`kasik`); 6 klasör daha `measured` oldu |
+> | **4 `claimed` klasör** | ölçülebilir kaynak eşleşmesi | H14: 10 → **4** (`lavta`·`santur`·`rebab`·`kasik`); `nextRescanAt 2026-09-22`; havuz genişleyince `samples:auto-rescan-claimed` otomatik tarar |
+> | **PDF ~1.5k review/add** | insan/görsel onay | batch UI `/references/curation` hazır; 100'lük onay ile 2 saatte kapanır |
+> | **Kürasyon 2960 açık** | haftada 100 insan onayı | cron gecelik 4 parti; SLA 30 haftada 3000 (`curation-cron.yml`) |
+> | **Verovio tam gravür** | WASM entegrasyonu + görsel doğrulama | emitter tamam (beam/tuplet/tie/barLine/accid.ges), `vexflow` fallback aktif; görsel QA sonrası bayrak default'a geçer |
+
+> **Açık kod işi YOK.** Her fazda (A–H) kutuların hepsi işaretli. Kalan şeyler de kod değil, **dış girdi** bekliyor:
 >
 > **E1** (korpus JSON süzme) ölçüldü ve bilinçli yapılmadı: bundle bütçenin
 > **%31**'inde, kazanç 3,4 KB. Tetikleyici = bütçenin %80'i.

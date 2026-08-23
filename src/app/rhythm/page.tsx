@@ -21,9 +21,9 @@
 
 "use client";
 
-import {useCallback, useEffect, useRef, useState} from "react";
+import {useCallback, useEffect, useMemo, useRef, useState} from "react";
 import {useTranslation} from "react-i18next";
-import {LabeledSelect, LabeledSlider, PageHeader, PageShell, PageSurface, UsulPanel} from "@/shared/ui";
+import {Input, LabeledSelect, LabeledSlider, PageHeader, PageShell, PageSurface, UsulPanel} from "@/shared/ui";
 import {UnifiedLayout} from "@/shared/ui/layout/UnifiedLayout";
 import {USUL_DATA, getGroupedUsulItems, getUsulBeatDuration, getUsulGrouping} from "@/engines/usul/data";
 import type {InstrumentType} from "@/engines/ses/engine";
@@ -113,6 +113,19 @@ export default function UsulPage() {
 
   // Gruplandırma: önce ölçü (2/4 → 120/4) sonra alfabetik (tr locale)
   const usulGroups = getGroupedUsulItems();
+  const [usulSearchQuery, setUsulSearchQuery] = useState("");
+
+  // Direkt usul ismi arama — gruplar içinde filtrele, boşsa tümü
+  const filteredUsulGroups = useMemo(() => {
+    const q = usulSearchQuery.trim().toLocaleLowerCase("tr");
+    if (!q) return usulGroups;
+    return usulGroups
+      .map((group) => ({
+        ...group,
+        items: group.items.filter((item) => item.label.toLocaleLowerCase("tr").includes(q)),
+      }))
+      .filter((group) => group.items.length > 0);
+  }, [usulGroups, usulSearchQuery]);
 
   // Velvele modu: kitaptaki susleme dizilisi varsa ve secildiyse onu cal/goster.
   const hasVelvele = Boolean(selectedUsulObj?.velvele?.length);
@@ -263,12 +276,28 @@ export default function UsulPage() {
           </div>
         )}
 
+        <div className="mb-3">
+          <Input
+            label="Usul ara"
+            placeholder="Usul ismi yaz — örn Sofyan, Aksak, Düyek"
+            ariaLabel="Usul ara"
+            value={usulSearchQuery}
+            onChange={(e) => setUsulSearchQuery(e.target.value)}
+          />
+          {usulSearchQuery.trim() && (
+            <p className="mt-1 text-xs text-[var(--color-text-secondary)]">
+              {filteredUsulGroups.reduce((sum: number, g: {items: Array<{key: string; label: string}>}) => sum + g.items.length, 0)} usul bulundu
+              {filteredUsulGroups.length > 0 && ` — ${filteredUsulGroups.map((g: {label: string}) => g.label).join(", ")}`}
+            </p>
+          )}
+        </div>
+
         <UsulPanel
           ref={notationRef}
           usulSelectAriaLabel={t("usul.selectUsul")}
           symbolGridAriaLabel={t("usul.symbolGrid")}
           playButtonAriaLabel={isRhythmPlaying ? t("common.stop") : t("usul.playRhythm")}
-          usulGroups={usulGroups}
+          usulGroups={filteredUsulGroups}
           selectedUsul={selectedUsulObj?.id}
           onUsulChange={(key) => {
             stopRhythm();

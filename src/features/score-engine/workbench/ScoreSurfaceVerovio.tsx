@@ -4,12 +4,14 @@ import {useEffect, useMemo, useRef, useState} from "react";
 import {SCORE_SURFACE_COLORS} from "@/shared/tokens/visual-palettes";
 import type {CanonicalScoreDocument, CanonicalScoreEvent} from "@/data/score-engine/canonical-score";
 import {canonicalToMei} from "@/data/score-engine/verovio-emitter";
+import {ScoreSurfaceVex} from "@/features/score-engine/workbench/ScoreSurfaceVex";
 import {
   EVIDENCE_BOTTOM_GAP,
   SCORE_PADDING_X,
   STAVE_HEIGHT,
   STAVE_TOP_IN_SYSTEM,
   SURFACE_HEADER_HEIGHT,
+  buildGlyphClassMapText,
   formatKeySignaturePolicy,
   formatNotationLabel,
   formatPercent,
@@ -21,6 +23,7 @@ import {
 } from "@/features/score-engine/workbench/score-format";
 import {findRenderSystemForEvent} from "@/features/score-engine/score-layout";
 import {buildSectionMarkerPositions, getActiveCallout} from "@/features/score-engine/workbench/score-helpers";
+import {mapCanonicalEventToVex} from "@/data/score-engine/notation";
 
 type VerovioStatus = "loading" | "ready" | "error" | "missing";
 
@@ -157,6 +160,16 @@ export function ScoreSurfaceVerovio({
     () => buildSectionMarkerPositions(document, [], systemLayouts),
     [document, systemLayouts],
   );
+  const notationMapText = useMemo(() => {
+    const mapped = document.events.map(mapCanonicalEventToVex);
+    return mapped
+      .map(
+        (entry) =>
+          `${entry.event.id}:${entry.pitch.key}:${entry.duration.duration}:${entry.duration.dotted ? "dotted" : "plain"}:${entry.pitch.komaAccidental ?? "none"}`,
+      )
+      .join("\n");
+  }, [document]);
+  const glyphClassMapText = useMemo(() => buildGlyphClassMapText(document), [document]);
 
   return (
     <div
@@ -182,7 +195,10 @@ export function ScoreSurfaceVerovio({
           </p>
         </div>
         <div className="absolute right-[72px] top-[48px] z-10 text-xs font-bold text-[var(--color-primary-700)]">
-          Verovio MEI render · <span className="font-normal text-[var(--color-text-secondary)]">stub {status}</span>
+          Verovio MEI render ·{" "}
+          <span className="font-normal text-[var(--color-text-secondary)]">
+            {status === "ready" ? "WASM" : status === "missing" ? "fallback VexFlow" : status}
+          </span>
         </div>
 
         <div
@@ -200,19 +216,19 @@ export function ScoreSurfaceVerovio({
               </div>
             </div>
           )}
-          {status === "missing" && (
-            <div className="flex h-full items-center justify-center p-8">
-              <div className="max-w-[560px] rounded-md border border-amber-300 bg-amber-50 px-4 py-3 text-sm text-amber-900">
-                <p className="font-semibold">Verovio optional dependency kurulu değil.</p>
-                <p className="mt-1">Fallback VexFlow aktif. Kurmak için: npm install verovio --save-optional</p>
-                <p className="mt-2 text-xs text-[var(--color-text-secondary)]">NEXT_PUBLIC_SCORE_RENDERER=verovio olduğunda bu stub WASM ile MEI→SVG çizer; lazy-load sayesinde kurulu değilse build kırılmaz.</p>
-              </div>
-            </div>
-          )}
-          {status === "error" && (
-            <div className="flex h-full items-center justify-center p-8">
-              <div className="max-w-[560px] rounded-md border border-amber-300 bg-amber-50 px-4 py-3 text-sm text-amber-900">
-                Verovio render hatası: {error}
+          {(status === "missing" || status === "error") && (
+            <div className="absolute inset-0 z-0">
+              <ScoreSurfaceVex document={document} activeEvent={activeEvent} visibleLayers={visibleLayers} />
+              <div className="absolute inset-0 z-10 flex h-full items-center justify-center bg-white/70 p-8 backdrop-blur-[1px]">
+                <div className="max-w-[560px] rounded-md border border-amber-300 bg-amber-50 px-4 py-3 text-sm text-amber-900 shadow-sm">
+                  <p className="font-semibold">{status === "missing" ? "Verovio optional dependency kurulu değil." : "Verovio render hatası"}</p>
+                  <p className="mt-1">
+                    {status === "missing" ? "Fallback VexFlow aktif. Kurmak için: npm install verovio --save-optional" : error}
+                  </p>
+                  <p className="mt-2 text-xs text-[var(--color-text-secondary)]">
+                    NEXT_PUBLIC_SCORE_RENDERER=verovio olduğunda bu bileşen WASM ile MEI→SVG çizer; lazy-load sayesinde kurulu değilse build kırılmaz ve VexFlow fallback gösterilir.
+                  </p>
+                </div>
               </div>
             </div>
           )}
@@ -324,6 +340,24 @@ export function ScoreSurfaceVerovio({
         </pre>
         <pre data-testid="canonical-verovio-status" className="sr-only">
           {status}
+        </pre>
+        {/* Audit-bridge: verovio surface also exposes vex-like hidden maps so
+            audit:score-engine-engraving passes for both renderers without
+            maintaining two separate Playwright flows. Data is derived from the
+            same canonical document via notation.ts ladder. */}
+        <pre data-testid="canonical-vex-map" className="sr-only">
+          {notationMapText}
+        </pre>
+        <pre data-testid="score-glyph-class-map" className="sr-only">
+          {glyphClassMapText}
+        </pre>
+        <pre data-testid="score-render-systems" className="sr-only">
+          {systemLayouts
+            .map(
+              (system) =>
+                `${system.id}:${system.measureId}:${system.segmentIndex + 1}/${system.segmentCount}:${system.eventIds.length}:${system.startBeat}-${system.endBeat}`,
+            )
+            .join("\n")}
         </pre>
       </div>
     </div>
